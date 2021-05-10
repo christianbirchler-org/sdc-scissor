@@ -1,3 +1,10 @@
+# Ignore results
+results/
+
+# Ignore Shapely client specific file for pip
+Shapely-*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
