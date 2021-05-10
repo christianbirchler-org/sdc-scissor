@@ -171,3 +171,20 @@ python competition.py \
         --module-name sample_test_generators.one_test_generator \
         --class-name OneTestGenerator
 ```
+
+
+# Sample one test generator
+python .\competition.py --visualize-tests --time-budget 10 --executor beamng --beamng-home "C:\Users\birc\Documents\BeamNG.research.v1.7.0.1" --beamng-user "C:\Users\birc\Documents\BeamNG.research" --map-size 200 --module-name sample_test_generators.one_test_generator --class-name OneTestGenerator
+
+# MyGenerator
+python .\competition.py --visualize-tests --time-budget 10 --executor beamng --beamng-home "C:\Users\birc\Documents\BeamNG.research.v1.7.0.1" --beamng-user "C:\Users\birc\Documents\BeamNG.research" --map-size 200 --module-name sample_test_generators.my_generator --class-name MyGenerator
+
+
+# Frenetic
+python .\competition.py --visualize-tests --time-budget 10 --executor beamng --beamng-home "C:\Users\birc\Documents\BeamNG.research.v1.7.0.1" --beamng-user "C:\Users\birc\Documents\BeamNG.research" --map-size 200 --module-name frenetic.src.generators.random_frenet_generator --class-name CustomFrenetGenerator
+
+# Deeper
+python .\competition.py --visualize-tests --time-budget 10 --executor beamng --beamng-home "C:\Users\birc\Documents\BeamNG.research.v1.7.0.1" --beamng-user "C:\Users\birc\Documents\BeamNG.research" --map-size 200 --module-name deeper.Deeper_test_generator.deeper_test_generator --class-name DeeperTestGenerator
+
+# SWAT
+python .\competition.py --visualize-tests --time-budget 10 --executor beamng --beamng-home "C:\Users\birc\Documents\BeamNG.research.v1.7.0.1" --beamng-user "C:\Users\birc\Documents\BeamNG.research" --map-size 200 --module-name swat.swat_gen.swat_generator --class-name SwatTestGenerator
