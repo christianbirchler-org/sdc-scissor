@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from code_pipeline.tests_generation import RoadTestFactory
 
-from segment_factories.road_factory import MyRoadFactory
+from segment_factories.road_factory import MyRoadFactory, Road
 
 
 class MyGenerator():
@@ -27,11 +27,18 @@ class MyGenerator():
 
         #######################################################
         #######################################################
-        # use segment factories to generate segments
-        road_factory = MyRoadFactory((10,10,), (0.5,0.5))
+        # IDEA1: use segment factories to generate segments
+        #road_factory = MyRoadFactory((10,10,), (0.5,0.5))
 
-        road_points += road_factory.get_straight_segment(300)
+        #road_points += road_factory.get_straight_segment(200)
 
+        # IDEA2: use fluent interface
+
+        my_road = Road((10,10), (10,1))
+        my_road.add_straight_segment(120).add_left_turn_segment(50,180).add_straight_segment(80).add_right_turn_segment(50,180).add_straight_segment(80)
+        my_road.add_left_turn_segment(30, 45).add_straight_segment(25).add_left_turn_segment(30,90)
+
+        road_points = my_road.get_road_points()
 
         #######################################################
         #######################################################
