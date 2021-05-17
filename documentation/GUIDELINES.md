@@ -183,7 +183,7 @@ python .\competition.py --visualize-tests --time-budget 10 --executor beamng --b
 # Frenetic
 python .\competition.py --visualize-tests --time-budget 10 --executor beamng --beamng-home "C:\Users\birc\Documents\BeamNG.research.v1.7.0.1" --beamng-user "C:\Users\birc\Documents\BeamNG.research" --map-size 200 --module-name frenetic.src.generators.random_frenet_generator --class-name CustomFrenetGenerator
 
-# Deeper
+# Deeper Top Tool
 python .\competition.py --visualize-tests --time-budget 10 --executor beamng --beamng-home "C:\Users\birc\Documents\BeamNG.research.v1.7.0.1" --beamng-user "C:\Users\birc\Documents\BeamNG.research" --map-size 200 --module-name deeper.Deeper_test_generator.deeper_test_generator --class-name DeeperTestGenerator
 
 # SWAT
