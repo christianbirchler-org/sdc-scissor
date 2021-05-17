@@ -4,6 +4,8 @@ from scipy.interpolate import splev, splprep
 from numpy.ma import arange
 from shapely.geometry import LineString
 import json
+from code_pipeline.feature_extraction import FeatureExtractor
+
 # Constants
 rounding_precision = 3
 interpolation_distance = 1
@@ -74,8 +76,19 @@ class RoadTestFactory:
             assert all(len(i) == 2 for i in road_points), "Malformed list of road points"
             # The original input
             self.road_points = road_points[:]
+
+            # Initialize the feature extractor
+            self.__feature_extractor = FeatureExtractor()
+
             # The interpolated input
             self.interpolated_points = _interpolate(self.road_points)
+
+            # Extract features from original road input
+            self.__feature_extractor.calculate_features(self.road_points)
+
+            # Extract features from interpolated input points
+            #self.__feature_extractor.calculate_features(self.interpolated_points)
+
             # The rendered road
             self.road_polygon = RoadPolygon.from_nodes(self.interpolated_points)
 
