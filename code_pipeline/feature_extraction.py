@@ -59,10 +59,16 @@ class FeatureExtractor:
     def __get_angle(self, first_vec, second_vec):
         """
         Returns the angle in degrees between the first and second vector.
+        A left turn as positive angles whereas right turns have negatives.
         """
-        pass
+        a1, a2 = first_vec[0], first_vec[1]
+        b1, b2 = second_vec[0], second_vec[1]
 
-        
+        angle_in_radians = math.atan2(b2,b1)-math.atan2(a2,a1)
+        angle_in_degrees = math.degrees(angle_in_radians)
+
+        return angle_in_degrees
+
     def __get_direction(self, first_point, second_point):
         """
         Return the difference vector (second_point-first_point)
