@@ -29,7 +29,8 @@ class FeatureExtractor:
     def __init__(self):
         self.__road_features = RoadFeatures()
 
-    def calculate_features(self, road_points):
+
+    def extract_features(self, road_points):
         """
         Input is a list of (x,y) tuples which defines the road.
         This function extract the angles of segments.

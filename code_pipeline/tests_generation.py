@@ -84,10 +84,10 @@ class RoadTestFactory:
             self.interpolated_points = _interpolate(self.road_points)
 
             # Extract features from original road input
-            self.__feature_extractor.calculate_features(self.road_points)
+            self.__feature_extractor.extract_features(self.road_points)
 
             # Extract features from interpolated input points
-            #self.__feature_extractor.calculate_features(self.interpolated_points)
+            #self.__feature_extractor.extract_features(self.interpolated_points)
 
             # The rendered road
             self.road_polygon = RoadPolygon.from_nodes(self.interpolated_points)
