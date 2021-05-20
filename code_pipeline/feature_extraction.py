@@ -75,3 +75,7 @@ class FeatureExtractor:
         Return the difference vector (second_point-first_point)
         """
         return (second_point[0]-first_point[0], second_point[1]-second_point[1])
+
+
+if __name__ == "__main__":
+    print("Do some testing here")
