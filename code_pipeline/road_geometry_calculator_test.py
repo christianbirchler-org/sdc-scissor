@@ -1,17 +1,17 @@
 import unittest
 
-from feature_extraction import FeatureExtractor
+from feature_extraction import RoadGeometryCalculator
 
-class FeatureExtractorAngleTest(unittest.TestCase):
+class RoadGeometryCalculatorAngleTest(unittest.TestCase):
 
     def setUp(self):
-        self.__feature_extractor = FeatureExtractor()
+        self.__road_geometry_calculator = RoadGeometryCalculator()
 
     def test_positive_angle(self):
         v1 = (1,0)
         v2 = (0,1)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
 
         self.assertGreater(angle, 0, "Angle must be positive")
 
@@ -19,7 +19,7 @@ class FeatureExtractorAngleTest(unittest.TestCase):
         v1 = (0,1)
         v2 = (1,0)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
 
         self.assertLess(angle, 0, "Angle must be negative")
 
@@ -27,7 +27,7 @@ class FeatureExtractorAngleTest(unittest.TestCase):
         v1 = (3,-1)
         v2 = (3,-2)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
         
         self.assertLess(angle, 0, "Angle must be negative")
 
@@ -35,7 +35,7 @@ class FeatureExtractorAngleTest(unittest.TestCase):
         v1 = (3,-2)
         v2 = (3,-1)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
         
         self.assertGreater(angle, 0, "Angle must be positive")
 
@@ -43,7 +43,7 @@ class FeatureExtractorAngleTest(unittest.TestCase):
         v1 = (-3,-2)
         v2 = (-3,-1)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
 
         self.assertLess(angle, 0, "Angle must be negative")
 
@@ -51,7 +51,7 @@ class FeatureExtractorAngleTest(unittest.TestCase):
         v1 = (-3,-1)
         v2 = (-3,-2)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
 
         self.assertGreater(angle, 0, "Angle must be positive")
 
@@ -59,7 +59,7 @@ class FeatureExtractorAngleTest(unittest.TestCase):
         v1 = (-3,1)
         v2 = (-3,2)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
 
         self.assertLess(angle, 0, "Angle must be negative")
 
@@ -67,19 +67,11 @@ class FeatureExtractorAngleTest(unittest.TestCase):
         v1 = (-3,2)
         v2 = (-3,1)
 
-        angle = self.__feature_extractor._FeatureExtractor__get_angle(v1, v2)
+        angle = self.__road_geometry_calculator.get_angle(v1, v2)
 
         self.assertGreater(angle, 0, "Angle must be positive")
 
 
-
-class FeatureExtractionTurnTest(unittest.TestCase):
-
-    def setUp(self):
-        self.__feature_extractor = FeatureExtractor()
-
-    def test_is_right_turn(self):
-        pass
 
 
 if __name__ == "__main__":
