@@ -1,6 +1,6 @@
 import unittest
 
-from feature_extraction import RoadGeometryCalculator
+from feature_extraction import RoadGeometryCalculator 
 
 class RoadGeometryCalculatorAngleTest(unittest.TestCase):
 

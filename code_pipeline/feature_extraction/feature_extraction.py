@@ -47,12 +47,40 @@ class MaximumAngleStrategy(SegmentationStrategy):
 
 
 class EquiDistanceStrategy(SegmentationStrategy):
+    """
+    Define segments with equal lengts. The last segment might be different to
+    the others since there might be a remainder while dividing the road into
+    predefined number of segments.
+    """
     def __init__(self, number_of_segments):
         super().__init__()
         self.__number_of_segments = number_of_segments
 
     def extract_segments(self, road_points):
-        pass
+        segments = []
+
+        number_of_road_points = len(road_points)
+
+        if number_of_road_points < self.__number_of_segments:
+            raise Exception("Not enough road points.")
+
+        # TODO: Verify if this calculation is correct. I am not sure!
+        road_points_per_segment = (number_of_road_points-1) // self.__number_of_segments
+
+        # calculate for each segments its start/end road point indeces
+        for i in range(self.__number_of_segments):
+            start = i * road_points_per_segment
+
+            # check if last segment because last segment might have more/less points
+            if i == self.__number_of_segments-1:
+                end = len(road_points) - 1
+            else:
+                end = start + road_points_per_segment - 1
+            
+            current_segment = (start, end)
+            segments.append(current_segment)
+
+        return segments
 
 
 
@@ -61,26 +89,26 @@ class EquiDistanceStrategy(SegmentationStrategy):
 
 class RoadGeometryCalculator:
     def extract_turn_angles(self, road_points):
-            """
-            Extract angles of raod points and ad them to the instance variable
-            """
-            angles = []
-            # iterate over "all" road points
-            for i in range(2, len(road_points)):
-                # calculate angle between previous direction and vector from
-                # previous point to the current one
-                
-                point_before = road_points[i-2]
-                mid_point = road_points[i-1]
-                point_after = road_points[i]
+        """
+        Extract angles of raod points and ad them to the instance variable
+        """
+        angles = []
+        # iterate over "all" road points
+        for i in range(2, len(road_points)):
+            # calculate angle between previous direction and vector from
+            # previous point to the current one
+            
+            point_before = road_points[i-2]
+            mid_point = road_points[i-1]
+            point_after = road_points[i]
 
-                prev_direction = self.__get_direction(point_before, mid_point)
-                current_direction = self.__get_direction(point_after, mid_point)
+            prev_direction = self.__get_direction(point_before, mid_point)
+            current_direction = self.__get_direction(point_after, mid_point)
 
-                turn_angle = self.__get_angle(prev_direction, current_direction)
-                angles.append(turn_angle)
+            turn_angle = self.__get_angle(prev_direction, current_direction)
+            angles.append(turn_angle)
 
-            return angles
+        return angles
 
     # TODO
     def is_right_turn(self, prev_angle, current_angle):
@@ -129,7 +157,7 @@ class FeatureExtractor:
         """
         
         # get turn angles
-        self.__angles = self.__extract_turn_angles(self.__road_points)
+        #self.__angles = self.__extract_turn_angles(self.__road_points)
 
         # define segments (allow different strategies)
         self.__segments = self.__segmentation_strategy.extract_segments(self.__road_points)
