@@ -59,17 +59,21 @@ class EquiDistanceStrategy(SegmentationStrategy):
     def extract_segments(self, road_points):
         segments = []
 
+        # only two road points for a segment
+        max_number_of_possible_segments = len(road_points) - 1
+
         number_of_road_points = len(road_points)
 
         if number_of_road_points < self.__number_of_segments:
             raise Exception("Not enough road points.")
 
         # TODO: Verify if this calculation is correct. I am not sure!
-        road_points_per_segment = (number_of_road_points-1) // self.__number_of_segments
+        road_points_per_segment = 1 + round(max_number_of_possible_segments/self.__number_of_segments)
 
         # calculate for each segments its start/end road point indeces
+        end = 0
         for i in range(self.__number_of_segments):
-            start = i * road_points_per_segment
+            start = end
 
             # check if last segment because last segment might have more/less points
             if i == self.__number_of_segments-1:
