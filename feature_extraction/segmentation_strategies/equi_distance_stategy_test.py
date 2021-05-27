@@ -1,5 +1,5 @@
 import unittest
-from feature_extraction.equi_distance_strategy import EquiDistanceStrategy
+from feature_extraction.segmentation_strategies.equi_distance_strategy import EquiDistanceStrategy
 
 class EquiDistanceSegmentationTest(unittest.TestCase):
     def setUp(self):

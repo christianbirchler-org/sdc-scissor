@@ -1,4 +1,4 @@
-from .segmentation_strategy import SegmentationStrategy
+from feature_extraction.segmentation_strategies.segmentation_strategy import SegmentationStrategy
 
 class MaximumAngleStrategy(SegmentationStrategy):
     """
