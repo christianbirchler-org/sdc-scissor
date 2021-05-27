@@ -1,6 +1,6 @@
 import unittest
 
-from feature_extraction import RoadGeometryCalculator 
+from feature_extraction.road_geometry_calculator import RoadGeometryCalculator 
 
 class RoadGeometryCalculatorAngleTest(unittest.TestCase):
 
@@ -72,8 +72,10 @@ class RoadGeometryCalculatorAngleTest(unittest.TestCase):
         self.assertGreater(angle, 0, "Angle must be positive")
 
 
+def run_tests():
+    unittest.main()
 
 
 if __name__ == "__main__":
-    unittest.main()
+    run_tests()
 

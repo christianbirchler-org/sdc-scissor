@@ -1,5 +1,5 @@
 import unittest
-from feature_extraction import EquiDistanceStrategy
+from feature_extraction.equi_distance_strategy import EquiDistanceStrategy
 
 class EquiDistanceSegmentationTest(unittest.TestCase):
     def setUp(self):
@@ -13,10 +13,10 @@ class EquiDistanceSegmentationTest(unittest.TestCase):
 
         segments = strategy.extract_segments(road_points)
 
-        self.assertEquals(len(segments), 5, "There must be {} segments.".format(nr_of_segments))
+        self.assertEqual(len(segments), 5, "There must be {} segments.".format(nr_of_segments))
 
         expected_segments = [(0,1),(1,2),(2,3),(3,4),(4,5)]
-        self.assertEquals(segments, expected_segments, "Segments are not correctly calculated.")
+        self.assertEqual(segments, expected_segments, "Segments are not correctly calculated.")
 
     def test_too_few_road_points_should_raise_exception(self):
         nr_of_segments = 4
@@ -36,7 +36,7 @@ class EquiDistanceSegmentationTest(unittest.TestCase):
         segments = strategy.extract_segments(road_points)
 
         expected_segments = [(0,1),(1,2),(2,3),(3,5)]
-        self.assertEquals(segments, expected_segments, "Segments are not correctly calculated.")
+        self.assertEqual(segments, expected_segments, "Segments are not correctly calculated.")
 
 
     def test_last_segment_has_less_road_points_than_others(self):
@@ -48,11 +48,12 @@ class EquiDistanceSegmentationTest(unittest.TestCase):
         segments = strategy.extract_segments(road_points)
 
         expected_segments = [(0,2),(2,4),(4,5)]
-        self.assertEquals(segments, expected_segments, "Segments are not correctly calculated.")
+        self.assertEqual(segments, expected_segments, "Segments are not correctly calculated.")
 
 
-
+def run_tests():
+    unittest.main()
 
 
 if __name__ == "__main__":
-    unittest.main()
+    run_tests()
