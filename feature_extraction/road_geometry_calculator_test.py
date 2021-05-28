@@ -72,10 +72,19 @@ class RoadGeometryCalculatorAngleTest(unittest.TestCase):
         self.assertGreater(angle, 0, "Angle must be positive")
 
 
-def run_tests():
-    unittest.main()
+class RoadGeometryCalculatorRoadLengthTest(unittest.TestCase):
+    def setUp(self):
+        self.__road_geometry_calculator = RoadGeometryCalculator()
+
+    def test_straint_horizontal_road(self):
+        road_points = [(1,1),(2,1),(3,1),(4,1)]
+
+        length = self.__road_geometry_calculator.get_road_length(road_points)
+        expected_length = 3
+
+        self.assertEqual(length, expected_length, "The length is not correct.")
 
 
 if __name__ == "__main__":
-    run_tests()
+    unittest.main()
 

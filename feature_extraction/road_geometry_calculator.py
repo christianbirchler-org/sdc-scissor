@@ -48,3 +48,19 @@ class RoadGeometryCalculator:
         """
         return (second_point[0]-first_point[0], second_point[1]-second_point[1])
 
+    def get_road_length(self, road_points):
+        nr_of_road_points = len(road_points)
+
+        road_length = 0
+        for i in range(1, nr_of_road_points):
+            a1, a2 = road_points[i-1]
+            b1, b2 = road_points[i]
+
+            c1, c2 = (b1-a1, b2-a2)
+
+            road_length += math.sqrt(c1**2+c2**2)
+        
+        return road_length
+
+
+
