@@ -28,16 +28,22 @@ class RoadSegment:
     def __init__(self):
         self.start_index = None
         self.end_index = None
+        self.type = None
+        self.angle = None
+        self.radius = None
+
+
+class SegmentType:
+    l_turn = "left_turn"
+    r_turn = "right_turn"
+    straight = "straight"
 
 
 class FeatureExtractor:
     def __init__(self, road_points):
         self.__road_features = RoadFeatures()
-
         self.__road_points = road_points
-        # store all angles (change of direction for the next road point)
-        self.__angles = None
-        self.__segments = None
+        self.__segments = []
 
         # TODO: find a more usable way to instantiate the desired strategy
         self.__segmentation_strategy = EquiDistanceStrategy()
@@ -53,11 +59,54 @@ class FeatureExtractor:
         #self.__angles = self.__extract_turn_angles(self.__road_points)
 
         # define segments (allow different strategies)
-        self.__segments = self.__segmentation_strategy.extract_segments(self.__road_points)
+        segment_indexes_list = self.__segmentation_strategy.extract_segments(self.__road_points)
 
         # calculate segment features
+        for segment_indexes in range(len(segment_indexes_list)):
+            segment = self.__get_road_segment_with_features(segment_indexes)
+            self.__segments.append(segment)
 
-        # calculate fullroad features
+        self.__road_features = self.__get_full_road_features_from(self.__segments)
+
+        return self.__road_features
+            
+    
+
+    ############################################################################
+    #       IMPLEMENTATION DETAILS BELOW
+    ############################################################################
+
+    def __get_full_road_features_from(segments):
+        pass
+
+
+    def __get_segment_type(self, road_segment):
+        pass
+
+
+    def __get_segment_angle(self, road_segment):
+        pass
+
+
+    def __get_segment_radius(self, road_segment):
+        pass
+    
+    
+    def __get_road_segment_with_features(self, i):
+        road_segment = RoadSegment()
+        road_segment.start_index = self.__road_points[i][0]
+        road_segment.end_index = self.__road_points[i][1]
+
+        # classify segment type
+        road_segment.type = self.__get_segment_type(road_segment)
+
+        # update angle
+        road_segment.angle = self.__get_segment_angle(road_segment)
+
+        # calculate radius
+        road_segment.radius = self.__get_segment_radius(road_segment)
+
+        return road_segment
         
 
 
