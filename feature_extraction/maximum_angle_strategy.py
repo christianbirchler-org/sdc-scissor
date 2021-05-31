@@ -1,4 +1,5 @@
-from feature_extraction.segmentation_strategies.segmentation_strategy import SegmentationStrategy
+from segmentation_strategy import SegmentationStrategy
+from road_geometry_calculator import RoadGeometryCalculator
 
 class MaximumAngleStrategy(SegmentationStrategy):
     """
