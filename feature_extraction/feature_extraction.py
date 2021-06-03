@@ -1,4 +1,6 @@
-from feature_extraction.segmentation_strategies.equi_distance_strategy import EquiDistanceStrategy
+import math
+from equi_distance_strategy import EquiDistanceStrategy
+from road_geometry_calculator import RoadGeometryCalculator
 
 class RoadFeatures:
     def __init__(self):
@@ -44,6 +46,7 @@ class FeatureExtractor:
         self.__road_features = RoadFeatures()
         self.__road_points = road_points
         self.__segments = []
+        self.__road_geometry_calculator = RoadGeometryCalculator()
 
         # TODO: find a more usable way to instantiate the desired strategy
         self.__segmentation_strategy = EquiDistanceStrategy()
@@ -81,15 +84,64 @@ class FeatureExtractor:
 
 
     def __get_segment_type(self, road_segment):
+        """
+        Return the type of segment (straight, left turn, right turn). The segment
+        is defined by its start and end index that are already specified.
+        """
+        start_index = road_segment.start_index
+        end_index = road_segment.end_index
+
+        segment_road_points = self.__road_points[start_index:end_index+1]
+
+        angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
+
+        angles_sum = sum(angles_lst)
+
+        if angles_sum < 5 and angles_sum > -5: return SegmentType.straight
+        if angles_sum >= 5: return SegmentType.l_turn
+        if angles_sum <= 5: return SegmentType.r_turn
+
+
         pass
 
 
     def __get_segment_angle(self, road_segment):
-        pass
+        start_index = road_segment.start_index
+        end_index = road_segment.end_index
+
+        segment_road_points = self.__road_points[start_index:end_index+1]
+
+        angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
+
+        angles_sum = sum(angles_lst)
+
+        return angles_sum
 
 
     def __get_segment_radius(self, road_segment):
-        pass
+        if road_segment.type == SegmentType.straight: return 0
+
+        start_index = road_segment.start_index
+        end_index = road_segment.end_index
+
+        segment_road_points = self.__road_points[start_index:end_index+1]
+
+        angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
+        segment_length = self.__road_geometry_calculator.get_road_length(segment_road_points)
+
+        angles_sum = sum(angles_lst)
+
+        unsigned_angle = abs(angles_sum)
+
+        
+        # C=2*pi*r
+        proportion = unsigned_angle / 360
+        circle_length = segment_length / proportion
+        radius = circle_length /(2 * math.pi)
+
+        return radius
+
+
     
     
     def __get_road_segment_with_features(self, i):
@@ -111,4 +163,13 @@ class FeatureExtractor:
 
 
 if __name__ == "__main__":
-    print("Do some testing here")
+    import unittest
+
+    class FeatureExtractionTest(unittest.TestCase):
+        def setUp(self):
+            pass
+
+        def test_straight_road(self):
+            pass
+
+    unittest.main()
