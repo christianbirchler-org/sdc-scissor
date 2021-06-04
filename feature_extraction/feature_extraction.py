@@ -43,14 +43,14 @@ class SegmentType:
 
 
 class FeatureExtractor:
-    def __init__(self, road_points):
+    def __init__(self, road_points, segmentation_strategy):
         self.__road_features = RoadFeatures()
         self.__road_points = road_points
         self.__segments = []
         self.__road_geometry_calculator = RoadGeometryCalculator()
 
         # TODO: find a more usable way to instantiate the desired strategy
-        self.__segmentation_strategy = EquiDistanceStrategy()
+        self.__segmentation_strategy = segmentation_strategy
 
     def extract_features(self):
         """
