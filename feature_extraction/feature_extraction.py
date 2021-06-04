@@ -197,12 +197,49 @@ class FeatureExtractor:
 
 if __name__ == "__main__":
     import unittest
+    from parameterized import parameterized
 
     class FeatureExtractionTest(unittest.TestCase):
         def setUp(self):
             pass
 
-        def test_straight_road(self):
-            pass
+        @parameterized.expand([
+            (999,20),
+            (200,12)
+            ])
+        def test_straight_road_equi_distance_strategy(self, distance, nr_segments):
+            road_points = [(x,0) for x in range(distance+1)]
+            segmentation_strategy = EquiDistanceStrategy(nr_segments)
+
+            feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+
+            road_features = feature_extractor.extract_features()
+
+            self.assertEqual(road_features.direct_distance, distance)
+            self.assertEqual(road_features.road_distance, distance)
+            self.assertEqual(road_features.num_l_turns, 0)
+            self.assertEqual(road_features.num_r_turns, 0)
+            self.assertEqual(road_features.num_straights, nr_segments)
+            self.assertEqual(road_features.median_angle, 0)
+            self.assertEqual(road_features.total_angle, 0)
+            self.assertEqual(road_features.mean_angle, 0)
+            self.assertEqual(road_features.std_angle, 0)
+            self.assertEqual(road_features.max_angle, 0)
+            self.assertEqual(road_features.min_angle, 0)
+            self.assertEqual(road_features.median_pivot_off, 0)
+            self.assertEqual(road_features.mean_pivot_off, 0)
+            self.assertEqual(road_features.std_pivot_off, 0)
+            self.assertEqual(road_features.max_pivot_off, 0)
+            self.assertEqual(road_features.min_pivot_off, 0)
+
+        def test_right_turn_only(self):
+            self.assertTrue(False)
+
+        def test_left_turn_only(self):
+            self.assertTrue(False)
+
+        def test_left_then_right_turn(self):
+            self.assertTrue(False)
+
 
     unittest.main()
