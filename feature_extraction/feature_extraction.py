@@ -1,4 +1,5 @@
 import math
+import statistics
 from equi_distance_strategy import EquiDistanceStrategy
 from road_geometry_calculator import RoadGeometryCalculator
 
@@ -79,8 +80,40 @@ class FeatureExtractor:
     #       IMPLEMENTATION DETAILS BELOW
     ############################################################################
 
-    def __get_full_road_features_from(segments):
-        pass
+    def __get_full_road_features_from(self, segments: list[RoadSegment]) -> RoadFeatures:
+        road_features = RoadFeatures()
+
+        raw_feature_data = {
+            "angles": [],
+            "pivots": []
+        }
+
+        for segment in segments:
+            if segment.type == SegmentType.l_turn: road_features.num_l_turns += 1
+            elif segment.type == SegmentType.r_turn: road_features.num_r_turns += 1
+            elif segment.type == SegmentType.straight: road_features.num_straights += 1
+            road_features.total_angle += segment.angle
+
+            # these lists allows a simpler calculation of the statistics
+            raw_feature_data["angles"].append(segment.angle)
+            raw_feature_data["pivots"].append(segment.radius)
+
+        road_features.mean_angle = statistics.mean(raw_feature_data["angles"])
+        road_features.median_angle = statistics.median(raw_feature_data["angles"])
+        road_features.max_angle = max(raw_feature_data["angles"])
+        road_features.min_angle = min(raw_feature_data["angles"])
+        road_features.std_angle = statistics.stdev(raw_feature_data["angles"])
+
+        road_features.mean_pivot_off = statistics.mean(raw_feature_data["pivots"])
+        road_features.median_pivot_off = statistics.median(raw_feature_data["pivots"])
+        road_features.max_pivot_off = max(raw_feature_data["pivots"])
+        road_features.min_pivot_off = min(raw_feature_data["pivots"])
+        road_features.std_pivot_off = statistics.stdev(raw_feature_data["pivots"])
+
+        road_features.direct_distance = self.__road_geometry_calculator.get_distance_between(self.__road_points[0], self.__road_points[-1])
+        road_features.road_distance = self.__road_geometry_calculator.get_road_length(self.__road_points)
+
+        return road_features
 
 
     def __get_segment_type(self, road_segment):
