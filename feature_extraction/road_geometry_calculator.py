@@ -42,6 +42,13 @@ class RoadGeometryCalculator:
 
         return angle_in_degrees
 
+    def get_distance_between(self, first_point: tuple, second_point: tuple) -> float:
+        a1, a2 = first_point
+        b1, b2 = second_point
+        c1, c2 = (b1-a1, b2-a2)
+        distance = math.sqrt(c1**2 + c2**2)
+        return distance
+        
     def get_direction(self, first_point, second_point):
         """
         Return the difference vector (second_point-first_point)
