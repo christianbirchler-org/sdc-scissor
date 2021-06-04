@@ -70,4 +70,13 @@ if __name__ == "__main__":
             expected_segments.append((990,999))
             self.assertEqual(segments, expected_segments, "Segment indexes are wrong.")
 
+        def test_road_is_too_short(self):
+            strategy = ParameterizedUniformStrategy("2", 0.0005)
+
+            road_points = [(x,0) for x in range(1000)]
+
+            with self.assertRaises(Exception):
+                strategy.extract_segments(road_points)
+
+
     unittest.main()
