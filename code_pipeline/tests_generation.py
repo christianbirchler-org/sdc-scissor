@@ -4,7 +4,7 @@ from scipy.interpolate import splev, splprep
 from numpy.ma import arange
 from shapely.geometry import LineString
 import json
-from feature_extraction.feature_extraction import FeatureExtractor
+#from feature_extraction.feature_extraction import FeatureExtractor
 
 # Constants
 rounding_precision = 3
