@@ -53,7 +53,7 @@ class RoadGeometryCalculator:
         """
         Return the difference vector (second_point-first_point)
         """
-        return (second_point[0]-first_point[0], second_point[1]-second_point[1])
+        return (second_point[0]-first_point[0], second_point[1]-first_point[1])
 
     def get_road_length(self, road_points):
         nr_of_road_points = len(road_points)
