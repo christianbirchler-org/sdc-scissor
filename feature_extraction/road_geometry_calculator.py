@@ -17,10 +17,10 @@ class RoadGeometryCalculator:
             mid_point = road_points[i-1]
             point_after = road_points[i]
 
-            prev_direction = self.__get_direction(point_before, mid_point)
-            current_direction = self.__get_direction(point_after, mid_point)
+            prev_direction = self.get_direction(point_before, mid_point)
+            current_direction = self.get_direction(mid_point, point_after)
 
-            turn_angle = self.__get_angle(prev_direction, current_direction)
+            turn_angle = self.get_angle(prev_direction, current_direction)
             angles.append(turn_angle)
 
         return angles
