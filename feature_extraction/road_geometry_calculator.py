@@ -78,6 +78,50 @@ if __name__ == "__main__":
         def setUp(self):
             self.__road_geometry_calculator = RoadGeometryCalculator()
 
+        def test_90_degree_right_turn_get_angles(self):
+            road_points = []
+            radius = 50
+            center_of_turn = (50, 0)
+
+            for i in range(0, 91, 1):
+                x = -1 * radius * math.cos(math.radians(i)) # minus for right turn
+                y = radius * math.sin(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+
+                road_points.append((x, y))
+
+            turn_angles = self.__road_geometry_calculator.extract_turn_angles(road_points)
+
+            angle_retrieved = sum(turn_angles)
+
+            # right turns have a negative sign, whereas left turns have positives
+            angle_expected = -90
+            self.assertAlmostEqual(angle_retrieved, angle_expected, places=None, delta=1)
+
+        def test_90_degree_left_turn_get_angles(self):
+            road_points = []
+            radius = 50
+            center_of_turn = (0, 0)
+
+            for i in range(0, 91, 1):
+                x = radius * math.cos(math.radians(i)) # plus for left turn
+                y = radius * math.sin(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+
+                road_points.append((x, y))
+
+            turn_angles = self.__road_geometry_calculator.extract_turn_angles(road_points)
+
+            angle_retrieved = sum(turn_angles)
+
+            # right turns have a negative sign, whereas left turns have positives
+            angle_expected = 90
+            self.assertAlmostEqual(angle_retrieved, angle_expected, places=None, delta=1)
+
         def test_positive_angle(self):
             v1 = (1,0)
             v2 = (0,1)
