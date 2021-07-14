@@ -175,10 +175,10 @@ class FeatureExtractor:
 
     
     
-    def __get_road_segment_with_features(self, i):
+    def __get_road_segment_with_features(self, indexes):
         road_segment = RoadSegment()
-        road_segment.start_index = self.__road_points[i][0]
-        road_segment.end_index = self.__road_points[i][1]
+        road_segment.start_index = indexes[0]
+        road_segment.end_index = indexes[1]
 
         # classify segment type
         road_segment.type = self.__get_segment_type(road_segment, angle_threshold=5)
