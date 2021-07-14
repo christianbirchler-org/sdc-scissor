@@ -37,7 +37,7 @@ class RoadGeometryCalculator:
         a1, a2 = first_vec[0], first_vec[1]
         b1, b2 = second_vec[0], second_vec[1]
 
-        angle_in_radians = math.atan2(b2,b1)-math.atan2(a2,a1)
+        angle_in_radians = math.atan2(b2,b1) - math.atan2(a2,a1)
         angle_in_degrees = math.degrees(angle_in_radians)
 
         return angle_in_degrees
