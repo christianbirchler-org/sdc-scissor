@@ -66,8 +66,8 @@ class FeatureExtractor:
         segment_indexes_list = self.__segmentation_strategy.extract_segments(self.__road_points)
 
         # calculate segment features
-        for segment_indexes in range(len(segment_indexes_list)):
-            segment = self.__get_road_segment_with_features(segment_indexes)
+        for indexes in segment_indexes_list:
+            segment = self.__get_road_segment_with_features(indexes)
             self.__segments.append(segment)
 
         self.__road_features = self.__get_full_road_features_from(self.__segments)
