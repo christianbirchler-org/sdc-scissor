@@ -116,7 +116,7 @@ class FeatureExtractor:
         return road_features
 
 
-    def __get_segment_type(self, road_segment):
+    def __get_segment_type(self, road_segment, angle_threshold):
         """
         Return the type of segment (straight, left turn, right turn). The segment
         is defined by its start and end index that are already specified.
@@ -130,12 +130,10 @@ class FeatureExtractor:
 
         angles_sum = sum(angles_lst)
 
-        if angles_sum < 5 and angles_sum > -5: return SegmentType.straight
-        if angles_sum >= 5: return SegmentType.l_turn
-        if angles_sum <= 5: return SegmentType.r_turn
+        if angles_sum < angle_threshold and angles_sum > -angle_threshold: return SegmentType.straight
+        if angles_sum >= angle_threshold: return SegmentType.l_turn
+        if angles_sum <= angle_threshold: return SegmentType.r_turn
 
-
-        pass
 
 
     def __get_segment_angle(self, road_segment):
@@ -183,7 +181,7 @@ class FeatureExtractor:
         road_segment.end_index = self.__road_points[i][1]
 
         # classify segment type
-        road_segment.type = self.__get_segment_type(road_segment)
+        road_segment.type = self.__get_segment_type(road_segment, angle_threshold=5)
 
         # update angle
         road_segment.angle = self.__get_segment_angle(road_segment)
