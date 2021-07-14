@@ -230,14 +230,149 @@ if __name__ == "__main__":
             self.assertEqual(road_features.max_pivot_off, 0)
             self.assertEqual(road_features.min_pivot_off, 0)
 
-        def test_right_turn_only(self):
-            self.assertTrue(False)
 
-        def test_left_turn_only(self):
-            self.assertTrue(False)
+        def test_90_degree_right_turn_only(self):
+            nr_segments = 2
+            road_points = []
+            radius = 50
+            angle = 90
+            center_of_turn = (50, 0)
 
-        def test_left_then_right_turn(self):
-            self.assertTrue(False)
+            for i in range(0, angle+1, 1):
+                x = -1 * radius * math.cos(math.radians(i)) # minus for right turn
+                y = radius * math.sin(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+
+                road_points.append((x, y))
+
+           
+
+            segmentation_strategy = EquiDistanceStrategy(nr_segments)
+
+            feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+
+            road_features = feature_extractor.extract_features()
+
+            # self.assertEqual(road_features.direct_distance, distance)
+            # self.assertEqual(road_features.road_distance, distance)
+            self.assertEqual(road_features.num_l_turns, 0)
+            self.assertEqual(road_features.num_r_turns, nr_segments)
+            self.assertEqual(road_features.num_straights, 0)
+            self.assertAlmostEqual(road_features.median_angle, -angle/nr_segments, places=None, delta=2)
+            self.assertAlmostEqual(road_features.total_angle, -angle, places=None, delta=2)
+            self.assertAlmostEqual(road_features.mean_angle, -angle/nr_segments, places=None, delta=2)
+            # self.assertEqual(road_features.std_angle, 0)
+            self.assertAlmostEqual(road_features.max_angle, -angle/nr_segments, places=None, delta=2)
+            self.assertAlmostEqual(road_features.min_angle, -angle/nr_segments, places=None, delta=2)
+            self.assertAlmostEqual(road_features.median_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.mean_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.max_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.min_pivot_off, radius, places=None, delta=2)
+            # self.assertEqual(road_features.std_pivot_off, 0)
+
+
+        def test_90_degree_left_turn_only(self):
+            nr_segments = 2
+            road_points = []
+            radius = 50
+            angle = 90
+            center_of_turn = (0, 0)
+
+            for i in range(0, angle+1, 1):
+                x = radius * math.cos(math.radians(i)) # minus for right turn
+                y = radius * math.sin(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+
+                road_points.append((x, y))
+
+           
+
+            segmentation_strategy = EquiDistanceStrategy(nr_segments)
+
+            feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+
+            road_features = feature_extractor.extract_features()
+
+            # self.assertEqual(road_features.direct_distance, distance)
+            # self.assertEqual(road_features.road_distance, distance)
+            self.assertEqual(road_features.num_l_turns, nr_segments)
+            self.assertEqual(road_features.num_r_turns, 0)
+            self.assertEqual(road_features.num_straights, 0)
+            self.assertAlmostEqual(road_features.median_angle, angle/nr_segments, places=None, delta=2)
+            self.assertAlmostEqual(road_features.total_angle, angle, places=None, delta=2)
+            self.assertAlmostEqual(road_features.mean_angle, angle/nr_segments, places=None, delta=2)
+            # self.assertEqual(road_features.std_angle, 0)
+            self.assertAlmostEqual(road_features.max_angle, angle/nr_segments, places=None, delta=2)
+            self.assertAlmostEqual(road_features.min_angle, angle/nr_segments, places=None, delta=2)
+            self.assertAlmostEqual(road_features.median_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.mean_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.max_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.min_pivot_off, radius, places=None, delta=2)
+            # self.assertEqual(road_features.std_pivot_off, 0)
+
+
+        def test_left_then_right_turn_segments_90_degrees_each(self):
+            nr_segments = 2
+            road_points = []
+            radius = 50
+            angle = 90
+            center_of_turn = (0, 0)
+
+            # left turn
+            for i in range(0, angle+1, 1):
+                x = radius * math.cos(math.radians(i)) # minus for right turn
+                y = radius * math.sin(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+                y = y + center_of_turn[1]
+
+                road_points.append((x, y))
+
+
+            # right turn
+            center_of_turn = (x, y+radius)
+            for i in range(1, angle+1, 1):
+                x = -radius * math.sin(math.radians(i)) # minus for right turn
+                y = -radius * math.cos(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+                y = y + center_of_turn[1]
+
+                road_points.append((x, y))
+
+           
+
+            segmentation_strategy = EquiDistanceStrategy(nr_segments)
+
+            feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+
+            road_features = feature_extractor.extract_features()
+
+            # pythagoras
+            self.assertAlmostEqual(road_features.direct_distance, math.sqrt(2*((2*radius)**2)), places=None, delta=2)
+            
+            # half of a circle
+            self.assertAlmostEqual(road_features.road_distance, math.pi*radius, places=None, delta=2)
+            self.assertEqual(road_features.num_l_turns, 1)
+            self.assertEqual(road_features.num_r_turns, 1)
+            self.assertEqual(road_features.num_straights, 0)
+            self.assertAlmostEqual(road_features.median_angle, 0, places=None, delta=2)
+            self.assertAlmostEqual(road_features.total_angle, 0, places=None, delta=2)
+            self.assertAlmostEqual(road_features.mean_angle, 0, places=None, delta=2)
+            self.assertGreater(road_features.std_angle, 0)
+            self.assertAlmostEqual(road_features.max_angle, angle, places=None, delta=2)
+            self.assertAlmostEqual(road_features.min_angle, -angle, places=None, delta=2)
+            self.assertAlmostEqual(road_features.median_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.mean_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.max_pivot_off, radius, places=None, delta=2)
+            self.assertAlmostEqual(road_features.min_pivot_off, radius, places=None, delta=2)
+            #self.assertGreater(road_features.std_pivot_off, 0)
 
 
     unittest.main()
