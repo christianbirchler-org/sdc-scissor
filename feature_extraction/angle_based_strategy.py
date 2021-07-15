@@ -89,5 +89,50 @@ if __name__ == '__main__':
             self.assertEqual(0, segment_indexes[0][0], 'wrong start index!')
             self.assertEqual(len(road_points)-1, segment_indexes[0][1], 'wrong end index!')
 
+        def test_90_degree_left_and_right_turn_each(self):
+            road_points = []
+            radius = 50
+            angle = 90
+            center_of_turn = (0, 0)
+
+            # left turn
+            for i in range(0, angle+1, 1):
+                x = radius * math.cos(math.radians(i)) # minus for right turn
+                y = radius * math.sin(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+                y = y + center_of_turn[1]
+
+                road_points.append((x, y))
+
+
+            # right turn
+            center_of_turn = (x, y+radius)
+            for i in range(1, angle+1, 1):
+                x = -radius * math.sin(math.radians(i)) # minus for right turn
+                y = -radius * math.cos(math.radians(i))
+
+                # translation of coordinates
+                x = x + center_of_turn[0]
+                y = y + center_of_turn[1]
+
+                road_points.append((x, y))
+
+            strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=6)
+
+            segment_indexes = strategy.extract_segments(road_points)
+
+            self.assertEqual(2, len(segment_indexes), 'There must be two segments!')
+
+            end_index_of_first_segment = segment_indexes[0][1]
+            start_index_of_second_segment = segment_indexes[1][0]
+            expected_mid_point_index = len(road_points)//2
+
+            self.assertAlmostEqual(end_index_of_first_segment, start_index_of_second_segment, places=None, delta=5)
+            self.assertAlmostEqual(end_index_of_first_segment, expected_mid_point_index, places=None, delta=5)
+            self.assertAlmostEqual(start_index_of_second_segment, expected_mid_point_index, places=None, delta=5)
+
+            
 
     unittest.main()
