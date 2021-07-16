@@ -27,18 +27,30 @@ class AngleBasedStrategy(SegmentationStrategy):
         is_last_iteration = False
 
         for i in range(len(road_points)):
+
+            # check if it is the last iteration
             if i == len(road_points)-1: is_last_iteration = True
+
+            # the start of a new piece has to be 2 indexes ahead of the current i
             if current_road_piece_start_index == i+1:
                 current_road_piece_end_index = i+2
             else:
                 current_road_piece_end_index = i + 1
 
+            # define the current road piece to calculate the turn angle and distane
             current_road_piece = road_points[current_road_piece_start_index:current_road_piece_end_index+1]
+            
+            # calculate the road piece distance defined above
             current_distance = self.__road_geometry_calculator.get_road_length(current_road_piece)
+            
+            # check if the distance of the current road piece is long enough or it is the last iteration
             if (current_distance >= self.__decision_distance) or is_last_iteration:
                 previous_angle = current_angle
+
+                # calculate the angle of the current road piece
                 current_angle = sum(self.__road_geometry_calculator.extract_turn_angles(current_road_piece))
             
+                # define start and end index of segment iff the angle of the current road piece is different
                 if (self.__has_current_angle_changed(previous_angle, current_angle) and not is_first_piece) or is_last_iteration:
                     segment_end_index = i
                     segment_indexes.append((segment_start_index, segment_end_index))
@@ -177,7 +189,7 @@ if __name__ == '__main__':
             first_segment_end_index = segment_indexes[0][1]
             second_segment_start_index = segment_indexes[1][0]
             second_segment_end_index = segment_indexes[1][1]
-            
+
             self.assertEqual(0, first_segment_start_index)
             self.assertEqual(len(road_points)-1, second_segment_end_index)
             self.assertAlmostEqual(first_segment_end_index, 90, places=None, delta=5)
