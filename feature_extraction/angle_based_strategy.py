@@ -133,6 +133,17 @@ if __name__ == '__main__':
             self.assertAlmostEqual(end_index_of_first_segment, expected_mid_point_index, places=None, delta=5)
             self.assertAlmostEqual(start_index_of_second_segment, expected_mid_point_index, places=None, delta=5)
 
-            
+        def test_straight_segment_only(self):
+
+            road_points = [(x, 10) for x in range(10, 200, 5)]
+
+            strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+
+            segment_indexes = strategy.extract_segments(road_points)
+
+            self.assertEqual(1, len(segment_indexes), 'Straight road must result in only one segment!')
+            self.assertEqual(0, segment_indexes[0][0], 'wrong start index!')
+            self.assertEqual(len(road_points)-1, segment_indexes[0][1], 'wrong end index!')
+
 
     unittest.main()
