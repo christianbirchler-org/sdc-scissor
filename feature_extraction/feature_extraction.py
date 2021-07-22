@@ -103,13 +103,22 @@ class FeatureExtractor:
         road_features.median_angle = statistics.median(raw_feature_data["angles"])
         road_features.max_angle = max(raw_feature_data["angles"])
         road_features.min_angle = min(raw_feature_data["angles"])
+        
+        # more than 1 data point is required to calculate the standard deviation
+        if len(raw_feature_data['angles']) > 1:
         road_features.std_angle = statistics.stdev(raw_feature_data["angles"])
+        else:
+            road_features.std_angle = 0
 
         road_features.mean_pivot_off = statistics.mean(raw_feature_data["pivots"])
         road_features.median_pivot_off = statistics.median(raw_feature_data["pivots"])
         road_features.max_pivot_off = max(raw_feature_data["pivots"])
         road_features.min_pivot_off = min(raw_feature_data["pivots"])
+        
+        if len(raw_feature_data['pivots']) > 1:
         road_features.std_pivot_off = statistics.stdev(raw_feature_data["pivots"])
+        else:
+            road_features.std_pivot_off = 0
 
         road_features.direct_distance = self.__road_geometry_calculator.get_distance_between(self.__road_points[0], self.__road_points[-1])
         road_features.road_distance = self.__road_geometry_calculator.get_road_length(self.__road_points)
