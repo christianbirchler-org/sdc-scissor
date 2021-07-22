@@ -24,14 +24,14 @@ class BeamngExecutor(AbstractTestExecutor):
 
     def __init__(self, result_folder, time_budget, map_size,
                  oob_tolerance=0.95, max_speed=70,
-                 beamng_home=None, beamng_user=None, road_visualizer=None):
+                 beamng_home=None, beamng_user=None, road_visualizer=None, risk_factor=0.7):
         super(BeamngExecutor, self).__init__(result_folder, time_budget, map_size)
         # TODO Is this still valid?
         self.test_time_budget = 250000
 
 
         # TODO This is specific to the TestSubject, we should encapsulate this better
-        self.risk_value = 0.7
+        self.risk_value = risk_factor
 
         self.oob_tolerance = oob_tolerance
         self.maxspeed = max_speed
