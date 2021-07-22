@@ -106,7 +106,7 @@ class FeatureExtractor:
         
         # more than 1 data point is required to calculate the standard deviation
         if len(raw_feature_data['angles']) > 1:
-        road_features.std_angle = statistics.stdev(raw_feature_data["angles"])
+            road_features.std_angle = statistics.stdev(raw_feature_data["angles"])
         else:
             road_features.std_angle = 0
 
@@ -116,7 +116,7 @@ class FeatureExtractor:
         road_features.min_pivot_off = min(raw_feature_data["pivots"])
         
         if len(raw_feature_data['pivots']) > 1:
-        road_features.std_pivot_off = statistics.stdev(raw_feature_data["pivots"])
+            road_features.std_pivot_off = statistics.stdev(raw_feature_data["pivots"])
         else:
             road_features.std_pivot_off = 0
 
@@ -284,7 +284,11 @@ if __name__ == "__main__":
 
 
         def test_90_degree_left_turn_only(self):
-            nr_segments = 2
+            nr_segments = 1
+            # nr_segments = 2
+            # segmentation_strategy = EquiDistanceStrategy(nr_segments)
+            segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+
             road_points = []
             radius = 50
             angle = 90
@@ -301,8 +305,7 @@ if __name__ == "__main__":
 
            
 
-            segmentation_strategy = EquiDistanceStrategy(nr_segments)
-
+            
             feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
 
             road_features = feature_extractor.extract_features()
