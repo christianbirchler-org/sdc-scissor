@@ -79,10 +79,23 @@ class RoadTestFactory:
             self.road_points = road_points[:]
 
             # Initialize the feature extractor
-            #self.__feature_extractor = FeatureExtractor(road_points)
+            segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+            self.__feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+            road_features = self.__feature_extractor.extract_features()
+
+            # road_features_json_string = str(road_features) #json.dumps(road_features)
+            # json_file = open("features.json", 'w')
+            # json_file.write(road_features_json_string)
+            # json_file.close()
+            # predict test outcome
+            # TODO: weka or scikit???
 
             # The interpolated input
             self.interpolated_points = _interpolate(self.road_points)
+
+            # TODO: save the interpolated points
+            #print('Interpolated x/y coordiantes:')
+            #print(self.interpolated_points)
 
             # Extract features from original road input
             #self.__feature_extractor.extract_features()
