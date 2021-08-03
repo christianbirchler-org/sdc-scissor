@@ -5,6 +5,7 @@ import random
 import time
 import sys
 import os
+from datetime import datetime
 
 from abc import ABC, abstractmethod
 
@@ -39,8 +40,11 @@ class AbstractTestExecutor(ABC):
         return self.timeout_forced == True
 
     def store_test(self, the_test):
+        timestamp_obj = datetime.now()
+        timestamp_str = timestamp_obj.strftime("%d-%b-%Y_(%H-%M-%S.%f)")
+
         # TODO Pad zeros to id
-        output_file_name = os.path.join(self.result_folder, ".".join(["test", str(the_test.id).zfill(4), "json"]))
+        output_file_name = os.path.join(self.result_folder, ".".join([timestamp_str ,"test", str(the_test.id).zfill(4), "json"]))
         with open(output_file_name, 'w') as test_file:
             test_file.write(the_test.to_json())
 
