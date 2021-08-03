@@ -19,14 +19,15 @@ class AbstractTestExecutor(ABC):
 
     start_time = None
 
-    def __init__(self, result_folder, time_budget, map_size, road_visualizer=None):
+    def __init__(self, result_folder, time_budget, map_size, road_visualizer=None, risk_factor=1):
 
         self.result_folder = result_folder
 
         self.stats = TestGenerationStatistic()
 
         self.time_budget = time_budget
-        self.test_validator = TestValidator(map_size)
+        self.min_road_length = self.__define_min_road_length(risk_factor)
+        self.test_validator = TestValidator(map_size, min_road_length=self.min_road_length)
         self.start_time = time.time()
         self.total_elapsed_time = 0
 
@@ -36,6 +37,13 @@ class AbstractTestExecutor(ABC):
 
         super().__init__()
 
+    def __define_min_road_length(self, risk_factor):
+        if risk_factor == 1: return 150
+        if risk_factor == 1.5: return 100
+        if risk_factor == 2: return 75
+        else:
+            return 20
+    
     def is_force_timeout(self):
         return self.timeout_forced == True
 
