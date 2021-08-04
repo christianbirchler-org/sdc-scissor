@@ -27,6 +27,7 @@ def run_simulations(generator, risk_factor, time_budget, oob_tolerance, speed_li
     command += r"--time-budget " + str(time_budget) + r" "
     command += r"--oob-tolerance " + str(oob_tolerance) + r" "
     command += r"--risk-factor " + str(risk_factor) + r" "
+    command += r"--speed-limit " + str(speed_limit) + r" "
     command += r"--executor beamng "
     command += r"--beamng-home C:\Users\birc\Documents\BeamNG.research.v1.7.0.1 "
     command += r"--beamng-user C:\Users\birc\Documents\BeamNG.research "
@@ -35,7 +36,6 @@ def run_simulations(generator, risk_factor, time_budget, oob_tolerance, speed_li
     command += r"--class-name CustomFrenetGenerator"
 
     if generator == 'frenetic':
-        command = r"python .\competition.py --visualize-tests --time-budget " +str(time_budget) + r" --oob-tolerance " + str(oob_tolerance) + r" --executor beamng --beamng-home C:\Users\birc\Documents\BeamNG.research.v1.7.0.1 --beamng-user C:\Users\birc\Documents\BeamNG.research --map-size 200 --module-name frenetic.src.generators.random_frenet_generator --class-name CustomFrenetGenerator"
         os.system(command)
     else:
         print('Unknown test generator: {}'.format(generator))
