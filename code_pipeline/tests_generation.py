@@ -1,3 +1,5 @@
+from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
+from feature_extraction.segmentation_strategy import SegmentationStrategy
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from self_driving.road_polygon import RoadPolygon
 from shapely.geometry import  LineString
@@ -61,6 +63,34 @@ def _incremental_id_generator():
         test_id += 1
 
 
+# def get_min_segment_length(road_points: list[tuple[int,int]], segmentation_strategy: SegmentationStrategy) -> float:
+#     """
+#     Get the minimum segment lengths baased on the segmentation strategy.
+#     """
+#     road_geometry_calculator = RoadGeometryCalculator()
+#     segment_indexes = segmentation_strategy.extract_segments(road_points)
+
+#     segment_lengths_lst = []
+#     for (start, end) in segment_indexes:
+#         print('start index: {}, end index: {}'.format(start, end))
+#         road_segment = road_points[start: end+1]
+#         length_of_road_segment = road_geometry_calculator.get_road_length(road_segment)
+#         print('segment length: {}'.format(length_of_road_segment))
+#         segment_lengths_lst.append(length_of_road_segment)
+
+#     segment_lengths_lst.sort()
+#     for length in segment_lengths_lst:
+#         if length == 0:
+#             continue
+#         else:
+#             minimum_segment_length = length
+#             break
+
+#     print('sorted length list: {}'.format(segment_lengths_lst))
+#     minimum_segment_length = min(segment_lengths_lst)
+#     return minimum_segment_length
+
+
 class RoadTestFactory:
 
     # Static variable
@@ -79,9 +109,14 @@ class RoadTestFactory:
             self.road_points = road_points[:]
 
             # Initialize the feature extractor
-            segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
-            self.__feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
-            road_features = self.__feature_extractor.extract_features()
+            # segmentation_strategy = AngleBasedStrategy(angle_threshold=13, decision_distance=10)
+
+            # # TODO: get the minimum and maximum segment length
+            # min_segment_length = get_min_segment_length(road_points, segmentation_strategy)
+            # print('Minimum segment length: {}'.format(min_segment_length))
+
+            # self.__feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+            # road_features = self.__feature_extractor.extract_features()
 
             # road_features_json_string = str(road_features) #json.dumps(road_features)
             # json_file = open("features.json", 'w')
