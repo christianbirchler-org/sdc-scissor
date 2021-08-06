@@ -44,7 +44,7 @@ class AngleBasedStrategy(SegmentationStrategy):
             current_distance = self.__road_geometry_calculator.get_road_length(current_road_piece)
             
             # check if the distance of the current road piece is long enough or it is the last iteration
-            if (current_distance >= self.__decision_distance) or is_last_iteration:
+            if (current_distance >= self.__decision_distance and (current_road_piece_end_index-current_road_piece_start_index) > 1) or is_last_iteration:
                 previous_angle = current_angle
 
                 # calculate the angle of the current road piece
@@ -194,6 +194,19 @@ if __name__ == '__main__':
             self.assertEqual(len(road_points)-1, second_segment_end_index)
             self.assertAlmostEqual(first_segment_end_index, 90, places=None, delta=5)
             self.assertAlmostEqual(second_segment_start_index, 91, places=None, delta=5)
+
+
+
+
+        def test_frenetic_generated_road(self):
+
+            road_points = [(66.38752953287502, 78.01492758476358), (66.39549279998235, 88.01492441408193), (63.41488386330962, 97.56039299171744), (59.39849432596085, 106.71837394192012), (53.717347876135484, 114.94786815576077), (45.71861092315158, 120.94955184927294), (35.923362286475445, 122.96278411249901), (26.205075299578844, 120.60590099271641), (17.811834039492837, 115.1695877980973), (12.078084922014867, 106.97665663411084), (10.0, 97.19496132824005), (13.48150774832019, 87.82057581246428), (20.764260856833666, 80.96772916596494), (29.79153825268792, 76.66560610655593), (39.428935001131215, 73.99716388063186), (48.20671802392773, 69.20649323815337), (55.656007423636034, 62.53505505441866), (62.62894703718282, 55.3672022974328), (69.3230484201203, 47.93827191177469), (74.39518316897082, 39.320067395200304), (75.92736990007486, 29.438144312063663), (74.25081132886308, 19.579688481798136), (71.38208886203154, 10.0)]
+
+            strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+
+            segment_indexes = strategy.extract_segments(road_points)
+
+            print(segment_indexes)
 
 
     unittest.main()
