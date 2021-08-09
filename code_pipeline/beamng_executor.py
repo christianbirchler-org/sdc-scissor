@@ -2,6 +2,7 @@ from code_pipeline.executors import AbstractTestExecutor
 
 import time
 import traceback
+import random
 from typing import Tuple
 
 from self_driving.beamng_brewer import BeamNGBrewer
@@ -24,7 +25,8 @@ class BeamngExecutor(AbstractTestExecutor):
 
     def __init__(self, result_folder, time_budget, map_size,
                  oob_tolerance=0.95, max_speed=70,
-                 beamng_home=None, beamng_user=None, road_visualizer=None, risk_factor=0.7):
+                 beamng_home=None, beamng_user=None, road_visualizer=None,
+                 risk_factor=0.7, random_speed=False):
         super(BeamngExecutor, self).__init__(result_folder, time_budget, map_size)
         # TODO Is this still valid?
         self.test_time_budget = 250000
@@ -34,7 +36,14 @@ class BeamngExecutor(AbstractTestExecutor):
         self.risk_value = risk_factor
 
         self.oob_tolerance = oob_tolerance
-        self.maxspeed = max_speed
+
+        self.random_speed = random_speed
+
+        if self.random_speed:
+            self.min_allowed_speed = 70
+            self.max_allowed_speed = 150
+        else:
+            self.maxspeed = max_speed
 
         self.brewer: BeamNGBrewer = None
         self.beamng_home = beamng_home
@@ -51,6 +60,11 @@ class BeamngExecutor(AbstractTestExecutor):
         self.road_visualizer = road_visualizer
 
     def _execute(self, the_test):
+
+        # set random speed limit if it is needed
+        if self.random_speed:
+            self.maxspeed = random.randrange(self.min_allowed_speed, self.max_allowed_speed+1)
+
         # Ensure we do not execute anything longer than the time budget
         super()._execute(the_test)
 

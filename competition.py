@@ -215,11 +215,12 @@ def setup_logging(log_to, debug):
               show_default='Disabled',
               help="Activate debugging (results in more logging)")
 @click.option('--risk-factor', default=0.7, help='Aggression factor of the driving AI')
+@click.option('--random-speed', is_flag=True, help='Set max speed for eacht test uniform random')
 @click.pass_context
 def generate(ctx, executor, beamng_home, beamng_user,
              time_budget, map_size, oob_tolerance, speed_limit,
              module_name, module_path, class_name,
-             visualize_tests, log_to, debug, risk_factor):
+             visualize_tests, log_to, debug, risk_factor, random_speed):
     # ensure that ctx.obj exists and is a dict (in case `cli()` is called
     # by means other than the `if` block below)
     ctx.ensure_object(dict)
@@ -272,7 +273,7 @@ def generate(ctx, executor, beamng_home, beamng_user,
         the_executor = BeamngExecutor(result_folder, time_budget, map_size,
                                       oob_tolerance=oob_tolerance, max_speed=speed_limit,
                                       beamng_home=beamng_home, beamng_user=beamng_user,
-                                      road_visualizer=road_visualizer, risk_factor=risk_factor)
+                                      road_visualizer=road_visualizer, risk_factor=risk_factor, random_speed=random_speed)
 
     # Register the shutdown hook for post processing results
     register_exit_fun(create_post_processing_hook(ctx, result_folder, the_executor))
