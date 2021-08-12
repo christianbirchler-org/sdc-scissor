@@ -107,6 +107,20 @@ class TestValidator:
         # This is approximated because at this point the_test is not yet interpolated
         return the_test.get_road_length() > self.min_road_length
 
+    def is_min_road_segment_not_long_enough_according_risk_factor(self, the_test):
+        rf = the_test.risk_factor
+        is_min_segment_not_long_enough = False
+        if rf == 1:
+            pass
+        elif rf == 1.5:
+            pass
+        elif rf == 2:
+            pass
+        return is_min_segment_long_enough
+
+    def is_road_not_long_enough_according_min_segment(self, the_test):
+        return False
+
     def validate_test(self, the_test):
 
         is_valid = True
@@ -150,6 +164,16 @@ class TestValidator:
         if self.is_too_sharp(the_test):
             is_valid = False
             validation_msg = "The road is too sharp"
+            return is_valid, validation_msg
+
+        if self.is_min_road_segment_not_long_enough_according_risk_factor(the_test):
+            is_valid = False
+            validation_msg = "Min road segment is too short for the risk factor"
+            return is_valid, validation_msg
+
+    if self.is_road_not_long_enough_according_min_segment(the_test):
+            is_valid = False
+            validation_msg = "Road is too short according the min segment"
             return is_valid, validation_msg
 
         return is_valid, validation_msg
