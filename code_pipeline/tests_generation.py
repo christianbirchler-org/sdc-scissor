@@ -63,33 +63,35 @@ def _incremental_id_generator():
         test_id += 1
 
 
-# def get_min_segment_length(road_points: list[tuple[int,int]], segmentation_strategy: SegmentationStrategy) -> float:
-#     """
-#     Get the minimum segment lengths baased on the segmentation strategy.
-#     """
-#     road_geometry_calculator = RoadGeometryCalculator()
-#     segment_indexes = segmentation_strategy.extract_segments(road_points)
+def get_min_segment_length(road_points: list[tuple[int,int]], segmentation_strategy: SegmentationStrategy) -> float:
+    """
+    Get the minimum segment lengths baased on the segmentation strategy.
+    """
+    road_geometry_calculator = RoadGeometryCalculator()
+    segment_indexes = segmentation_strategy.extract_segments(road_points)
 
-#     segment_lengths_lst = []
-#     for (start, end) in segment_indexes:
-#         print('start index: {}, end index: {}'.format(start, end))
-#         road_segment = road_points[start: end+1]
-#         length_of_road_segment = road_geometry_calculator.get_road_length(road_segment)
-#         print('segment length: {}'.format(length_of_road_segment))
-#         segment_lengths_lst.append(length_of_road_segment)
+    segment_lengths_lst = []
+    for (start, end) in segment_indexes:
+        print('start index: {}, end index: {}'.format(start, end))
+        road_segment = road_points[start: end+1]
+        length_of_road_segment = road_geometry_calculator.get_road_length(road_segment)
+        print('segment length: {}'.format(length_of_road_segment))
+        segment_lengths_lst.append(length_of_road_segment)
 
-#     segment_lengths_lst.sort()
-#     for length in segment_lengths_lst:
-#         if length == 0:
-#             continue
-#         else:
-#             minimum_segment_length = length
-#             break
+    segment_lengths_lst.sort()
+    print('sorted length list: {}'.format(segment_lengths_lst))
+    for i in range(len(segment_lengths_lst)):
+        if segment_lengths_lst[i] < 0.1: continue
+        else: return segment_lengths_lst[i]
 
-#     print('sorted length list: {}'.format(segment_lengths_lst))
-#     minimum_segment_length = min(segment_lengths_lst)
-#     return minimum_segment_length
 
+def is_min_segment_long_enough(min_segment_length: float, risk_factor: float) -> bool:
+    # TODO
+    print('risk factor: {}'.format(risk_factor))
+    return True
+
+def make_test_invalid() -> None:
+    pass
 
 class RoadTestFactory:
 
@@ -102,18 +104,26 @@ class RoadTestFactory:
             Note that this class is nested in the RoadTestFactory to avoid direct creation
         """
 
-        def __init__(self, road_points):
+        def __init__(self, road_points, risk_factor=None):
             assert type(road_points) is list, "You must provide a list of road points to create a RoadTest"
             assert all(len(i) == 2 for i in road_points), "Malformed list of road points"
             # The original input
             self.road_points = road_points[:]
 
             # Initialize the feature extractor
-            # segmentation_strategy = AngleBasedStrategy(angle_threshold=13, decision_distance=10)
+            segmentation_strategy = AngleBasedStrategy(angle_threshold=13, decision_distance=10)
+            #segment_indexes = segmentation_strategy.extract_segments(road_points)
+            #print('Segment indexes: {}'.format(segment_indexes))
 
             # # TODO: get the minimum and maximum segment length
-            # min_segment_length = get_min_segment_length(road_points, segmentation_strategy)
-            # print('Minimum segment length: {}'.format(min_segment_length))
+            min_segment_length = get_min_segment_length(road_points, segmentation_strategy)
+            print('Minimum regular segment length: {}'.format(min_segment_length))
+
+            if not is_min_segment_long_enough(min_segment_length, risk_factor):
+                make_test_invalid()
+
+            self.risk_factor = risk_factor
+            self.min_segment_length = min_segment_length
 
             # self.__feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
             # road_features = self.__feature_extractor.extract_features()
@@ -186,8 +196,8 @@ class RoadTestFactory:
             return json.dumps(theobj)
 
     @staticmethod
-    def create_road_test(road_points):
-        road_test = RoadTestFactory.RoadTest(road_points)
+    def create_road_test(road_points, risk_factor):
+        road_test = RoadTestFactory.RoadTest(road_points, risk_factor=risk_factor)
         # TODO Why not simply declare the id as field of RoadTest?
         # Generate the new id. Call next otherwise we return the generator
         setattr(road_test, 'id', next(RoadTestFactory.test_id_generator))

@@ -11,7 +11,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
     """
 
     def __init__(self, time_budget=None, executor=None, map_size=None, kill_ancestors=1, strict_father=True,
-                 random_budget=3600, crossover_candidates=20, crossover_frequency=0):
+                 random_budget=3600, crossover_candidates=20, crossover_frequency=0, risk_factor=None):
         # Spending 20% of the time on random generation
         # Set this value to 1.0 to generate fully random results.
         self.random_gen_budget = random_budget
@@ -29,6 +29,8 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         self.crossover_candidates = crossover_candidates
         self.crossover_frequency = crossover_frequency
 
+        self.risk_factor = risk_factor
+
         # Fix number or fix distance policy
         self.max_length = 30
         self.min_step_size = 7
@@ -42,7 +44,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
             self.frenet_step = 10
             self.number_of_points = min(map_size // self.frenet_step, self.max_length)
 
-        super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father)
+        super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father, risk_factor=self.risk_factor)
 
     def start(self):
         self.generate_initial_population()

@@ -13,7 +13,7 @@ from code_pipeline.tests_generation import RoadTestFactory
 
 class BaseGenerator(ABC):
 
-    def __init__(self, time_budget=None, executor=None, map_size=None, strict_father=False):
+    def __init__(self, time_budget=None, executor=None, map_size=None, strict_father=False, risk_factor=None):
         self.time_budget = time_budget
         self.executor = executor
         self.map_size = map_size
@@ -26,6 +26,7 @@ class BaseGenerator(ABC):
         # Adding mutants for future mutation only if its min_oob_distance is better than its parent's min_oob_distance
         # min_oob_distance < parent_min_oob_distance
         self.strict_father = strict_father
+        self.risk_factor = risk_factor
 
     @abstractmethod
     def start(self):
@@ -40,7 +41,7 @@ class BaseGenerator(ABC):
     def execute_test(self, road_points, method='random', extra_info={}, parent_info={}):
         # Some more debugging
         log.info("Generated test using: %s", road_points)
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, self.risk_factor)
 
         # Try to execute the test
         test_outcome, description, execution_data = self.executor.execute_test(the_test)
