@@ -5,6 +5,7 @@ import numpy as np
 
 # from code_pipeline.tests_generation import RoadTest
 from code_pipeline.tests_generation import RoadTestFactory
+from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
 
 
 def find_circle(p1, p2, p3):
@@ -46,6 +47,7 @@ def min_radius(x, w=5):
 class TestValidator:
 
     def __init__(self, map_size, min_road_length = 20):
+        self.road_geometry_calculator = RoadGeometryCalculator()
         self.map_size = map_size
         self.box = (0, 0, map_size, map_size)
         self.road_bbox = RoadBoundingBox(self.box)
@@ -109,17 +111,24 @@ class TestValidator:
 
     def is_min_road_segment_not_long_enough_according_risk_factor(self, the_test):
         rf = the_test.risk_factor
-        is_min_segment_not_long_enough = False
+        msl = the_test.min_segment_length
+        required_min_segment_length = None
         if rf == 1:
-            pass
+            required_min_segment_length = 50
         elif rf == 1.5:
-            pass
+            required_min_segment_length = 30
         elif rf == 2:
-            pass
-        return is_min_segment_long_enough
+            required_min_segment_length = 20
+        else:
+            raise Exception('Min seg length for RF {} not defined'.format(rf))
+
+        return msl >= required_min_segment_length
 
     def is_road_not_long_enough_according_min_segment(self, the_test):
-        return False
+        required_proportion = 0.4 # TODO: avoid magic number
+        road_length = self.road_geometry_calculator.get_road_length(the_test.road_points)
+        msl = the_test.min_segment_length
+        return road_length * required_proportion >= msl
 
     def validate_test(self, the_test):
 
@@ -171,7 +180,7 @@ class TestValidator:
             validation_msg = "Min road segment is too short for the risk factor"
             return is_valid, validation_msg
 
-    if self.is_road_not_long_enough_according_min_segment(the_test):
+        if self.is_road_not_long_enough_according_min_segment(the_test):
             is_valid = False
             validation_msg = "Road is too short according the min segment"
             return is_valid, validation_msg
