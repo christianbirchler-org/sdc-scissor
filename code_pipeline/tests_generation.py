@@ -85,14 +85,6 @@ def get_min_segment_length(road_points: list[tuple[int,int]], segmentation_strat
         else: return segment_lengths_lst[i]
 
 
-def is_min_segment_long_enough(min_segment_length: float, risk_factor: float) -> bool:
-    # TODO
-    print('risk factor: {}'.format(risk_factor))
-    return True
-
-def make_test_invalid() -> None:
-    pass
-
 class RoadTestFactory:
 
     # Static variable
@@ -118,9 +110,6 @@ class RoadTestFactory:
             # # TODO: get the minimum and maximum segment length
             min_segment_length = get_min_segment_length(road_points, segmentation_strategy)
             print('Minimum regular segment length: {}'.format(min_segment_length))
-
-            if not is_min_segment_long_enough(min_segment_length, risk_factor):
-                make_test_invalid()
 
             self.risk_factor = risk_factor
             self.min_segment_length = min_segment_length
