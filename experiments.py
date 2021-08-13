@@ -5,6 +5,10 @@ import os
 def cli():
     pass
 
+@cli.command()
+def from_config_file():
+    pass
+
 
 @cli.command()
 @click.option('--executor', default='mock', help='mock or beamng')
