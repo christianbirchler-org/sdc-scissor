@@ -19,13 +19,17 @@ def from_config_file():
 @click.option('--speed-limit', default=70, help='Speed limit in km/h')
 @click.option('--map-size', default=200, help='Size of the road map')
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
-def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed):
+@click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
+@click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
+def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
 
     command = r"python .\competition.py "
     command += r"--visualize-tests "
     command += r"--time-budget " + str(time_budget) + r" "
     command += r"--oob-tolerance " + str(oob_tolerance) + r" "
     command += r"--risk-factor " + str(risk_factor) + r" "
+    command += r"--angle-threshold " + str(angle_threshold) + r" "
+    command += r"--decision-distance " + str(decision_distance) + r" "
     if random_speed:
         command += r"--random-speed "
     else:

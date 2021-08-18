@@ -96,14 +96,14 @@ class RoadTestFactory:
             Note that this class is nested in the RoadTestFactory to avoid direct creation
         """
 
-        def __init__(self, road_points, risk_factor=None):
+        def __init__(self, road_points, risk_factor=None, angle_threshold=13, decision_distance=10):
             assert type(road_points) is list, "You must provide a list of road points to create a RoadTest"
             assert all(len(i) == 2 for i in road_points), "Malformed list of road points"
             # The original input
             self.road_points = road_points[:]
 
             # Initialize the feature extractor
-            segmentation_strategy = AngleBasedStrategy(angle_threshold=13, decision_distance=10)
+            segmentation_strategy = AngleBasedStrategy(angle_threshold=angle_threshold, decision_distance=decision_distance)
             #segment_indexes = segmentation_strategy.extract_segments(road_points)
             #print('Segment indexes: {}'.format(segment_indexes))
 
@@ -185,8 +185,8 @@ class RoadTestFactory:
             return json.dumps(theobj)
 
     @staticmethod
-    def create_road_test(road_points, risk_factor):
-        road_test = RoadTestFactory.RoadTest(road_points, risk_factor=risk_factor)
+    def create_road_test(road_points, risk_factor, angle_threshold=13, decision_distance=10):
+        road_test = RoadTestFactory.RoadTest(road_points, risk_factor=risk_factor, angle_threshold=angle_threshold, decision_distance=decision_distance)
         # TODO Why not simply declare the id as field of RoadTest?
         # Generate the new id. Call next otherwise we return the generator
         setattr(road_test, 'id', next(RoadTestFactory.test_id_generator))

@@ -5,11 +5,11 @@ import logging as log
 
 
 class BaseFrenetGenerator(BaseGenerator):
-    def __init__(self, time_budget=None, executor=None, map_size=None, margin=10, strict_father=False, risk_factor=None):
+    def __init__(self, time_budget=None, executor=None, map_size=None, margin=10, strict_father=False, risk_factor=None, angle_threshold=13, decision_distance=10):
         # Margin size w.r.t the map
         self.margin = margin
         self.recent_count = 0
-        super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father, risk_factor=risk_factor)
+        super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father, risk_factor=risk_factor, angle_threshold=angle_threshold, decision_distance=decision_distance)
 
     def kappas_to_road_points(self, kappas, frenet_step=10, theta0=1.57):
         """

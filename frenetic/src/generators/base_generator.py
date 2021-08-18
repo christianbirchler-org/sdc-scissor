@@ -13,7 +13,7 @@ from code_pipeline.tests_generation import RoadTestFactory
 
 class BaseGenerator(ABC):
 
-    def __init__(self, time_budget=None, executor=None, map_size=None, strict_father=False, risk_factor=None):
+    def __init__(self, time_budget=None, executor=None, map_size=None, strict_father=False, risk_factor=None, angle_threshold=13, decision_distance=10):
         self.time_budget = time_budget
         self.executor = executor
         self.map_size = map_size
@@ -27,6 +27,8 @@ class BaseGenerator(ABC):
         # min_oob_distance < parent_min_oob_distance
         self.strict_father = strict_father
         self.risk_factor = risk_factor
+        self.angle_threshold = angle_threshold
+        self.decision_distance = decision_distance
 
     @abstractmethod
     def start(self):
@@ -41,7 +43,7 @@ class BaseGenerator(ABC):
     def execute_test(self, road_points, method='random', extra_info={}, parent_info={}):
         # Some more debugging
         log.info("Generated test using: %s", road_points)
-        the_test = RoadTestFactory.create_road_test(road_points, self.risk_factor)
+        the_test = RoadTestFactory.create_road_test(road_points, self.risk_factor, angle_threshold=self.angle_threshold, decision_distance=self.decision_distance)
 
         # Try to execute the test
         test_outcome, description, execution_data = self.executor.execute_test(the_test)
