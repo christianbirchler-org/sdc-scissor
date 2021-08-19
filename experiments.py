@@ -1,28 +1,8 @@
 import click
 import os
+import yaml
 
-@click.group()
-def cli():
-    pass
-
-@cli.command()
-def from_config_file():
-    pass
-
-
-@cli.command()
-@click.option('--executor', default='mock', help='mock or beamng')
-@click.option('--generator', default='frenetic', help='Test case generator')
-@click.option('--risk-factor', default=0.7, help='Risk factor of the driving AI')
-@click.option('--time-budget', default=10, help='Time budget for generating tests')
-@click.option('--oob-tolerance', default=0.95, help='Proportion of the car allowd to go off the lane')
-@click.option('--speed-limit', default=70, help='Speed limit in km/h')
-@click.option('--map-size', default=200, help='Size of the road map')
-@click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
-@click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
-@click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
-def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
-
+def run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     command = r"python .\competition.py "
     command += r"--visualize-tests "
     command += r"--time-budget " + str(time_budget) + r" "
@@ -54,6 +34,53 @@ def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance
         os.system(command)
     else:
         print('Unknown test generator: {}'.format(generator))
+
+@click.group()
+def cli():
+    pass
+
+@cli.command()
+@click.option('--config-file', default='./config.yaml', help='Path to config yaml file')
+def from_config_file(config_file):
+    # 'config' will be a dictionary
+    config = None
+    with open(config_file, 'r') as stream:
+        try:
+            config = yaml.safe_load(stream)
+            print(config)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+
+    executor = config['executor']
+    generator = config['generator']
+    risk_factor = config['risk-factor']
+    time_budget = config['time-budget']
+    oob_tolerance = config['oob-tolerance']
+    speed_limit = config['speed-limit']
+    map_size = config['map-size']
+    random_speed = config['random-speed']
+    angle_threshold = config['angle-threshold']
+    decision_distance = config['decision-distance']
+
+    run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+
+
+
+@cli.command()
+@click.option('--executor', default='mock', help='mock or beamng')
+@click.option('--generator', default='frenetic', help='Test case generator')
+@click.option('--risk-factor', default=0.7, help='Risk factor of the driving AI')
+@click.option('--time-budget', default=10, help='Time budget for generating tests')
+@click.option('--oob-tolerance', default=0.95, help='Proportion of the car allowd to go off the lane')
+@click.option('--speed-limit', default=70, help='Speed limit in km/h')
+@click.option('--map-size', default=200, help='Size of the road map')
+@click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
+@click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
+@click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
+def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
+    run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+    
     
 
 if __name__ == '__main__':

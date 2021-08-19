@@ -1,0 +1,10 @@
+executor: beamng
+generator: frenetic
+risk-factor: 2
+time-budget: 1000
+oob-tolerance: 0.7
+speed-limit: 120
+map-size: 200
+random-speed: false
+angle-threshold: 15
+decision-distance: 20
