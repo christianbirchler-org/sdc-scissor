@@ -1,4 +1,4 @@
-from feature_extraction.segmentation_strategy import SegmentationStrategy
+from segmentation_strategy import SegmentationStrategy
 
 class EquiDistanceStrategy(SegmentationStrategy):
     """

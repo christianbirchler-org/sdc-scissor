@@ -1,8 +1,8 @@
 import math
 import statistics
-from feature_extraction.equi_distance_strategy import EquiDistanceStrategy
-from feature_extraction.angle_based_strategy import AngleBasedStrategy
-from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
+from equi_distance_strategy import EquiDistanceStrategy
+from angle_based_strategy import AngleBasedStrategy
+from road_geometry_calculator import RoadGeometryCalculator
 
 class RoadFeatures:
     def __init__(self):

@@ -1,5 +1,5 @@
-from feature_extraction.segmentation_strategy import SegmentationStrategy
-from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
+from segmentation_strategy import SegmentationStrategy
+from road_geometry_calculator import RoadGeometryCalculator
 
 class AngleBasedStrategy(SegmentationStrategy):
     """
