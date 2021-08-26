@@ -388,4 +388,16 @@ if __name__ == "__main__":
             #self.assertGreater(road_features.std_pivot_off, 0)
 
 
+        def test_angle_based_segmentation(self):
+
+            road_points = [(20,20), (50,30), (70,50), (80,80), (70,110), (50,130), (50,150), (60,160), (80,170), (100,170), (120,160), (140,120), (150,80), (150,50), (150,30), (150,20)]
+
+            segmentation_strategy = AngleBasedStrategy(angle_threshold=10, decision_distance=10)
+            segments = segmentation_strategy.extract_segments(road_points)
+            feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+            road_features = feature_extractor.extract_features()
+
+            self.assertTrue(False)
+
+
     unittest.main()
