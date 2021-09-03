@@ -81,7 +81,14 @@ def from_config_file(config_file):
 def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
     
-    
+
+@cli.command()
+@click.option('--model', default='all', help='Machine learning model')
+@click.option('--CV', default=True, help='Use 10-fold cross validation')
+@click.option('--dataset', help='Path to test secenarios')
+def evaluate_models():
+    pass
+
 
 if __name__ == '__main__':
     cli()
