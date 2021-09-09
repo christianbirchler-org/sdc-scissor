@@ -1,6 +1,7 @@
 import click
 import os
 import yaml
+import re
 
 def run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     command = r"python .\competition.py "
@@ -80,13 +81,39 @@ def from_config_file(config_file):
 @click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
 def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
-    
+
+
+def parse_json_test_file(file):
+    with open(file, 'r') as file_obj:
+        pass
+
+
+def load_data_as_data_frame(abs_path):
+    """
+    abs_path contains various json files with the test results
+    """
+
+    pattern = r"\d\d-\w\w\w-\d\d\d\d_\(\d\d-\d\d-\d\d\.\d*\)\.test\.\d\d\d\d\.json\Z"
+    re_obj = re.compile(pattern)
+
+    from os.path import join, getsize
+    for root, dirs, files in os.walk(abs_path):
+        for file in files:
+            if re_obj.fullmatch(file):
+                parse_json_test_file(file)
+
 
 @cli.command()
 @click.option('--model', default='all', help='Machine learning model')
 @click.option('--CV', default=True, help='Use 10-fold cross validation')
 @click.option('--dataset', help='Path to test secenarios')
-def evaluate_models():
+def evaluate_models(model, cv, dataset):
+
+    abs_path = os.path.abspath(dataset)
+
+    df = load_data_as_data_frame(abs_path)
+
+
     pass
 
 
