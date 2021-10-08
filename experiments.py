@@ -2,6 +2,7 @@ import click
 import os
 import yaml
 import re
+import json
 
 def run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     command = r"python .\competition.py "
@@ -84,8 +85,11 @@ def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance
 
 
 def parse_json_test_file(file):
+    click.echo(file)
+    json_dict = None
     with open(file, 'r') as file_obj:
-        pass
+        json_dict = json.load(file_obj)
+    return json_dict
 
 
 def load_data_as_data_frame(abs_path):
@@ -96,17 +100,21 @@ def load_data_as_data_frame(abs_path):
     pattern = r"\d\d-\w\w\w-\d\d\d\d_\(\d\d-\d\d-\d\d\.\d*\)\.test\.\d\d\d\d\.json\Z"
     re_obj = re.compile(pattern)
 
-    from os.path import join, getsize
+    jsons_lst = []
     for root, dirs, files in os.walk(abs_path):
         for file in files:
             if re_obj.fullmatch(file):
-                parse_json_test_file(file)
+                abs_file_path = os.path.join(root, file)
+                json_dict = parse_json_test_file(abs_file_path)
+                jsons_lst.append(json_dict)
+            
+    # TODO: convert jsons_lst with extracted features to pandas data frame
 
 
 @cli.command()
-@click.option('--model', default='all', help='Machine learning model')
-@click.option('--CV', default=True, help='Use 10-fold cross validation')
-@click.option('--dataset', help='Path to test secenarios')
+@click.option('--model', default='all', type=click.STRING, help='Machine learning model')
+@click.option('--CV', default=True, help='Use 10-fold cross validation', type=click.BOOL)
+@click.option('--dataset', help='Path to test secenarios', type=click.Path(exists=True))
 def evaluate_models(model, cv, dataset):
 
     abs_path = os.path.abspath(dataset)
