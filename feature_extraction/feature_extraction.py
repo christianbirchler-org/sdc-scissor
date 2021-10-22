@@ -27,6 +27,13 @@ class RoadFeatures:
         self.duration_seconds = 0
         self.safety = 0
 
+    def to_dict(self):
+        members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
+        res = {}
+        for member in members:
+            res[member] = getattr(self, member)
+        return res
+
   
 class RoadSegment:
     def __init__(self):
