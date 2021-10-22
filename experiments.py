@@ -3,6 +3,11 @@ import os
 import yaml
 import re
 import json
+import pandas as pd
+from feature_extraction.feature_extraction import FeatureExtractor
+from feature_extraction.angle_based_strategy import AngleBasedStrategy
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import KFold
 
 def run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     command = r"python .\competition.py "
@@ -85,16 +90,27 @@ def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance
 
 
 def parse_json_test_file(file):
-    click.echo(file)
+    #click.echo(file)
     json_dict = None
     with open(file, 'r') as file_obj:
         json_dict = json.load(file_obj)
     return json_dict
 
 
+def get_road_features(road_points):
+    """
+    return a Feature instance
+    """
+    segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+    feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
+    road_features = feature_extractor.extract_features()
+    return road_features
+
+
 def load_data_as_data_frame(abs_path):
     """
     abs_path contains various json files with the test results
+    returns a pandas dataframe
     """
 
     pattern = r"\d\d-\w\w\w-\d\d\d\d_\(\d\d-\d\d-\d\d\.\d*\)\.test\.\d\d\d\d\.json\Z"
@@ -109,6 +125,22 @@ def load_data_as_data_frame(abs_path):
                 jsons_lst.append(json_dict)
             
     # TODO: convert jsons_lst with extracted features to pandas data frame
+    df = pd.DataFrame()
+
+    for test_dict in jsons_lst:
+        test_is_valid = test_dict['is_valid']
+        if test_is_valid:
+            #click.echo(test_dict)
+            road_points = test_dict['road_points']
+            road_features = get_road_features(road_points)
+            #click.echo(road_features.to_dict())
+            road_features_dict = road_features.to_dict()
+            road_features_dict['safety'] = test_dict['test_outcome']
+            #click.echo(road_features_dict.keys())
+            df = df.append(road_features_dict, ignore_index=True)
+
+    return df
+
 
 
 @cli.command()
@@ -118,11 +150,18 @@ def load_data_as_data_frame(abs_path):
 def evaluate_models(model, cv, dataset):
 
     abs_path = os.path.abspath(dataset)
-
     df = load_data_as_data_frame(abs_path)
+    click.echo(df)
 
-
-    pass
+    # train models CV
+    X = df.to_numpy()
+    y = df['safety'].to_numpy()
+    click.echo(y)
+    
+    kf = KFold(n_splits=10)
+    #classifier = RandomForestClassifier()
+    #classifier.fit()
+    
 
 
 if __name__ == '__main__':
