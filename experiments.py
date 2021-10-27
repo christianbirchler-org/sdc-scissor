@@ -9,6 +9,9 @@ from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import KFold, cross_validate
 from sklearn import preprocessing
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB, GaussianNB
+from sklearn.tree import DecisionTreeClassifier
 
 def run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     command = r"python .\competition.py "
@@ -166,14 +169,18 @@ def evaluate_models(model, cv, dataset):
     # train models CV
     X = df[X_attributes].to_numpy()
     #X = preprocessing.normalize(X)
-    #X = preprocessing.scale(X)
+    X = preprocessing.scale(X)
     y = df[y_attribute].to_numpy()
     le = preprocessing.LabelEncoder()
     y = le.fit_transform(y)
     
 
     classifiers = {'random_forest': {'estimator': RandomForestClassifier(), 'scores': None},
-                    'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None}
+                    'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None},
+                    'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None},
+                    'gaussian_naive_bayes': {'estimator': GaussianNB(), 'scores': None},
+                    'logistic_regression': {'estimator': LogisticRegression(), 'scores': None},
+                    'decision_tree': {'estimator': DecisionTreeClassifier(), 'scores': None}
     }
 
 
@@ -185,17 +192,7 @@ def evaluate_models(model, cv, dataset):
     
     click.echo(classifiers)
 
-    # kf = KFold(n_splits=10)
-    # for train_index, test_index in kf.split(X):
-    #     X_train, X_test = X[train_index], X[test_index]
-    #     y_train, y_test = y[train_index], y[test_index]
 
-    #     classifier.fit(X_train, y_train)
-    #     y_pred = classifier.predict(X_test)
-
-
-    
-    
 
 
 if __name__ == '__main__':
