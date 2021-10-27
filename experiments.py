@@ -6,8 +6,9 @@ import json
 import pandas as pd
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import KFold
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.model_selection import KFold, cross_validate
+from sklearn import preprocessing
 
 def run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     command = r"python .\competition.py "
@@ -151,16 +152,49 @@ def evaluate_models(model, cv, dataset):
 
     abs_path = os.path.abspath(dataset)
     df = load_data_as_data_frame(abs_path)
-    click.echo(df)
 
+    # consider only data we know before the execution of the scenario
+    X_attributes = ['direct_distance', 'max_angle',
+                    'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
+                    'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
+                    'num_r_turns', 'num_straights', 'road_distance','std_angle',
+                    'std_pivot_off', 'total_angle']
+
+    y_attribute = 'safety'
+
+   
     # train models CV
-    X = df.to_numpy()
-    y = df['safety'].to_numpy()
-    click.echo(y)
+    X = df[X_attributes].to_numpy()
+    #X = preprocessing.normalize(X)
+    #X = preprocessing.scale(X)
+    y = df[y_attribute].to_numpy()
+    le = preprocessing.LabelEncoder()
+    y = le.fit_transform(y)
     
-    kf = KFold(n_splits=10)
-    #classifier = RandomForestClassifier()
-    #classifier.fit()
+
+    classifiers = {'random_forest': {'estimator': RandomForestClassifier(), 'scores': None},
+                    'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None}
+    }
+
+
+
+    scoring = ['accuracy', 'precision', 'recall', 'f1']
+
+    for key, value in classifiers.items():
+        classifiers[key]['scores'] = cross_validate(value['estimator'], X, y, cv=KFold(n_splits=10, shuffle=True), scoring=scoring)
+    
+    click.echo(classifiers)
+
+    # kf = KFold(n_splits=10)
+    # for train_index, test_index in kf.split(X):
+    #     X_train, X_test = X[train_index], X[test_index]
+    #     y_train, y_test = y[train_index], y[test_index]
+
+    #     classifier.fit(X_train, y_train)
+    #     y_pred = classifier.predict(X_test)
+
+
+    
     
 
 
