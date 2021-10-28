@@ -4,6 +4,7 @@ import yaml
 import re
 import json
 import pandas as pd
+import numpy as np
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -146,6 +147,14 @@ def load_data_as_data_frame(abs_path):
     return df
 
 
+def get_avg_scores(scores):
+    avg_scores = {}
+    avg_scores['accuracy'] = np.mean(scores['test_accuracy'])
+    avg_scores['precision'] = np.mean(scores['test_precision'])
+    avg_scores['recall'] = np.mean(scores['test_recall'])
+    avg_scores['f1'] = np.mean(scores['test_f1'])
+
+    return avg_scores
 
 @cli.command()
 @click.option('--model', default='all', type=click.STRING, help='Machine learning model')
@@ -175,12 +184,12 @@ def evaluate_models(model, cv, dataset):
     y = le.fit_transform(y)
     
 
-    classifiers = {'random_forest': {'estimator': RandomForestClassifier(), 'scores': None},
-                    'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None},
-                    'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None},
-                    'gaussian_naive_bayes': {'estimator': GaussianNB(), 'scores': None},
-                    'logistic_regression': {'estimator': LogisticRegression(), 'scores': None},
-                    'decision_tree': {'estimator': DecisionTreeClassifier(), 'scores': None}
+    classifiers = {'random_forest': {'estimator': RandomForestClassifier(), 'scores': None, 'avg_scores': None},
+                    'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None, 'avg_scores': None},
+                    'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None, 'avg_scores': None},
+                    'gaussian_naive_bayes': {'estimator': GaussianNB(), 'scores': None, 'avg_scores': None},
+                    'logistic_regression': {'estimator': LogisticRegression(), 'scores': None, 'avg_scores': None},
+                    'decision_tree': {'estimator': DecisionTreeClassifier(), 'scores': None, 'avg_scores': None}
     }
 
 
@@ -189,8 +198,24 @@ def evaluate_models(model, cv, dataset):
 
     for key, value in classifiers.items():
         classifiers[key]['scores'] = cross_validate(value['estimator'], X, y, cv=KFold(n_splits=10, shuffle=True), scoring=scoring)
+        
+        # avverage the scores
+        classifiers[key]['avg_scores'] = get_avg_scores(classifiers[key]['scores'])
     
-    click.echo(classifiers)
+
+    # output results
+    for key, value in classifiers.items():
+        avg_scores = classifiers[key]['avg_scores']
+        model = key
+        accuracy = avg_scores['accuracy']
+        recall = avg_scores['recall']
+        precision = avg_scores['precision']
+        f1 = avg_scores['f1']
+
+        print('MODEL: {}\tACCURACY: {}\tRECALL: {}\tPRECISION: {}\tF1: {}'.format(model, accuracy, recall, precision, f1))
+    
+
+    
 
 
 
