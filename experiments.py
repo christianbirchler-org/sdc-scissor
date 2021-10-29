@@ -5,6 +5,7 @@ import re
 import json
 import pandas as pd
 import numpy as np
+import joblib
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -160,7 +161,8 @@ def get_avg_scores(scores):
 @click.option('--model', default='all', type=click.STRING, help='Machine learning model')
 @click.option('--CV', default=True, help='Use 10-fold cross validation', type=click.BOOL)
 @click.option('--dataset', help='Path to test secenarios', type=click.Path(exists=True))
-def evaluate_models(model, cv, dataset):
+@click.option('--save', default=False, help='Save the the trained models', type=click.BOOL)
+def evaluate_models(model, cv, dataset, save):
 
     abs_path = os.path.abspath(dataset)
     df = load_data_as_data_frame(abs_path)
@@ -177,8 +179,9 @@ def evaluate_models(model, cv, dataset):
    
     # train models CV
     X = df[X_attributes].to_numpy()
+    # TODO: provide preprocessing options to the user???
     #X = preprocessing.normalize(X)
-    X = preprocessing.scale(X)
+    #X = preprocessing.scale(X)
     y = df[y_attribute].to_numpy()
     le = preprocessing.LabelEncoder()
     y = le.fit_transform(y)
@@ -186,9 +189,9 @@ def evaluate_models(model, cv, dataset):
 
     classifiers = {'random_forest': {'estimator': RandomForestClassifier(), 'scores': None, 'avg_scores': None},
                     'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None, 'avg_scores': None},
-                    'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None, 'avg_scores': None},
+                    #'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None, 'avg_scores': None},
                     'gaussian_naive_bayes': {'estimator': GaussianNB(), 'scores': None, 'avg_scores': None},
-                    'logistic_regression': {'estimator': LogisticRegression(), 'scores': None, 'avg_scores': None},
+                    'logistic_regression': {'estimator': LogisticRegression(max_iter=10000), 'scores': None, 'avg_scores': None},
                     'decision_tree': {'estimator': DecisionTreeClassifier(), 'scores': None, 'avg_scores': None}
     }
 
@@ -212,8 +215,13 @@ def evaluate_models(model, cv, dataset):
         precision = avg_scores['precision']
         f1 = avg_scores['f1']
 
-        print('MODEL: {}\tACCURACY: {}\tRECALL: {}\tPRECISION: {}\tF1: {}'.format(model, accuracy, recall, precision, f1))
+        # TODO: train models on whole dataset and persist them for later usage
+        if save:
+            model_file_name = key + '.joblib'
+            trained_model = value['estimator'].fit(X, y)
+            joblib.dump(trained_model, model_file_name)
     
+        print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'.format(model, accuracy, recall, precision, f1))
 
     
 
