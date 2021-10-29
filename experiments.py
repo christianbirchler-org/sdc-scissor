@@ -220,11 +220,20 @@ def evaluate_models(model, cv, dataset, save):
             model_file_name = key + '.joblib'
             trained_model = value['estimator'].fit(X, y)
             joblib.dump(trained_model, model_file_name)
-    
+
         print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'.format(model, accuracy, recall, precision, f1))
-
     
 
+@cli.command()
+@click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
+def predict_scenarios(scenarios):
+    pass
+
+
+@cli.command()
+@click.option('--generator', default='frenetic', help='Name of generator to use', type=click.STRING)
+def generate_scenarios(generator):
+    pass
 
 
 
