@@ -1,3 +1,6 @@
+# Ignore valid roads
+valid_roads/
+
 # Ignore results
 results/
 
