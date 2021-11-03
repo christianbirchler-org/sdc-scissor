@@ -5,6 +5,8 @@ import random
 import time
 import sys
 import os
+import json
+from code_pipeline.config import Config
 from datetime import datetime
 
 from abc import ABC, abstractmethod
@@ -70,6 +72,33 @@ class AbstractTestExecutor(ABC):
 
         # This might be placed inside validate_test
         the_test.set_validity(is_valid, validation_msg)
+
+
+        ##########################################################
+        # Just log valid tests
+        ##########################################################
+        if is_valid:
+            filename = 'road_' + str(Config.VALID_TEST_COUNTER) + '.json'
+            abs_path_to_test = Config.VALID_TEST_DIR + '/' + filename
+            print('######## {}'.format(abs_path_to_test))
+
+            # create json object with road data
+            roads = {'road_points': the_test.road_points, 'interpolated_road_points': the_test.interpolated_points}
+            with open(abs_path_to_test, 'w') as file:
+                file.write(json.dumps(roads, indent=2))
+
+            Config.VALID_TEST_COUNTER += 1
+
+            # TODO: skip exection here depending on argument
+            if Config.PREVENT_SIMULATION:
+                self.store_test(the_test)
+                return "NOT EXECUTED", "SIMULATION PREVENTION IS SET", []
+        ##########################################################
+        ##########################################################
+
+
+
+
 
         # TODO We do not store the test until is executed, or proven invalid to avoid a data condition:
         # the test is valid, we store it, but we cannot execute is because there's no more budget.

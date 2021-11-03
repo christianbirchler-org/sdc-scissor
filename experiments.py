@@ -6,6 +6,7 @@ import json
 import pandas as pd
 import numpy as np
 import joblib
+from code_pipeline.config import Config
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -227,13 +228,38 @@ def evaluate_models(model, cv, dataset, save):
 @cli.command()
 @click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
 def predict_scenarios(scenarios):
+    # laod road scenarios
+    # load pre-trained classifier
+    # predict test outcomes
+    # report predictions
     pass
 
 
 @cli.command()
-@click.option('--generator', default='frenetic', help='Name of generator to use', type=click.STRING)
-def generate_scenarios(generator):
-    pass
+@click.option('--time-budget', default=10, help='Time budget for generating tests')
+@click.option('--generator', default='frenetic', help='Test case generator')
+@click.option('--out-dir', default='./valid_roads', help='Directory for valid road files', type=click.Path())
+def generate_scenarios(time_budget, generator, out_dir):
+   
+    if not os.path.exists(out_dir):
+        os.mkdir(out_dir)
+
+    out_dir_abs_path = os.path.abspath(out_dir)
+    Config.VALID_TEST_DIR = out_dir_abs_path
+    print('**** {}'.format(out_dir_abs_path))
+    print('**** {}'.format(Config.VALID_TEST_DIR))
+
+
+    executor = 'beamng'
+    risk_factor = 0.7
+    oob_tolerance = 0.95
+    speed_limit = 120
+    map_size = 200
+    random_speed = True
+    angle_threshold = 13
+    decision_distance = 10
+    run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+
 
 
 

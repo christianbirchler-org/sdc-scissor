@@ -175,14 +175,14 @@ class TestValidator:
             validation_msg = "The road is too sharp"
             return is_valid, validation_msg
 
-        if self.is_min_road_segment_not_long_enough_according_risk_factor(the_test):
-            is_valid = False
-            validation_msg = "Min road segment is too short for the risk factor"
-            return is_valid, validation_msg
+        # if self.is_min_road_segment_not_long_enough_according_risk_factor(the_test):
+        #     is_valid = False
+        #     validation_msg = "Min road segment is too short for the risk factor"
+        #     return is_valid, validation_msg
 
-        if self.is_road_not_long_enough_according_min_segment(the_test):
-            is_valid = False
-            validation_msg = "Road is too short according the min segment"
-            return is_valid, validation_msg
+        # if self.is_road_not_long_enough_according_min_segment(the_test):
+        #     is_valid = False
+        #     validation_msg = "Road is too short according the min segment"
+        #     return is_valid, validation_msg
 
         return is_valid, validation_msg
