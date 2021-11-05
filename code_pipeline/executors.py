@@ -58,7 +58,7 @@ class AbstractTestExecutor(ABC):
         with open(output_file_name, 'w') as test_file:
             test_file.write(the_test.to_json())
 
-    def execute_test(self, the_test):
+    def execute_test(self, the_test, prevent_simulation=True):
         # Maybe we can solve this using decorators, but we need the reference to the instance, not sure how to handle
         # that cleanly
         if self.get_remaining_time() <= 0:
@@ -90,7 +90,7 @@ class AbstractTestExecutor(ABC):
             Config.VALID_TEST_COUNTER += 1
 
             # TODO: skip exection here depending on argument
-            if Config.PREVENT_SIMULATION:
+            if prevent_simulation:
                 self.store_test(the_test)
                 return "NOT EXECUTED", "SIMULATION PREVENTION IS SET", []
         ##########################################################

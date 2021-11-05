@@ -6,7 +6,13 @@ import json
 import pandas as pd
 import numpy as np
 import joblib
+import logging as log
+import traceback
+import sys
+import time
+from competition import post_process
 from code_pipeline.config import Config
+from code_pipeline.tests_generation import RoadTestFactory
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -238,18 +244,13 @@ def predict_scenarios(scenarios):
 @cli.command()
 @click.option('--time-budget', default=10, help='Time budget for generating tests')
 @click.option('--generator', default='frenetic', help='Test case generator')
-@click.option('--out-dir', default='./valid_roads', help='Directory for valid road files', type=click.Path())
-def generate_scenarios(time_budget, generator, out_dir):
+def generate_scenarios(time_budget, generator):
    
-    if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
+    if not os.path.exists(Config.VALID_TEST_DIR):
+        os.mkdir(Config.VALID_TEST_DIR)
 
-    out_dir_abs_path = os.path.abspath(out_dir)
-    Config.VALID_TEST_DIR = out_dir_abs_path
-    print('**** {}'.format(out_dir_abs_path))
-    print('**** {}'.format(Config.VALID_TEST_DIR))
-
-
+    out_dir_abs_path = os.path.abspath(Config.VALID_TEST_DIR)
+   
     executor = 'beamng'
     risk_factor = 0.7
     oob_tolerance = 0.95
@@ -259,6 +260,83 @@ def generate_scenarios(time_budget, generator, out_dir):
     angle_threshold = 13
     decision_distance = 10
     run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+
+
+
+
+@cli.command()
+@click.option('--road-scenarios', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
+@click.option('--beamng-home', required=True, default=None, type=click.Path(exists=True),
+              help="Customize BeamNG executor by specifying the home of the simulator.")
+@click.option('--beamng-user', required=True, default=None, type=click.Path(exists=True),
+              help="Customize BeamNG executor by specifying the location of the folder "
+                   "where levels, props, and other BeamNG-related data will be copied."
+                   "** Use this to avoid spaces in URL/PATHS! **")
+@click.option('--result-folder', help='Path for the labeled data', type=click.Path(exists=True))
+@click.option('--risk-factor', default=0.7, help='Risk factor of the driving AI')
+@click.option('--time-budget', default=1000, help='Time budget for generating tests')
+@click.option('--oob-tolerance', default=0.95, help='Proportion of the car allowd to go off the lane')
+@click.option('--speed-limit', default=70, help='Speed limit in km/h')
+@click.option('--map-size', default=200, help='Size of the road map')
+@click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
+@click.pass_context
+def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed):
+
+    abs_path_to_road_scenarios = os.path.abspath(road_scenarios)
+
+    pattern = r"road_\d+\.json\Z"
+    re_obj = re.compile(pattern)
+
+    # time_budget = 2000
+    # map_size = 200
+    # oob_tolerance = 0.5
+    # speed_limit = 120
+    # beamng_home = r"C:\Users\birc\Documents\BeamNG.research.v1.7.0.1"
+    # beamng_user = r"C:\Users\birc\Documents\BeamNG.research"
+    road_visualizer = None
+    # risk_factor = 1.5
+    # random_speed = False
+
+
+    try:
+        from code_pipeline.beamng_executor import BeamngExecutor
+        the_executor = BeamngExecutor(result_folder, time_budget, map_size,
+                            oob_tolerance=oob_tolerance, max_speed=speed_limit,
+                            beamng_home=beamng_home, beamng_user=beamng_user,
+                            road_visualizer=road_visualizer, risk_factor=risk_factor, random_speed=random_speed)
+
+        print(the_executor)
+        for root, dirs, files in os.walk(abs_path_to_road_scenarios):
+            for file in files:
+                if re_obj.fullmatch(file):
+                    print(file)
+                    abs_file_path = os.path.join(root, file)
+                    json_dict = parse_json_test_file(abs_file_path)
+                    road_points = json_dict['road_points']
+
+                    print(road_points)
+
+                    the_test = RoadTestFactory.create_road_test(road_points, risk_factor)
+                    test_outcome, description, execution_data = the_executor.execute_test(the_test, prevent_simulation=False)
+
+                    time.sleep(10)
+
+                    #oob_percentage = [state.oob_percentage for state in execution_data]
+                    #log.info("Collected %d states information. Max is %.3f", len(oob_percentage), max(oob_percentage))
+
+                    
+               
+    except Exception:
+        log.fatal("An error occurred during test generation")
+        traceback.print_exc()
+        sys.exit(2)
+    finally:
+        # Ensure the executor is stopped no matter what.
+        # TODO Consider using a ContextManager: With executor ... do
+        the_executor.close()
+
+    # We still need this here to post process the results if the execution takes the regular flow
+    post_process(ctx, result_folder, the_executor)
 
 
 
