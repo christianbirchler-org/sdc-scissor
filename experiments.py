@@ -168,7 +168,7 @@ def get_avg_scores(scores):
 @click.option('--model', default='all', type=click.STRING, help='Machine learning model')
 @click.option('--CV', default=True, help='Use 10-fold cross validation', type=click.BOOL)
 @click.option('--dataset', help='Path to test secenarios', type=click.Path(exists=True))
-@click.option('--save', default=False, help='Save the the trained models', type=click.BOOL)
+@click.option('--save', default=False, is_flag=True, help='Save the the trained models', type=click.BOOL)
 def evaluate_models(model, cv, dataset, save):
 
     abs_path = os.path.abspath(dataset)
