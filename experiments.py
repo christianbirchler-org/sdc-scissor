@@ -233,9 +233,12 @@ def evaluate_models(model, cv, dataset, save):
 
 @cli.command()
 @click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
-def predict_scenarios(scenarios):
+@click.option('--classifier', help='Path to classifier.joblib', type=click.File())
+def predict_scenarios(scenarios, classifier):
     # laod road scenarios
     # load pre-trained classifier
+    clf = joblib.load(classifier)
+
     # predict test outcomes
     # report predictions
     pass
