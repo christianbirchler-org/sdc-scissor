@@ -10,6 +10,7 @@ import logging as log
 import traceback
 import sys
 import time
+from pathlib import Path
 from competition import post_process, generate
 from code_pipeline.config import Config
 from code_pipeline.tests_generation import RoadTestFactory
@@ -64,19 +65,18 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
 def cli():
     pass
 
+
 @cli.command()
-@click.option('--config-file', default='./config.yaml', help='Path to config yaml file')
+@click.option('--config-file', default=Path('config.yaml'), type=click.Path(exists=True, readable=True, path_type=Path), help='Path to config yaml file')
 @click.pass_context
-def from_config_file(ctx, config_file):
+def from_config_file(ctx, config_file: Path):
     # 'config' will be a dictionary
     config = None
-    with open(config_file, 'r') as stream:
-        try:
-            config = yaml.safe_load(stream)
-            print(config)
-        except yaml.YAMLError as exc:
-            print(exc)
-
+    try:
+        config = yaml.safe_load(config_file.read_text())
+        print(config)
+    except yaml.YAMLError as exc:
+        ctx.fail(str(exc))
 
     executor = config['executor']
     generator = config['generator']
