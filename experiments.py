@@ -10,7 +10,7 @@ import logging as log
 import traceback
 import sys
 import time
-from competition import post_process
+from competition import post_process, generate
 from code_pipeline.config import Config
 from code_pipeline.tests_generation import RoadTestFactory
 from feature_extraction.feature_extraction import FeatureExtractor
@@ -22,38 +22,43 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 
-def run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
-    command = r"python .\competition.py "
-    command += r"--visualize-tests "
-    command += r"--time-budget " + str(time_budget) + r" "
-    command += r"--oob-tolerance " + str(oob_tolerance) + r" "
-    command += r"--risk-factor " + str(risk_factor) + r" "
-    command += r"--angle-threshold " + str(angle_threshold) + r" "
-    command += r"--decision-distance " + str(decision_distance) + r" "
+def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
+    arguments = {
+        '--visualize-tests': True,
+        '--time-budget': time_budget,
+        '--oob-tolerance': oob_tolerance,
+        '--risk-factor': risk_factor,
+        '--angle-threshold': angle_threshold,
+        '--decision-distance': decision_distance,
+        '--executor': executor,
+        '--map-size': map_size,
+    }
     if random_speed:
-        command += r"--random-speed "
+        arguments['--random-speed'] = True
     else:
-        command += r"--speed-limit " + str(speed_limit) + r" "
-    
-    if executor == 'mock':
-        command += r"--executor mock "
-    elif executor == 'beamng':
-        command += r"--executor beamng "
+        arguments['--speed-limit'] = speed_limit
 
+    if executor == 'beamng':
         # THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
-        command += r"--beamng-home C:\Users\birc\Documents\BeamNG.research.v1.7.0.1 "
-        command += r"--beamng-user C:\Users\birc\Documents\BeamNG.research "
-    else:
-        raise Exception('invalid executor!')
-
-    command += r"--map-size " + str(map_size) + r" "
+        arguments['--beamng-home'] = r'C:\Users\birc\Documents\BeamNG.research.v1.7.0.1'
+        arguments['--beamng-user'] = r'C:\Users\birc\Documents\BeamNG.research'
 
     if generator == 'frenetic':
-        command += r"--module-name frenetic.src.generators.random_frenet_generator "
-        command += r"--class-name CustomFrenetGenerator"
-        os.system(command)
+        arguments['--class-name'] = 'CustomFrenetGenerator'
+        arguments['--module-name'] = 'frenetic.src.generators.random_frenet_generator'
     else:
-        print('Unknown test generator: {}'.format(generator))
+        context.fail('Unknown test generator: {}'.format(generator))
+
+    args = []
+    for key, value in arguments.items():
+        args.append(key)
+        if not value is True:
+            args.append(str(value))
+
+    # invoke with custom context to have the option checking
+    with generate.make_context(None, args, context) as sub_context:
+        generate.invoke(sub_context)
+
 
 @click.group()
 def cli():
@@ -61,7 +66,8 @@ def cli():
 
 @cli.command()
 @click.option('--config-file', default='./config.yaml', help='Path to config yaml file')
-def from_config_file(config_file):
+@click.pass_context
+def from_config_file(ctx, config_file):
     # 'config' will be a dictionary
     config = None
     with open(config_file, 'r') as stream:
@@ -83,8 +89,7 @@ def from_config_file(config_file):
     angle_threshold = config['angle-threshold']
     decision_distance = config['decision-distance']
 
-    run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
-
+    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
 
 
 @cli.command()
@@ -98,8 +103,9 @@ def from_config_file(config_file):
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
 @click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
 @click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
-def run_simulations(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
-    run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+@click.pass_context
+def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
+    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
 
 
 def parse_json_test_file(file):
@@ -247,7 +253,8 @@ def predict_scenarios(scenarios, classifier):
 @cli.command()
 @click.option('--time-budget', default=10, help='Time budget for generating tests')
 @click.option('--generator', default='frenetic', help='Test case generator')
-def generate_scenarios(time_budget, generator):
+@click.pass_context
+def generate_scenarios(ctx, time_budget, generator):
    
     if not os.path.exists(Config.VALID_TEST_DIR):
         os.mkdir(Config.VALID_TEST_DIR)
@@ -262,7 +269,7 @@ def generate_scenarios(time_budget, generator):
     random_speed = True
     angle_threshold = 13
     decision_distance = 10
-    run_pipeline(executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
 
 
 
