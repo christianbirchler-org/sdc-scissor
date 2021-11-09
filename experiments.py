@@ -10,6 +10,7 @@ import logging as log
 import traceback
 import sys
 import time
+import platform
 from pathlib import Path
 from competition import post_process, generate
 from code_pipeline.config import Config
@@ -22,6 +23,10 @@ from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
 from sklearn.tree import DecisionTreeClassifier
+
+# THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
+BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
+BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
 
 def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     arguments = {
@@ -40,9 +45,14 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         arguments['--speed-limit'] = speed_limit
 
     if executor == 'beamng':
-        # THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
-        arguments['--beamng-home'] = r'C:\Users\birc\Documents\BeamNG.research.v1.7.0.1'
-        arguments['--beamng-user'] = r'C:\Users\birc\Documents\BeamNG.research'
+        if platform.system() != 'Windows':
+            context.fail('The beamng executor only works on windows')
+        if not BEAMNG_HOME.exists():
+            context.fail(f'The beamng home path {BEAMNG_HOME} does not exist')
+        arguments['--beamng-home'] = BEAMNG_HOME
+        if not BEAMNG_HOME.exists():
+            context.fail(f'The beamng user path {BEAMNG_USER} does not exist')
+        arguments['--beamng-user'] = BEAMNG_USER
 
     if generator == 'frenetic':
         arguments['--class-name'] = 'CustomFrenetGenerator'
@@ -347,8 +357,6 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
 
     # We still need this here to post process the results if the execution takes the regular flow
     post_process(ctx, result_folder, the_executor)
-
-
 
 
 if __name__ == '__main__':
