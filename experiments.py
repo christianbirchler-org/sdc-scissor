@@ -1,5 +1,6 @@
 import click
 import os
+from click.types import FLOAT
 import yaml
 import re
 import json
@@ -23,6 +24,8 @@ from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
 from sklearn.tree import DecisionTreeClassifier
+import sklearn.metrics as metrics
+import random
 
 # THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
 BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
@@ -142,7 +145,7 @@ def load_data_as_data_frame(abs_path):
     returns a pandas dataframe
     """
 
-    pattern = r"\d\d-\w\w\w-\d\d\d\d_\(\d\d-\d\d-\d\d\.\d*\)\.test\.\d\d\d\d\.json\Z"
+    pattern = r".*test.*\.json\Z"
     re_obj = re.compile(pattern)
 
     jsons_lst = []
@@ -206,8 +209,9 @@ def evaluate_models(model, cv, dataset, save):
     #X = preprocessing.normalize(X)
     #X = preprocessing.scale(X)
     y = df[y_attribute].to_numpy()
-    le = preprocessing.LabelEncoder()
-    y = le.fit_transform(y)
+    y[ y=='FAIL' ] = 1
+    y[ y=='PASS' ] = 0
+    y = np.array(y, dtype='int32')
     
 
     classifiers = {'random_forest': {'estimator': RandomForestClassifier(), 'scores': None, 'avg_scores': None},
@@ -244,6 +248,7 @@ def evaluate_models(model, cv, dataset, save):
             trained_model = value['estimator'].fit(X, y)
             joblib.dump(trained_model, model_file_name)
 
+        # TODO: order the models according to an argument (e.g. acc, rec, prec, f1)
         print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'.format(model, accuracy, recall, precision, f1))
     
 
@@ -279,6 +284,31 @@ def predict_scenarios(scenarios, classifier):
     print('Predicted {} scenarios.'.format(len(y_pred)))
     print('Predicted as safe: {}'.format(sum(y_pred)))
     print('Predicted as unsafe: {}'.format(len(y_pred)-sum(y_pred)))
+
+    #####################################################
+    #       FOR EVALUATION ONLY!!!!!
+    #####################################################
+    y_real = df[y_attribute].to_numpy()
+    print(y_real)
+    y_real[ y_real=='FAIL' ] = 1
+    y_real[ y_real=='PASS' ] = 0
+    y_real = np.array(y_real, dtype='int32')
+   
+    # calculate scores (the unsafe scenarios are the positives)
+    acc = metrics.accuracy_score(y_real, y_pred)
+    prec = metrics.precision_score(y_real, y_pred, pos_label=1)
+    rec = metrics.recall_score(y_real, y_pred, pos_label=1)
+    f1 = metrics.f1_score(y_real, y_pred, pos_label=1)
+    #TODO: recall, precision and f1 on test split 80/20!!!!!!
+
+    print('Accuracy: {}'.format(acc))
+    print('Precision: {}'.format(prec))
+    print('Recall: {}'.format(rec))
+    print('F1: {}'.format(f1))
+
+    #####################################################
+    #       FOR EVALUATION ONLY!!!!!
+    #####################################################
 
 
 
@@ -379,6 +409,73 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
 
     # We still need this here to post process the results if the execution takes the regular flow
     post_process(ctx, result_folder, the_executor)
+
+
+@cli.command()
+@click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--train-dir', help='Path to directory of training data to be stored', type=click.Path(exists=True))
+@click.option('--test-dir', help='Path to directory of test data to be stored', type=click.Path(exists=True))
+@click.option('--train-ratio', help='Ratio used for training', type=click.FLOAT)
+def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
+    abs_path = os.path.abspath(scenarios)
+    pattern = r".*test.*.json\Z"
+    re_obj = re.compile(pattern)
+
+    jsons_lst = []
+    for root, dirs, files in os.walk(abs_path):
+        for file in files:
+            if re_obj.fullmatch(file):
+                abs_file_path = os.path.join(root, file)
+                json_dict = parse_json_test_file(abs_file_path)
+                jsons_lst.append(json_dict)
+            
+
+    valid_tests = []
+
+    for test_dict in jsons_lst:
+        test_is_valid = test_dict['is_valid']
+        if test_is_valid:
+            valid_tests.append(test_dict)
+
+    random.shuffle(valid_tests)
+    split_index = int(train_ratio*len(valid_tests))
+
+    train_data = valid_tests[0:split_index]
+    test_data = valid_tests[split_index:]
+
+    # balance train data
+    cnt_safe = 0
+    cnt_unsafe = 0
+    train_data_safe = []
+    train_data_unsafe = []
+
+    for test in train_data:
+        if test['test_outcome'] == "FAIL":
+            cnt_unsafe += 1
+            train_data_unsafe.append(test)
+        if test['test_outcome'] == "PASS":
+            cnt_safe += 1
+            train_data_safe.append(test)
+
+    if cnt_safe < cnt_unsafe:
+        train_data = train_data_safe + train_data_unsafe + random.choices(train_data_safe, k=(cnt_unsafe-cnt_safe))
+    elif cnt_safe > cnt_unsafe:
+        train_data = random.choices(train_data_unsafe, k=(cnt_safe-cnt_unsafe)) + train_data_safe + train_data_unsafe
+
+    cnt = 0
+    abs_path_train_dir = os.path.abspath(train_dir)
+    for test in train_data:
+        filepath = os.path.join(abs_path_train_dir, 'test_{}.json'.format(cnt))
+        cnt += 1
+        with open(filepath, 'w') as f:
+            f.write(json.dumps(test))
+    
+    abs_path_test_dir = os.path.abspath(test_dir)
+    for test in test_data:
+        filepath = os.path.join(abs_path_test_dir, 'test_{}.json'.format(cnt))
+        cnt += 1
+        with open(filepath, 'w') as f:
+            f.write(json.dumps(test))
 
 
 if __name__ == '__main__':
