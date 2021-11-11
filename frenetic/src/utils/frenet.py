@@ -1,9 +1,10 @@
 import numpy as np
 
+
 # TODO: needs improvement in choosing correct number of x, y, theta
 def frenet_to_cartesian(x0, y0, theta0, ss, kappas):
     """
-     Numerical integration with trapezoidal rule to transform curvature samples 
+     Numerical integration with trapezoidal rule to transform curvature samples
      given in Frenet frame to points in Cartesian frame
     """
     xs = np.zeros(ss.shape[0])

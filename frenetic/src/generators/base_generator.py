@@ -1,19 +1,22 @@
-from abc import ABC, abstractmethod
 import logging as log
+import os
+import itertools as it
+from abc import ABC, abstractmethod
+from datetime import datetime
+from pathlib import Path
+from time import sleep
+
 import numpy as np
 import pandas as pd
-import itertools as it
-import os
-from pathlib import Path
 
-from time import sleep
-from datetime import datetime
 from code_pipeline.tests_generation import RoadTestFactory
 
 
 class BaseGenerator(ABC):
-
-    def __init__(self, time_budget=None, executor=None, map_size=None, strict_father=False, risk_factor=None, angle_threshold=13, decision_distance=10):
+    def __init__(
+        self, time_budget=None, executor=None, map_size=None, strict_father=False, risk_factor=None, angle_threshold=13,
+        decision_distance=10,
+    ):
         self.time_budget = time_budget
         self.executor = executor
         self.map_size = map_size
@@ -40,10 +43,14 @@ class BaseGenerator(ABC):
         with open(self.file_name, 'w') as outfile:
             self.df.to_csv(outfile)
 
-    def execute_test(self, road_points, method='random', extra_info={}, parent_info={}):
+    def execute_test(self, road_points, method='random', extra_info=None, parent_info=None):
+        extra_info = extra_info or {}
+        parent_info = parent_info or {}
         # Some more debugging
         log.info("Generated test using: %s", road_points)
-        the_test = RoadTestFactory.create_road_test(road_points, self.risk_factor, angle_threshold=self.angle_threshold, decision_distance=self.decision_distance)
+        the_test = RoadTestFactory.create_road_test(
+            road_points, self.risk_factor, angle_threshold=self.angle_threshold, decision_distance=self.decision_distance,
+        )
 
         # Try to execute the test
         test_outcome, description, execution_data = self.executor.execute_test(the_test)
@@ -63,7 +70,7 @@ class BaseGenerator(ABC):
         if execution_data:
             # base metrics
             metrics = ['steering', 'steering_input', 'brake', 'brake_input', 'throttle', 'throttle_input',
-            'wheelspeed', 'vel_kmh', 'oob_counter', 'oob_distance']
+                       'wheelspeed', 'vel_kmh', 'oob_counter', 'oob_distance']
             functions = [('max', np.max), ('min', np.min), ('mean', np.mean), ('avg', np.average)]
             for metric, (name, func) in it.product(metrics, functions):
                 metric_data = [y for y in map(lambda x: getattr(x, metric), execution_data) if y is not None]
@@ -110,6 +117,7 @@ class BaseGenerator(ABC):
         Returns:
             Accumulated oob_distance when the center the mass already crossed one of the lanes (oob_distance < 0).
         """
-        return (sum(
-            map(lambda k: (execution_data[k].oob_distance - 2) * (execution_data[k].timer - execution_data[k - 1].timer)
-            if execution_data[k].oob_distance < 0 else 0, range(1, len(execution_data)))))
+        return (sum(map(
+            lambda k: (execution_data[k].oob_distance - 2) * (execution_data[k].timer - execution_data[k - 1].timer)
+            if execution_data[k].oob_distance < 0 else 0, range(1, len(execution_data))
+        )))

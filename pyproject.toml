@@ -27,6 +27,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pylint.messages_control]
 enable = "all"
-disable = "missing-docstring,chained-comparison,too-few-public-methods,fixme,duplicate-code,invalid-name"
+disable = "missing-docstring,chained-comparison,too-few-public-methods,too-many-arguments,fixme,duplicate-code,invalid-name,unspecified-encoding,cell-var-from-loop,consider-using-f-string,logging-fstring-interpolation,too-many-instance-attributes,too-many-locals,suppressed-message,locally-disabled"
 
 max-line-length = 130
