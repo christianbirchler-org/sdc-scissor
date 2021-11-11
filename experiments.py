@@ -31,6 +31,7 @@ import random
 BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
 BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
 
+
 def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
     arguments = {
         '--visualize-tests': True,
@@ -149,7 +150,7 @@ def load_data_as_data_frame(abs_path):
     re_obj = re.compile(pattern)
 
     jsons_lst = []
-    for root, dirs, files in os.walk(abs_path):
+    for root, _, files in os.walk(abs_path):
         for file in files:
             if re_obj.fullmatch(file):
                 abs_file_path = os.path.join(root, file)
@@ -202,7 +203,7 @@ def evaluate_models(model, cv, dataset, save):
 
     y_attribute = 'safety'
 
-   
+
     # train models CV
     X = df[X_attributes].to_numpy()
     # TODO: provide preprocessing options to the user???
@@ -214,12 +215,13 @@ def evaluate_models(model, cv, dataset, save):
     y = np.array(y, dtype='int32')
     
 
-    classifiers = {'random_forest': {'estimator': RandomForestClassifier(), 'scores': None, 'avg_scores': None},
-                    'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None, 'avg_scores': None},
-                    #'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None, 'avg_scores': None},
-                    'gaussian_naive_bayes': {'estimator': GaussianNB(), 'scores': None, 'avg_scores': None},
-                    'logistic_regression': {'estimator': LogisticRegression(max_iter=10000), 'scores': None, 'avg_scores': None},
-                    'decision_tree': {'estimator': DecisionTreeClassifier(), 'scores': None, 'avg_scores': None}
+    classifiers = {
+        'random_forest': {'estimator': RandomForestClassifier(), 'scores': None, 'avg_scores': None},
+        'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None, 'avg_scores': None},
+        #'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None, 'avg_scores': None},
+        'gaussian_naive_bayes': {'estimator': GaussianNB(), 'scores': None, 'avg_scores': None},
+        'logistic_regression': {'estimator': LogisticRegression(max_iter=10000), 'scores': None, 'avg_scores': None},
+        'decision_tree': {'estimator': DecisionTreeClassifier(), 'scores': None, 'avg_scores': None}
     }
 
 
@@ -272,7 +274,7 @@ def predict_scenarios(scenarios, classifier):
 
     y_attribute = 'safety'
 
-   
+
     # train models CV
     X = df[X_attributes].to_numpy()
     # TODO: provide preprocessing options to the user???
@@ -293,13 +295,13 @@ def predict_scenarios(scenarios, classifier):
     y_real[ y_real=='FAIL' ] = 1
     y_real[ y_real=='PASS' ] = 0
     y_real = np.array(y_real, dtype='int32')
-   
+
     # calculate scores (the unsafe scenarios are the positives)
     acc = metrics.accuracy_score(y_real, y_pred)
     prec = metrics.precision_score(y_real, y_pred, pos_label=1)
     rec = metrics.recall_score(y_real, y_pred, pos_label=1)
     f1 = metrics.f1_score(y_real, y_pred, pos_label=1)
-    #TODO: recall, precision and f1 on test split 80/20!!!!!!
+    # TODO: recall, precision and f1 on test split 80/20!!!!!!
 
     print('Accuracy: {}'.format(acc))
     print('Precision: {}'.format(prec))
@@ -323,7 +325,7 @@ def generate_scenarios(ctx, time_budget, generator):
 
     out_dir_abs_path = os.path.abspath(Config.VALID_TEST_DIR)
    
-    executor = 'beamng'
+    executor = 'mock'
     risk_factor = 0.7
     oob_tolerance = 0.95
     speed_limit = 120
