@@ -6,23 +6,23 @@ class Member:
         self.distance_to_boundary: float = None
 
     def distance(self, o: 'Member'):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def clone(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def evaluate(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def to_tuple(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def mutate(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def to_dict(self) -> dict:
-        raise NotImplemented()
+        raise NotImplementedError()
 
     @classmethod
     def from_dict(cls, dict: Dict):
-        raise NotImplemented()
+        raise NotImplementedError()

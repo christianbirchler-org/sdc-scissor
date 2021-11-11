@@ -58,6 +58,6 @@ class SeedPoolMnist(SeedPool):
         result: Member = self.cache.get(mnist_index, None)
         if not result:
             # result = self.problem.member_class().from_dict(self.storage.read(path))
-            raise NotImplemented()
+            raise NotImplementedError()
             self.cache[mnist_index] = result
         return result

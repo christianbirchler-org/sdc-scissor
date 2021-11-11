@@ -7,7 +7,7 @@ class SeedPool:
         self.problem = problem
 
     def __len__(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def __getitem__(self, item) -> Member:
-        raise NotImplemented()
+        raise NotImplementedError()

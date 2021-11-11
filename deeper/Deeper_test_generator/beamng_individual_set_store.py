@@ -31,10 +31,10 @@ class BeamNGIndividualSetStore:
 
 class _BeamNGIndividualStore:
     def save(self, ind: BeamNGIndividual, prefix: str = None):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def load(self, prefix: str) -> BeamNGIndividual:
-        raise NotImplemented()
+        raise NotImplementedError()
 
 
 class _BeamNGIndividualCompositeMembersStore:

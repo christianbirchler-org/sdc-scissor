@@ -11,13 +11,13 @@ class Individual:
         self.seed: Member = None
 
     def clone(self) -> 'creator.base':
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def evaluate(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def mutate(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def distance(self, i2: 'Individual'):
         i1 = self
@@ -27,7 +27,7 @@ class Individual:
         return dist
 
     def semantic_distance(self, i2: 'Individual'):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def members_by_sign(self) -> Tuple[Member, Member]:
         msg = 'distance metric'
