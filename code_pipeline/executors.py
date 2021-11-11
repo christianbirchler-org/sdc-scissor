@@ -44,7 +44,7 @@ class AbstractTestExecutor(ABC):
         if risk_factor == 1.5: return 100
         if risk_factor == 2: return 75
         return 20
-    
+
     def is_force_timeout(self):
         return self.timeout_forced == True
 
@@ -112,7 +112,7 @@ class AbstractTestExecutor(ABC):
             self.stats.test_valid += 1
             start_execution_real_time = time.monotonic()
 
-            test_outcome, description, execution_data = self._execute(the_test)
+            test_outcome, description, execution_data, simulation_time = self._execute(the_test)
 
             end_execution_real_time = time.monotonic()
             self.stats.test_execution_real_times.append(end_execution_real_time - start_execution_real_time)
@@ -124,6 +124,7 @@ class AbstractTestExecutor(ABC):
             setattr(the_test, 'execution_data', execution_data)
             setattr(the_test, 'test_outcome', test_outcome)
             setattr(the_test, 'description', description)
+            setattr(the_test, 'simulation_time', simulation_time)
 
             # Store the generated tests into the result_folder
             self.store_test(the_test)

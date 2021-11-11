@@ -3,6 +3,7 @@ from code_pipeline.executors import AbstractTestExecutor
 import time
 import traceback
 import random
+from datetime import datetime
 from typing import Tuple
 
 from self_driving.beamng_brewer import BeamNGBrewer
@@ -59,6 +60,11 @@ class BeamngExecutor(AbstractTestExecutor):
         self.min_delta_position = 1.0
         self.road_visualizer = road_visualizer
 
+    def _get_duration(start_time, end_time):
+        t0 = datetime.fromisoformat(start_time)
+        t1 = datetime.fromisoformat(end_time)
+        return (t1 - t0).total_seconds()
+
     def _execute(self, the_test):
 
         # set random speed limit if it is needed
@@ -101,8 +107,10 @@ class BeamngExecutor(AbstractTestExecutor):
 
         execution_data = sim.states
 
+        simulation_time = self._get_duration(sim.info.start_time, sim.info.end_time)
+
         # TODO: report all test outcomes
-        return test_outcome, description, execution_data
+        return test_outcome, description, execution_data, simulation_time
 
     def _is_the_car_moving(self, last_state):
         """ Check if the car moved in the past 10 seconds """
