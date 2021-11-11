@@ -1,3 +1,6 @@
+# ignore model evaluations
+*result.txt
+
 # Ignore valid roads
 valid_roads/
 
