@@ -116,12 +116,10 @@ class BeamngExecutor(AbstractTestExecutor):
         if Point(self.last_observation.pos[0],self.last_observation.pos[1]).distance(Point(last_state.pos[0], last_state.pos[1])) > self.min_delta_position:
             self.last_observation = last_state
             return True
-        else:
-            # How much time has passed since the last observation?
-            if last_state.timer - self.last_observation.timer > 10.0:
-                return False
-            else:
-                return True
+        # How much time has passed since the last observation?
+        if last_state.timer - self.last_observation.timer > 10.0:
+            return False
+        return True
 
     def _run_simulation(self, the_test) -> SimulationData:
         if not self.brewer:

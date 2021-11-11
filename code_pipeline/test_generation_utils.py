@@ -63,8 +63,7 @@ def register_exit_fun(fun=None, signals=[signal.SIGTERM],
             smap = dict([(getattr(signal, x), x) for x in dir(signal)
                          if x.startswith('SIG')])
             return smap.get(signum, signum)
-        else:
-            return signum
+        return signum
 
     def fun_wrapper():
         if fun not in _executed_exit_funs:
@@ -133,6 +132,6 @@ def register_exit_fun(fun=None, signals=[signal.SIGTERM],
         def outer(fun):
             return register_fun(fun, signals)
         return outer
-    else:
-        register_fun(fun, signals)
-        return fun
+
+    register_fun(fun, signals)
+    return fun

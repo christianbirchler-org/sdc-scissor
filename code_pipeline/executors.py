@@ -43,8 +43,7 @@ class AbstractTestExecutor(ABC):
         if risk_factor == 1: return 150
         if risk_factor == 1.5: return 100
         if risk_factor == 2: return 75
-        else:
-            return 20
+        return 20
     
     def is_force_timeout(self):
         return self.timeout_forced == True
@@ -134,21 +133,20 @@ class AbstractTestExecutor(ABC):
                 # This indicates a generic error during the execution, usually caused by a malformed test that the
                 # validation logic was not able to catch.
                 return "ERROR", description, []
-            elif test_outcome == "PASS":
+            if test_outcome == "PASS":
                 self.stats.test_passed += 1
                 return test_outcome, description, execution_data
-            else:
-                self.stats.test_failed += 1
-                # Valid, either pass or fail
-                if description.startswith("Car drove out of the lane "):
-                    self.stats.obes += 1
-                return test_outcome, description, execution_data
-        else:
-            # Store the generated tests into the result_folder even if it is not valid
-            self.store_test(the_test)
+            self.stats.test_failed += 1
+            # Valid, either pass or fail
+            if description.startswith("Car drove out of the lane "):
+                self.stats.obes += 1
+            return test_outcome, description, execution_data
 
-            self.stats.test_invalid += 1
-            return "INVALID", validation_msg, []
+        # Store the generated tests into the result_folder even if it is not valid
+        self.store_test(the_test)
+
+        self.stats.test_invalid += 1
+        return "INVALID", validation_msg, []
 
     def validate_test(self, the_test):
         log.debug("Validating test")

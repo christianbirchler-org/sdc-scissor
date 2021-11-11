@@ -75,8 +75,7 @@ class AngleBasedStrategy(SegmentationStrategy):
         angle_threshold = self.__angle_threshold
         if current_angle <= previous_angle+angle_threshold and current_angle >= previous_angle-angle_threshold:
             return False
-        else:
-            return True
+        return True
 
 
 if __name__ == '__main__':

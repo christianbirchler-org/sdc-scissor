@@ -91,10 +91,9 @@ class OutOfBoundsMonitor:
         car_point = Point(self.vehicle_state_reader.get_state().pos)
         if wrt == "right":
             return not self.road_polygon.right_polygon.contains(car_point)
-        elif wrt == "left":
+        if wrt == "left":
             return not self.road_polygon.left_polygon.contains(car_point)
-        else:
-            return not self.road_polygon.polygon.contains(car_point)
+        return not self.road_polygon.polygon.contains(car_point)
 
     def _get_car_bbox_polygon(self) -> Polygon:
         car_bbox = self.vehicle_state_reader.get_vehicle_bbox()

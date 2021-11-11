@@ -204,8 +204,7 @@ class RoadGenerator:
     def _get_next_max_angle(self, i: int, threshold=NUM_INITIAL_SEGMENTS_THRESHOLD) -> float:
         if i < threshold or i == self.num_control_nodes - 1:
             return 0
-        else:
-            return self.max_angle
+        return self.max_angle
 
 
 class JanusGenerator():

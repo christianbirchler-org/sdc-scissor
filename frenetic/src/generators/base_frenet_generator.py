@@ -36,8 +36,7 @@ class BaseFrenetGenerator(BaseGenerator):
         if road_points:
             self.recent_count += 1
             return self.execute_test(road_points, method=method, parent_info=parent_info, extra_info=extra_info)
-        else:
-            return 'CANNOT_REFRAME', None
+        return 'CANNOT_REFRAME', None
 
     def reframe_road(self, xs, ys):
         """
