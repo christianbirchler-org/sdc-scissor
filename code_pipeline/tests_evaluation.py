@@ -364,7 +364,7 @@ class RoadTestEvaluator:
                 oob_pos = Point(record.pos[0], record.pos[1])
                 break
 
-        if oob_pos == None:
+        if oob_pos is None:
             # No oob, no interesting segments and we cannot tell whether the OOB was left/rigth
             return None, None, None, None
 
