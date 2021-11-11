@@ -44,7 +44,7 @@ def _transform_run(folder: Path) -> None:
 
     for test_file in test_files:
         test_data = _read_json(test_file)
-        test_data['duration'] = _get_duration(test_data, simulations)
+        test_data['simulation_time'] = _get_duration(test_data, simulations)
         _write_json(transformed_folder / test_file.name, test_data)
 
     if len(simulations) != 0:
