@@ -24,3 +24,9 @@ flake8 = "^4.0.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.messages_control]
+enable = "all"
+disable = "missing-docstring,chained-comparison,too-few-public-methods,fixme,duplicate-code,invalid-name"
+
+max-line-length = 130
