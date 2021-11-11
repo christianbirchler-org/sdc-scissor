@@ -1,8 +1,10 @@
-import numpy as np
 import logging as log
 import random
 from time import sleep
-from frenetic.src.generators.base_frenet_generator import BaseFrenetGenerator
+
+import numpy as np
+
+from .base_frenet_generator import BaseFrenetGenerator
 
 
 class CustomFrenetGenerator(BaseFrenetGenerator):
@@ -10,8 +12,11 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         Generates tests using the frenet framework to determine curvatures.
     """
 
-    def __init__(self, time_budget=None, executor=None, map_size=None, kill_ancestors=1, strict_father=True,
-                 random_budget=3600, crossover_candidates=20, crossover_frequency=0, risk_factor=None, angle_threshold=13, decision_distance=10):
+    def __init__(
+            self, time_budget=None, executor=None, map_size=None, kill_ancestors=1, strict_father=True,
+            random_budget=3600, crossover_candidates=20, crossover_frequency=0, risk_factor=None, angle_threshold=13,
+            decision_distance=10,
+    ):
         # Spending 20% of the time on random generation
         # Set this value to 1.0 to generate fully random results.
         self.random_gen_budget = random_budget
@@ -35,7 +40,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         self.max_length = 30
         self.min_step_size = 7
         if map_size < 150:
-            #Fix Points
+            # Fix Points
             self.number_of_points = 15
             self.frenet_step = max(self.min_step_size, map_size // self.number_of_points)
         else:
@@ -44,7 +49,10 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
             self.frenet_step = 10
             self.number_of_points = min(map_size // self.frenet_step, self.max_length)
 
-        super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father, risk_factor=self.risk_factor, angle_threshold=angle_threshold, decision_distance=decision_distance)
+        super().__init__(
+            time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father,
+            risk_factor=self.risk_factor, angle_threshold=angle_threshold, decision_distance=decision_distance,
+        )
 
     def start(self):
         self.generate_initial_population()
@@ -56,7 +64,6 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
             log.info("Random generation. Remaining time %s", self.executor.get_remaining_time())
             kappas = self.generate_random_test()
             self.execute_frenet_test(kappas, frenet_step=self.frenet_step)
-        return
 
     def generate_mutants(self):
         # Iterating the tests according to the value of the min_oob_distance (closer to fail).
@@ -65,8 +72,11 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
             if 0.0 in set(self.df['visited']) or 1.0 in set(self.df['visited']):
                 # TODO: The values are become float if there is a nan due to ERROR.
                 log.info('Converting visited column to boolean...')
-                self.df['visited'] = self.df['visited'].map(lambda x: True if x == 1.0 else False)
-            parent = self.df[((self.df.outcome == 'PASS') | (self.df.outcome == 'FAIL')) & (~self.df.visited) & (self.df.min_oob_distance < self.min_oobd_threshold)].sort_values('min_oob_distance', ascending=True).head(1)
+                self.df['visited'] = self.df['visited'].map(lambda x: x == 1.0)
+            parent = self.df[
+                ((self.df.outcome == 'PASS') | (self.df.outcome == 'FAIL')) & (~self.df.visited)
+                & (self.df.min_oob_distance < self.min_oobd_threshold)
+            ].sort_values('min_oob_distance', ascending=True).head(1)
             if len(parent):
                 self.df.at[parent.index, 'visited'] = True
                 self.mutate_test(parent)
@@ -137,7 +147,8 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
     def crossover(self):
         # TODO: Add parent information
         candidates = self.df[((self.df.outcome == 'PASS') | (self.df.outcome == 'FAIL')) & (~self.df.kappas.isna()) & (
-                    self.df.min_oob_distance < self.min_oobd_threshold)].sort_values('min_oob_distance', ascending=True).head(self.crossover_candidates)
+                    self.df.min_oob_distance < self.min_oobd_threshold)].sort_values('min_oob_distance', ascending=True) \
+                        .head(self.crossover_candidates)
 
         if len(candidates) > 4:
             kids_count = 0
@@ -182,7 +193,8 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         daughter = her[len(her)//2:] + him[:len(him)//2]
         return [son, daughter]
 
-    def perform_kappa_mutations(self, kappa_mutations, parent, parent_info, extra_info={}):
+    def perform_kappa_mutations(self, kappa_mutations, parent, parent_info, extra_info=None):
+        extra_info = extra_info or {}
         # Only considering paths with more than 10 kappa points for mutations
         # kappas might be empty if the parent was obtained from reverse road points mutation
         kappas = parent.kappas.item()
@@ -192,11 +204,13 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
                 name, function = kappa_mutations[i]
                 log.info("Generating mutants. Remaining time %s", self.executor.get_remaining_time())
                 log.info('Mutation function: {:s}'.format(name))
-                log.info('Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance'.format(parent.outcome.item(),
-                                                                                              parent.accum_neg_oob.item(),
-                                                                                              parent.min_oob_distance.item()))
+                log.info('Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance'.format(
+                    parent.outcome.item(), parent.accum_neg_oob.item(), parent.min_oob_distance.item()
+                ))
                 m_kappas = function(kappas)
-                outcome, _ = self.execute_frenet_test(m_kappas, frenet_step=self.frenet_step, method=name, parent_info=parent_info, extra_info=extra_info)
+                outcome, _ = self.execute_frenet_test(
+                    m_kappas, frenet_step=self.frenet_step, method=name, parent_info=parent_info, extra_info=extra_info,
+                )
 
                 # When there is a mutant of this branch that fails, we stop mutating this branch.
                 if outcome == 'FAIL' and self.kill_ancestors > 0:
@@ -265,7 +279,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         points = self.number_of_points + random.randint(-5, 5)
         # Producing randomly generated kappas for the given setting.
         kappas = [0.0] * points
-        for i in range(len(kappas)):
+        for i in range(len(kappas)):  # pylint: disable=consider-using-enumerate
             kappas[i] = CustomFrenetGenerator.get_next_kappa(kappas[i - 1], kappa_bound, kappa_delta)
 
         return kappas
