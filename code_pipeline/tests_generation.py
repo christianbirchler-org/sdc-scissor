@@ -72,14 +72,14 @@ def get_min_segment_length(road_points: list[tuple[int,int]], segmentation_strat
 
     segment_lengths_lst = []
     for (start, end) in segment_indexes:
-        print('start index: {}, end index: {}'.format(start, end))
+        # print('start index: {}, end index: {}'.format(start, end))
         road_segment = road_points[start: end+1]
         length_of_road_segment = road_geometry_calculator.get_road_length(road_segment)
-        print('segment length: {}'.format(length_of_road_segment))
+        # print('segment length: {}'.format(length_of_road_segment))
         segment_lengths_lst.append(length_of_road_segment)
 
     segment_lengths_lst.sort()
-    print('sorted length list: {}'.format(segment_lengths_lst))
+    # print('sorted length list: {}'.format(segment_lengths_lst))
     for i in range(len(segment_lengths_lst)):
         if segment_lengths_lst[i] < 0.1: continue
         else: return segment_lengths_lst[i]
@@ -164,6 +164,10 @@ class RoadTestFactory:
             try:
                 # This might require some trick?
                 theobj['id' ] = self.id
+            except AttributeError:
+                pass
+            try:
+                theobj['simulation_time'] = self.simulation_time
             except AttributeError:
                 pass
             try:
