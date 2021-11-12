@@ -43,7 +43,7 @@ class BaseGenerator(ABC):
         with open(self.file_name, 'w') as outfile:
             self.df.to_csv(outfile)
 
-    def execute_test(self, road_points, method='random', extra_info=None, parent_info=None):
+    def execute_test(self, road_points, method='random', extra_info=None, parent_info=None, prevent_simulation=True):
         extra_info = extra_info or {}
         parent_info = parent_info or {}
         # Some more debugging
@@ -53,7 +53,7 @@ class BaseGenerator(ABC):
         )
 
         # Try to execute the test
-        test_outcome, description, execution_data = self.executor.execute_test(the_test)
+        test_outcome, description, execution_data = self.executor.execute_test(the_test, prevent_simulation=prevent_simulation)
 
         # Print the result from the test and continue
         log.info("test_outcome %s", test_outcome)

@@ -218,11 +218,12 @@ def setup_logging(log_to, debug):
 @click.option('--random-speed', is_flag=True, help='Set max speed for eacht test uniform random')
 @click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
 @click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
+@click.option('--prevent-simulation', default=True, help='Prevent running the simulation', type=click.BOOL)
 @click.pass_context
 def generate(ctx, executor, beamng_home, beamng_user,
              time_budget, map_size, oob_tolerance, speed_limit,
              module_name, module_path, class_name,
-             visualize_tests, log_to, debug, risk_factor, random_speed, angle_threshold, decision_distance):
+             visualize_tests, log_to, debug, risk_factor, random_speed, angle_threshold, decision_distance, prevent_simulation):
     # ensure that ctx.obj exists and is a dict (in case `cli()` is called
     # by means other than the `if` block below)
     ctx.ensure_object(dict)
@@ -282,7 +283,7 @@ def generate(ctx, executor, beamng_home, beamng_user,
 
     try:
         # Instantiate the test generator
-        test_generator = the_class(time_budget=time_budget, executor=the_executor, map_size=map_size, risk_factor=risk_factor, angle_threshold=angle_threshold, decision_distance=decision_distance)
+        test_generator = the_class(time_budget=time_budget, executor=the_executor, map_size=map_size, risk_factor=risk_factor, angle_threshold=angle_threshold, decision_distance=decision_distance, prevent_simulation=prevent_simulation)
         # Start the generation
         test_generator.start()
     except Exception:

@@ -32,7 +32,7 @@ BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
 BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
 
 
-def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
+def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance, prevent_simulation=True):
     arguments = {
         '--visualize-tests': True,
         '--time-budget': time_budget,
@@ -42,6 +42,7 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         '--decision-distance': decision_distance,
         '--executor': executor,
         '--map-size': map_size,
+        '--prevent-simulation': prevent_simulation,
     }
     if random_speed:
         arguments['--random-speed'] = True
@@ -117,9 +118,10 @@ def from_config_file(ctx, config_file: Path):
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
 @click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
 @click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
+@click.option('--prevent-simulation', default=False, help=r'For some reasons you don\'t want to run the simulator')
 @click.pass_context
-def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance):
-    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance, prevent_simulation):
+    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance, prevent_simulation)
 
 
 def parse_json_test_file(file):
@@ -319,12 +321,12 @@ def predict_scenarios(scenarios, classifier):
 @click.option('--generator', default='frenetic', help='Test case generator')
 @click.pass_context
 def generate_scenarios(ctx, time_budget, generator):
-   
+
     if not os.path.exists(Config.VALID_TEST_DIR):
         os.mkdir(Config.VALID_TEST_DIR)
 
     out_dir_abs_path = os.path.abspath(Config.VALID_TEST_DIR)
-   
+
     executor = 'mock'
     risk_factor = 0.7
     oob_tolerance = 0.95
