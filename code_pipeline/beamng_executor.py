@@ -60,7 +60,7 @@ class BeamngExecutor(AbstractTestExecutor):
         self.min_delta_position = 1.0
         self.road_visualizer = road_visualizer
 
-    def _get_duration(start_time, end_time):
+    def _get_duration(self, start_time, end_time):
         t0 = datetime.fromisoformat(start_time)
         t1 = datetime.fromisoformat(end_time)
         return (t1 - t0).total_seconds()
