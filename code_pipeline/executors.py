@@ -77,16 +77,16 @@ class AbstractTestExecutor(ABC):
         # Just log valid tests
         ##########################################################
         if is_valid:
-            filename = 'road_' + str(Config.VALID_TEST_COUNTER) + '.json'
-            abs_path_to_test = Config.VALID_TEST_DIR + '/' + filename
-            print('######## {}'.format(abs_path_to_test))
+            # filename = 'road_' + str(Config.VALID_TEST_COUNTER) + '.json'
+            # abs_path_to_test = Config.VALID_TEST_DIR + '/' + filename
+            # print('######## {}'.format(abs_path_to_test))
 
-            # create json object with road data
-            roads = {'road_points': the_test.road_points, 'interpolated_road_points': the_test.interpolated_points}
-            with open(abs_path_to_test, 'w') as file:
-                file.write(json.dumps(roads, indent=2))
+            # # create json object with road data
+            # roads = {'road_points': the_test.road_points, 'interpolated_road_points': the_test.interpolated_points}
+            # with open(abs_path_to_test, 'w') as file:
+            #     file.write(json.dumps(roads, indent=2))
 
-            Config.VALID_TEST_COUNTER += 1
+            # Config.VALID_TEST_COUNTER += 1
 
             # TODO: skip exection here depending on argument
             if prevent_simulation:
@@ -144,7 +144,7 @@ class AbstractTestExecutor(ABC):
             return test_outcome, description, execution_data
 
         # Store the generated tests into the result_folder even if it is not valid
-        self.store_test(the_test)
+        # self.store_test(the_test)
 
         self.stats.test_invalid += 1
         return "INVALID", validation_msg, []
