@@ -1,7 +1,6 @@
-from math import sqrt
+import numpy as np
 
 from self_driving.bbox import RoadBoundingBox
-import numpy as np
 
 # from code_pipeline.tests_generation import RoadTest
 from code_pipeline.tests_generation import RoadTestFactory
@@ -42,11 +41,11 @@ def min_radius(x, w=5):
     if mr == np.inf:
         mr = 0
 
-    return mr * 3.280839895#, mincurv
+    return mr * 3.280839895  # , mincurv
+
 
 class TestValidator:
-
-    def __init__(self, map_size, min_road_length = 20):
+    def __init__(self, map_size, min_road_length=20):
         self.road_geometry_calculator = RoadGeometryCalculator()
         self.map_size = map_size
         self.box = (0, 0, map_size, map_size)
@@ -56,22 +55,21 @@ class TestValidator:
         # close to each others
         self.max_points = 500
 
-    def is_enough_road_points(self, the_test):
+    @staticmethod
+    def is_enough_road_points(the_test):
         return len(the_test.road_points) > 1
 
     def is_too_many_points(self, the_test):
         return len(the_test.road_points) > self.max_points
 
-    def is_not_self_intersecting(self, the_test):
+    @staticmethod
+    def is_not_self_intersecting(the_test):
         road_polygon = the_test.get_road_polygon()
         return road_polygon.is_valid()
 
-    def is_too_sharp(self, the_test, TSHD_RADIUS=47):
-        if TSHD_RADIUS > min_radius(the_test.interpolated_points) > 0.0:
-            check = True
-        else:
-            check = False
-        return check
+    @staticmethod
+    def is_too_sharp(the_test, TSHD_RADIUS=47):
+        return TSHD_RADIUS > min_radius(the_test.interpolated_points) > 0.0
 
     def is_inside_map(self, the_test):
         """
@@ -83,19 +81,21 @@ class TestValidator:
         min_x, max_x = min(xs), max(xs)
         min_y, max_y = min(ys), max(ys)
 
-        return 0 < min_x or min_x > self.map_size and \
-               0 < max_x or max_x > self.map_size and \
-               0 < min_y or min_y > self.map_size and \
-               0 < max_y or max_y > self.map_size
+        return min_x > 0 or min_x > self.map_size and \
+            max_x > 0 or max_x > self.map_size and \
+            min_y > 0 or min_y > self.map_size and \
+            max_y > 0 or max_y > self.map_size
 
-    def is_right_type(self, the_test):
+    @staticmethod
+    def is_right_type(the_test):
         """
             The type of the_test must be RoadTest
         """
-        check = type(the_test) is RoadTestFactory.RoadTest
+        check = isinstance(the_test, RoadTestFactory.RoadTest)
         return check
 
-    def is_valid_polygon(self, the_test):
+    @staticmethod
+    def is_valid_polygon(the_test):
         road_polygon = the_test.get_road_polygon()
         check = road_polygon.is_valid()
         return check
@@ -109,7 +109,8 @@ class TestValidator:
         # This is approximated because at this point the_test is not yet interpolated
         return the_test.get_road_length() > self.min_road_length
 
-    def is_min_road_segment_not_long_enough_according_risk_factor(self, the_test):
+    @staticmethod
+    def is_min_road_segment_not_long_enough_according_risk_factor(the_test):
         rf = the_test.risk_factor
         msl = the_test.min_segment_length
         required_min_segment_length = None
@@ -125,7 +126,7 @@ class TestValidator:
         return msl >= required_min_segment_length
 
     def is_road_not_long_enough_according_min_segment(self, the_test):
-        required_proportion = 0.4 # TODO: avoid magic number
+        required_proportion = 0.4  # TODO: avoid magic number
         road_length = self.road_geometry_calculator.get_road_length(the_test.road_points)
         msl = the_test.min_segment_length
         return road_length * required_proportion >= msl

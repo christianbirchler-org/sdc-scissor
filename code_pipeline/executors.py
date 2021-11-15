@@ -5,10 +5,7 @@ import random
 import time
 import sys
 import os
-import json
-from code_pipeline.config import Config
 from datetime import datetime
-
 from abc import ABC, abstractmethod
 
 from code_pipeline.validation import TestValidator
@@ -39,21 +36,25 @@ class AbstractTestExecutor(ABC):
 
         super().__init__()
 
-    def __define_min_road_length(self, risk_factor):
-        if risk_factor == 1: return 150
-        if risk_factor == 1.5: return 100
-        if risk_factor == 2: return 75
+    @staticmethod
+    def __define_min_road_length(risk_factor):
+        if risk_factor == 1:
+            return 150
+        if risk_factor == 1.5:
+            return 100
+        if risk_factor == 2:
+            return 75
         return 20
 
     def is_force_timeout(self):
-        return self.timeout_forced == True
+        return self.timeout_forced
 
     def store_test(self, the_test):
         timestamp_obj = datetime.now()
         timestamp_str = timestamp_obj.strftime("%d-%b-%Y_(%H-%M-%S.%f)")
 
         # TODO Pad zeros to id
-        output_file_name = os.path.join(self.result_folder, ".".join([timestamp_str ,"test", str(the_test.id).zfill(4), "json"]))
+        output_file_name = os.path.join(self.result_folder, ".".join([timestamp_str, "test", str(the_test.id).zfill(4), "json"]))
         with open(output_file_name, 'w') as test_file:
             test_file.write(the_test.to_json())
 
@@ -71,7 +72,6 @@ class AbstractTestExecutor(ABC):
 
         # This might be placed inside validate_test
         the_test.set_validity(is_valid, validation_msg)
-
 
         ##########################################################
         # Just log valid tests
@@ -94,10 +94,6 @@ class AbstractTestExecutor(ABC):
                 return "NOT EXECUTED", "SIMULATION PREVENTION IS SET", []
         ##########################################################
         ##########################################################
-
-
-
-
 
         # TODO We do not store the test until is executed, or proven invalid to avoid a data condition:
         # the test is valid, we store it, but we cannot execute is because there's no more budget.
@@ -191,25 +187,24 @@ class MockExecutor(AbstractTestExecutor):
         test_outcome = random.choice(["FAIL", "FAIL", "FAIL", "PASS", "PASS", "PASS", "PASS", "PASS", "ERROR"])
         description = "Mocked test results"
 
-
         sim_state = SimulationDataRecord(
             timer=3.0,
-            pos= [0.0, 0.0, 1.0],
-            dir= [0.0, 0.0, 1.0],
-            vel= [0.0, 0.0, 1.0],
-            steering= 0.0,
-            steering_input= 0.0,
-            brake= 0.0,
-            brake_input= 0.0,
-            throttle= 0.0,
-            throttle_input= 0.0,
-            wheelspeed= 0.0,
-            vel_kmh = 0.0,
-            is_oob = False,
-            oob_counter = 0,
-            max_oob_percentage = 0.0,
-            oob_distance = 0.0,
-            oob_percentage= 50.0
+            pos=[0.0, 0.0, 1.0],
+            dir=[0.0, 0.0, 1.0],
+            vel=[0.0, 0.0, 1.0],
+            steering=0.0,
+            steering_input=0.0,
+            brake=0.0,
+            brake_input=0.0,
+            throttle=0.0,
+            throttle_input=0.0,
+            wheelspeed=0.0,
+            vel_kmh=0.0,
+            is_oob=False,
+            oob_counter=0,
+            max_oob_percentage=0.0,
+            oob_distance=0.0,
+            oob_percentage=50.0
         )
 
         execution_data = [sim_state]

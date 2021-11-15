@@ -1,9 +1,10 @@
+from math import atan2, degrees
+
 from matplotlib import pyplot as plt
-import matplotlib.patches as patches
+from matplotlib import patches
 from shapely.geometry import LineString, Polygon
 from shapely.affinity import translate, rotate
 from descartes import PolygonPatch
-from math import atan2, pi, degrees
 
 
 # https://stackoverflow.com/questions/34764535/why-cant-matplotlib-plot-in-a-different-thread
@@ -13,7 +14,7 @@ class RoadTestVisualizer:
     """
 
     little_triangle = Polygon([(10, 0), (0, -5), (0, 5), (10, 0)])
-    square = Polygon([(5, 5), (5, -5), (-5, -5), (-5, 5), (5,5)])
+    square = Polygon([(5, 5), (5, -5), (-5, -5), (-5, 5), (5, 5)])
 
     def __init__(self, map_size):
         self.map_size = map_size
@@ -49,16 +50,15 @@ class RoadTestVisualizer:
         plt.suptitle(title_string, fontsize=14)
         plt.draw()
         plt.pause(0.001)
-        
+
         # Plot the map. Trying to re-use an artist in more than one Axes which is supported
         map_patch = patches.Rectangle((0, 0), self.map_size, self.map_size, linewidth=1, edgecolor='black', facecolor='none')
         plt.gca().add_patch(map_patch)
 
-
         # Road Geometry.
         road_poly = LineString([(t[0], t[1]) for t in the_test.interpolated_points]).buffer(8.0, cap_style=2, join_style=2)
         road_patch = PolygonPatch(road_poly, fc='gray', ec='dimgray')  # ec='#555555', alpha=0.5, zorder=4)
-        plt.gca().add_patch(road_patch )
+        plt.gca().add_patch(road_patch)
 
         # Interpolated Points
         sx = [t[0] for t in the_test.interpolated_points]
@@ -92,18 +92,13 @@ class RoadTestVisualizer:
         transformed_fov = translate(transformed_fov, xoff=sx[-1], yoff=sy[-1])
         plt.plot(*transformed_fov.exterior.xy, color='black')
 
-
         # Add information about the test validity
         title_string = ""
         if the_test.is_valid is not None:
-            title_string = " ".join([title_string, "Test", str(the_test.id), "is" , ("valid" if the_test.is_valid else "invalid")])
+            title_string = " ".join([title_string, "Test", str(the_test.id), "is", ("valid" if the_test.is_valid else "invalid")])
             if not the_test.is_valid:
                 title_string = title_string + ":" + the_test.validation_message
 
         plt.suptitle(title_string, fontsize=14)
         plt.draw()
         plt.pause(0.001)
-
-
-
-
