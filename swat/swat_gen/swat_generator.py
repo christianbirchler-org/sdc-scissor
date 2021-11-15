@@ -1,9 +1,7 @@
-from code_pipeline.tests_generation import RoadTestFactory
 from time import sleep
-from swat.swat_gen.road_gen import RoadGen
 import logging as log
-from code_pipeline.validation import TestValidator
 from code_pipeline.tests_generation import RoadTestFactory
+from swat.swat_gen.road_gen import RoadGen
 
 
 class SwatTestGenerator:
@@ -29,7 +27,7 @@ class SwatTestGenerator:
                 self.executor.get_remaining_time(),
             )
 
-            # generate the road points. 
+            # generate the road points.
             # class input values correspond to maximum distance to go stright and rotation angle
             road = RoadGen(self.map_size, 5, 50, 10, 70)
             road.test_case_generate()
@@ -38,14 +36,14 @@ class SwatTestGenerator:
                 road = RoadGen(200, 5, 50, 10, 70)
                 road.test_case_generate()
 
-            the_test = RoadTestFactory.create_road_test(road.road_points)
+            the_test = RoadTestFactory.create_road_test(road.road_points, 0.7)
 
             # Some more debugging
             log.info("Generated test using: %s", road.road_points)
-            the_test = RoadTestFactory.create_road_test(road.road_points)
+            the_test = RoadTestFactory.create_road_test(road.road_points, 0.7)
 
             # Try to execute the test
-            test_outcome, description, execution_data = self.executor.execute_test(
+            test_outcome, description, _execution_data = self.executor.execute_test(
                 the_test
             )
 
