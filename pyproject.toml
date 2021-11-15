@@ -32,6 +32,8 @@ disable = [
     "chained-comparison",
     "too-few-public-methods",
     "too-many-arguments",
+    "logging-not-lazy",
+    "cyclic-import",
     "fixme",
     "duplicate-code",
     "invalid-name",

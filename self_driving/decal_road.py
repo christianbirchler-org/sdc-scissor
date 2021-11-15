@@ -17,7 +17,6 @@ class DecalRoad:
         self.drivability = drivability
 
     def add_4d_points(self, nodes: List[Tuple[float, float, float, float]]):
-        self._safe_add_nodes(nodes)
         assert len(nodes) > 0, 'nodes should be a non empty list'
         assert all(len(item) == 4 for item in nodes), 'nodes list should contain tuple of 4 elements'
         assert all(all(isinstance(val, float) for val in item) for item in nodes), \
@@ -34,10 +33,6 @@ class DecalRoad:
     @classmethod
     def from_dict(cls, d):
         return DecalRoad(name=d['name']).add_4d_points(nodes=d['nodes'])
-
-    def _safe_add_nodes(self, nodes: List):
-        l = len(nodes) + len(self.nodes)
-        #assert l < 540, f'BeamNG has issues with roads with more than 540 points. This road would have {l} nodes'
 
     def to_json(self):
         assert len(self.nodes) > 0, 'there are no points in this road'

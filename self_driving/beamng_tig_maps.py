@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import time
+import sys
 
 
 class BeamNGMainFolder:
@@ -33,15 +34,12 @@ class MapFolder:
         with open(self.tig_version_json_path, 'r') as f:
             return json.load(f)
 
-    def tig_version_json_path(self):
-        return self.path + '/'
-
     def delete_all_map(self):
         print(f'Removing [{self.path}]')
         shutil.rmtree(self.path, ignore_errors=True)
 
         # sometimes rmtree fails to remove files
-        for tries in range(20):
+        for _tries in range(20):
             if os.path.exists(self.path):
                 time.sleep(0.1)
                 shutil.rmtree(self.path, ignore_errors=True)
@@ -92,7 +90,7 @@ class Maps:
                 print(f'Warning! The folder [{self.beamng_map.path}] does not look like a map of tig project.\n'
                       f'It does not contains the distinctive file [{self.beamng_map.tig_version_json_path}]')
                 print('Stopping execution')
-                exit(1)
+                sys.exit(1)
             else:
                 if not self.beamng_map.same_version(self.source_map):
                     print(f'Maps have different version information. '
@@ -111,7 +109,6 @@ class Maps:
             shutil.copytree(src=self.source_map.path, dst=self.beamng_map.path)
 
 
-global maps
 maps = Maps()
 
 if __name__ == '__main__':

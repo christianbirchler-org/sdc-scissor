@@ -1,15 +1,10 @@
-import json
-
 from beamngpy import BeamNGpy, Scenario, Vehicle
 from beamngpy.sensors import Camera
 
-from self_driving.beamng_waypoint import BeamNGWaypoint
 from self_driving.decal_road import DecalRoad
 from self_driving.road_points import List4DTuple, RoadPoints
 from self_driving.simulation_data import SimulationParams
 from self_driving.beamng_pose import BeamNGPose
-from self_driving.utils import get_node_coords
-from self_driving.beamng_tig_maps import maps
 
 
 class BeamNGCamera:
@@ -40,6 +35,7 @@ class BeamNGBrewer:
         steps = 5
         self.params = SimulationParams(beamng_steps=steps, delay_msec=int(steps * 0.05 * 1000))
         self.vehicle_start_pose = BeamNGPose()
+        self.scenario = None
 
     def setup_road_nodes(self, road_nodes):
         self.road_nodes = road_nodes
@@ -51,7 +47,7 @@ class BeamNGBrewer:
         self.vehicle = Vehicle('ego_vehicle', model='etk800', licence='TIG', color='Red')
         return self.vehicle
 
-    def setup_scenario_camera(self, resolution=(1280, 1280), fov=120) -> BeamNGCamera:
+    def setup_scenario_camera(self) -> BeamNGCamera:
         assert self.camera is None
         self.camera = BeamNGCamera(self.beamng, 'brewer_camera')
         return self.camera
@@ -65,7 +61,7 @@ class BeamNGBrewer:
             self.scenario.add_camera(self.camera.camera, self.camera.name)
 
         self.scenario.make(self.beamng)
-        if not self.beamng.server:
+        if not self.beamng.server:  # pylint: disable=no-member
             self.beamng.open()
         self.beamng.pause()
         self.beamng.set_deterministic()
@@ -76,5 +72,5 @@ class BeamNGBrewer:
         if self.beamng:
             try:
                 self.beamng.close()
-            except:
+            except Exception:  # pylint: disable=broad-except
                 pass
