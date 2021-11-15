@@ -43,15 +43,5 @@ class SimulationDataCollector:
     def get_simulation_data(self) -> SimulationData:
         return self.simulation_data
 
-    def take_car_picture_if_needed(self):
-        last_state = self.states[-1]
-        if last_state.is_oob:
-            self.camera.pose.pos = tuple(last_state.pos[:2]) + (-5,)
-            self.camera.pose.rot = (0, 0, -90)
-            img_path = self.simulation_data.path_root.joinpath(f'oob_camera_shot{last_state.oob_counter}.jpg')
-            img_path.parent.mkdir(parents=True, exist_ok=True)
-            if not img_path.exists():
-                self.camera.get_rgb_image().save(str(img_path))
-
     def save(self):
         self.simulation_data.save()

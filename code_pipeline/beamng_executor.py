@@ -211,11 +211,6 @@ class BeamngExecutor(AbstractTestExecutor):
             traceback.print_exception(type(ex), ex, ex.__traceback__)
         finally:
             sim_data_collector.save()
-            try:
-                sim_data_collector.take_car_picture_if_needed()
-            except:
-                pass
-
             self.end_iteration()
 
         return sim_data_collector.simulation_data
