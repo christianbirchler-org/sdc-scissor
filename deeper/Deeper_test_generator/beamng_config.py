@@ -11,7 +11,6 @@ class BeamNGConfig(Config):
 
         self.num_control_nodes = 10
 
-
         self.MAX_ANGLE = 40
         self.NUM_SPLINE_NODE = 20
         self.SEG_LENGTH = 25

@@ -39,8 +39,7 @@ def catmull_rom_spline(p0, p1, p2, p3, num_points=20):
     b1 = (t2 - t) / (t2 - t0) * a1 + (t - t0) / (t2 - t0) * a2
     b2 = (t3 - t) / (t3 - t1) * a2 + (t - t1) / (t3 - t1) * a3
 
-    c = (t2 - t) / (t2 - t1) * b1 + (t - t1) / (t2 - t1) * b2
-    return c
+    return (t2 - t) / (t2 - t1) * b1 + (t - t1) / (t2 - t1) * b2
 
 
 def catmull_rom_chain(points: List[tuple], num_spline_points=20) -> List:
@@ -81,6 +80,6 @@ def plot_catmull_rom(c, points):
 
 
 if __name__ == '__main__':
-    points = [(0, 4), (1, 2), (3, 1), (5, 3), (3, 5), (1, 7), (3, 9), (5, 8), (6, 6)]
-    c = catmull_rom_2d(points)
-    plot_catmull_rom(c, points)
+    all_points = [(0, 4), (1, 2), (3, 1), (5, 3), (3, 5), (1, 7), (3, 9), (5, 8), (6, 6)]
+    all_c = catmull_rom_2d(all_points)
+    plot_catmull_rom(all_c, all_points)

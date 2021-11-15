@@ -1,20 +1,16 @@
-import random
-
 import numpy
-import time
-import sys
 
 from deap import base
 from deap import creator
 from deap import tools
 
-from deeper.Deeper_test_generator.archive_impl import NonGreedyArchive, GreedyArchive
+from deeper.Deeper_test_generator.archive_impl import GreedyArchive
 from deeper.Deeper_test_generator.log_setup import get_logger
-from deeper.Deeper_test_generator.problem import Problem
 from deeper.Deeper_test_generator.beamng_problem import BeamNGProblem
 from deeper.Deeper_test_generator.beamng_config import BeamNGConfig
 
 log = get_logger(__file__)
+
 
 class DeeperTestGenerator():
     """
@@ -28,12 +24,12 @@ class DeeperTestGenerator():
         self.map_size = map_size
 
     def start(self):
-        start = time.monotonic()
+        # start = time.monotonic()
         log.info("Test Generation Started by Deeper")
         config = BeamNGConfig()
-        #problem = BeamNGProblem(self.executor, config, GreedyArchive(config.ARCHIVE_THRESHOLD))
+        # problem = BeamNGProblem(self.executor, config, GreedyArchive(config.ARCHIVE_THRESHOLD))
         problem = BeamNGProblem(self.executor, config, GreedyArchive())
-        #random.seed()
+        # random.seed()
 
         creator.create("FitnessMulti", base.Fitness, weights=config.fitness_weights)
         creator.create("Individual", problem.deap_individual_class(), fitness=creator.FitnessMulti)
@@ -75,7 +71,7 @@ class DeeperTestGenerator():
         #     raise TimeoutError("Sorry, Out of time")
         # # **********************************************************************
 
-        #problem.pre_evaluate_members(invalid_ind)
+        # problem.pre_evaluate_members(invalid_ind)
 
         # # **********************************************************************
         # if time.monotonic() > start + self.time_budget:
@@ -107,7 +103,7 @@ class DeeperTestGenerator():
         #     raise TimeoutError("Sorry, Out of time")
         # # **********************************************************************
 
-        problem.on_iteration(0, pop, logbook)
+        problem.on_iteration(0, pop)
 
         for gen in range(1, config.NUM_GENERATIONS):
 
@@ -128,7 +124,7 @@ class DeeperTestGenerator():
             #     raise TimeoutError("Sorry, Out of time")
             # # **********************************************************************
 
-            problem.reseed(pop, offspring)
+            problem.reseed(pop)
 
             # # **********************************************************************
             # if time.monotonic() > start + self.time_budget:
@@ -150,9 +146,9 @@ class DeeperTestGenerator():
 
             # Evaluate the individuals with an invalid fitness
             to_eval = offspring + pop
-            invalid_ind = [ind for ind in to_eval]
+            invalid_ind = list(to_eval)
 
-            #problem.pre_evaluate_members(invalid_ind)
+            # problem.pre_evaluate_members(invalid_ind)
 
             # # **********************************************************************
             # if time.monotonic() > start + self.time_budget:
@@ -176,8 +172,6 @@ class DeeperTestGenerator():
             pop = toolbox.select(pop + offspring, config.POPSIZE)
             record = stats.compile(pop)
             logbook.record(gen=gen, evals=len(invalid_ind), **record)
-            #print(logbook.stream)
-            problem.on_iteration(gen, pop, logbook)
+            # print(logbook.stream)
+            problem.on_iteration(gen, pop)
         return pop, logbook
-    #
-    #

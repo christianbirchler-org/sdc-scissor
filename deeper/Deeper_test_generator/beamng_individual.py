@@ -1,11 +1,7 @@
-import random
-
-import numpy as np
 from deap import creator
 
 from deeper.Deeper_test_generator.config import Config
 from deeper.Deeper_test_generator.log_setup import get_logger
-from deeper.Deeper_test_generator.misc import evaluate_sparseness
 from deeper.Deeper_test_generator.archive import Archive
 from deeper.Deeper_test_generator.individual import Individual
 from deeper.Deeper_test_generator.beamng_member import BeamNGMember
@@ -16,9 +12,10 @@ log = get_logger(__file__)
 class BeamNGIndividual(Individual):
     counter = 0
 
-    def __init__(self, m1: BeamNGMember, config: Config, archive: Archive):
+    def __init__(self, m1: BeamNGMember, m2: BeamNGMember, config: Config, archive: Archive):
         super().__init__(m1)
         self.m1: BeamNGMember = self.m1
+        self.m2: BeamNGMember = m2
         BeamNGIndividual.counter += 1
         self.name = f'Road{str(BeamNGIndividual.counter)}'
         self.name_ljust = self.name.ljust(6)
@@ -28,6 +25,7 @@ class BeamNGIndividual(Individual):
         self.sparseness = None
         self.aggregate = None
         self.seed: BeamNGMember
+        self.ff1 = None
 
     def evaluate(self, executor):
         log.info(f'Evaluating {self.name}')
@@ -39,8 +37,8 @@ class BeamNGIndividual(Individual):
     def clone(self) -> 'BeamNGIndividual':
         res: BeamNGIndividual = creator.Individual(self.m1.clone(), self.config, self.archive)
         res.seed = self.seed
-        #log.info(f'cloned to {res} from {self}')
-        log.info(f'cloning done')
+        # log.info(f'cloned to {res} from {self}')
+        log.info('cloning done')
         return res
 
     def semantic_distance(self, i2: 'BeamNGIndividual'):
@@ -61,8 +59,8 @@ class BeamNGIndividual(Individual):
                 'm1': self.m1.to_dict(),
                 'seed': self.seed.to_dict()}
 
-    @classmethod
-    def from_dict(self, d):
+    @staticmethod
+    def from_dict(d):
         m1 = BeamNGMember.from_dict(d['m1'])
         m2 = BeamNGMember.from_dict(d['m2'])
         ind = BeamNGIndividual(m1, m2, None, None)
@@ -71,7 +69,6 @@ class BeamNGIndividual(Individual):
         return ind
 
     def __str__(self):
-        dist = str(self.members_distance).ljust(4)[:4]
         return f'{self.name_ljust}'
 
     def mutate(self):

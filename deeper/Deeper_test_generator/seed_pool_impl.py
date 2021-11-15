@@ -24,7 +24,7 @@ class SeedPoolFolder(SeedPool):
         if not result:
             x = (self.storage.read(path)).get("m1")
             result = self.problem.member_class().from_dict(x)
-            #result = self.problem.member_class().from_dict(self.storage.read(path))
+            # result = self.problem.member_class().from_dict(self.storage.read(path))
             self.cache[path] = result
         result.problem = self.problem
         return result
@@ -59,5 +59,5 @@ class SeedPoolMnist(SeedPool):
         if not result:
             # result = self.problem.member_class().from_dict(self.storage.read(path))
             raise NotImplementedError()
-            self.cache[mnist_index] = result
+            # self.cache[mnist_index] = result
         return result

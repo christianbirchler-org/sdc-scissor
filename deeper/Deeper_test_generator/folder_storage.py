@@ -31,13 +31,15 @@ class FolderStorage:
         dumps = self.save_json_by_path(path, object_instance)
         return dumps
 
-    def load_json_by_path(self, path):
+    @staticmethod
+    def load_json_by_path(path):
         assert os.path.exists(path), path
         with open(path, 'r') as f:
             nodes = json.loads(f.read())
         return nodes
 
-    def save_json_by_path(self, path, object_instance):
+    @staticmethod
+    def save_json_by_path(path, object_instance):
         with open(path, 'w') as f:
             dumps = json.dumps(object_instance)
             f.write(dumps)
@@ -59,7 +61,8 @@ class FolderStorage:
         with open(path, 'w') as f:
             f.write(contents)
 
-    def read(self, path):
+    @staticmethod
+    def read(path):
         assert os.path.exists(path), path
         with open(path, 'r') as f:
             beamng_member = json.loads(f.read())
