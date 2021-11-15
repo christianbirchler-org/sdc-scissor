@@ -1,6 +1,8 @@
-import numpy as np
+import time
 import math
 import logging as log
+
+import numpy as np
 
 from code_pipeline.tests_generation import RoadTestFactory
 
@@ -16,7 +18,8 @@ class ManualTestsGenerator():
         self.executor = executor
         self.map_size = map_size
 
-    def _generate_test_1(self):
+    @staticmethod
+    def _generate_test_1():
         road_points = []
 
         # Create a vertical segment starting close to the left edge of the map
@@ -36,7 +39,7 @@ class ManualTestsGenerator():
         interpolation_points = 5
         angles_in_deg = np.linspace(-60.0, 0.0, num=interpolation_points)
 
-        for angle_in_rads in [ math.radians(a) for a in angles_in_deg]:
+        for angle_in_rads in [math.radians(a) for a in angles_in_deg]:
             x = math.sin(angle_in_rads) * radius + center_x
             y = math.cos(angle_in_rads) * radius + center_y
             road_points.append((x, y))
@@ -55,7 +58,8 @@ class ManualTestsGenerator():
         road_points.append((x, y))
         return road_points
 
-    def _generate_test_2(self):
+    @staticmethod
+    def _generate_test_2():
         road_points = []
 
         # Create a vertical segment starting close to the left edge of the map
@@ -75,7 +79,7 @@ class ManualTestsGenerator():
         interpolation_points = 5
         angles_in_deg = np.linspace(-60.0, 0.0, num=interpolation_points)
 
-        for angle_in_rads in [ math.radians(a) for a in angles_in_deg]:
+        for angle_in_rads in [math.radians(a) for a in angles_in_deg]:
             x = math.sin(angle_in_rads) * radius + center_x
             y = math.cos(angle_in_rads) * radius + center_y
             road_points.append((x, y))
@@ -94,7 +98,8 @@ class ManualTestsGenerator():
         road_points.append((x, y))
         return road_points
 
-    def _generate_test_3(self):
+    @staticmethod
+    def _generate_test_3():
         road_points = []
 
         # Create an horizontal segment starting close to the left edge of the map
@@ -126,14 +131,13 @@ class ManualTestsGenerator():
         y = y + 20
         road_points.append((x, y))
 
-
         return road_points
 
     def _execute(self, test):
         # Creating the RoadTest from the points
-        the_test = RoadTestFactory.create_road_test(test)
+        the_test = RoadTestFactory.create_road_test(test, 0.7)
         # Send the test for execution
-        test_outcome, description, execution_data = self.executor.execute_test(the_test)
+        test_outcome, description, _execution_data = self.executor.execute_test(the_test)
 
         # Print test outcome
         log.info("test_outcome %s", test_outcome)
@@ -152,6 +156,4 @@ class ManualTestsGenerator():
         self._execute(test_2)
         self._execute(test_3)
 
-        import time
         time.sleep(10)
-
