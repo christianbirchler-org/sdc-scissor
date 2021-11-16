@@ -167,7 +167,8 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
                 while self.executor.get_remaining_time() > 0 and len(kids) > 0:
                     kappas = kids.pop()
                     kids_count += 1
-                    self.execute_frenet_test(kappas, method=name, frenet_step=self.frenet_step, parent_info={}, extra_info={}, prevent_simulation=self.prevent_simulation)
+                    self.execute_frenet_test(kappas, method=name, frenet_step=self.frenet_step, parent_info={}, extra_info={},
+                                             prevent_simulation=self.prevent_simulation)
 
     @staticmethod
     def chromosome_crossover(him, her):
@@ -211,7 +212,8 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
                 ))
                 m_kappas = function(kappas)
                 outcome, _ = self.execute_frenet_test(
-                    m_kappas, frenet_step=self.frenet_step, method=name, parent_info=parent_info, extra_info=extra_info, prevent_simulation=self.prevent_simulation
+                    m_kappas, frenet_step=self.frenet_step, method=name, parent_info=parent_info, extra_info=extra_info,
+                    prevent_simulation=self.prevent_simulation,
                 )
 
                 # When there is a mutant of this branch that fails, we stop mutating this branch.

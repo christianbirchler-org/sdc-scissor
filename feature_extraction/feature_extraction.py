@@ -4,6 +4,7 @@ from feature_extraction.equi_distance_strategy import EquiDistanceStrategy
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
 
+
 class RoadFeatures:
     def __init__(self):
         self.direct_distance = 0
@@ -34,7 +35,7 @@ class RoadFeatures:
             res[member] = getattr(self, member)
         return res
 
-  
+
 class RoadSegment:
     def __init__(self):
         self.start_index = None
@@ -62,13 +63,13 @@ class FeatureExtractor:
 
     def extract_features(self):
         """
-        Input is a list of (x,y) tuples which defines the road.
+        Input is a list of (x, y) tuples which defines the road.
         This function extract the angles and radius of segments.
         Futhermore, the statistics of angles and radius are calculated.
         """
-        
+
         # get turn angles
-        #self.__angles = self.__extract_turn_angles(self.__road_points)
+        # self.__angles = self.__extract_turn_angles(self.__road_points)
 
         # define segments (allow different strategies)
         segment_indexes_list = self.__segmentation_strategy.extract_segments(self.__road_points)
@@ -81,8 +82,6 @@ class FeatureExtractor:
         self.__road_features = self.__get_full_road_features_from(self.__segments)
 
         return self.__road_features
-            
-    
 
     ############################################################################
     #       IMPLEMENTATION DETAILS BELOW
@@ -97,9 +96,12 @@ class FeatureExtractor:
         }
 
         for segment in segments:
-            if segment.type == SegmentType.l_turn: road_features.num_l_turns += 1
-            elif segment.type == SegmentType.r_turn: road_features.num_r_turns += 1
-            elif segment.type == SegmentType.straight: road_features.num_straights += 1
+            if segment.type == SegmentType.l_turn:
+                road_features.num_l_turns += 1
+            elif segment.type == SegmentType.r_turn:
+                road_features.num_r_turns += 1
+            elif segment.type == SegmentType.straight:
+                road_features.num_straights += 1
             road_features.total_angle += segment.angle
 
             # these lists allows a simpler calculation of the statistics
@@ -110,7 +112,7 @@ class FeatureExtractor:
         road_features.median_angle = statistics.median(raw_feature_data["angles"])
         road_features.max_angle = max(raw_feature_data["angles"])
         road_features.min_angle = min(raw_feature_data["angles"])
-        
+
         # more than 1 data point is required to calculate the standard deviation
         if len(raw_feature_data['angles']) > 1:
             road_features.std_angle = statistics.stdev(raw_feature_data["angles"])
@@ -121,17 +123,17 @@ class FeatureExtractor:
         road_features.median_pivot_off = statistics.median(raw_feature_data["pivots"])
         road_features.max_pivot_off = max(raw_feature_data["pivots"])
         road_features.min_pivot_off = min(raw_feature_data["pivots"])
-        
+
         if len(raw_feature_data['pivots']) > 1:
             road_features.std_pivot_off = statistics.stdev(raw_feature_data["pivots"])
         else:
             road_features.std_pivot_off = 0
 
-        road_features.direct_distance = self.__road_geometry_calculator.get_distance_between(self.__road_points[0], self.__road_points[-1])
+        road_features.direct_distance = self.__road_geometry_calculator.get_distance_between(self.__road_points[0],
+                                                                                             self.__road_points[-1])
         road_features.road_distance = self.__road_geometry_calculator.get_road_length(self.__road_points)
 
         return road_features
-
 
     def __get_segment_type(self, road_segment, angle_threshold):
         """
@@ -147,11 +149,13 @@ class FeatureExtractor:
 
         angles_sum = sum(angles_lst)
 
-        if angles_sum < angle_threshold and angles_sum > -angle_threshold: return SegmentType.straight
-        if angles_sum >= angle_threshold: return SegmentType.l_turn
-        if angles_sum <= angle_threshold: return SegmentType.r_turn
-
-
+        if angles_sum < angle_threshold and angles_sum > -angle_threshold:
+            return SegmentType.straight
+        if angles_sum >= angle_threshold:
+            return SegmentType.l_turn
+        if angles_sum <= angle_threshold:
+            return SegmentType.r_turn
+        return None
 
     def __get_segment_angle(self, road_segment):
         start_index = road_segment.start_index
@@ -165,9 +169,9 @@ class FeatureExtractor:
 
         return angles_sum
 
-
     def __get_segment_radius(self, road_segment):
-        if road_segment.type == SegmentType.straight: return 0
+        if road_segment.type == SegmentType.straight:
+            return 0
 
         start_index = road_segment.start_index
         end_index = road_segment.end_index
@@ -181,17 +185,13 @@ class FeatureExtractor:
 
         unsigned_angle = abs(angles_sum)
 
-        
         # C=2*pi*r
         proportion = unsigned_angle / 360
         circle_length = segment_length / proportion
-        radius = circle_length /(2 * math.pi)
+        radius = circle_length / (2 * math.pi)
 
         return radius
 
-
-    
-    
     def __get_road_segment_with_features(self, indexes):
         road_segment = RoadSegment()
         road_segment.start_index = indexes[0]
@@ -207,7 +207,6 @@ class FeatureExtractor:
         road_segment.radius = self.__get_segment_radius(road_segment)
 
         return road_segment
-        
 
 
 if __name__ == "__main__":
@@ -219,11 +218,11 @@ if __name__ == "__main__":
             pass
 
         @parameterized.expand([
-            (999,20),
-            (200,12)
+            (999, 20),
+            (200, 12)
             ])
         def test_straight_road_equi_distance_strategy(self, distance, nr_segments):
-            road_points = [(x,0) for x in range(distance+1)]
+            road_points = [(x, 0) for x in range(distance+1)]
             segmentation_strategy = EquiDistanceStrategy(nr_segments)
 
             feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
@@ -247,7 +246,6 @@ if __name__ == "__main__":
             self.assertEqual(road_features.max_pivot_off, 0)
             self.assertEqual(road_features.min_pivot_off, 0)
 
-
         def test_90_degree_right_turn_only(self):
             nr_segments = 2
             road_points = []
@@ -256,15 +254,13 @@ if __name__ == "__main__":
             center_of_turn = (50, 0)
 
             for i in range(0, angle+1, 1):
-                x = -1 * radius * math.cos(math.radians(i)) # minus for right turn
+                x = -1 * radius * math.cos(math.radians(i))  # minus for right turn
                 y = radius * math.sin(math.radians(i))
 
                 # translation of coordinates
                 x = x + center_of_turn[0]
 
                 road_points.append((x, y))
-
-           
 
             segmentation_strategy = EquiDistanceStrategy(nr_segments)
 
@@ -289,7 +285,6 @@ if __name__ == "__main__":
             self.assertAlmostEqual(road_features.min_pivot_off, radius, places=None, delta=2)
             # self.assertEqual(road_features.std_pivot_off, 0)
 
-
         def test_90_degree_left_turn_only(self):
             nr_segments = 1
             # nr_segments = 2
@@ -302,7 +297,7 @@ if __name__ == "__main__":
             center_of_turn = (0, 0)
 
             for i in range(0, angle+1, 1):
-                x = radius * math.cos(math.radians(i)) # minus for right turn
+                x = radius * math.cos(math.radians(i))  # minus for right turn
                 y = radius * math.sin(math.radians(i))
 
                 # translation of coordinates
@@ -310,9 +305,6 @@ if __name__ == "__main__":
 
                 road_points.append((x, y))
 
-           
-
-            
             feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
 
             road_features = feature_extractor.extract_features()
@@ -334,7 +326,6 @@ if __name__ == "__main__":
             self.assertAlmostEqual(road_features.min_pivot_off, radius, places=None, delta=2)
             # self.assertEqual(road_features.std_pivot_off, 0)
 
-
         def test_left_then_right_turn_segments_90_degrees_each(self):
             nr_segments = 2
             road_points = []
@@ -344,7 +335,7 @@ if __name__ == "__main__":
 
             # left turn
             for i in range(0, angle+1, 1):
-                x = radius * math.cos(math.radians(i)) # minus for right turn
+                x = radius * math.cos(math.radians(i))  # minus for right turn
                 y = radius * math.sin(math.radians(i))
 
                 # translation of coordinates
@@ -353,11 +344,10 @@ if __name__ == "__main__":
 
                 road_points.append((x, y))
 
-
             # right turn
             center_of_turn = (x, y+radius)
             for i in range(1, angle+1, 1):
-                x = -radius * math.sin(math.radians(i)) # minus for right turn
+                x = -radius * math.sin(math.radians(i))  # minus for right turn
                 y = -radius * math.cos(math.radians(i))
 
                 # translation of coordinates
@@ -365,8 +355,6 @@ if __name__ == "__main__":
                 y = y + center_of_turn[1]
 
                 road_points.append((x, y))
-
-           
 
             segmentation_strategy = EquiDistanceStrategy(nr_segments)
 
@@ -376,7 +364,7 @@ if __name__ == "__main__":
 
             # pythagoras
             self.assertAlmostEqual(road_features.direct_distance, math.sqrt(2*((2*radius)**2)), places=None, delta=2)
-            
+
             # half of a circle
             self.assertAlmostEqual(road_features.road_distance, math.pi*radius, places=None, delta=2)
             self.assertEqual(road_features.num_l_turns, 1)
@@ -392,19 +380,18 @@ if __name__ == "__main__":
             self.assertAlmostEqual(road_features.mean_pivot_off, radius, places=None, delta=2)
             self.assertAlmostEqual(road_features.max_pivot_off, radius, places=None, delta=2)
             self.assertAlmostEqual(road_features.min_pivot_off, radius, places=None, delta=2)
-            #self.assertGreater(road_features.std_pivot_off, 0)
-
+            # self.assertGreater(road_features.std_pivot_off, 0)
 
         def test_angle_based_segmentation(self):
 
-            road_points = [(20,20), (50,30), (70,50), (80,80), (70,110), (50,130), (50,150), (60,160), (80,170), (100,170), (120,160), (140,120), (150,80), (150,50), (150,30), (150,20)]
+            road_points = [(20, 20), (50, 30), (70, 50), (80, 80), (70, 110), (50, 130), (50, 150), (60, 160), (80, 170),
+                           (100, 170), (120, 160), (140, 120), (150, 80), (150, 50), (150, 30), (150, 20)]
 
             segmentation_strategy = AngleBasedStrategy(angle_threshold=10, decision_distance=10)
-            segments = segmentation_strategy.extract_segments(road_points)
+            segmentation_strategy.extract_segments(road_points)
             feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
-            road_features = feature_extractor.extract_features()
+            feature_extractor.extract_features()
 
-            self.assertTrue(False)
-
+            self.assertTrue(False)  # pylint: disable=redundant-unittest-assert
 
     unittest.main()

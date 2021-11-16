@@ -1,17 +1,18 @@
 import os
 import shutil
-from datetime import time
 from pathlib import Path
 from time import sleep
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, TypeVar
 from typing import Union, Set
 
 import numpy as np
 
 from deeper.Deeper_test_generator.individual import Individual
 
+T = TypeVar('T')
 
-def delete_folder_recursively(path: Union[str, Path], exception_if_fail: bool = True):
+
+def delete_folder_recursively(path: Union[str, Path]):
     path = str(path)
     if not os.path.exists(path):
         return
@@ -20,7 +21,7 @@ def delete_folder_recursively(path: Union[str, Path], exception_if_fail: bool = 
     shutil.rmtree(path, ignore_errors=True)
 
     # sometimes rmtree fails to remove files
-    for tries in range(20):
+    for _tries in range(20):
         if os.path.exists(path):
             sleep(0.1)
             shutil.rmtree(path, ignore_errors=True)
@@ -41,13 +42,13 @@ def evaluate_sparseness(ind: Individual, pop: Set[Individual]):
     return closest_element_dist[1]
 
 
-def closest_indexes(array: List['T'], element: 'T', distance_fun: Callable[['T', 'T'], float]):
+def closest_indexes(array: List[T], element: T, distance_fun: Callable[[T, T], float]):
     indexes = list(np.argsort([distance_fun(element, el) for el in array]))
     return indexes
 
 
-def closest_elements(elements_set: Set['T'], obj: 'T', distance_fun: Callable[['T', 'T'], float]) \
-        -> List[Tuple['T', float]]:
+def closest_elements(elements_set: Set[T], obj: T, distance_fun: Callable[[T, T], float]) \
+        -> List[Tuple[T, float]]:
     elements = list(elements_set)
     distances = [distance_fun(obj, el) for el in elements]
     indexes = list(np.argsort(distances))
@@ -58,7 +59,6 @@ def closest_elements(elements_set: Set['T'], obj: 'T', distance_fun: Callable[['
 if __name__ == '__main__':
     import unittest
 
-
     class TestUtils(unittest.TestCase):
         def test_closest_indexes(self):
             def dist(a, b):
@@ -67,7 +67,7 @@ if __name__ == '__main__':
             target = closest_indexes([-30, 40, 1, -1], 0.1, dist)
             expected = [2, 3, 0, 1]
 
-            self.assertEquals(target, expected)
+            self.assertEqual(target, expected)
 
         def test_closest_elements(self):
             def dist(a, b):
@@ -76,7 +76,6 @@ if __name__ == '__main__':
             target = closest_elements({-30, 40, 2, -2}, 1, dist)
             expected = [(2, 1), (-2, 3), (-30, 31), (40, 39)]
 
-            self.assertEquals(target, expected)
-
+            self.assertEqual(target, expected)
 
     unittest.main()

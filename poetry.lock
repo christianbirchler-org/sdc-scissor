@@ -60,6 +60,17 @@ python-versions = "*"
 six = "*"
 
 [[package]]
+name = "deap"
+version = "1.3.1"
+description = "Distributed Evolutionary Algorithms in Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+numpy = "*"
+
+[[package]]
 name = "descartes"
 version = "1.1.0"
 description = "Use geometric objects as matplotlib paths and patches"
@@ -198,6 +209,17 @@ pytz = ">=2017.3"
 
 [package.extras]
 test = ["hypothesis (>=3.58)", "pytest (>=6.0)", "pytest-xdist"]
+
+[[package]]
+name = "parameterized"
+version = "0.8.1"
+description = "Parameterized testing with any Python test framework"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+dev = ["jinja2"]
 
 [[package]]
 name = "pillow"
@@ -382,7 +404,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9,<3.10"
-content-hash = "75cbe0e9ad8f87b9ad6012b7e4d1d3fb86ed133916329104431afffc4a7d8198"
+content-hash = "6e789c8cf8a7d5e2c777315ccddfadc8bf0bc45054e1d34e09aad6f7bcb2da29"
 
 [metadata.files]
 astroid = [
@@ -403,6 +425,49 @@ colorama = [
 cycler = [
     {file = "cycler-0.10.0-py2.py3-none-any.whl", hash = "sha256:1d8a5ae1ff6c5cf9b93e8811e581232ad8920aeec647c37316ceac982b08cb2d"},
     {file = "cycler-0.10.0.tar.gz", hash = "sha256:cd7b2d1018258d7247a71425e9f26463dfb444d411c39569972f4ce586b0c9d8"},
+]
+deap = [
+    {file = "deap-1.3.1-cp27-cp27m-macosx_10_13_x86_64.whl", hash = "sha256:937548989075ddbc30294e0a5d96432000217c83421dad28afc8bc373723cb82"},
+    {file = "deap-1.3.1-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:8fd13bee65a91b77bbf999befdebe471c102b6b26581ea92bbd6fa4e4d55efd3"},
+    {file = "deap-1.3.1-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:86a4b98fb7b46e53125f48e8b5572b3c8021c9d31e7edc15e1b2b59c21209d03"},
+    {file = "deap-1.3.1-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:ef1e150be601a2fa94eca9a82a089036830c47c7cc0c67e92ec8ebca64c19b50"},
+    {file = "deap-1.3.1-cp27-cp27m-win_amd64.whl", hash = "sha256:b11bf90dc6ddc454f47977d4d3f2c32f48d5fb3bd200120827c4d55206b3c110"},
+    {file = "deap-1.3.1-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:49a21b4f21f5e429c3dfa2d7e448cd1a80963ca4f4b71653d1a78d4ae10c9d70"},
+    {file = "deap-1.3.1-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:50d4c817b3b17ab705a15e99a03384d588735a966ba170a1d42aa45a59288dc7"},
+    {file = "deap-1.3.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:51e10643e773b3962baf6397888d253ae1e468fae6ed30e5cf3be108e21fc017"},
+    {file = "deap-1.3.1-cp34-cp34m-manylinux1_x86_64.whl", hash = "sha256:dd9d2b5c65814930084b4c781ced6bb6906fabf708e4c94b97c5fce9432a088a"},
+    {file = "deap-1.3.1-cp34-cp34m-manylinux2010_x86_64.whl", hash = "sha256:4fcf65d04420bd8d7b2ee4f165c562db6671746c1cdf599d82ec59f71be7188e"},
+    {file = "deap-1.3.1-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:2f2f9373e23dfbd6cdda2ff0c05f2fc7f9a96d0f03d9a3814bae4790067339ed"},
+    {file = "deap-1.3.1-cp35-cp35m-manylinux2010_x86_64.whl", hash = "sha256:5d2d481ec28f947d9c3d838909a49c5e09bbdc8110cca366b544fb0d5afbdd95"},
+    {file = "deap-1.3.1-cp35-cp35m-win_amd64.whl", hash = "sha256:a1fb86ed6ef2ebf4e9e938b87fdcbc10cad1c147cd9ec9311957d6ec583e9d49"},
+    {file = "deap-1.3.1-cp36-cp36m-macosx_10_13_x86_64.whl", hash = "sha256:e071b3a5ffeeb760a3d7e606a81122c2f192c9ebe9317116131a9d6624bfdf49"},
+    {file = "deap-1.3.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:657a038e69937e292fac3daf6641243a7ebd87e8424e8bdf930e5ef74e638776"},
+    {file = "deap-1.3.1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:3113e31e7f9e6e2d0d3e9d41168541ca9469b3e796c03cfb5d81bd170af096fa"},
+    {file = "deap-1.3.1-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:ead42f533c07e929ba02a4b3b9e04c274eb64689edd9c0fe42e4f63620b24385"},
+    {file = "deap-1.3.1-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:23083349c7eb1331eeee2fde3fd71545f3d5c8896d292f3e37a49930210f5669"},
+    {file = "deap-1.3.1-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:a8dee866f9a427f3284f25b7bb988dbc2f8383ad007df8b081c6784f148c754a"},
+    {file = "deap-1.3.1-cp36-cp36m-win_amd64.whl", hash = "sha256:6365452dce08f6df9daee7255671972184c5e5da11391232e874cccc36d02366"},
+    {file = "deap-1.3.1-cp37-cp37m-macosx_10_13_x86_64.whl", hash = "sha256:354d629e0d1605c493e4eee3587a7e3503343864b9967d5b2d83c0026307346c"},
+    {file = "deap-1.3.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:809534e155c76a4f46d480f6d73dc347f2bc90324d9e3546a68bdbf33164d165"},
+    {file = "deap-1.3.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:9e330449160ebe18929e7db2595c2a6931f5132a323e4096d36ef26d0802bd14"},
+    {file = "deap-1.3.1-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:0283b29ab47d841cd33c19fed547d18c15b95b2876223de42799dc61c0453080"},
+    {file = "deap-1.3.1-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c68e59f669ec22533c095d9cd4ed5188eaf8ff0dd402fc1c5f4cdd180c1db3d6"},
+    {file = "deap-1.3.1-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:a9d2e8e4603ab7151a501a669545344ee1875941c2b21a7fe8df436df29f28a2"},
+    {file = "deap-1.3.1-cp37-cp37m-win_amd64.whl", hash = "sha256:faa6a761368fcaa4459d45557a803fc3dc610c2aef37a2f62dfbddcbfabd29a3"},
+    {file = "deap-1.3.1-cp38-cp38-macosx_10_13_x86_64.whl", hash = "sha256:827d278d77d42aa499404e02817de8a02c5303c8cb6dde51033fa2783c6a0ea5"},
+    {file = "deap-1.3.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:26a1d10fd8b5f5dc128abea43f17b626e0e2123d5de09ee26f591ab66117e751"},
+    {file = "deap-1.3.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:8d41226849f01f4bbcff8db7037d4e8063d7f3a5b5e090c0ea59e9aa8ec3fca9"},
+    {file = "deap-1.3.1-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:1eac7020de9d3995173bbe30ea04cdc995830a52c97c8b4dd2d01cf6a818799d"},
+    {file = "deap-1.3.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:700150c49916c8e9a9c4c3441d941d037a043b8fe27cbec0eb453d41f46cca14"},
+    {file = "deap-1.3.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:3365a217e30865e69a74a06e1ea772bf109aedcc5ccf84d3076dec1bac75025e"},
+    {file = "deap-1.3.1-cp38-cp38-win_amd64.whl", hash = "sha256:794acffc3a2da2213bd184be8d6a751b0df03bdf2271bb57da7414201c4afb28"},
+    {file = "deap-1.3.1-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:38ef2defe7d9e32c9552173ace5e99ff2b29599877f7dc0420baa747475837df"},
+    {file = "deap-1.3.1-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:bc58673b26c8c417e3d479701eca2b9fc3bfd9f646067036a06f7bbadabf8bba"},
+    {file = "deap-1.3.1-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:53a70b3f07a06ad6693e5b7e0c4a4387147ed0113e0eeda7ac33cfc516487f89"},
+    {file = "deap-1.3.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:75d8d1fae7602662387aba859f05dc960e7d20e4ab7c2d14783080cf8fc839ca"},
+    {file = "deap-1.3.1-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:4e977d8246cc84283a7f7fc9dfdbb7cb9a580025bc32b89bf2e357dee92906d8"},
+    {file = "deap-1.3.1-cp39-cp39-win_amd64.whl", hash = "sha256:47ef982c4ad26a1b5f45cf8c82b262d46b90c39e9686ba3cb831f9fcdcbdc88b"},
+    {file = "deap-1.3.1.tar.gz", hash = "sha256:11f54493ceb54aae10dde676577ef59fc52d52f82729d5a12c90b0813c857a2f"},
 ]
 descartes = [
     {file = "descartes-1.1.0-py2-none-any.whl", hash = "sha256:b7e412e7e6e294412f1d0f661f187babc970088c2456089e6801eebb043c2e1b"},
@@ -662,6 +727,10 @@ pandas = [
     {file = "pandas-1.3.3-cp39-cp39-win32.whl", hash = "sha256:f7d84f321674c2f0f31887ee6d5755c54ca1ea5e144d6d54b3bbf566dd9ea0cc"},
     {file = "pandas-1.3.3-cp39-cp39-win_amd64.whl", hash = "sha256:e574c2637c9d27f322e911650b36e858c885702c5996eda8a5a60e35e6648cf2"},
     {file = "pandas-1.3.3.tar.gz", hash = "sha256:272c8cb14aa9793eada6b1ebe81994616e647b5892a370c7135efb2924b701df"},
+]
+parameterized = [
+    {file = "parameterized-0.8.1-py2.py3-none-any.whl", hash = "sha256:9cbb0b69a03e8695d68b3399a8a5825200976536fe1cb79db60ed6a4c8c9efe9"},
+    {file = "parameterized-0.8.1.tar.gz", hash = "sha256:41bbff37d6186430f77f900d777e5bb6a24928a1c46fb1de692f8b52b8833b5c"},
 ]
 pillow = [
     {file = "Pillow-8.3.2-cp310-cp310-macosx_10_10_universal2.whl", hash = "sha256:c691b26283c3a31594683217d746f1dad59a7ae1d4cfc24626d7a064a11197d4"},

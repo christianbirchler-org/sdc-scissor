@@ -1,7 +1,8 @@
-from segmentation_strategy import SegmentationStrategy
-from road_geometry_calculator import RoadGeometryCalculator
+from .segmentation_strategy import SegmentationStrategy
+from .road_geometry_calculator import RoadGeometryCalculator
 
 seg_lengths_dict = {"1": 50, "1.5": 30, "2": 10}
+
 
 class ParameterizedUniformStrategy(SegmentationStrategy):
     """
@@ -17,7 +18,6 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
         self.__max_seg_length_to_full_road = max_seg_length_to_full_road
 
         self.__road_geometry_calculator = RoadGeometryCalculator()
-
 
     # TODO: formalize the clear segmentaion process
     def extract_segments(self, road_points):
@@ -39,44 +39,42 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
         segment_indexes = []
         for i in range(1, len(road_points)):
             current_elementary_segment = road_points[i-1:i+1]
-            current_segment_length +=  self.__road_geometry_calculator.get_road_length(current_elementary_segment)
+            current_segment_length += self.__road_geometry_calculator.get_road_length(current_elementary_segment)
 
             if current_segment_length > self.__max_seg_length_in_meters:
                 raise Exception("Max segment reached.")
 
-            if (current_segment_length >= self.__seg_length_in_meters) or (i == len(road_points)-1): # segment reached its required length
+            # segment reached its required length
+            if (current_segment_length >= self.__seg_length_in_meters) or (i == len(road_points)-1):
                 current_segment_length = 0
                 end = i
                 segment_indexes.append((start, end))
-                start = i # set start index for the next segment
+                start = i  # set start index for the next segment
 
         return segment_indexes
 
 
-
-
-
 if __name__ == "__main__":
     import unittest
+
     class ParameterizedUniformStrategyTest(unittest.TestCase):
         def test_straight_only(self):
             strategy = ParameterizedUniformStrategy("2", 0.05)
 
-            road_points = [(x,0) for x in range(1000)]
+            road_points = [(x, 0) for x in range(1000)]
 
             segments = strategy.extract_segments(road_points)
 
-            expected_segments = [(x*10,x*10+10) for x in range(99)]
-            expected_segments.append((990,999))
+            expected_segments = [(x*10, x*10+10) for x in range(99)]
+            expected_segments.append((990, 999))
             self.assertEqual(segments, expected_segments, "Segment indexes are wrong.")
 
         def test_road_is_too_short(self):
             strategy = ParameterizedUniformStrategy("2", 0.0005)
 
-            road_points = [(x,0) for x in range(1000)]
+            road_points = [(x, 0) for x in range(1000)]
 
             with self.assertRaises(Exception):
                 strategy.extract_segments(road_points)
-
 
     unittest.main()

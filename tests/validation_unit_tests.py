@@ -1,7 +1,8 @@
 import unittest
+import inspect
 from code_pipeline.validation import TestValidator
 from code_pipeline.tests_generation import RoadTestFactory
-import inspect
+
 
 class ValidationTest(unittest.TestCase):
 
@@ -17,10 +18,10 @@ class ValidationTest(unittest.TestCase):
         road_points.append((-10, -10))
         road_points.append((50, 50))
 
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         validator = TestValidator(map_size=200)
-        is_valid, validation_msg = validator.validate_test(the_test)
+        is_valid, _validation_msg = validator.validate_test(the_test)
 
         self.assertFalse(is_valid)
 
@@ -35,10 +36,10 @@ class ValidationTest(unittest.TestCase):
         road_points.append((50, 50))
         road_points.append((-10, -10))
 
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         validator = TestValidator(map_size=200)
-        is_valid, validation_msg = validator.validate_test(the_test)
+        is_valid, _validation_msg = validator.validate_test(the_test)
 
         self.assertFalse(is_valid)
 
@@ -54,10 +55,10 @@ class ValidationTest(unittest.TestCase):
         road_points.append((-50, -50))
         road_points.append((-10, -10))
 
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         validator = TestValidator(map_size=200)
-        is_valid, validation_msg = validator.validate_test(the_test)
+        is_valid, _validation_msg = validator.validate_test(the_test)
 
         self.assertFalse(is_valid)
 
@@ -73,7 +74,7 @@ class ValidationTest(unittest.TestCase):
         road_points.append((50, 50))
         road_points.append((10, 10))
 
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         validator = TestValidator(map_size=200)
         is_valid, validation_msg = validator.validate_test(the_test)
@@ -92,10 +93,10 @@ class ValidationTest(unittest.TestCase):
         road_points.append((1, 10))
         road_points.append((1, 50))
 
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         validator = TestValidator(map_size=200)
-        is_valid, validation_msg = validator.validate_test(the_test)
+        is_valid, _validation_msg = validator.validate_test(the_test)
 
         self.assertFalse(is_valid)
 
@@ -113,11 +114,11 @@ class ValidationTest(unittest.TestCase):
         road_points.append((10, 20))
         road_points.append((20, 10))
 
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         validator = TestValidator(map_size=200)
 
-        is_valid, validation_msg = validator.validate_test(the_test)
+        is_valid, _validation_msg = validator.validate_test(the_test)
 
         self.assertFalse(is_valid)
 
@@ -136,10 +137,10 @@ class ValidationTest(unittest.TestCase):
         road_points.append((15, 80))
         road_points.append((15, 70))
 
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         validator = TestValidator(map_size=200)
-        is_valid, validation_msg = validator.validate_test(the_test)
+        is_valid, _validation_msg = validator.validate_test(the_test)
 
         self.assertFalse(is_valid)
 

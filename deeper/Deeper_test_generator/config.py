@@ -4,7 +4,7 @@ class Config:
     GEN_SEQUENTIAL_SEEDED = 'GEN_SEQUENTIAL_SEEDED'
 
     SEG_LENGTH = 25
-    NUM_SPLINE_NODES =10
+    NUM_SPLINE_NODES = 10
     INITIAL_NODE = (0.0, 0.0, -28.0, 8.0)
     ROAD_BBOX_SIZE = (-250, 0, 250, 500)
 
@@ -27,7 +27,7 @@ class Config:
 
         self.keras_model_file = 'self-driving-car-185-2020.h5'
 
-        #self.generator_name = Config.GEN_RANDOM
+        # self.generator_name = Config.GEN_RANDOM
         self.generator_name = Config.GEN_RANDOM_SEEDED
         # self.generator_name = Config.GEN_SEQUENTIAL_SEEDED
         self.seed_folder = 'Seed_Population'

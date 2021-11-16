@@ -1,28 +1,36 @@
 from typing import Dict
+import abc
 
 
-class Member:
+class Member(abc.ABC):
     def __init__(self):
         self.distance_to_boundary: float = None
 
-    def distance(self, o: 'Member'):
+    @abc.abstractmethod
+    def distance(self, other: 'Member'):
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def clone(self):
         raise NotImplementedError()
 
-    def evaluate(self):
+    @abc.abstractmethod
+    def evaluate(self, executor):
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def to_tuple(self):
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def mutate(self):
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def to_dict(self) -> dict:
         raise NotImplementedError()
 
     @classmethod
-    def from_dict(cls, dict: Dict):
+    @abc.abstractmethod
+    def from_dict(cls, data_dict: Dict):
         raise NotImplementedError()

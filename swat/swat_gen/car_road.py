@@ -1,7 +1,7 @@
-#
 import random as rm
-import numpy as np
 import math as m
+
+import numpy as np
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
@@ -21,14 +21,14 @@ class Map:
         self.min_y = 0
         self.radius = 25
         if init == 0:
-            self.init_pos, self.init_end = self.init_pos()
+            self.init_pos, self.init_end = self.get_init_pos()
         else:
             self.init_pos, self.init_end = a, b
 
         self.current_pos = [self.init_pos, self.init_end]
         self.all_position_list = [[self.init_pos, self.init_end]]
 
-    def init_pos(self):
+    def get_init_pos(self):
         """select a random initial position from the middle of
         one of the boundaries
         """
@@ -104,7 +104,7 @@ class Map:
         p_b_ = p_b + u_v_ * test_distance
 
         new_pos = [p_a_, p_b_]
-        if self.in_polygon(new_pos) == True:  # check if it's in correct direction
+        if self.in_polygon(new_pos):  # check if it's in correct direction
             R = np.array([[0, 1], [-1, 0]])
             u_v = R.dot(u_v)
             p_a_ = p_a + u_v * distance
@@ -144,7 +144,7 @@ class Map:
 
         new_pos = self.clockwise_turn_top(test_angle, p_a, p_b)
 
-        if self.in_polygon(new_pos) == True:
+        if self.in_polygon(new_pos):
             self.current_pos = self.clockwise_turn_bot(angle, p_a, p_b)
         else:
             self.current_pos = self.clockwise_turn_top(angle, p_a, p_b)
@@ -177,7 +177,7 @@ class Map:
 
         new_pos = self.anticlockwise_turn_top(test_angle, p_a, p_b)
 
-        if self.in_polygon(new_pos) == True:
+        if self.in_polygon(new_pos):
             self.current_pos = self.anticlockwise_turn_bot(angle, p_a, p_b)
         else:
             self.current_pos = self.anticlockwise_turn_top(angle, p_a, p_b)
@@ -315,3 +315,4 @@ class Map:
         elif len(self.all_position_list) > 1:
             # print("List too long")
             return 0
+        return None

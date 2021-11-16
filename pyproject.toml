@@ -16,6 +16,8 @@ pandas = "^1.3.3"
 beamngpy = "^1.21"
 scikit-learn = "^1.0.1"
 joblib = "^1.1.0"
+deap = "^1.3.1"
+parameterized = "^0.8.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.11.1"
@@ -27,6 +29,32 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pylint.messages_control]
 enable = "all"
-disable = "missing-docstring,chained-comparison,too-few-public-methods,too-many-arguments,fixme,duplicate-code,invalid-name,unspecified-encoding,cell-var-from-loop,consider-using-f-string,logging-fstring-interpolation,too-many-instance-attributes,too-many-locals,suppressed-message,locally-disabled"
+disable = [
+    "missing-docstring",
+    "chained-comparison",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-statements",
+    "too-many-return-statements",
+    "too-many-branches",
+    "logging-not-lazy",
+    "cyclic-import",
+    "fixme",
+    "duplicate-code",
+    "invalid-name",
+    "unspecified-encoding",
+    "cell-var-from-loop",
+    "consider-using-f-string",
+    "logging-fstring-interpolation",
+    "too-many-instance-attributes",
+    "too-many-locals",
+    "suppressed-message",
+    "locally-disabled",
+]
+
+ignored-modules = ['deap']
 
 max-line-length = 130
+
+[tool.pylint.master]
+init-hook = 'import sys; sys.path.append(".")'

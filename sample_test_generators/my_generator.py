@@ -1,11 +1,10 @@
-import numpy as np
-import math
+import time
 import logging as log
 import matplotlib.pyplot as plt
 
 from code_pipeline.tests_generation import RoadTestFactory
 
-from segment_factories.road_factory import MyRoadFactory, Road
+from segment_factories.road_factory import Road
 
 
 class MyGenerator():
@@ -24,19 +23,22 @@ class MyGenerator():
 
         road_points = []
 
-
         #######################################################
         #######################################################
         # IDEA1: use segment factories to generate segments
-        #road_factory = MyRoadFactory((10,10,), (0.5,0.5))
+        # road_factory = MyRoadFactory((10,10,), (0.5,0.5))
 
-        #road_points += road_factory.get_straight_segment(200)
+        # road_points += road_factory.get_straight_segment(200)
 
         # IDEA2: use fluent interface
 
-        my_road = Road((10,10), (10,1))
-        my_road.add_straight_segment(120).add_left_turn_segment(50,180).add_straight_segment(80).add_right_turn_segment(50,180).add_straight_segment(80)
-        my_road.add_left_turn_segment(30, 45).add_straight_segment(25).add_left_turn_segment(30,90)
+        my_road = Road((10, 10), (10, 1))
+        my_road.add_straight_segment(120) \
+            .add_left_turn_segment(50, 180) \
+            .add_straight_segment(80) \
+            .add_right_turn_segment(50, 180) \
+            .add_straight_segment(80)
+        my_road.add_left_turn_segment(30, 45).add_straight_segment(25).add_left_turn_segment(30, 90)
 
         road_points = my_road.get_road_points()
 
@@ -44,7 +46,7 @@ class MyGenerator():
         #######################################################
 
         # Creating the RoadTest from the points
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         # Send the test for execution
         test_outcome, description, execution_data = self.executor.execute_test(the_test)
@@ -61,6 +63,4 @@ class MyGenerator():
         log.info("test_outcome %s", test_outcome)
         log.info("description %s", description)
 
-        import time
         time.sleep(10)
-

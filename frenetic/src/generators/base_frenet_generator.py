@@ -38,14 +38,16 @@ class BaseFrenetGenerator(BaseGenerator):
         road_points = self.reframe_road(xs, ys)
         return road_points
 
-    def execute_frenet_test(self, kappas, method='random', frenet_step=10, theta0=1.57,  parent_info=None, extra_info=None, prevent_simulation=True):
+    def execute_frenet_test(self, kappas, method='random', frenet_step=10, theta0=1.57,  parent_info=None, extra_info=None,
+                            prevent_simulation=True):
         extra_info = extra_info or {}
         parent_info = parent_info or {}
         extra_info['kappas'] = kappas
         road_points = self.kappas_to_road_points(kappas, frenet_step=frenet_step, theta0=theta0)
         if road_points:
             self.recent_count += 1
-            return self.execute_test(road_points, method=method, parent_info=parent_info, extra_info=extra_info, prevent_simulation=prevent_simulation)
+            return self.execute_test(road_points, method=method, parent_info=parent_info, extra_info=extra_info,
+                                     prevent_simulation=prevent_simulation)
         return 'CANNOT_REFRAME', None
 
     def reframe_road(self, xs, ys):

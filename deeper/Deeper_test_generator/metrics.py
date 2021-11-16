@@ -9,7 +9,7 @@ def get_radius_seed(solution: List[Individual]):
     # Calculate the distance between each misclassified digit and the seed (mindist metric)
     if len(solution) == 0:
         return None
-    distances = list()
+    distances = []
     for i in solution:
         oob_input = i.members_by_sign()[0]
         dist = oob_input.distance(i.seed)
@@ -22,7 +22,7 @@ def get_diameter(solution: List[Member]):
     # Calculate the distance between each misclassified digit and the farthest element of the solution (diameter metric)
     if len(solution) == 0:
         return None
-    max_distances = list()
+    max_distances = []
     for i1 in solution:
         maxdist = float(0)
         for i2 in solution:

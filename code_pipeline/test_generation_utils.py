@@ -20,7 +20,7 @@ _registered_exit_funs = set()
 _executed_exit_funs = set()
 
 
-def register_exit_fun(fun=None, signals=[signal.SIGTERM],
+def register_exit_fun(fun=None, signals=None,
                       logfun=lambda s: print(s, file=sys.stderr)):
     """Register a function which will be executed on "normal"
     interpreter exit or in case one of the `signals` is received
@@ -58,10 +58,11 @@ def register_exit_fun(fun=None, signals=[signal.SIGTERM],
       received. Default: print to standard error. May be set to
       None if no logging is desired.
     """
+    signals = signals or [signal.SIGTERM]
+
     def stringify_sig(signum):
         if sys.version_info < (3, 5):
-            smap = dict([(getattr(signal, x), x) for x in dir(signal)
-                         if x.startswith('SIG')])
+            smap = {getattr(signal, x): x for x in dir(signal) if x.startswith('SIG')}
             return smap.get(signum, signum)
         return signum
 
@@ -72,7 +73,7 @@ def register_exit_fun(fun=None, signals=[signal.SIGTERM],
             finally:
                 _executed_exit_funs.add(fun)
 
-    def signal_wrapper(signum=None, frame=None):
+    def signal_wrapper(signum=None, _frame=None):
         if signum is not None:
             if logfun is not None:
                 logfun("signal {} received by process with PID {}".format(

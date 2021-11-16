@@ -1,16 +1,12 @@
 from random import randint
 from typing import List, Tuple
-
-from shapely.geometry import Point
-from self_driving.bbox import RoadBoundingBox
-#from Deeper_test_generator.beamng_member import BeamNGMember
-from code_pipeline.tests_generation import RoadTestFactory
-
 import math
+
 import numpy as np
-import logging as log
+from shapely.geometry import Point
 
 from self_driving.road_polygon import RoadPolygon
+from self_driving.bbox import RoadBoundingBox
 
 # Tuple4F = Tuple[float, float, float, float]
 # Tuple2F = Tuple[float, float]
@@ -153,7 +149,8 @@ from self_driving.road_polygon import RoadPolygon
 #                 assert RoadPolygon.from_nodes(nodes).is_valid()
 #                 assert 0 <= i <= self.num_control_nodes
 #
-#             # The road generation ends when there are the control nodes plus the two extra nodes needed by the current Catmull-Rom model
+#             # The road generation ends when there are the control nodes plus the two extra nodes needed by the
+#             # current Catmull-Rom model
 #             if len(nodes) - 2 == self.num_control_nodes:
 #                 condition = False
 #         return nodes
@@ -284,6 +281,7 @@ from self_driving.road_polygon import RoadPolygon
 Tuple4F = Tuple[float, float, float, float]
 Tuple2F = Tuple[float, float]
 
+
 def catmull_rom_spline(p0, p1, p2, p3, num_points=20):
     """p0, p1, p2, and p3 should be (x,y) point pairs that define the Catmull-Rom spline.
     num_points is the number of points to include in this curve segment."""
@@ -372,7 +370,7 @@ class RoadGenerator:
         self.seg_length = seg_length
         self.road_bbox = RoadBoundingBox(bbox_size)
         assert not self.road_bbox.intersects_vertices(self._get_initial_point())
-        #assert self.road_bbox.intersects_sides(self._get_initial_point())
+        # assert self.road_bbox.intersects_sides(self._get_initial_point())
 
     def generate_control_nodes(self, attempts=NUM_UNDO_ATTEMPTS) -> List[Tuple4F]:
         condition = True
@@ -397,7 +395,7 @@ class RoadGenerator:
                 assert budget >= 1
 
                 intersect_boundary = self.road_bbox.intersects_boundary(road_polygon.polygons[-1])
-                is_valid = road_polygon.is_valid() and (((i==0) and intersect_boundary) or ((i>0) and not intersect_boundary))
+                is_valid = road_polygon.is_valid() and (((i == 0) and intersect_boundary) or ((i > 0) and not intersect_boundary))
                 while not is_valid and budget > 0:
                     nodes.pop()
                     budget -= 1
@@ -422,12 +420,13 @@ class RoadGenerator:
                 assert RoadPolygon.from_nodes(nodes).is_valid()
                 assert 0 <= i <= self.num_control_nodes
 
-            # The road generation ends when there are the control nodes plus the two extra nodes needed by the current Catmull-Rom model
+            # The road generation ends when there are the control nodes plus the two extra nodes needed by the
+            # current Catmull-Rom model
             if len(nodes) - 2 == self.num_control_nodes:
                 condition = False
         return nodes
 
-    def is_valid(self, control_nodes, sample_nodes, num_spline_nodes):
+    def is_valid(self, control_nodes, sample_nodes):
         return (RoadPolygon.from_nodes(sample_nodes).is_valid() and
                 self.road_bbox.contains(RoadPolygon.from_nodes(control_nodes[1:-1])))
 
@@ -438,7 +437,7 @@ class RoadGenerator:
             control_nodes = self.generate_control_nodes()
             control_nodes = control_nodes[1:]
             sample_nodes = catmull_rom(control_nodes, self.num_spline_nodes)
-            if self.is_valid(control_nodes, sample_nodes, self.num_spline_nodes):
+            if self.is_valid(control_nodes, sample_nodes):
                 condition = False
 
         road = [(node[0], node[1]) for node in sample_nodes]
@@ -450,7 +449,7 @@ class RoadGenerator:
     def _get_initial_control_node(self) -> Tuple4F:
         x0, y0, z, width = self.initial_node
         x, y = self._get_next_xy(x0, y0, 270)
-        assert not(self.road_bbox.bbox.contains(Point(x, y)))
+        assert not self.road_bbox.bbox.contains(Point(x, y))
 
         return x, y, z, width
 

@@ -36,7 +36,7 @@ def _calc_cost_weighted(u: AngleLength, v: AngleLength):
     return res
 
 
-#_calc_cost = _calc_cost_discrete
+# _calc_cost = _calc_cost_discrete
 _calc_cost = _calc_cost_weighted
 
 
@@ -80,7 +80,7 @@ def _calc_angle_distance(v0, v1):
 
 
 def _calc_dist_angle(points: ListOfPoints) -> ListOfAngleLength:
-    assert len(points) >= 2, f'at least two points are needed'
+    assert len(points) >= 2, 'at least two points are needed'
 
     def vector(idx):
         return np.subtract(points[idx + 1], points[idx])

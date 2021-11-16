@@ -1,46 +1,39 @@
 import logging
-
-from shapely.geometry import Point, LineString
-from shapely.ops import nearest_points
-
-from self_driving.edit_distance_polyline import iterative_levenshtein
-
-from self_driving.simulation_data import SimulationDataRecord
-
-from scipy.interpolate import splev, splprep
-
-import numpy as np
-
-from itertools import combinations
-
-from numpy.ma import arange
-
+from itertools import combinations, islice
 from math import sqrt
-
-from itertools import islice
 import functools
 import os
 import json
+
+from shapely.geometry import Point, LineString
+from shapely.ops import nearest_points
+from scipy.interpolate import splev, splprep
+import numpy as np
+from numpy.ma import arange
+
+from self_driving.edit_distance_polyline import iterative_levenshtein
+from self_driving.simulation_data import SimulationDataRecord
 
 BEFORE_THRESHOLD = 60.0
 AFTER_THRESHOLD = 20.0
 
 # The following utility methods might not even be used. TODO Clean up if possible
 
-def _interpolate_and_resample_splines(sample_nodes, nodes_per_meter = 1, smoothness=0, k=3, rounding_precision=4):
+
+def _interpolate_and_resample_splines(sample_nodes, nodes_per_meter=1, smoothness=0, k=3, rounding_precision=4):
     """ Interpolate a list of points as a spline (quadratic by default) and resample it with num_nodes"""
 
     # Compute lenght of the road
     road_lenght = LineString([(t[0], t[1]) for t in sample_nodes]).length
 
-    num_nodes = nodes_per_meter  * int(road_lenght)
+    num_nodes = nodes_per_meter * int(road_lenght)
 
     old_x_vals = [t[0] for t in sample_nodes]
     old_y_vals = [t[1] for t in sample_nodes]
     # old_width_vals  = [t[3] for t in sample_nodes]
 
     # Interpolate the old points
-    pos_tck, pos_u = splprep([old_x_vals, old_y_vals], s=smoothness, k=k)
+    pos_tck, *_pos_u = splprep([old_x_vals, old_y_vals], s=smoothness, k=k)
 
     # Resample them
     step_size = 1 / num_nodes
@@ -103,10 +96,9 @@ def _find_circle_and_return_the_center_and_the_radius(x1, y1, x2, y2, x3, y3):
 
     return ((h, k), r)
 
-
-    #print("Centre = (", h, ", ", k, ")")
-    #print("Radius = ", r)
-    #print("Radius = ", degrees(r))
+    # print("Centre = (", h, ", ", k, ")")
+    # print("Radius = ", r)
+    # print("Radius = ", degrees(r))
 
 
 def _road_segments_grouper(iterable, radius_tolerance=0.3):
@@ -150,9 +142,10 @@ def _road_segments_grouper(iterable, radius_tolerance=0.3):
 
             perc_diff_prev = abs(prev["radius"] - item["radius"]) / prev["radius"]
             perc_diff_item = abs(prev["radius"] - item["radius"]) / item["radius"]
-            distance_between_centers = Point(prev["center"][0], prev["center"][1]).distance( Point(item["center"][0], item["center"][1]))
+            distance_between_centers = Point(prev["center"][0], prev["center"][1]).distance(Point(item["center"][0],
+                                                                                                  item["center"][1]))
             if perc_diff_prev < radius_tolerance and perc_diff_item < radius_tolerance and \
-                distance_between_centers < prev["radius"] and distance_between_centers < item["radius"]:
+                    distance_between_centers < prev["radius"] and distance_between_centers < item["radius"]:
                 group.append(item)
             else:
                 # print("Returning group", prev["type"], "->", item["type"], group)
@@ -223,20 +216,20 @@ def _identify_segments(nodes):
     for three_points in _window(nodes, n=3):
 
         center, radius = _find_circle_and_return_the_center_and_the_radius(
-                                        three_points[0][0], three_points[0][1],#
-                                        three_points[1][0], three_points[1][1], #
+                                        three_points[0][0], three_points[0][1],
+                                        three_points[1][0], three_points[1][1],
                                         three_points[2][0], three_points[2][1])
 
         if radius > 400:
-            type = "straight"
+            street_type = "straight"
             center = None
             radius = None
         else:
-            type = "turn"
+            street_type = "turn"
 
         current_segment = {}
 
-        current_segment["type"] = type
+        current_segment["type"] = street_type
         current_segment["center"] = center
         current_segment["radius"] = radius
         current_segment["points"] = []
@@ -262,7 +255,7 @@ def _identify_segments(nodes):
     # Make sure you consider list of points and not triplettes.
     for index, segment in enumerate(segments[:]):
         # Replace the element with the merged one
-        segments[index] = functools.reduce(lambda a, b: _merge_segments_points(a, b), segment)
+        segments[index] = functools.reduce(_merge_segments_points, segment)
 
     # Resolve and simplify. If two consecutive segments are straights we put them together.
     refined_segments = []
@@ -277,8 +270,6 @@ def _identify_segments(nodes):
             refined_segments[-1] = _merge_segments(refined_segments[-1], s)
         else:
             refined_segments.append(s)
-
-
     # At this point we have computed an approximation but we might need to smooth the edges, as
     # there might be little segments that could be attached to the previous ones
 
@@ -333,7 +324,6 @@ def _test_failed_with_oob(json_file):
     return data["is_valid"] and data["test_outcome"] == "FAILED" and data["description"].startswith("Car drove out of the lane")
 
 
-
 class RoadTestEvaluator:
     """
     This class identify the interesting segment for an OOB. The interesting segment is defined by that
@@ -370,11 +360,10 @@ class RoadTestEvaluator:
 
         # Find the point in the interpolated points that is closes to the OOB position
         # https://stackoverflow.com/questions/24415806/coordinates-of-the-closest-points-of-two-geometries-in-shapely
-        np = nearest_points(road_line, oob_pos)[0]
+        nearest_point = nearest_points(road_line, oob_pos)[0]
         # Assuming that the road is made by one lane per traffic direction and position are collected frequently,
         # if the distance between oob and the center of the road is greater than 2.0 (half of lane) then the oob is
         # on the right side, otherwise on the left side
-        #
         if oob_pos.distance(road_line) < 2.0:
             oob_side = "LEFT"
         else:
@@ -386,9 +375,9 @@ class RoadTestEvaluator:
 
         road_coords = list(road_line.coords)
         for i, p in enumerate(road_coords):
-            if Point(p).distance(np) < 0.5:  # Since we interpolate at every meter, whatever is closer than half of if
+            if Point(p).distance(nearest_point) < 0.5:  # Since we interpolate at every meter, whatever is closer than half of if
                 before = road_coords[0:i]
-                before.append(np.coords[0])
+                before.append(nearest_point.coords[0])
 
                 after = road_coords[i:]
 
@@ -404,8 +393,7 @@ class RoadTestEvaluator:
 
             if distance >= self.road_length_before_oob:
                 break
-            else:
-                temp.insert(0, p2)
+            temp.insert(0, p2)
 
         segment_before = LineString(temp)
 
@@ -420,8 +408,7 @@ class RoadTestEvaluator:
 
             if distance >= self.road_lengrth_after_oob:
                 break
-            else:
-                temp.append(p2)
+            temp.append(p2)
 
         segment_after = LineString(temp)
 
@@ -446,7 +433,7 @@ class OOBAnalyzer:
         road_test_evaluation = RoadTestEvaluator(road_length_before_oob=30, road_lengrth_after_oob=30)
 
         oobs = []
-        for subdir, dirs, files in os.walk(result_folder, followlinks=False):
+        for subdir, _dirs, files in os.walk(result_folder, followlinks=False):
             # Consider only the files that match the pattern
             for sample_file in sorted(
                     [os.path.join(subdir, f) for f in files if f.startswith("test.") and f.endswith(".json")]):
@@ -454,7 +441,6 @@ class OOBAnalyzer:
                 self.logger.debug("Processing test file %s", sample_file)
 
                 test_id, is_valid, test_outcome, road_data, execution_data = self._load_test_data(sample_file)
-
 
                 # If the test is not valid or passed we skip it the analysis
                 if not is_valid or not test_outcome == "FAIL":
@@ -489,7 +475,8 @@ class OOBAnalyzer:
         self.logger.info("Collected data about %d oobs", len(oobs))
         return oobs
 
-    def _load_test_data(self, execution_data_file):
+    @staticmethod
+    def _load_test_data(execution_data_file):
         # Load the execution data
         with open(execution_data_file) as input_file:
             json_data = json.load(input_file)
@@ -515,7 +502,7 @@ class OOBAnalyzer:
             self.logger.debug("Distance of OOB %s from OOB %s is %.3f", oob1["test id"], oob2["test id"], distance)
 
             # Update the max values
-            if oob1['test id'] in max_distances_starting_from.keys():
+            if oob1['test id'] in max_distances_starting_from:
                 max_distances_starting_from[oob1['test id']] = max(
                     max_distances_starting_from[oob1['test id']], distance)
             else:
@@ -561,6 +548,6 @@ class OOBAnalyzer:
 
         report_data = self._analyse()
         csv_header = "total_oob,left_oob,right_oob,avg_sparseness,stdev_sparseness"
-        csv_body = "%d,%d,%d,%.3f,%3.f" % (len(self.oobs), *report_data["oob_side"],*report_data["sparseness"])
+        csv_body = "%d,%d,%d,%.3f,%3.f" % (len(self.oobs), *report_data["oob_side"], *report_data["sparseness"])
 
         return "\n".join([csv_header, csv_body])

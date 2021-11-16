@@ -1,5 +1,4 @@
-from itertools import permutations
-from typing import List, Tuple
+from typing import List
 import logging as log
 
 from deeper.Deeper_test_generator.archive import Archive
@@ -28,21 +27,18 @@ class NonGreedyArchive(Archive):
                     log.debug('add initial individual')
                 else:
                     # uses semantic_distance to exploit behavioral information
-                    closest_archived, candidate_archived_distance = \
+                    _closest_archived, candidate_archived_distance = \
                         closest_elements(self, candidate, lambda a, b: a.semantic_distance(b))[0]
-                    closest_archived: Individual
+                    _closest_archived: Individual
 
                     if candidate_archived_distance > self.ARCHIVE_THRESHOLD:
                         log.debug('candidate is far from any archived individual')
                         self._int_add(candidate)
                     else:
                         log.debug('candidate is very close to an archived individual')
-                        #self._int_add(candidate)
-                        #print('Added to archive:', closest_archived)
-
+                        # self._int_add(candidate)
+                        # print('Added to archive:', closest_archived)
 
     def _int_add(self, candidate):
         self.add(candidate)
         print('archive add', candidate)
-
-

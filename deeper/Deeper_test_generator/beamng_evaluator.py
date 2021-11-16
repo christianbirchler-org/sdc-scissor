@@ -1,6 +1,3 @@
-from typing import List
-
-
 class BeamNGEvaluator:
-    def evaluate(self, members: List['BeamNGMember']):
+    def evaluate(self, _members):
         pass

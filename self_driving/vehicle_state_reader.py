@@ -1,8 +1,9 @@
 from collections import namedtuple
+from typing import List, Tuple
+
 import numpy as np
 from beamngpy import Vehicle, BeamNGpy
 from beamngpy.sensors import Electrics, Timer, Sensor
-from typing import List, Tuple
 
 VehicleStateProperties = ['timer', 'pos', 'dir', 'vel', 'steering', 'steering_input',
                           'brake', 'brake_input', 'throttle', 'throttle_input',
@@ -17,6 +18,7 @@ class VehicleStateReader:
         self.beamng = beamng
         self.state: VehicleState = None
         self.vehicle_state = {}
+        self.sensors = None
 
         electrics = Electrics()
         timer = Timer()
@@ -44,15 +46,15 @@ class VehicleStateReader:
         ele = sensors['electrics']
 
         vel = tuple(st['vel'])
-        self.state = VehicleState(timer=sensors['timer']['time']
-                                  , pos=tuple(st['pos'])
-                                  , dir=tuple(st['dir'])
-                                  , vel=vel
-                                  , steering=ele.get('steering', None)
-                                  , steering_input=ele.get('steering_input', None)
-                                  , brake=ele.get('brake', None)
-                                  , brake_input=ele.get('brake_input', None)
-                                  , throttle=ele.get('throttle', None)
-                                  , throttle_input=ele.get('throttle_input', None)
-                                  , wheelspeed=ele.get('wheelspeed', None)
-                                  , vel_kmh=int(round(np.linalg.norm(vel) * 3.6)))
+        self.state = VehicleState(timer=sensors['timer']['time'],
+                                  pos=tuple(st['pos']),
+                                  dir=tuple(st['dir']),
+                                  vel=vel,
+                                  steering=ele.get('steering', None),
+                                  steering_input=ele.get('steering_input', None),
+                                  brake=ele.get('brake', None),
+                                  brake_input=ele.get('brake_input', None),
+                                  throttle=ele.get('throttle', None),
+                                  throttle_input=ele.get('throttle_input', None),
+                                  wheelspeed=ele.get('wheelspeed', None),
+                                  vel_kmh=int(round(np.linalg.norm(vel) * 3.6)))

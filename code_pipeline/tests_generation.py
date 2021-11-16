@@ -1,13 +1,13 @@
+import json
+
+from scipy.interpolate import splev, splprep
+from numpy.ma import arange
+from shapely.geometry import LineString
+
 from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
 from feature_extraction.segmentation_strategy import SegmentationStrategy
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 from self_driving.road_polygon import RoadPolygon
-from shapely.geometry import  LineString
-from scipy.interpolate import splev, splprep
-from numpy.ma import arange
-from shapely.geometry import LineString
-import json
-from feature_extraction.feature_extraction import FeatureExtractor
 
 # Constants
 rounding_precision = 3
@@ -26,8 +26,7 @@ def _interpolate(the_test):
     # This is an approximation based on whatever input is given
     test_road_lenght = LineString([(t[0], t[1]) for t in the_test]).length
     num_nodes = int(test_road_lenght / interpolation_distance)
-    if num_nodes < min_num_nodes:
-        num_nodes = min_num_nodes
+    num_nodes = max(num_nodes, min_num_nodes)
 
     assert len(old_x_vals) >= 2, "You need at leas two road points to define a road"
     assert len(old_y_vals) >= 2, "You need at leas two road points to define a road"
@@ -42,7 +41,7 @@ def _interpolate(the_test):
         # Otheriwse, use cubic splines
         k = 3
 
-    pos_tck, pos_u = splprep([old_x_vals, old_y_vals], s= smoothness, k=k)
+    pos_tck, *_pos_u = splprep([old_x_vals, old_y_vals], s=smoothness, k=k)
 
     step_size = 1 / num_nodes
     unew = arange(0, 1 + step_size, step_size)
@@ -63,7 +62,7 @@ def _incremental_id_generator():
         test_id += 1
 
 
-def get_min_segment_length(road_points: list[tuple[int,int]], segmentation_strategy: SegmentationStrategy) -> float:
+def get_min_segment_length(road_points: list[tuple[int, int]], segmentation_strategy: SegmentationStrategy) -> float:
     """
     Get the minimum segment lengths baased on the segmentation strategy.
     """
@@ -80,9 +79,10 @@ def get_min_segment_length(road_points: list[tuple[int,int]], segmentation_strat
 
     segment_lengths_lst.sort()
     # print('sorted length list: {}'.format(segment_lengths_lst))
-    for i in range(len(segment_lengths_lst)):
-        if segment_lengths_lst[i] < 0.1: continue
-        else: return segment_lengths_lst[i]
+    for segment_length in segment_lengths_lst:
+        if segment_length >= 0.1:
+            return segment_length
+    return None
 
 
 class RoadTestFactory:
@@ -97,15 +97,15 @@ class RoadTestFactory:
         """
 
         def __init__(self, road_points, risk_factor=None, angle_threshold=13, decision_distance=10):
-            assert type(road_points) is list, "You must provide a list of road points to create a RoadTest"
+            assert isinstance(road_points, list), "You must provide a list of road points to create a RoadTest"
             assert all(len(i) == 2 for i in road_points), "Malformed list of road points"
             # The original input
             self.road_points = road_points[:]
 
             # Initialize the feature extractor
             segmentation_strategy = AngleBasedStrategy(angle_threshold=angle_threshold, decision_distance=decision_distance)
-            #segment_indexes = segmentation_strategy.extract_segments(road_points)
-            #print('Segment indexes: {}'.format(segment_indexes))
+            # segment_indexes = segmentation_strategy.extract_segments(road_points)
+            # print('Segment indexes: {}'.format(segment_indexes))
 
             # # TODO: get the minimum and maximum segment length
             min_segment_length = get_min_segment_length(road_points, segmentation_strategy)
@@ -117,7 +117,7 @@ class RoadTestFactory:
             # self.__feature_extractor = FeatureExtractor(road_points, segmentation_strategy)
             # road_features = self.__feature_extractor.extract_features()
 
-            # road_features_json_string = str(road_features) #json.dumps(road_features)
+            # road_features_json_string = str(road_features) # json.dumps(road_features)
             # json_file = open("features.json", 'w')
             # json_file.write(road_features_json_string)
             # json_file.close()
@@ -128,11 +128,11 @@ class RoadTestFactory:
             self.interpolated_points = _interpolate(self.road_points)
 
             # TODO: save the interpolated points
-            #print('Interpolated x/y coordiantes:')
-            #print(self.interpolated_points)
+            # print('Interpolated x/y coordiantes:')
+            # print(self.interpolated_points)
 
             # Extract features from original road input
-            #self.__feature_extractor.extract_features()
+            # self.__feature_extractor.extract_features()
 
             # The rendered road
             self.road_polygon = RoadPolygon.from_nodes(self.interpolated_points)
@@ -163,7 +163,7 @@ class RoadTestFactory:
             # "easier to ask for forgiveness than permission" (EAFP)
             try:
                 # This might require some trick?
-                theobj['id' ] = self.id
+                theobj['id'] = self.id
             except AttributeError:
                 pass
             try:
@@ -172,7 +172,7 @@ class RoadTestFactory:
                 pass
             try:
                 # This might require some trick?
-                theobj['execution_data' ] = self.execution_data
+                theobj['execution_data'] = self.execution_data
             except AttributeError:
                 pass
             try:
@@ -190,7 +190,8 @@ class RoadTestFactory:
 
     @staticmethod
     def create_road_test(road_points, risk_factor, angle_threshold=13, decision_distance=10):
-        road_test = RoadTestFactory.RoadTest(road_points, risk_factor=risk_factor, angle_threshold=angle_threshold, decision_distance=decision_distance)
+        road_test = RoadTestFactory.RoadTest(road_points, risk_factor=risk_factor, angle_threshold=angle_threshold,
+                                             decision_distance=decision_distance)
         # TODO Why not simply declare the id as field of RoadTest?
         # Generate the new id. Call next otherwise we return the generator
         setattr(road_test, 'id', next(RoadTestFactory.test_id_generator))
@@ -236,8 +237,8 @@ class TestGenerationStatistic:
 
     def as_csv(self):
         # TODO There's definitively a more python way to do this
-        header = ",".join(["test_generated","test_valid","test_invalid","test_passed","test_failed",
-                           "test_in_error","real_time_execution,simulated_time_execution"])
+        header = ",".join(["test_generated", "test_valid", "test_invalid", "test_passed", "test_failed",
+                           "test_in_error", "real_time_execution, simulated_time_execution"])
         values = ",".join([str(self.test_generated), str(self.test_valid), str(self.test_invalid),
                            str(self.test_passed), str(self.test_failed), str(self.test_in_error),
                            str(sum(self.test_execution_real_times)), str(sum(self.test_execution_simulation_times))])

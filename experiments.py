@@ -1,31 +1,31 @@
-import click
 import os
-from click.types import FLOAT
-import yaml
 import re
 import json
-import pandas as pd
-import numpy as np
-import joblib
 import logging as log
 import traceback
 import sys
 import time
 import platform
 from pathlib import Path
+import random
+
+import click
+import yaml
+import pandas as pd
+import numpy as np
+import joblib
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.model_selection import KFold, cross_validate
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import metrics
+
 from competition import post_process, generate
 from code_pipeline.config import Config
 from code_pipeline.tests_generation import RoadTestFactory
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate
-from sklearn import preprocessing
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import MultinomialNB, GaussianNB
-from sklearn.tree import DecisionTreeClassifier
-import sklearn.metrics as metrics
-import random
 
 # THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
 BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
@@ -57,7 +57,7 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         if not BEAMNG_HOME.exists():
             context.fail(f'The beamng home path {BEAMNG_HOME} does not exist')
         arguments['--beamng-home'] = BEAMNG_HOME
-        if not BEAMNG_HOME.exists():
+        if not BEAMNG_USER.exists():
             context.fail(f'The beamng user path {BEAMNG_USER} does not exist')
         arguments['--beamng-user'] = BEAMNG_USER
 
@@ -70,7 +70,7 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
     args = []
     for key, value in arguments.items():
         args.append(key)
-        if not value is True:
+        if value is not True:
             args.append(str(value))
 
     print('run_pipeline')
@@ -85,7 +85,8 @@ def cli():
 
 
 @cli.command()
-@click.option('--config-file', default=Path('config.yaml'), type=click.Path(exists=True, readable=True, path_type=Path), help='Path to config yaml file')
+@click.option('--config-file', default=Path('config.yaml'), type=click.Path(exists=True, readable=True, path_type=Path),
+              help='Path to config yaml file')
 @click.pass_context
 def from_config_file(ctx, config_file: Path):
     # 'config' will be a dictionary
@@ -107,7 +108,8 @@ def from_config_file(ctx, config_file: Path):
     angle_threshold = config['angle-threshold']
     decision_distance = config['decision-distance']
 
-    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
+                 angle_threshold, decision_distance)
 
 
 @cli.command()
@@ -121,7 +123,7 @@ def from_config_file(ctx, config_file: Path):
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
 @click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
 @click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
-@click.option('--prevent-simulation', default=False, help=r'For some reasons you don\'t want to run the simulator')
+@click.option('--prevent-simulation', default=False, help="For some reasons you don't want to run the simulator")
 @click.option('--results-dir', default='./results', help='Path to store all generated tests', type=click.Path())
 @click.pass_context
 def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
@@ -137,7 +139,7 @@ def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tole
 
 
 def parse_json_test_file(file):
-    #click.echo(file)
+    # click.echo(file)
     json_dict = None
     with open(file, 'r') as file_obj:
         json_dict = json.load(file_obj)
@@ -170,20 +172,20 @@ def load_data_as_data_frame(abs_path):
                 abs_file_path = os.path.join(root, file)
                 json_dict = parse_json_test_file(abs_file_path)
                 jsons_lst.append(json_dict)
-            
+
     # TODO: convert jsons_lst with extracted features to pandas data frame
     df = pd.DataFrame()
 
     for test_dict in jsons_lst:
         test_is_valid = test_dict['is_valid']
         if test_is_valid:
-            #click.echo(test_dict)
+            # click.echo(test_dict)
             road_points = test_dict['road_points']
             road_features = get_road_features(road_points)
-            #click.echo(road_features.to_dict())
+            # click.echo(road_features.to_dict())
             road_features_dict = road_features.to_dict()
             road_features_dict['safety'] = test_dict['test_outcome']
-            #click.echo(road_features_dict.keys())
+            # click.echo(road_features_dict.keys())
             df = df.append(road_features_dict, ignore_index=True)
 
     return df
@@ -198,12 +200,13 @@ def get_avg_scores(scores):
 
     return avg_scores
 
+
 @cli.command()
 @click.option('--model', default='all', type=click.STRING, help='Machine learning model')
 @click.option('--CV', default=True, help='Use 10-fold cross validation', type=click.BOOL)
 @click.option('--dataset', help='Path to test secenarios', type=click.Path(exists=True))
 @click.option('--save', default=False, is_flag=True, help='Save the the trained models', type=click.BOOL)
-def evaluate_models(model, cv, dataset, save):
+def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argument
 
     abs_path = os.path.abspath(dataset)
     df = load_data_as_data_frame(abs_path)
@@ -212,46 +215,50 @@ def evaluate_models(model, cv, dataset, save):
     X_attributes = ['direct_distance', 'max_angle',
                     'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
                     'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
-                    'num_r_turns', 'num_straights', 'road_distance','std_angle',
+                    'num_r_turns', 'num_straights', 'road_distance', 'std_angle',
                     'std_pivot_off', 'total_angle']
 
     y_attribute = 'safety'
 
-
     # train models CV
     X = df[X_attributes].to_numpy()
     # TODO: provide preprocessing options to the user???
-    #X = preprocessing.normalize(X)
-    #X = preprocessing.scale(X)
+    # X = preprocessing.normalize(X)
+    # X = preprocessing.scale(X)
     y = df[y_attribute].to_numpy()
-    y[ y=='FAIL' ] = 1
-    y[ y=='PASS' ] = 0
+    y[y == 'FAIL'] = 1
+    y[y == 'PASS'] = 0
     y = np.array(y, dtype='int32')
-    
 
-    classifiers = {
-        'random_forest': {'estimator': RandomForestClassifier(), 'scores': None, 'avg_scores': None},
-        'gradient_boosting': {'estimator': GradientBoostingClassifier(), 'scores': None, 'avg_scores': None},
-        #'multinomial_naive_bayes': {'estimator': MultinomialNB(), 'scores': None, 'avg_scores': None},
-        'gaussian_naive_bayes': {'estimator': GaussianNB(), 'scores': None, 'avg_scores': None},
-        'logistic_regression': {'estimator': LogisticRegression(max_iter=10000), 'scores': None, 'avg_scores': None},
-        'decision_tree': {'estimator': DecisionTreeClassifier(), 'scores': None, 'avg_scores': None}
-    }
-
-
-
+    classifiers = {}
     scoring = ['accuracy', 'precision', 'recall', 'f1']
 
+    for name, estimator in {
+        'random_forest': RandomForestClassifier(),
+        'gradient_boosting': GradientBoostingClassifier(),
+        # 'multinomial_naive_bayes': MultinomialNB(),
+        'gaussian_naive_bayes': GaussianNB(),
+        'logistic_regression': LogisticRegression(max_iter=10000),
+        'decision_tree': DecisionTreeClassifier(),
+    }:
+        scores = cross_validate(estimator, X, y, cv=KFold(n_splits=10, shuffle=True), scoring=scoring)
+        classifiers[name] = {
+            'estimator': estimator,
+            'scores': scores,
+            # average the scores
+            'avg_scores': get_avg_scores(scores),
+        }
+
     for key, value in classifiers.items():
-        classifiers[key]['scores'] = cross_validate(value['estimator'], X, y, cv=KFold(n_splits=10, shuffle=True), scoring=scoring)
-        
+        value['scores'] = cross_validate(value['estimator'], X, y, cv=KFold(n_splits=10, shuffle=True),
+                                         scoring=scoring)
+
         # avverage the scores
-        classifiers[key]['avg_scores'] = get_avg_scores(classifiers[key]['scores'])
-    
+        value['avg_scores'] = get_avg_scores(value['scores'])
 
     # output results
     for key, value in classifiers.items():
-        avg_scores = classifiers[key]['avg_scores']
+        avg_scores = value['avg_scores']
         model = key
         accuracy = avg_scores['accuracy']
         recall = avg_scores['recall']
@@ -265,8 +272,9 @@ def evaluate_models(model, cv, dataset, save):
             joblib.dump(trained_model, model_file_name)
 
         # TODO: order the models according to an argument (e.g. acc, rec, prec, f1)
-        print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'.format(model, accuracy, recall, precision, f1))
-    
+        print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'
+              .format(model, accuracy, recall, precision, f1))
+
 
 @cli.command()
 @click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
@@ -281,19 +289,18 @@ def predict_scenarios(scenarios, classifier):
 
     # predict test outcomes
     X_attributes = ['direct_distance', 'max_angle',
-                'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
-                'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
-                'num_r_turns', 'num_straights', 'road_distance','std_angle',
-                'std_pivot_off', 'total_angle']
+                    'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
+                    'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
+                    'num_r_turns', 'num_straights', 'road_distance', 'std_angle',
+                    'std_pivot_off', 'total_angle']
 
     y_attribute = 'safety'
-
 
     # train models CV
     X = df[X_attributes].to_numpy()
     # TODO: provide preprocessing options to the user???
-    #X = preprocessing.normalize(X)
-    #X = preprocessing.scale(X)
+    # X = preprocessing.normalize(X)
+    # X = preprocessing.scale(X)
     y_pred = clf.predict(X)
 
     # report predictions
@@ -306,8 +313,8 @@ def predict_scenarios(scenarios, classifier):
     #####################################################
     y_real = df[y_attribute].to_numpy()
     print(y_real)
-    y_real[ y_real=='FAIL' ] = 1
-    y_real[ y_real=='PASS' ] = 0
+    y_real[y_real == 'FAIL'] = 1
+    y_real[y_real == 'PASS'] = 0
     y_real = np.array(y_real, dtype='int32')
 
     # calculate scores (the unsafe scenarios are the positives)
@@ -325,7 +332,6 @@ def predict_scenarios(scenarios, classifier):
     #####################################################
     #       FOR EVALUATION ONLY!!!!!
     #####################################################
-
 
 
 @cli.command()
@@ -370,7 +376,8 @@ def generate_scenarios(ctx, time_budget, generator, out_path):
 @click.option('--map-size', default=200, help='Size of the road map')
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
 @click.pass_context
-def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed):
+def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder, risk_factor, time_budget, oob_tolerance,
+                    speed_limit, map_size, random_speed):
 
     if not os.path.exists(result_folder):
         os.mkdir(result_folder)
@@ -390,7 +397,7 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
                             road_visualizer=None, risk_factor=risk_factor, random_speed=random_speed)
 
         print(the_executor)
-        for root, dirs, files in os.walk(abs_path_to_road_scenarios):
+        for root, _dirs, files in os.walk(abs_path_to_road_scenarios):
             for file in files:
                 if re_obj.fullmatch(file):
                     print(file)
@@ -401,7 +408,7 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
                     print(road_points)
 
                     the_test = RoadTestFactory.create_road_test(road_points, risk_factor)
-                    test_outcome, description, execution_data = the_executor.execute_test(the_test, prevent_simulation=False)
+                    _test_outcome, _description, _execution_data = the_executor.execute_test(the_test, prevent_simulation=False)
 
                     time.sleep(10)
 
@@ -429,13 +436,12 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
     re_obj = re.compile(pattern)
 
     jsons_lst = []
-    for root, dirs, files in os.walk(abs_path):
+    for root, _dirs, files in os.walk(abs_path):
         for file in files:
             if re_obj.fullmatch(file):
                 abs_file_path = os.path.join(root, file)
                 json_dict = parse_json_test_file(abs_file_path)
                 jsons_lst.append(json_dict)
-            
 
     valid_tests = []
 
@@ -476,7 +482,7 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
         cnt += 1
         with open(filepath, 'w') as f:
             f.write(json.dumps(test))
-    
+
     abs_path_test_dir = os.path.abspath(test_dir)
     for test in test_data:
         filepath = os.path.join(abs_path_test_dir, 'test_{}.json'.format(cnt))

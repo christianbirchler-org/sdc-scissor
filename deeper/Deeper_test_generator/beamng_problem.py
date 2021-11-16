@@ -1,13 +1,10 @@
 import itertools
 import json
-import random
 from typing import List
 
 from deap import creator
 
 from code_pipeline.tests_generation import RoadTestFactory
-from deeper.Deeper_test_generator.archive import Archive
-from deeper.Deeper_test_generator.archive_impl import NonGreedyArchive
 from deeper.Deeper_test_generator.folders import folders
 from deeper.Deeper_test_generator.log_setup import get_logger
 from deeper.Deeper_test_generator.member import Member
@@ -44,7 +41,7 @@ class BeamNGProblem(Problem):
         seed = self._seed_pool_strategy.get_seed()
 
         road1 = seed
-        #road1 = seed.clone().mutate()
+        # road1 = seed.clone().mutate()
 
         road1.config = self.config
 
@@ -57,7 +54,7 @@ class BeamNGProblem(Problem):
     def deap_evaluate_individual(self, individual: BeamNGIndividual):
         return individual.evaluate(self.executor)
 
-    def on_iteration(self, idx, pop: List[BeamNGIndividual], logbook):
+    def on_iteration(self, idx, pop: List[BeamNGIndividual]):
         self.experiment_path.mkdir(parents=True, exist_ok=True)
         self.experiment_path.joinpath('config.json').write_text(json.dumps(self.config.__dict__))
 
@@ -78,8 +75,8 @@ class BeamNGProblem(Problem):
         BeamNGIndividualSetStore(gen_path.joinpath('archive')).save(self.archive)
 
     def generate_random_member(self) -> Member:
-        result = RoadGenerator(num_control_nodes=self.config.num_control_nodes, max_angle=self.config.MAX_ANGLE, seg_length=self.config.SEG_LENGTH,
-                               num_spline_nodes=self.config.NUM_SPLINE_NODES).generate()
+        result = RoadGenerator(num_control_nodes=self.config.num_control_nodes, max_angle=self.config.MAX_ANGLE,
+                               seg_length=self.config.SEG_LENGTH, num_spline_nodes=self.config.NUM_SPLINE_NODES).generate()
 
         result.config = self.config
         result.problem = self
@@ -91,15 +88,13 @@ class BeamNGProblem(Problem):
     def member_class(self):
         return BeamNGMember
 
-    def reseed(self, pop, offspring):
+    def reseed(self, population):
         if len(self.archive) > 0:
-            stop = self.config.RESEED_UPPER_BOUND + 1
-            seed_range = min(random.randrange(0, stop), len(pop))
             archived_seeds = [i.seed for i in self.archive]
-            for i in range(len(pop)):
-                if pop[i].seed in archived_seeds:
+            for i in range(len(population)):  # pylint: disable=consider-using-enumerate
+                if population[i].seed in archived_seeds:
                     ind1 = self.deap_generate_individual()
-                    pop[i] = ind1
+                    population[i] = ind1
 
     def _get_evaluator(self):
         if self._evaluator:
@@ -114,9 +109,9 @@ class BeamNGProblem(Problem):
         log.info('----Initial Evaluation----')
         for member in all_members:
             road_points = [(node[0], node[1]) for node in member.sample_nodes]
-            the_test = RoadTestFactory.create_road_test(road_points)
+            the_test = RoadTestFactory.create_road_test(road_points, 0.7)
             log.info("Evaluating %s", member.name)
-            test_outcome, description, execution_data, min_oob_distance = self.executor.execute_test(the_test)
+            test_outcome, _description, _execution_data, min_oob_distance = self.executor.execute_test(the_test)
             member.distance_to_boundary = min_oob_distance
             log.info("Outcome %s", test_outcome)
             if test_outcome != "INVALID":

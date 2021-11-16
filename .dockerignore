@@ -17,3 +17,7 @@
 /.gitignore
 
 /**/__pycache__
+
+/.vscode
+
+/documentation
