@@ -32,7 +32,8 @@ BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
 BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
 
 
-def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance, prevent_simulation=True):
+def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
+                 angle_threshold, decision_distance, results_dir, prevent_simulation=True):
     arguments = {
         '--visualize-tests': True,
         '--time-budget': time_budget,
@@ -43,6 +44,7 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         '--executor': executor,
         '--map-size': map_size,
         '--prevent-simulation': prevent_simulation,
+        '--results-dir': results_dir,
     }
     if random_speed:
         arguments['--random-speed'] = True
@@ -71,6 +73,7 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         if not value is True:
             args.append(str(value))
 
+    print('run_pipeline')
     # invoke with custom context to have the option checking
     with generate.make_context(None, args, context) as sub_context:
         generate.invoke(sub_context)
@@ -119,9 +122,18 @@ def from_config_file(ctx, config_file: Path):
 @click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
 @click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
 @click.option('--prevent-simulation', default=False, help=r'For some reasons you don\'t want to run the simulator')
+@click.option('--results-dir', default='./results', help='Path to store all generated tests', type=click.Path())
 @click.pass_context
-def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance, prevent_simulation):
-    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance, prevent_simulation)
+def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
+                    angle_threshold, decision_distance, prevent_simulation, results_dir):
+
+    if not os.path.exists(results_dir):
+        os.mkdir(results_dir)
+
+    results_dir_abs_path = os.path.abspath(results_dir)
+
+    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
+                 angle_threshold, decision_distance, results_dir_abs_path, prevent_simulation)
 
 
 def parse_json_test_file(file):
@@ -319,13 +331,14 @@ def predict_scenarios(scenarios, classifier):
 @cli.command()
 @click.option('--time-budget', default=10, help='Time budget for generating tests')
 @click.option('--generator', default='frenetic', help='Test case generator')
+@click.option('--out-path', default='./valid_roads', help='Path to store the generated valid scenarios', type=click.Path())
 @click.pass_context
-def generate_scenarios(ctx, time_budget, generator):
+def generate_scenarios(ctx, time_budget, generator, out_path):
 
-    if not os.path.exists(Config.VALID_TEST_DIR):
-        os.mkdir(Config.VALID_TEST_DIR)
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
 
-    out_dir_abs_path = os.path.abspath(Config.VALID_TEST_DIR)
+    out_dir_abs_path = os.path.abspath(out_path)
 
     executor = 'mock'
     risk_factor = 0.7
@@ -335,51 +348,46 @@ def generate_scenarios(ctx, time_budget, generator):
     random_speed = True
     angle_threshold = 13
     decision_distance = 10
-    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed, angle_threshold, decision_distance)
+    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
+                 angle_threshold, decision_distance, results_dir=out_dir_abs_path)
 
 
 
 
 @cli.command()
 @click.option('--road-scenarios', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
-@click.option('--beamng-home', required=True, default=None, type=click.Path(exists=True),
+@click.option('--beamng-home', required=True, default=BEAMNG_HOME, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the home of the simulator.")
-@click.option('--beamng-user', required=True, default=None, type=click.Path(exists=True),
+@click.option('--beamng-user', required=True, default=BEAMNG_USER, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the location of the folder "
                    "where levels, props, and other BeamNG-related data will be copied."
                    "** Use this to avoid spaces in URL/PATHS! **")
-@click.option('--result-folder', help='Path for the labeled data', type=click.Path(exists=True))
+@click.option('--result-folder', help='Path for the labeled data', type=click.Path())
 @click.option('--risk-factor', default=0.7, help='Risk factor of the driving AI')
 @click.option('--time-budget', default=1000, help='Time budget for generating tests')
 @click.option('--oob-tolerance', default=0.95, help='Proportion of the car allowd to go off the lane')
-@click.option('--speed-limit', default=70, help='Speed limit in km/h')
+@click.option('--speed-limit', default=120, help='Speed limit in km/h')
 @click.option('--map-size', default=200, help='Size of the road map')
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
 @click.pass_context
 def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed):
+
+    if not os.path.exists(result_folder):
+        os.mkdir(result_folder)
+
+    result_dir_abs_path = os.path.abspath(result_folder)
 
     abs_path_to_road_scenarios = os.path.abspath(road_scenarios)
 
     pattern = r"road_\d+\.json\Z"
     re_obj = re.compile(pattern)
 
-    # time_budget = 2000
-    # map_size = 200
-    # oob_tolerance = 0.5
-    # speed_limit = 120
-    # beamng_home = r"C:\Users\birc\Documents\BeamNG.research.v1.7.0.1"
-    # beamng_user = r"C:\Users\birc\Documents\BeamNG.research"
-    road_visualizer = None
-    # risk_factor = 1.5
-    # random_speed = False
-
-
     try:
         from code_pipeline.beamng_executor import BeamngExecutor
-        the_executor = BeamngExecutor(result_folder, time_budget, map_size,
+        the_executor = BeamngExecutor(result_dir_abs_path, time_budget, map_size,
                             oob_tolerance=oob_tolerance, max_speed=speed_limit,
                             beamng_home=beamng_home, beamng_user=beamng_user,
-                            road_visualizer=road_visualizer, risk_factor=risk_factor, random_speed=random_speed)
+                            road_visualizer=None, risk_factor=risk_factor, random_speed=random_speed)
 
         print(the_executor)
         for root, dirs, files in os.walk(abs_path_to_road_scenarios):
@@ -397,11 +405,6 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
 
                     time.sleep(10)
 
-                    #oob_percentage = [state.oob_percentage for state in execution_data]
-                    #log.info("Collected %d states information. Max is %.3f", len(oob_percentage), max(oob_percentage))
-
-                    
-               
     except Exception:
         log.fatal("An error occurred during test generation")
         traceback.print_exc()
@@ -480,6 +483,11 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
         cnt += 1
         with open(filepath, 'w') as f:
             f.write(json.dumps(test))
+
+@cli.command()
+@click.option('--scenarios', help='Path to labeled secenarios', type=click.Path(exists=True))
+def evaluate(scenarios):
+    pass
 
 
 if __name__ == '__main__':

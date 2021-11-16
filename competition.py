@@ -18,9 +18,6 @@ from code_pipeline.test_generation_utils import register_exit_fun
 
 from code_pipeline.tests_evaluation import OOBAnalyzer
 
-# TODO Make this configurable?
-OUTPUT_RESULTS_TO = 'results'
-
 
 def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -219,11 +216,14 @@ def setup_logging(log_to, debug):
 @click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
 @click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
 @click.option('--prevent-simulation', default=True, help='Prevent running the simulation', type=click.BOOL)
+@click.option('--results-dir', default='./results', help='Path to store all generated tests', type=click.Path())
 @click.pass_context
 def generate(ctx, executor, beamng_home, beamng_user,
              time_budget, map_size, oob_tolerance, speed_limit,
              module_name, module_path, class_name,
-             visualize_tests, log_to, debug, risk_factor, random_speed, angle_threshold, decision_distance, prevent_simulation):
+             visualize_tests, log_to, debug, risk_factor, random_speed, angle_threshold, decision_distance, prevent_simulation,
+             results_dir):
+    print('generate')
     # ensure that ctx.obj exists and is a dict (in case `cli()` is called
     # by means other than the `if` block below)
     ctx.ensure_object(dict)
@@ -244,7 +244,7 @@ def generate(ctx, executor, beamng_home, beamng_user,
         road_visualizer = RoadTestVisualizer(map_size=map_size)
 
     # Setup folder structure by ensuring that the basic folder structure is there.
-    default_output_folder = os.path.join(get_script_path(), OUTPUT_RESULTS_TO)
+    default_output_folder = os.path.join(get_script_path(), results_dir)
     try:
         os.makedirs(default_output_folder)
     except OSError as e:
