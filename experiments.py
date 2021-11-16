@@ -56,7 +56,7 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         if not BEAMNG_HOME.exists():
             context.fail(f'The beamng home path {BEAMNG_HOME} does not exist')
         arguments['--beamng-home'] = BEAMNG_HOME
-        if not BEAMNG_HOME.exists():
+        if not BEAMNG_USER.exists():
             context.fail(f'The beamng user path {BEAMNG_USER} does not exist')
         arguments['--beamng-user'] = BEAMNG_USER
 
