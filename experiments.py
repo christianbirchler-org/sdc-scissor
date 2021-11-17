@@ -8,12 +8,11 @@ import time
 import platform
 from pathlib import Path
 import random
-
 import click
-import yaml
 import pandas as pd
 import numpy as np
 import joblib
+
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import KFold, cross_validate
 from sklearn.linear_model import LogisticRegression
@@ -22,10 +21,13 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
 
 from competition import post_process, generate
-from code_pipeline.config import Config
+
 from code_pipeline.tests_generation import RoadTestFactory
+from code_pipeline.beamng_executor import BeamngExecutor
+
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
+
 
 # THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
 BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
@@ -84,32 +86,32 @@ def cli():
     pass
 
 
-@cli.command()
-@click.option('--config-file', default=Path('config.yaml'), type=click.Path(exists=True, readable=True, path_type=Path),
-              help='Path to config yaml file')
-@click.pass_context
-def from_config_file(ctx, config_file: Path):
-    # 'config' will be a dictionary
-    config = None
-    try:
-        config = yaml.safe_load(config_file.read_text())
-        print(config)
-    except yaml.YAMLError as exc:
-        ctx.fail(str(exc))
+# @cli.command()
+# @click.option('--config-file', default=Path('config.yaml'), type=click.Path(exists=True, readable=True, path_type=Path),
+#               help='Path to config yaml file')
+# @click.pass_context
+# def from_config_file(ctx, config_file: Path):
+#     # 'config' will be a dictionary
+#     config = None
+#     try:
+#         config = yaml.safe_load(config_file.read_text())
+#         print(config)
+#     except yaml.YAMLError as exc:
+#         ctx.fail(str(exc))
 
-    executor = config['executor']
-    generator = config['generator']
-    risk_factor = config['risk-factor']
-    time_budget = config['time-budget']
-    oob_tolerance = config['oob-tolerance']
-    speed_limit = config['speed-limit']
-    map_size = config['map-size']
-    random_speed = config['random-speed']
-    angle_threshold = config['angle-threshold']
-    decision_distance = config['decision-distance']
+#     executor = config['executor']
+#     generator = config['generator']
+#     risk_factor = config['risk-factor']
+#     time_budget = config['time-budget']
+#     oob_tolerance = config['oob-tolerance']
+#     speed_limit = config['speed-limit']
+#     map_size = config['map-size']
+#     random_speed = config['random-speed']
+#     angle_threshold = config['angle-threshold']
+#     decision_distance = config['decision-distance']
 
-    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
-                 angle_threshold, decision_distance)
+#     run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
+#                  angle_threshold, decision_distance)
 
 
 @cli.command()
@@ -358,8 +360,6 @@ def generate_scenarios(ctx, time_budget, generator, out_path):
                  angle_threshold, decision_distance, results_dir=out_dir_abs_path)
 
 
-
-
 @cli.command()
 @click.option('--road-scenarios', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
 @click.option('--beamng-home', required=True, default=BEAMNG_HOME, type=click.Path(exists=True),
@@ -390,11 +390,11 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
     re_obj = re.compile(pattern)
 
     try:
-        from code_pipeline.beamng_executor import BeamngExecutor
         the_executor = BeamngExecutor(result_dir_abs_path, time_budget, map_size,
-                            oob_tolerance=oob_tolerance, max_speed=speed_limit,
-                            beamng_home=beamng_home, beamng_user=beamng_user,
-                            road_visualizer=None, risk_factor=risk_factor, random_speed=random_speed)
+                                      oob_tolerance=oob_tolerance, max_speed=speed_limit,
+                                      beamng_home=beamng_home, beamng_user=beamng_user,
+                                      road_visualizer=None, risk_factor=risk_factor,
+                                      random_speed=random_speed)
 
         print(the_executor)
         for root, _dirs, files in os.walk(abs_path_to_road_scenarios):
@@ -490,10 +490,11 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
         with open(filepath, 'w') as f:
             f.write(json.dumps(test))
 
+
 @cli.command()
 @click.option('--scenarios', help='Path to labeled secenarios', type=click.Path(exists=True))
 def evaluate(scenarios):
-    pass
+    return scenarios
 
 
 if __name__ == '__main__':
