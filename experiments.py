@@ -427,11 +427,19 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
 
 @cli.command()
 @click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
-@click.option('--train-dir', help='Path to directory of training data to be stored', type=click.Path(exists=True))
-@click.option('--test-dir', help='Path to directory of test data to be stored', type=click.Path(exists=True))
+@click.option('--train-dir', help='Path to directory of training data to be stored', type=click.Path())
+@click.option('--test-dir', help='Path to directory of test data to be stored', type=click.Path())
 @click.option('--train-ratio', help='Ratio used for training', type=click.FLOAT)
 def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
     abs_path = os.path.abspath(scenarios)
+
+    if not os.path.exists(train_dir):
+        os.mkdir(train_dir)
+    train_dir = os.path.abspath(train_dir)
+    if not os.path.exists(test_dir):
+        os.mkdir(test_dir)
+    test_dir = os.path.abspath(test_dir)
+
     pattern = r".*test.*.json\Z"
     re_obj = re.compile(pattern)
 
