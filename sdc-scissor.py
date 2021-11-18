@@ -22,9 +22,6 @@ from sklearn import metrics
 
 from competition import post_process, generate
 
-from code_pipeline.tests_generation import RoadTestFactory
-from code_pipeline.beamng_executor import BeamngExecutor
-
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 
@@ -368,6 +365,9 @@ def generate_scenarios(ctx, time_budget, generator, out_path):
 @click.pass_context
 def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder, risk_factor, time_budget, oob_tolerance,
                     speed_limit, map_size, random_speed):
+    # only import the pipeline if required
+    from code_pipeline.tests_generation import RoadTestFactory  # pylint: disable=import-outside-toplevel
+    from code_pipeline.beamng_executor import BeamngExecutor  # pylint: disable=import-outside-toplevel
 
     if not os.path.exists(result_folder):
         os.mkdir(result_folder)
@@ -402,7 +402,7 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
 
                     time.sleep(10)
 
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         log.fatal("An error occurred during test generation")
         traceback.print_exc()
         sys.exit(2)
