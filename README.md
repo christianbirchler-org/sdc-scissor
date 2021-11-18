@@ -1,6 +1,6 @@
 # SDC-Scissor
 
-This project is an extension of results from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop](https://sbst21.github.io/).
+This project is an extension of the tool competition plathform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop](https://sbst21.github.io/).
 
 ## Usage
 
