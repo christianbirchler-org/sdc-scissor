@@ -26,35 +26,3 @@ flake8 = "^4.0.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pylint.messages_control]
-enable = "all"
-disable = [
-    "missing-docstring",
-    "chained-comparison",
-    "too-few-public-methods",
-    "too-many-arguments",
-    "too-many-statements",
-    "too-many-return-statements",
-    "too-many-branches",
-    "logging-not-lazy",
-    "cyclic-import",
-    "fixme",
-    "duplicate-code",
-    "invalid-name",
-    "unspecified-encoding",
-    "cell-var-from-loop",
-    "consider-using-f-string",
-    "logging-fstring-interpolation",
-    "too-many-instance-attributes",
-    "too-many-locals",
-    "suppressed-message",
-    "locally-disabled",
-]
-
-ignored-modules = ['deap']
-
-max-line-length = 130
-
-[tool.pylint.master]
-init-hook = 'import sys; sys.path.append(".")'
