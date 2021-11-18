@@ -235,14 +235,16 @@ def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argumen
     classifiers = {}
     scoring = ['accuracy', 'precision', 'recall', 'f1']
 
-    for name, estimator in {
+    classifiers = {
         'random_forest': RandomForestClassifier(),
         'gradient_boosting': GradientBoostingClassifier(),
         # 'multinomial_naive_bayes': MultinomialNB(),
         'gaussian_naive_bayes': GaussianNB(),
         'logistic_regression': LogisticRegression(max_iter=10000),
         'decision_tree': DecisionTreeClassifier(),
-    }:
+    }
+
+    for name, estimator in classifiers.items():
         scores = cross_validate(estimator, X, y, cv=KFold(n_splits=10, shuffle=True), scoring=scoring)
         classifiers[name] = {
             'estimator': estimator,
@@ -250,13 +252,6 @@ def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argumen
             # average the scores
             'avg_scores': get_avg_scores(scores),
         }
-
-    for key, value in classifiers.items():
-        value['scores'] = cross_validate(value['estimator'], X, y, cv=KFold(n_splits=10, shuffle=True),
-                                         scoring=scoring)
-
-        # avverage the scores
-        value['avg_scores'] = get_avg_scores(value['scores'])
 
     # output results
     for key, value in classifiers.items():
@@ -267,7 +262,6 @@ def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argumen
         precision = avg_scores['precision']
         f1 = avg_scores['f1']
 
-        # TODO: train models on whole dataset and persist them for later usage
         if save:
             model_file_name = key + '.joblib'
             trained_model = value['estimator'].fit(X, y)
