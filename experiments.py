@@ -273,8 +273,8 @@ def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argumen
 
 
 @cli.command()
-@click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
-@click.option('--classifier', help='Path to classifier.joblib', type=click.Path(exists=True))
+@click.option('--scenarios', required=True, help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--classifier', required=True, help='Path to classifier.joblib', type=click.Path(exists=True))
 def predict_scenarios(scenarios, classifier):
     # laod road scenarios
     abs_path_scenarios = os.path.abspath(scenarios)
@@ -420,10 +420,10 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
 
 
 @cli.command()
-@click.option('--scenarios', help='Path to unlabeled secenarios', type=click.Path(exists=True))
-@click.option('--train-dir', help='Path to directory of training data to be stored', type=click.Path())
-@click.option('--test-dir', help='Path to directory of test data to be stored', type=click.Path())
-@click.option('--train-ratio', help='Ratio used for training', type=click.FLOAT)
+@click.option('--scenarios', required=True, help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--train-dir', required=True, help='Path to directory of training data to be stored', type=click.Path())
+@click.option('--test-dir', required=True, help='Path to directory of test data to be stored', type=click.Path())
+@click.option('--train-ratio', required=True, help='Ratio used for training', type=click.FLOAT)
 def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
     abs_path = os.path.abspath(scenarios)
 
