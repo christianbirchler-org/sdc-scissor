@@ -1,7 +1,7 @@
-import click
 import os
 import re
 import json
+import click
 
 
 @click.group()
