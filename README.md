@@ -24,7 +24,7 @@ To install the application use one of the following approaches:
 
 The tool can be used with the following two commands:
 
-* Docker: `docker run --rm sdc-scissor [COMMAND] [OPTIONS]`
+* Docker: `docker run --volume "$(pwd)/results:/out" --rm sdc-scissor [COMMAND] [OPTIONS]` (this will write all files written to `/out` to the local folder `results`)
 * Poetry: `poetry run python experiments.py [COMMAND] [OPTIONS]`
 
 There are multiple commands to use.
