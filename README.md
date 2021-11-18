@@ -2,6 +2,10 @@
 
 This project extends the tool competition plathform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop in 2021](https://sbst21.github.io/).
 
+## SDC-Scissor Architecture
+
+![Architecture Diagram](images/sdc-scissor-architecture.jpg)
+
 ## Usage
 
 ### Installation
@@ -44,10 +48,6 @@ These are automatically enabled in [Visual Studio Code](https://code.visualstudi
 poetry run flake8 .
 poetry run pylint **/*.py
 ```
-
-## Architecture
-
-![Architecture Diagram](images/sdc-scissor-architecture.jpg)
 
 ## License
 The software we developed is distributed under GNU GPL license. See the [LICENSE.md](LICENSE.md) file.
