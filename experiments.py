@@ -178,9 +178,11 @@ def load_data_as_data_frame(abs_path):
     # TODO: convert jsons_lst with extracted features to pandas data frame
     df = pd.DataFrame()
 
+    valid_tests_json_lst = []
     for test_dict in jsons_lst:
         test_is_valid = test_dict['is_valid']
         if test_is_valid:
+            valid_tests_json_lst.append(test_dict)
             # click.echo(test_dict)
             road_points = test_dict['road_points']
             road_features = get_road_features(road_points)
@@ -190,7 +192,7 @@ def load_data_as_data_frame(abs_path):
             # click.echo(road_features_dict.keys())
             df = df.append(road_features_dict, ignore_index=True)
 
-    return df
+    return df, valid_tests_json_lst
 
 
 def get_avg_scores(scores):
@@ -211,7 +213,7 @@ def get_avg_scores(scores):
 def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argument
 
     abs_path = os.path.abspath(dataset)
-    df = load_data_as_data_frame(abs_path)
+    df, _ = load_data_as_data_frame(abs_path)
 
     # consider only data we know before the execution of the scenario
     X_attributes = ['direct_distance', 'max_angle',
@@ -493,7 +495,7 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
 def evaluate(scenarios, classifier):
     # laod road scenarios
     abs_path_scenarios = os.path.abspath(scenarios)
-    df = load_data_as_data_frame(abs_path_scenarios)
+    df, _ = load_data_as_data_frame(abs_path_scenarios)
     # load pre-trained classifier
     abs_path_classifier = os.path.realpath(classifier)
     clf = joblib.load(abs_path_classifier)
