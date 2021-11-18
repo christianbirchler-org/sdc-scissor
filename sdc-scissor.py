@@ -178,9 +178,11 @@ def load_data_as_data_frame(abs_path):
     # TODO: convert jsons_lst with extracted features to pandas data frame
     df = pd.DataFrame()
 
+    valid_tests_json_lst = []
     for test_dict in jsons_lst:
         test_is_valid = test_dict['is_valid']
         if test_is_valid:
+            valid_tests_json_lst.append(test_dict)
             # click.echo(test_dict)
             road_points = test_dict['road_points']
             road_features = get_road_features(road_points)
@@ -190,7 +192,7 @@ def load_data_as_data_frame(abs_path):
             # click.echo(road_features_dict.keys())
             df = df.append(road_features_dict, ignore_index=True)
 
-    return df
+    return df, valid_tests_json_lst
 
 
 def get_avg_scores(scores):
@@ -211,7 +213,7 @@ def get_avg_scores(scores):
 def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argument
 
     abs_path = os.path.abspath(dataset)
-    df = load_data_as_data_frame(abs_path)
+    df, _ = load_data_as_data_frame(abs_path)
 
     # consider only data we know before the execution of the scenario
     X_attributes = ['direct_distance', 'max_angle',
@@ -274,11 +276,16 @@ def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argumen
 
 @cli.command()
 @click.option('--scenarios', required=True, help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--predicted-tests', required=True, help='Path to store predicted tests', type=click.Path())
 @click.option('--classifier', required=True, help='Path to classifier.joblib', type=click.Path(exists=True))
-def predict_scenarios(scenarios, classifier):
+def predict_scenarios(scenarios, predicted_tests, classifier):
+    if not os.path.exists(predicted_tests):
+        os.mkdir(predicted_tests)
+    abs_path_predicted_tests = os.path.abspath(predicted_tests)
+
     # laod road scenarios
     abs_path_scenarios = os.path.abspath(scenarios)
-    df = load_data_as_data_frame(abs_path_scenarios)
+    df, valid_tests_dict_lst = load_data_as_data_frame(abs_path_scenarios)
     # load pre-trained classifier
     abs_path_classifier = os.path.realpath(classifier)
     clf = joblib.load(abs_path_classifier)
@@ -289,8 +296,6 @@ def predict_scenarios(scenarios, classifier):
                     'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
                     'num_r_turns', 'num_straights', 'road_distance', 'std_angle',
                     'std_pivot_off', 'total_angle']
-
-    y_attribute = 'safety'
 
     # train models CV
     X = df[X_attributes].to_numpy()
@@ -304,30 +309,21 @@ def predict_scenarios(scenarios, classifier):
     print('Predicted as unsafe: {}'.format(sum(y_pred)))
     print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
 
-    #####################################################
-    #       FOR EVALUATION ONLY!!!!!
-    #####################################################
-    y_real = df[y_attribute].to_numpy()
-    print(y_real)
-    y_real[y_real == 'FAIL'] = 1
-    y_real[y_real == 'PASS'] = 0
-    y_real = np.array(y_real, dtype='int32')
+    if len(y_pred) != len(valid_tests_dict_lst):
+        raise Exception('number of predictions is not equal to the number of valid tests')
 
-    # calculate scores (the unsafe scenarios are the positives)
-    acc = metrics.accuracy_score(y_real, y_pred)
-    prec = metrics.precision_score(y_real, y_pred, pos_label=1)
-    rec = metrics.recall_score(y_real, y_pred, pos_label=1)
-    f1 = metrics.f1_score(y_real, y_pred, pos_label=1)
-    # TODO: recall, precision and f1 on test split 80/20!!!!!!
+    json_prediction_key = 'predicted_outcome'
+    for i, prediction in enumerate(y_pred):
+        valid_test_dict = valid_tests_dict_lst[i]
+        if prediction == 1:
+            valid_test_dict[json_prediction_key] = 'FAIL'
+        elif prediction == 0:
+            valid_test_dict[json_prediction_key] = 'PASS'
 
-    print('Accuracy: {}'.format(acc))
-    print('Precision: {}'.format(prec))
-    print('Recall: {}'.format(rec))
-    print('F1: {}'.format(f1))
-
-    #####################################################
-    #       FOR EVALUATION ONLY!!!!!
-    #####################################################
+        filename = 'predicted_test_{}.json'.format(i)
+        abs_path_predicted_test_file = os.path.join(abs_path_predicted_tests, filename)
+        with open(abs_path_predicted_test_file, 'w') as fp:
+            json.dump(valid_test_dict, fp)
 
 
 @cli.command()
@@ -499,7 +495,7 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
 def evaluate(scenarios, classifier):
     # laod road scenarios
     abs_path_scenarios = os.path.abspath(scenarios)
-    df = load_data_as_data_frame(abs_path_scenarios)
+    df, _ = load_data_as_data_frame(abs_path_scenarios)
     # load pre-trained classifier
     abs_path_classifier = os.path.realpath(classifier)
     clf = joblib.load(abs_path_classifier)
