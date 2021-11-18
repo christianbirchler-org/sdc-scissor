@@ -494,9 +494,56 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
 
 
 @cli.command()
-@click.option('--scenarios', help='Path to labeled secenarios', type=click.Path(exists=True))
-def evaluate(scenarios):
-    return scenarios
+@click.option('--scenarios', help='Path to labeled test set', type=click.Path(exists=True))
+@click.option('--classifier', help='Path to classifier.joblib', type=click.Path(exists=True))
+def evaluate(scenarios, classifier):
+    # laod road scenarios
+    abs_path_scenarios = os.path.abspath(scenarios)
+    df = load_data_as_data_frame(abs_path_scenarios)
+    # load pre-trained classifier
+    abs_path_classifier = os.path.realpath(classifier)
+    clf = joblib.load(abs_path_classifier)
+
+    # predict test outcomes
+    X_attributes = ['direct_distance', 'max_angle',
+                    'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
+                    'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
+                    'num_r_turns', 'num_straights', 'road_distance', 'std_angle',
+                    'std_pivot_off', 'total_angle']
+
+    y_attribute = 'safety'
+
+    # train models CV
+    X = df[X_attributes].to_numpy()
+    # TODO: provide preprocessing options to the user???
+    # X = preprocessing.normalize(X)
+    # X = preprocessing.scale(X)
+    y_pred = clf.predict(X)
+
+    # report predictions
+    print('Predicted {} scenarios.'.format(len(y_pred)))
+    print('Predicted as unsafe: {}'.format(sum(y_pred)))
+    print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
+
+    y_real = df[y_attribute].to_numpy()
+    # print(y_real)
+    y_real[y_real == 'FAIL'] = 1
+    y_real[y_real == 'PASS'] = 0
+    y_real = np.array(y_real, dtype='int32')
+
+    # calculate scores (the unsafe scenarios are the positives)
+    acc = metrics.accuracy_score(y_real, y_pred)
+    prec = metrics.precision_score(y_real, y_pred, pos_label=1)
+    rec = metrics.recall_score(y_real, y_pred, pos_label=1)
+    f1 = metrics.f1_score(y_real, y_pred, pos_label=1)
+    # TODO: recall, precision and f1 on test split 80/20!!!!!!
+
+    print('Accuracy: {}'.format(acc))
+    print('Precision: {}'.format(prec))
+    print('Recall: {}'.format(rec))
+    print('F1: {}'.format(f1))
+
+    # TODO: implement cost effectiveness analysis
 
 
 if __name__ == '__main__':
