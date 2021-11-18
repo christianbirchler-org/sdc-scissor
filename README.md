@@ -30,12 +30,19 @@ The tool can be used with the following two commands:
 There are multiple commands to use.
 For simplifying the documentation only the command and their options are described.
 
-* Generation of tests: `generate-scenarios --out-path /path/to/store/tests`
-* Automated labeling of Tests: `label-scenarios --road-scenarios /path/to/tests --result-folder /path/to/store/labeled/tests`
-* Model evaluation: `evaluate-models --dataset /path/to/train/set --save`
-* Split train and test data: `split-train-test-data --scenarios /path/to/scenarios --train-dir /path/for/train/data --test-dir /path/for/test/data --train-ratio 0.8`
-* Test outcome prediction: `predict-scenarios --scenarios /path/to/scenarios --classifier /path/to/model.joblib`
-* Evaluation based on random strategy: `evaluate --scenarios /path/to/test/scenarios --classifier /path/to/model.joblib`
+* Generation of tests:
+  * `generate-scenarios --out-path /path/to/store/tests`
+* Automated labeling of Tests:
+  * `label-scenarios --road-scenarios /path/to/tests --result-folder /path/to/store/labeled/tests`
+* Model evaluation:
+  * `evaluate-models --dataset /path/to/train/set --save`
+  * *Note:* This only works locally with BeamNG.research installed
+* Split train and test data:
+  * `split-train-test-data --scenarios /path/to/scenarios --train-dir /path/for/train/data --test-dir /path/for/test/data --train-ratio 0.8`
+* Test outcome prediction:
+  * `predict-scenarios --scenarios /path/to/scenarios --classifier /path/to/model.joblib`
+* Evaluation based on random strategy:
+  * `evaluate --scenarios /path/to/test/scenarios --classifier /path/to/model.joblib`
 
 The possible parameters are always documented with `--help`.
 
