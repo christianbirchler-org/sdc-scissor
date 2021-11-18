@@ -301,8 +301,8 @@ def predict_scenarios(scenarios, classifier):
 
     # report predictions
     print('Predicted {} scenarios.'.format(len(y_pred)))
-    print('Predicted as safe: {}'.format(sum(y_pred)))
-    print('Predicted as unsafe: {}'.format(len(y_pred)-sum(y_pred)))
+    print('Predicted as unsafe: {}'.format(sum(y_pred)))
+    print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
 
     #####################################################
     #       FOR EVALUATION ONLY!!!!!
