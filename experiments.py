@@ -45,7 +45,7 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         '--decision-distance': decision_distance,
         '--executor': executor,
         '--map-size': map_size,
-        '--prevent-simulation': prevent_simulation,
+        '--prevent-simulation': str(prevent_simulation),
         '--results-dir': results_dir,
     }
     if random_speed:
