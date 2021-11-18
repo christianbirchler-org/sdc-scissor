@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List, Set
+from typing import Set
 
 from deeper.Deeper_test_generator.folders import folders
 from deeper.Deeper_test_generator.ini_file import IniFile
@@ -13,10 +13,10 @@ class LogSetup:
 
     def use_ini(self, ini_path):
         self._log_ini = IniFile(ini_path)
-        format = self._log_ini.get_option_create_blank('config', 'format',
-                                                       '[%(asctime)s %(levelname)s %(filename)s:%(lineno)d] %(message)s')
+        log_format = self._log_ini.get_option_create_blank('config', 'format',
+                                                           '[%(asctime)s %(levelname)s %(filename)s:%(lineno)d] %(message)s')
         datefmt = self._log_ini.get_option_create_blank('config', 'date_format', '%H:%M:%S')
-        logging.basicConfig(format=format, datefmt=datefmt)
+        logging.basicConfig(format=log_format, datefmt=datefmt)
         for logger in self._all_loggers:
             self._setup_log_level(logger)
 
@@ -41,4 +41,4 @@ log_setup.use_ini(folders.log_ini)
 
 
 def get_logger(logger_name_path):
-    return log_setup._get_logger(logger_name_path)
+    return log_setup._get_logger(logger_name_path)  # pylint: disable=protected-access

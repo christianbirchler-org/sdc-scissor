@@ -9,7 +9,6 @@
 import json
 from pathlib import Path
 
-import numpy as np
 import matplotlib.pyplot as plt
 from deeper.Deeper_test_generator.archive import IndividualSet
 from deeper.Deeper_test_generator.folders import folders
@@ -31,10 +30,10 @@ class BeamNGIndividualSetStore:
 
 class _BeamNGIndividualStore:
     def save(self, ind: BeamNGIndividual, prefix: str = None):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def load(self, prefix: str) -> BeamNGIndividual:
-        raise NotImplemented()
+        raise NotImplementedError()
 
 
 class _BeamNGIndividualCompositeMembersStore:
@@ -54,13 +53,13 @@ class _BeamNGIndividualCompositeMembersStore:
         ml = ind.members_by_distance_to_boundary()
 
         def plot(member: BeamNGMember, ax):
-            ax.set_title(f'dist to bound', fontsize=12)
+            ax.set_title('dist to bound', fontsize=12)
             road_points = RoadPoints.from_nodes(member.sample_nodes)
             road_points.plot_on_ax(ax)
 
         plot(ml, ax)
-        #plot(mr, right)
-        #fig.suptitle(f'members distance = {ind.members_distance} ; oob_ff = {ind.oob_ff}')
+        # plot(mr, right)
+        # fig.suptitle(f'members distance = {ind.members_distance} ; oob_ff = {ind.oob_ff}')
         fig.savefig(self.folder.joinpath(prefix + '_both_roads.svg'))
         plt.close(fig)
 
@@ -71,9 +70,9 @@ class _BeamNGIndividualCompositeMembersStore:
 
 
 if __name__ == '__main__':
-    store = _BeamNGIndividualCompositeMembersStore(folders.experiments.joinpath('exp1/gen0/population'))
-    ind = store.load('ind1')
-    store.save(ind, 'ind_xx')
+    main_store = _BeamNGIndividualCompositeMembersStore(folders.experiments.joinpath('exp1/gen0/population'))
+    main_ind = main_store.load('ind1')
+    main_store.save(main_ind, 'ind_xx')
 
 
 class _BeamNGIndividualSimpleStore:

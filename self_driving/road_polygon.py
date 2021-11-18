@@ -92,11 +92,10 @@ class RoadPolygon:
         assert 0 <= i < self.num_polygons
         if i == 0:
             return [i + 1]
-        elif i == self.num_polygons - 1:
+        if i == self.num_polygons - 1:
             return [i - 1]
-        else:
-            assert self.num_polygons >= 3
-            return [i - 1, i + 1]
+        assert self.num_polygons >= 3
+        return [i - 1, i + 1]
 
     def _are_neighbouring_polygons(self, i: int, j: int) -> bool:
         """Returns true if the polygons represented by the indices i and j are adjacent."""

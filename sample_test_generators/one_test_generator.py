@@ -1,6 +1,8 @@
-import numpy as np
+import time
 import math
 import logging as log
+
+import numpy as np
 import matplotlib.pyplot as plt
 
 from code_pipeline.tests_generation import RoadTestFactory
@@ -39,7 +41,7 @@ class OneTestGenerator():
         interpolation_points = 5
         angles_in_deg = np.linspace(-60.0, 0.0, num=interpolation_points)
 
-        for angle_in_rads in [ math.radians(a) for a in angles_in_deg]:
+        for angle_in_rads in [math.radians(a) for a in angles_in_deg]:
             x = math.sin(angle_in_rads) * radius + center_x
             y = math.cos(angle_in_rads) * radius + center_y
             road_points.append((x, y))
@@ -58,7 +60,7 @@ class OneTestGenerator():
         road_points.append((x, y))
 
         # Creating the RoadTest from the points
-        the_test = RoadTestFactory.create_road_test(road_points)
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
         # Send the test for execution
         test_outcome, description, execution_data = self.executor.execute_test(the_test)
@@ -75,5 +77,4 @@ class OneTestGenerator():
         log.info("test_outcome %s", test_outcome)
         log.info("description %s", description)
 
-        import time
         time.sleep(10)

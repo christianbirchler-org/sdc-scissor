@@ -1,48 +1,65 @@
-# Cyber-Physical Systems Testing Competition #
+# SDC-Scissor
 
-Starting this year, the [SBST Workshop](https://sbst21.github.io/) offers a challenge for software testers who want to work with self-driving cars in the context of the usual [tool competition](https://sbst21.github.io/tools/).
+This project is an extension of the tool competition plathform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop](https://sbst21.github.io/).
 
-## Important Dates
-The deadline to submit your tool is: **February 12**
+## Usage
 
-The results of the evaluation will be communicated to participants on: **March 2**
+### Installation
 
-## Goal ##
-The competitors should generate virtual roads to test a lane keeping assist system. 
+The tool can either be run with [Docker](https://docs.docker.com/get-docker/) or locally using [Poetry](https://python-poetry.org/docs/).
 
-The generated roads are evaluated in a driving simulator. We partnered with BeamNG GmbH which offers a version of their simulators for researchers, named [BeamNG.research](https://beamng.gmbh/research/). This simulator is ideal for researchers due to its state-of-the-art soft-body physics simulation, ease of access to sensory data, and a Python API to control the simulation.
+When running the simluations a working installation of [BeamNG.research](https://beamng.gmbh/research/) is required.
+Additionally this simulation cannot be run in a Docker container but must run locally.
 
-[![Video by BeamNg GmbH](https://github.com/BeamNG/BeamNGpy/raw/master/media/steering.gif)](https://github.com/BeamNG/BeamNGpy/raw/master/media/steering.gif)
+To install the application use one of the following approaches:
 
-## Implement Your Test Generator ##
-We make available a [code pipeline](code_pipeline) that will integrate your test generator with the simulator by validating, executing and evaluating your test cases. Moreover, we offer some [sample test generators](sample_test_generators/README.md) to show how to use our code pipeline.
+* Docker: `docker build --tag sdc-scissor .`
+* Poetry: `poetry install`
 
-## Information About the Competition ##
-More information can be found on the SBST tool competition website: [https://sbst21.github.io/tools/](https://sbst21.github.io/tools/)
+### Using the Tool
 
-## Repository Structure ##
-[Code pipeline](code_pipeline): code that integrates your test generator with the simulator
+The tool can be used with the following two commands:
 
-[Self driving car testing library](self_driving): library that helps the integration of the test input generators, our code pipeline, and the BeamNG simulator
+* Docker: `docker run --rm sdc-scissor [COMMAND] [OPTIONS]`
+* Poetry: `poetry run python experiments.py [COMMAND] [OPTIONS]`
 
-[Scenario template](levels_template/tig): basic scenario used in this competition
+There are multiple commands to use.
+For simplifying the documentation only the command and their options are described.
 
-[Documentation](documentation/README.md): contains the installation guide, detailed rules of the competition, and the frequently asked questions
+* Generation of tests: `generate-scenarios --out-path /path/to/store/tests`
+* Automated labeling of Tests: `label-scenarios --road-scenarios /path/to/tests --result-folder /path/to/store/labeled/tests`
+* Model evaluation: `evaluate-models --dataset /path/to/train/set --save`
+* Split train and test data: `split-train-test-data --scenarios /path/to/scenarios --train-dir /path/for/train/data --test-dir /path/for/test/data --train-ratio 0.8`
+* Test outcome prediction: `predict-scenarios --scenarios /path/to/scenarios --classifier /path/to/model.joblib`
+* Evaluation based on random strategy: `evaluate --scenarios /path/to/test/scenarios --classifier /path/to/model.joblib`
 
-[Sample test generators](sample_test_generators/README.md): sample test generators already integrated with the code pipeline for illustrative purposes 
+The possible parameters are always documented with `--help`.
 
-[Requirements](requirements-37.txt): contains the list of the required packages.
+### Linting
 
+The tool is verified the linters [flake8](https://flake8.pycqa.org/en/latest/) and [pylint](https://pylint.org).
+These are automatically enabled in [Visual Studio Code](https://code.visualstudio.com) and can be run manually with the following commands:
 
-## License ##
+```bash
+poetry run flake8 .
+poetry run pylint **/*.py
+```
+
+## Architecture
+
+![Architecture Diagram](images/sdc-scissor-architecture.jpg)
+
+## License
 The software we developed is distributed under GNU GPL license. See the [LICENSE.md](LICENSE.md) file.
 
-## Contacts ##
+## Contacts
+
+Christian Birchler - Zurich University of Applied Science (ZHAW), Switzerland - birc@zhaw.ch
+
+Nicolas Ganz - Zurich University of Applied Science (ZHAW), Switzerland - gann@zhaw.ch
+
+Sajad Khatiri - Zurich University of Applied Science (ZHAW), Switzerland - mazr@zhaw.ch
 
 Dr. Alessio Gambi  - Passau University, Germany - alessio.gambi@uni-passau.de
-
-Dr. Vincenzo Riccio  - Software Institute @ USI, Lugano, Switzerland - vincenzo.riccio@usi.ch
-
-Dr. Fiorella Zampetti  - University of Sannio, Italy - fiorella.zampetti@unisannio.it
 
 Dr. Sebastiano Panichella - Zurich University of Applied Science (ZHAW), Switzerland - panc@zhaw.ch

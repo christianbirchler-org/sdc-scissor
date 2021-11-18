@@ -1,7 +1,7 @@
-#
 import random as rm
-import numpy as np
 import math as m
+
+import numpy as np
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
@@ -21,14 +21,14 @@ class Map:
         self.min_y = 0
         self.radius = 25
         if init == 0:
-            self.init_pos, self.init_end = self.init_pos()
+            self.init_pos, self.init_end = self.get_init_pos()
         else:
             self.init_pos, self.init_end = a, b
 
         self.current_pos = [self.init_pos, self.init_end]
         self.all_position_list = [[self.init_pos, self.init_end]]
 
-    def init_pos(self):
+    def get_init_pos(self):
         """select a random initial position from the middle of
         one of the boundaries
         """
@@ -52,8 +52,7 @@ class Map:
         """check if point is in the acceptable range"""
         if 0 <= a[0] <= self.max_x and 0 <= a[1] <= self.max_y:
             return 1
-        else:
-            return 0
+        return 0
 
     def go_straight(self, distance):
         a = self.current_pos[0]
@@ -98,27 +97,27 @@ class Map:
             self.current_pos = [p_a_, p_b_]
             self.all_position_list.append(self.current_pos)
             return True
-        else:
-            R = np.array([[0, -1], [1, 0]])
-            u_v_ = R.dot(u_v)
-            p_a_ = p_a + u_v_ * test_distance  # make a small perturbation
-            p_b_ = p_b + u_v_ * test_distance
 
-            new_pos = [p_a_, p_b_]
-            if self.in_polygon(new_pos) == True:  # check if it's in correct direction
-                R = np.array([[0, 1], [-1, 0]])
-                u_v = R.dot(u_v)
-                p_a_ = p_a + u_v * distance
-                p_b_ = p_b + u_v * distance
-                self.current_pos = [p_a_, p_b_]
-                self.all_position_list.append(self.current_pos)
-                return True
-            else:
-                p_a_ = p_a + u_v_ * distance
-                p_b_ = p_b + u_v_ * distance
-                self.current_pos = [p_a_, p_b_]
-                self.all_position_list.append(self.current_pos)
-                return True
+        R = np.array([[0, -1], [1, 0]])
+        u_v_ = R.dot(u_v)
+        p_a_ = p_a + u_v_ * test_distance  # make a small perturbation
+        p_b_ = p_b + u_v_ * test_distance
+
+        new_pos = [p_a_, p_b_]
+        if self.in_polygon(new_pos):  # check if it's in correct direction
+            R = np.array([[0, 1], [-1, 0]])
+            u_v = R.dot(u_v)
+            p_a_ = p_a + u_v * distance
+            p_b_ = p_b + u_v * distance
+            self.current_pos = [p_a_, p_b_]
+            self.all_position_list.append(self.current_pos)
+            return True
+
+        p_a_ = p_a + u_v_ * distance
+        p_b_ = p_b + u_v_ * distance
+        self.current_pos = [p_a_, p_b_]
+        self.all_position_list.append(self.current_pos)
+        return True
 
     def turn_right(self, angle):
         a = self.current_pos[0]
@@ -145,7 +144,7 @@ class Map:
 
         new_pos = self.clockwise_turn_top(test_angle, p_a, p_b)
 
-        if self.in_polygon(new_pos) == True:
+        if self.in_polygon(new_pos):
             self.current_pos = self.clockwise_turn_bot(angle, p_a, p_b)
         else:
             self.current_pos = self.clockwise_turn_top(angle, p_a, p_b)
@@ -178,7 +177,7 @@ class Map:
 
         new_pos = self.anticlockwise_turn_top(test_angle, p_a, p_b)
 
-        if self.in_polygon(new_pos) == True:
+        if self.in_polygon(new_pos):
             self.current_pos = self.anticlockwise_turn_bot(angle, p_a, p_b)
         else:
             self.current_pos = self.anticlockwise_turn_top(angle, p_a, p_b)
@@ -307,12 +306,13 @@ class Map:
             last = self.all_position_list[-1]
             if last[0][1] == 0:
                 return 0
-            elif last[0][0] == 0:
+            if last[0][0] == 0:
                 return 1
-            elif last[0][1] == self.max_y:
+            if last[0][1] == self.max_y:
                 return 2
-            elif last[0][0] == self.max_x:
+            if last[0][0] == self.max_x:
                 return 3
         elif len(self.all_position_list) > 1:
             # print("List too long")
             return 0
+        return None

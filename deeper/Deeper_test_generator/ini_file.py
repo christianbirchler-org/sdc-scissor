@@ -1,5 +1,4 @@
 import configparser
-import logging
 
 
 class IniFile:

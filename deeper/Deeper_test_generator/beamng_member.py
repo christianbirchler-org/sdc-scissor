@@ -1,17 +1,16 @@
-import hashlib
 import random
 from typing import Tuple, Dict
 
 from code_pipeline.tests_generation import RoadTestFactory
 from deeper.Deeper_test_generator.beamng_config import BeamNGConfig
 from deeper.Deeper_test_generator.beamng_evaluator import BeamNGEvaluator
+from deeper.Deeper_test_generator.beamng_problem import BeamNGProblem
 from deeper.Deeper_test_generator.member import Member
 from deeper.Deeper_test_generator.catmull_rom import catmull_rom
 from deeper.Deeper_test_generator.road_bbox import RoadBoundingBox
+from deeper.Deeper_test_generator.log_setup import get_logger
 from self_driving.road_polygon import RoadPolygon
 from self_driving.edit_distance_polyline import iterative_levenshtein
-from deeper.Deeper_test_generator.log_setup import get_logger
-from deeper.Deeper_test_generator.road_generator2 import RoadGenerator
 
 
 Tuple4F = Tuple[float, float, float, float]
@@ -19,8 +18,8 @@ Tuple2F = Tuple[float, float]
 
 log = get_logger(__file__)
 
-class BeamNGMember(Member):
 
+class BeamNGMember(Member):
     counter = 0
 
     def __init__(self, control_nodes: Tuple4F, sample_nodes: Tuple4F, num_spline_nodes: int,
@@ -34,11 +33,9 @@ class BeamNGMember(Member):
         self.num_spline_nodes = num_spline_nodes
         self.road_bbox = road_bbox
         self.config: BeamNGConfig = None
-        self.problem: 'BeamNGProblem' = None
+        self.problem: BeamNGProblem = None
         self._evaluator: BeamNGEvaluator = None
         self.length = None
-
-
 
     def clone(self):
         res = BeamNGMember(list(self.control_nodes), list(self.sample_nodes), self.num_spline_nodes, self.road_bbox)
@@ -58,21 +55,21 @@ class BeamNGMember(Member):
         }
 
     @classmethod
-    def from_dict(cls, dict: Dict):
-        road_bbox = RoadBoundingBox(dict['road_bbox_size'])
-        res = BeamNGMember([tuple(t) for t in dict['control_nodes']],
-                           [tuple(t) for t in dict['sample_nodes']],
-                           dict['num_spline_nodes'], road_bbox)
-        res.distance_to_boundary = dict['distance_to_boundary']
+    def from_dict(cls, data_dict: Dict):
+        road_bbox = RoadBoundingBox(data_dict['road_bbox_size'])
+        res = BeamNGMember([tuple(t) for t in data_dict['control_nodes']],
+                           [tuple(t) for t in data_dict['sample_nodes']],
+                           data_dict['num_spline_nodes'], road_bbox)
+        res.distance_to_boundary = data_dict['distance_to_boundary']
         return res
 
     def evaluate(self, executor):
         road_points = [(node[0], node[1]) for node in self.sample_nodes]
-        #road_points = RoadGenerator(num_control_nodes=NODES, max_angle=MAX_ANGLE, seg_length=SEG_LENGTH,
-#                                    num_spline_nodes=NUM_SPLINE_NODES).generate()
-        the_test = RoadTestFactory.create_road_test(road_points)
+        # road_points = RoadGenerator(num_control_nodes=NODES, max_angle=MAX_ANGLE, seg_length=SEG_LENGTH,
+        #                             num_spline_nodes=NUM_SPLINE_NODES).generate()
+        the_test = RoadTestFactory.create_road_test(road_points, 0.7)
 
-        test_outcome, description, execution_data = executor.execute_test(the_test)
+        test_outcome, _description, execution_data = executor.execute_test(the_test)
 
         if test_outcome == "INVALID":
             self.length = 10000
@@ -100,14 +97,14 @@ class BeamNGMember(Member):
     def distance(self, other: 'BeamNGMember'):
         return iterative_levenshtein(self.sample_nodes, other.sample_nodes)
 
-
     def to_tuple(self):
-        import numpy as np
+        import numpy as np  # pylint: disable=import-outside-toplevel
         barycenter = np.mean(self.control_nodes, axis=0)[:2]
         return barycenter
 
     def mutate(self) -> 'BeamNGMember':
-        RoadMutator(self, lower_bound=-int(self.problem.config.MUTATION_EXTENT), upper_bound=int(self.problem.config.MUTATION_EXTENT)).mutate()
+        RoadMutator(self, lower_bound=-int(self.problem.config.MUTATION_EXTENT),
+                    upper_bound=int(self.problem.config.MUTATION_EXTENT)).mutate()
         self.distance_to_boundary = None
         return self
 
@@ -119,7 +116,7 @@ class BeamNGMember(Member):
                 eval_boundary = '+' + eval_boundary
             eval_boundary = '~' + eval_boundary
         eval_boundary = eval_boundary[:7].ljust(7)
-        #h = hashlib.sha256(str([tuple(node) for node in self.control_nodes]).encode('UTF-8')).hexdigest()[-5:]
+        # h = hashlib.sha256(str([tuple(node) for node in self.control_nodes]).encode('UTF-8')).hexdigest()[-5:]
         return f'{self.name_ljust}'
 
 
@@ -183,8 +180,7 @@ class RoadMutator:
 
             if is_valid:
                 break
-            else:
-                gene_index = next_gene_index()
+            gene_index = next_gene_index()
 
         if gene_index == -1:
             raise ValueError("No gene can be mutated")

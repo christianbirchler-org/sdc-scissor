@@ -21,7 +21,8 @@ SimulationDataRecords = List[SimulationDataRecord]
 
 SimulationParams = namedtuple('SimulationParameters', ['beamng_steps', 'delay_msec'])
 
-def delete_folder_recursively(path: Union[str, Path], exception_if_fail: bool = True):
+
+def delete_folder_recursively(path: Union[str, Path]):
     path = str(path)
     if not os.path.exists(path):
         return
@@ -30,7 +31,7 @@ def delete_folder_recursively(path: Union[str, Path], exception_if_fail: bool = 
     shutil.rmtree(path, ignore_errors=True)
 
     # sometimes rmtree fails to remove files
-    for tries in range(20):
+    for _tries in range(20):
         if os.path.exists(path):
             sleep(0.1)
             shutil.rmtree(path, ignore_errors=True)
@@ -60,7 +61,7 @@ class SimulationData:
 
     def __init__(self, simulation_name: str):
         self.name = simulation_name
-        root: Path = Path(os.path.abspath(os.path.join(os.path.dirname(__file__),'..')))
+        root: Path = Path(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
         self.simulations: Path = root.joinpath('simulations')
         self.path_root: Path = self.simulations.joinpath(simulation_name)
         self.path_json: Path = self.path_root.joinpath('simulation.full.json')
@@ -138,9 +139,9 @@ class SimulationData:
         self.info.success = None
         self.info.start_time = str(datetime.datetime.now())
         try:
-            import platform
+            import platform  # pylint: disable=import-outside-toplevel
             self.info.computer_name = platform.node()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.info.computer_name = str(ex)
 
     def end(self, success: bool, exception=None):

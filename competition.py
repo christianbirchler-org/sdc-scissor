@@ -1,32 +1,25 @@
-#
-#
-#
-#
-import click
-import importlib
-import traceback
 import time
 import os
 import sys
-import errno
 import logging as log
 import csv
+import importlib
+import traceback
+import errno
+
+import click
 
 from code_pipeline.visualization import RoadTestVisualizer
 from code_pipeline.tests_generation import TestGenerationStatistic
 from code_pipeline.test_generation_utils import register_exit_fun
-
 from code_pipeline.tests_evaluation import OOBAnalyzer
-
-# TODO Make this configurable?
-OUTPUT_RESULTS_TO = 'results'
 
 
 def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
-def validate_speed_limit(ctx, param, value):
+def validate_speed_limit(_ctx, param, value):
     """
     The speed limit must be a positive integer greater than 10 km/h (lower values might trigger the
     car-not-moving oracle
@@ -34,39 +27,35 @@ def validate_speed_limit(ctx, param, value):
     if int(value) < 10:
         raise click.UsageError(
             'The provided value for ' + str(param) + ' is invalid. Choose a value greater than 10')
-    else:
-        return int(value)
+    return int(value)
 
 
-def validate_oob_tolerance(ctx, param, value):
+def validate_oob_tolerance(_ctx, param, value):
     """
     OOB tolerance must be a value between 0.0 and 1.0
     """
     if value < 0.0 or value > 1.0:
         raise click.UsageError(
             'The provided value for ' + str(param) + ' is invalid. Choose a value between 0.0 and 1.0')
-    else:
-        return value
+    return value
 
 
-def validate_map_size(ctx, param, value):
+def validate_map_size(_ctx, param, value):
     """
     The size of the map is defined by its edge. The edge can be any (integer) value between 100 and 1000
     """
     if int(value) < 100 or int(value) > 1000:
         raise click.UsageError('The provided value for ' + str(param) + ' is invalid. Choose an integer between 100 and 1000')
-    else:
-        return int(value)
+    return int(value)
 
 
-def validate_time_budget(ctx, param, value):
+def validate_time_budget(_ctx, param, value):
     """
     A valid time budget is a positive integer of 'seconds'
     """
     if int(value) < 1:
         raise click.UsageError('The provided value for ' + str(param) + ' is invalid. Choose any positive integer')
-    else:
-        return int(value)
+    return int(value)
 
 
 def create_experiment_description(result_folder, params_dict):
@@ -87,12 +76,12 @@ def create_summary(result_folder, raw_data):
     log.info("Creating Reports")
 
     # Refactor this
-    if type(raw_data) is TestGenerationStatistic:
+    if isinstance(raw_data, TestGenerationStatistic):
         log.info("Creating Test Statistics Report:")
         summary_file = os.path.join(result_folder, "generation_stats.csv")
         csv_content = raw_data.as_csv()
         with open(summary_file, 'w') as output_file:
-            output_file.write( csv_content)
+            output_file.write(csv_content)
         log.info("Test Statistics Report available: %s", summary_file)
 
     log.info("Creating OOB Report")
@@ -118,9 +107,6 @@ def post_process(ctx, result_folder, the_executor):
 
     # Generate the other reports
     create_summary(result_folder, the_executor.get_stats())
-
-
-
 
 
 def create_post_processing_hook(ctx, result_folder, executor):
@@ -157,7 +143,7 @@ def setup_logging(log_to, debug):
 
     if log_to is not None:
         file_handler = log.FileHandler(log_to, 'a', 'utf-8')
-        log_handlers.append( file_handler )
+        log_handlers.append(file_handler)
         start_msg += " ".join(["writing to file: ", str(log_to)])
 
     log_level = log.DEBUG if debug else log.INFO
@@ -167,7 +153,6 @@ def setup_logging(log_to, debug):
     sys.excepthook = log_exception
 
     log.info(start_msg)
-
 
 
 @click.command()
@@ -214,17 +199,24 @@ def setup_logging(log_to, debug):
 @click.option('--debug', required=False, is_flag=True, default=False,
               show_default='Disabled',
               help="Activate debugging (results in more logging)")
+@click.option('--risk-factor', default=0.7, help='Aggression factor of the driving AI')
+@click.option('--random-speed', is_flag=True, help='Set max speed for eacht test uniform random')
+@click.option('--angle-threshold', default=13, help='Angle to decide what type of segment it is')
+@click.option('--decision-distance', default=10, help='Road distance to take to calculate the turn angle')
+@click.option('--prevent-simulation', default=True, help='Prevent running the simulation', type=click.BOOL)
+@click.option('--results-dir', default='./results', help='Path to store all generated tests', type=click.Path())
 @click.pass_context
 def generate(ctx, executor, beamng_home, beamng_user,
              time_budget, map_size, oob_tolerance, speed_limit,
              module_name, module_path, class_name,
-             visualize_tests, log_to, debug):
+             visualize_tests, log_to, debug, risk_factor, random_speed, angle_threshold, decision_distance, prevent_simulation,
+             results_dir):
+    print('generate')
     # ensure that ctx.obj exists and is a dict (in case `cli()` is called
     # by means other than the `if` block below)
     ctx.ensure_object(dict)
 
     # TODO Refactor by adding a create summary command and forwarding the output of this run to that command
-
 
     # Setup logging
     setup_logging(log_to, debug)
@@ -239,7 +231,7 @@ def generate(ctx, executor, beamng_home, beamng_user,
         road_visualizer = RoadTestVisualizer(map_size=map_size)
 
     # Setup folder structure by ensuring that the basic folder structure is there.
-    default_output_folder = os.path.join(get_script_path(), OUTPUT_RESULTS_TO)
+    default_output_folder = os.path.join(get_script_path(), results_dir)
     try:
         os.makedirs(default_output_folder)
     except OSError as e:
@@ -263,25 +255,28 @@ def generate(ctx, executor, beamng_home, beamng_user,
 
     # Setup executor. All the executor must output the execution data into the result_folder
     if executor == "mock":
-        from code_pipeline.executors import MockExecutor
+        from code_pipeline.executors import MockExecutor  # pylint: disable=import-outside-toplevel
         the_executor = MockExecutor(result_folder, time_budget, map_size,
                                     road_visualizer=road_visualizer)
     elif executor == "beamng":
-        from code_pipeline.beamng_executor import BeamngExecutor
+        from code_pipeline.beamng_executor import BeamngExecutor  # pylint: disable=import-outside-toplevel
         the_executor = BeamngExecutor(result_folder, time_budget, map_size,
                                       oob_tolerance=oob_tolerance, max_speed=speed_limit,
                                       beamng_home=beamng_home, beamng_user=beamng_user,
-                                      road_visualizer=road_visualizer)
+                                      road_visualizer=road_visualizer, risk_factor=risk_factor, random_speed=random_speed)
 
     # Register the shutdown hook for post processing results
     register_exit_fun(create_post_processing_hook(ctx, result_folder, the_executor))
 
     try:
         # Instantiate the test generator
-        test_generator = the_class(time_budget=time_budget, executor=the_executor, map_size=map_size)
+        test_generator = the_class(
+            time_budget=time_budget, executor=the_executor, map_size=map_size, risk_factor=risk_factor,
+            angle_threshold=angle_threshold, decision_distance=decision_distance, prevent_simulation=prevent_simulation,
+        )
         # Start the generation
         test_generator.start()
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         log.fatal("An error occurred during test generation")
         traceback.print_exc()
         sys.exit(2)
@@ -295,4 +290,4 @@ def generate(ctx, executor, beamng_home, beamng_user,
 
 
 if __name__ == '__main__':
-    generate()
+    generate()  # pylint: disable=no-value-for-parameter

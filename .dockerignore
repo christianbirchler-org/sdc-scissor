@@ -1,0 +1,23 @@
+# Ignore valid roads
+/valid_roads/
+
+# Ignore results
+/results/
+
+# Ignore simulation data
+/simulations/
+
+# Ignore Shapely client specific file for pip
+/Shapely-*
+
+/Dockerfile
+/.dockerignore
+
+/.git
+/.gitignore
+
+/**/__pycache__
+
+/.vscode
+
+/documentation

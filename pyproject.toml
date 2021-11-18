@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "tool-competition-cps-sorter"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.9,<3.10"
+click = "^8.0.1"
+PyYAML = "^5.4.1"
+matplotlib = "^3.4.3"
+Shapely = "^1.7.1"
+descartes = "^1.1.0"
+scipy = "^1.7.1"
+pandas = "^1.3.3"
+beamngpy = "^1.21"
+scikit-learn = "^1.0.1"
+joblib = "^1.1.0"
+deap = "^1.3.1"
+parameterized = "^0.8.1"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.11.1"
+flake8 = "^4.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

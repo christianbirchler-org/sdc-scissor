@@ -9,4 +9,4 @@ class IndividualSet(set):
 
 class Archive(IndividualSet):
     def process_population(self, pop: List[Individual]):
-        raise NotImplemented()
+        raise NotImplementedError()

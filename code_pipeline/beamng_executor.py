@@ -1,8 +1,12 @@
-from code_pipeline.executors import AbstractTestExecutor
-
 import time
 import traceback
+import random
+from datetime import datetime
 from typing import Tuple
+import logging as log
+import os.path
+
+from shapely.geometry import Point
 
 from self_driving.beamng_brewer import BeamNGBrewer
 # maps is a global variable in the module, which is initialized to Maps()
@@ -12,11 +16,8 @@ from self_driving.simulation_data import SimulationDataRecord, SimulationData
 from self_driving.simulation_data_collector import SimulationDataCollector
 from self_driving.utils import get_node_coords, points_distance
 from self_driving.vehicle_state_reader import VehicleStateReader
+from code_pipeline.executors import AbstractTestExecutor
 
-from shapely.geometry import Point
-
-import logging as log
-import os.path
 FloatDTuple = Tuple[float, float, float, float]
 
 
@@ -24,17 +25,25 @@ class BeamngExecutor(AbstractTestExecutor):
 
     def __init__(self, result_folder, time_budget, map_size,
                  oob_tolerance=0.95, max_speed=70,
-                 beamng_home=None, beamng_user=None, road_visualizer=None):
-        super(BeamngExecutor, self).__init__(result_folder, time_budget, map_size)
+                 beamng_home=None, beamng_user=None, road_visualizer=None,
+                 risk_factor=0.7, random_speed=False):
+        super().__init__(result_folder, time_budget, map_size)
+        self.vehicle = None
         # TODO Is this still valid?
         self.test_time_budget = 250000
 
-
         # TODO This is specific to the TestSubject, we should encapsulate this better
-        self.risk_value = 0.7
+        self.risk_value = risk_factor
 
         self.oob_tolerance = oob_tolerance
-        self.maxspeed = max_speed
+
+        self.random_speed = random_speed
+
+        if self.random_speed:
+            self.min_allowed_speed = 70
+            self.max_allowed_speed = 150
+        else:
+            self.maxspeed = max_speed
 
         self.brewer: BeamNGBrewer = None
         self.beamng_home = beamng_home
@@ -50,7 +59,18 @@ class BeamngExecutor(AbstractTestExecutor):
         self.min_delta_position = 1.0
         self.road_visualizer = road_visualizer
 
+    @staticmethod
+    def _get_duration(start_time, end_time):
+        t0 = datetime.fromisoformat(start_time)
+        t1 = datetime.fromisoformat(end_time)
+        return (t1 - t0).total_seconds()
+
     def _execute(self, the_test):
+
+        # set random speed limit if it is needed
+        if self.random_speed:
+            self.maxspeed = random.randrange(self.min_allowed_speed, self.max_allowed_speed+1)
+
         # Ensure we do not execute anything longer than the time budget
         super()._execute(the_test)
 
@@ -87,8 +107,10 @@ class BeamngExecutor(AbstractTestExecutor):
 
         execution_data = sim.states
 
+        simulation_time = self._get_duration(sim.info.start_time, sim.info.end_time)
+
         # TODO: report all test outcomes
-        return test_outcome, description, execution_data
+        return test_outcome, description, execution_data, simulation_time
 
     def _is_the_car_moving(self, last_state):
         """ Check if the car moved in the past 10 seconds """
@@ -99,15 +121,14 @@ class BeamngExecutor(AbstractTestExecutor):
             return True
 
         # If the car moved since the last observation, we store the last state and move one
-        if Point(self.last_observation.pos[0],self.last_observation.pos[1]).distance(Point(last_state.pos[0], last_state.pos[1])) > self.min_delta_position:
+        if Point(self.last_observation.pos[0], self.last_observation.pos[1]) \
+                .distance(Point(last_state.pos[0], last_state.pos[1])) > self.min_delta_position:
             self.last_observation = last_state
             return True
-        else:
-            # How much time has passed since the last observation?
-            if last_state.timer - self.last_observation.timer > 10.0:
-                return False
-            else:
-                return True
+        # How much time has passed since the last observation?
+        if last_state.timer - self.last_observation.timer > 10.0:
+            return False
+        return True
 
     def _run_simulation(self, the_test) -> SimulationData:
         if not self.brewer:
@@ -116,7 +137,6 @@ class BeamngExecutor(AbstractTestExecutor):
 
         # For the execution we need the interpolated points
         nodes = the_test.interpolated_points
-
 
         brewer = self.brewer
         brewer.setup_road_nodes(nodes)
@@ -148,7 +168,7 @@ class BeamngExecutor(AbstractTestExecutor):
 
         sim_data_collector.get_simulation_data().start()
         try:
-            #start = timeit.default_timer()
+            # start = timeit.default_timer()
             brewer.bring_up()
             # iterations_count = int(self.test_time_budget/250)
             # idx = 0
@@ -176,26 +196,21 @@ class BeamngExecutor(AbstractTestExecutor):
                 beamng.step(steps)
 
             sim_data_collector.get_simulation_data().end(success=True)
-            #end = timeit.default_timer()
-            #run_elapsed_time = end-start
-            #run_elapsed_time = float(last_state.timer)
+            # end = timeit.default_timer()
+            # run_elapsed_time = end-start
+            # run_elapsed_time = float(last_state.timer)
             self.total_elapsed_time = self.get_elapsed_time()
         except AssertionError as aex:
             sim_data_collector.save()
             # An assertion that trigger is still a successful test execution, otherwise it will count as ERROR
             sim_data_collector.get_simulation_data().end(success=True, exception=aex)
             traceback.print_exception(type(aex), aex, aex.__traceback__)
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             sim_data_collector.save()
             sim_data_collector.get_simulation_data().end(success=False, exception=ex)
             traceback.print_exception(type(ex), ex, ex.__traceback__)
         finally:
             sim_data_collector.save()
-            try:
-                sim_data_collector.take_car_picture_if_needed()
-            except:
-                pass
-
             self.end_iteration()
 
         return sim_data_collector.simulation_data
@@ -204,13 +219,13 @@ class BeamngExecutor(AbstractTestExecutor):
         try:
             if self.brewer:
                 self.brewer.beamng.stop_scenario()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             traceback.print_exception(type(ex), ex, ex.__traceback__)
 
     def _close(self):
         if self.brewer:
             try:
                 self.brewer.beamng.close()
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-except
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
             self.brewer = None

@@ -1,6 +1,9 @@
-from shapely.geometry import Point, box, LineString, Polygon
 from typing import List, Tuple
+
+from shapely.geometry import Point, box, LineString, Polygon
+
 from self_driving.road_polygon import RoadPolygon
+
 
 class RoadBoundingBox:
     """A class representing the bounding box that contains the road."""

@@ -5,7 +5,7 @@ import random
 import time
 import sys
 import os
-
+from datetime import datetime
 from abc import ABC, abstractmethod
 
 from code_pipeline.validation import TestValidator
@@ -18,14 +18,15 @@ class AbstractTestExecutor(ABC):
 
     start_time = None
 
-    def __init__(self, result_folder, time_budget, map_size, road_visualizer=None):
+    def __init__(self, result_folder, time_budget, map_size, road_visualizer=None, risk_factor=1):
 
         self.result_folder = result_folder
 
         self.stats = TestGenerationStatistic()
 
         self.time_budget = time_budget
-        self.test_validator = TestValidator(map_size)
+        self.min_road_length = self.__define_min_road_length(risk_factor)
+        self.test_validator = TestValidator(map_size, min_road_length=self.min_road_length)
         self.start_time = time.time()
         self.total_elapsed_time = 0
 
@@ -35,16 +36,29 @@ class AbstractTestExecutor(ABC):
 
         super().__init__()
 
+    @staticmethod
+    def __define_min_road_length(risk_factor):
+        if risk_factor == 1:
+            return 150
+        if risk_factor == 1.5:
+            return 100
+        if risk_factor == 2:
+            return 75
+        return 20
+
     def is_force_timeout(self):
-        return self.timeout_forced == True
+        return self.timeout_forced
 
     def store_test(self, the_test):
+        timestamp_obj = datetime.now()
+        timestamp_str = timestamp_obj.strftime("%d-%b-%Y_(%H-%M-%S.%f)")
+
         # TODO Pad zeros to id
-        output_file_name = os.path.join(self.result_folder, ".".join(["test", str(the_test.id).zfill(4), "json"]))
+        output_file_name = os.path.join(self.result_folder, ".".join([timestamp_str, "test", str(the_test.id).zfill(4), "json"]))
         with open(output_file_name, 'w') as test_file:
             test_file.write(the_test.to_json())
 
-    def execute_test(self, the_test):
+    def execute_test(self, the_test, prevent_simulation=True):
         # Maybe we can solve this using decorators, but we need the reference to the instance, not sure how to handle
         # that cleanly
         if self.get_remaining_time() <= 0:
@@ -59,6 +73,28 @@ class AbstractTestExecutor(ABC):
         # This might be placed inside validate_test
         the_test.set_validity(is_valid, validation_msg)
 
+        ##########################################################
+        # Just log valid tests
+        ##########################################################
+        if is_valid:
+            # filename = 'road_' + str(Config.VALID_TEST_COUNTER) + '.json'
+            # abs_path_to_test = Config.VALID_TEST_DIR + '/' + filename
+            # print('######## {}'.format(abs_path_to_test))
+
+            # # create json object with road data
+            # roads = {'road_points': the_test.road_points, 'interpolated_road_points': the_test.interpolated_points}
+            # with open(abs_path_to_test, 'w') as file:
+            #     file.write(json.dumps(roads, indent=2))
+
+            # Config.VALID_TEST_COUNTER += 1
+
+            # TODO: skip exection here depending on argument
+            if prevent_simulation:
+                self.store_test(the_test)
+                return "NOT EXECUTED", "SIMULATION PREVENTION IS SET", []
+        ##########################################################
+        ##########################################################
+
         # TODO We do not store the test until is executed, or proven invalid to avoid a data condition:
         # the test is valid, we store it, but we cannot execute is because there's no more budget.
         # Store the generated tests into the result_folder
@@ -72,7 +108,7 @@ class AbstractTestExecutor(ABC):
             self.stats.test_valid += 1
             start_execution_real_time = time.monotonic()
 
-            test_outcome, description, execution_data = self._execute(the_test)
+            test_outcome, description, execution_data, simulation_time = self._execute(the_test)
 
             end_execution_real_time = time.monotonic()
             self.stats.test_execution_real_times.append(end_execution_real_time - start_execution_real_time)
@@ -84,6 +120,7 @@ class AbstractTestExecutor(ABC):
             setattr(the_test, 'execution_data', execution_data)
             setattr(the_test, 'test_outcome', test_outcome)
             setattr(the_test, 'description', description)
+            setattr(the_test, 'simulation_time', simulation_time)
 
             # Store the generated tests into the result_folder
             self.store_test(the_test)
@@ -93,21 +130,20 @@ class AbstractTestExecutor(ABC):
                 # This indicates a generic error during the execution, usually caused by a malformed test that the
                 # validation logic was not able to catch.
                 return "ERROR", description, []
-            elif test_outcome == "PASS":
+            if test_outcome == "PASS":
                 self.stats.test_passed += 1
                 return test_outcome, description, execution_data
-            else:
-                self.stats.test_failed += 1
-                # Valid, either pass or fail
-                if description.startswith("Car drove out of the lane "):
-                    self.stats.obes += 1
-                return test_outcome, description, execution_data
-        else:
-            # Store the generated tests into the result_folder even if it is not valid
-            self.store_test(the_test)
+            self.stats.test_failed += 1
+            # Valid, either pass or fail
+            if description.startswith("Car drove out of the lane "):
+                self.stats.obes += 1
+            return test_outcome, description, execution_data
 
-            self.stats.test_invalid += 1
-            return "INVALID", validation_msg, []
+        # Store the generated tests into the result_folder even if it is not valid
+        # self.store_test(the_test)
+
+        self.stats.test_invalid += 1
+        return "INVALID", validation_msg, []
 
     def validate_test(self, the_test):
         log.debug("Validating test")
@@ -151,25 +187,24 @@ class MockExecutor(AbstractTestExecutor):
         test_outcome = random.choice(["FAIL", "FAIL", "FAIL", "PASS", "PASS", "PASS", "PASS", "PASS", "ERROR"])
         description = "Mocked test results"
 
-
         sim_state = SimulationDataRecord(
             timer=3.0,
-            pos= [0.0, 0.0, 1.0],
-            dir= [0.0, 0.0, 1.0],
-            vel= [0.0, 0.0, 1.0],
-            steering= 0.0,
-            steering_input= 0.0,
-            brake= 0.0,
-            brake_input= 0.0,
-            throttle= 0.0,
-            throttle_input= 0.0,
-            wheelspeed= 0.0,
-            vel_kmh = 0.0,
-            is_oob = False,
-            oob_counter = 0,
-            max_oob_percentage = 0.0,
-            oob_distance = 0.0,
-            oob_percentage= 50.0
+            pos=[0.0, 0.0, 1.0],
+            dir=[0.0, 0.0, 1.0],
+            vel=[0.0, 0.0, 1.0],
+            steering=0.0,
+            steering_input=0.0,
+            brake=0.0,
+            brake_input=0.0,
+            throttle=0.0,
+            throttle_input=0.0,
+            wheelspeed=0.0,
+            vel_kmh=0.0,
+            is_oob=False,
+            oob_counter=0,
+            max_oob_percentage=0.0,
+            oob_distance=0.0,
+            oob_percentage=50.0
         )
 
         execution_data = [sim_state]

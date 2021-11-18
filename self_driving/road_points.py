@@ -25,10 +25,10 @@ class RoadPoints:
     def add_middle_nodes(self, middle_nodes):
         n = len(self.middle) + len(middle_nodes)
 
-        assert n >= 2, f'At least, two nodes are needed'
+        assert n >= 2, 'At least, two nodes are needed'
 
         assert all(len(point) >= 4 for point in middle_nodes), \
-            f'A node is a tuple of 4 elements (x,y,z,road_width)'
+            'A node is a tuple of 4 elements (x,y,z,road_width)'
 
         self.n = n
         self.middle += list(middle_nodes)
@@ -39,9 +39,9 @@ class RoadPoints:
 
     def _recalculate_nodes(self):
         for i in range(self.n - 1):
-            l, r = self.calc_point_edges(self.middle[i], self.middle[i + 1])
-            self.left[i] = l
-            self.right[i] = r
+            left, right = self.calc_point_edges(self.middle[i], self.middle[i + 1])
+            self.left[i] = left
+            self.right[i] = right
 
         # the last middle point
         self.right[-1], self.left[-1] = self.calc_point_edges(self.middle[-1], self.middle[-2])
@@ -55,9 +55,9 @@ class RoadPoints:
         # calculate the vector which length is half the road width
         v = (a / np.linalg.norm(a)) * p1[3] / 2
         # add normal vectors
-        l = origin + np.array([-v[1], v[0]])
-        r = origin + np.array([v[1], -v[0]])
-        return tuple(l), tuple(r)
+        left = origin + np.array([-v[1], v[0]])
+        right = origin + np.array([v[1], -v[0]])
+        return tuple(left), tuple(right)
 
     def vehicle_start_pose(self, meters_from_road_start=2.5, road_point_index=0) \
             -> BeamNGPose:
@@ -74,7 +74,7 @@ class RoadPoints:
         return res
 
     def new_imagery(self):
-        from .beamng_road_imagery import BeamNGRoadImagery
+        from .beamng_road_imagery import BeamNGRoadImagery  # pylint: disable=import-outside-toplevel
         return BeamNGRoadImagery(self)
 
     def plot_on_ax(self, ax):
@@ -109,26 +109,24 @@ if __name__ == '__main__':
     rd = RoadPoints.from_nodes(nodes)
     assert len(rd.middle) == len(road_edges_by_beamng)
 
-
     def distance(p1, p2):
         return np.linalg.norm(np.subtract((p1[0], p1[1]), (p2[0], p2[1])))
 
-
     max_dist = 0
-    for i in range(len(rd.middle)):
-        bng = road_edges_by_beamng[i]
-        l = rd.left[i]
-        r = rd.right[i]
-        m = rd.middle[i]
-        left_dist = distance(l, bng['left'])
-        right_dist = distance(r, bng['right'])
+    for rd_i in range(len(rd.middle)):  # pylint: disable=consider-using-enumerate
+        bng = road_edges_by_beamng[rd_i]
+        rd_left = rd.left[rd_i]
+        rd_right = rd.right[rd_i]
+        middle = rd.middle[rd_i]
+        left_dist = distance(rd_left, bng['left'])
+        right_dist = distance(rd_right, bng['right'])
         max_dist = max(left_dist, right_dist, max_dist)
         print('middle', bng['middle'])
-        print('      ', m)
+        print('      ', middle)
         print('   ', 'left  bng', bng['left'])
-        print('   ', 'left calc', l)
+        print('   ', 'left calc', rd_left)
         print('   ', 'right bng ', bng['right'])
-        print('   ', 'right calc', r)
+        print('   ', 'right calc', rd_right)
 
     print('max_dist', max_dist)
     assert max_dist < 0.0001
