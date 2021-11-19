@@ -14,7 +14,7 @@ import numpy as np
 import joblib
 
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate
+from sklearn.model_selection import KFold, cross_validate, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -158,7 +158,7 @@ def get_road_features(road_points):
     return road_features
 
 
-def load_data_as_data_frame(abs_path):
+def load_data_as_data_frame(abs_path, with_simulation_time=False):
     """
     abs_path contains various json files with the test results
     returns a pandas dataframe
@@ -183,13 +183,15 @@ def load_data_as_data_frame(abs_path):
         test_is_valid = test_dict['is_valid']
         if test_is_valid:
             valid_tests_json_lst.append(test_dict)
-            # click.echo(test_dict)
+
             road_points = test_dict['road_points']
             road_features = get_road_features(road_points)
-            # click.echo(road_features.to_dict())
             road_features_dict = road_features.to_dict()
             road_features_dict['safety'] = test_dict['test_outcome']
-            # click.echo(road_features_dict.keys())
+
+            if with_simulation_time:
+                road_features_dict['simulation_time'] = test_dict['simulation_time']
+
             df = df.append(road_features_dict, ignore_index=True)
 
     return df, valid_tests_json_lst
@@ -539,7 +541,81 @@ def evaluate(scenarios, classifier):
     print('Recall: {}'.format(rec))
     print('F1: {}'.format(f1))
 
-    # TODO: implement cost effectiveness analysis
+
+@cli.command()
+@click.option('--data', help='Path to labeled data set', type=click.Path(exists=True))
+@click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
+def evaluate_cost_effectiveness(data, train_ratio):
+    abs_path = os.path.abspath(data)
+    df, _ = load_data_as_data_frame(abs_path, with_simulation_time=True)
+
+    # consider only data we know before the execution of the scenario
+    X_model_attributes = ['direct_distance', 'max_angle',
+                          'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
+                          'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
+                          'num_r_turns', 'num_straights', 'road_distance', 'std_angle',
+                          'std_pivot_off', 'total_angle']
+
+    y_attribute = 'safety'
+
+    time_attribute = 'simulation_time'
+
+    X_attributes = X_model_attributes + [time_attribute]
+
+    # train models CV
+    X = df[X_attributes].to_numpy()
+    # print(X)
+    # print(X[:, -1])
+    # TODO: provide preprocessing options to the user???
+    # X = preprocessing.normalize(X)
+    # X = preprocessing.scale(X)
+    y = df[y_attribute].to_numpy()
+    y[y == 'FAIL'] = 1
+    y[y == 'PASS'] = 0
+    y = np.array(y, dtype='int32')
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_ratio)
+
+    X_test_time = X_test[:, -1]
+
+    X_train = X_train[:, :-1]
+    X_test = X_test[:, :-1]
+
+    classifiers = {}
+
+    classifiers = {
+        'random_forest': RandomForestClassifier(),
+        'gradient_boosting': GradientBoostingClassifier(),
+        # 'multinomial_naive_bayes': MultinomialNB(),
+        'gaussian_naive_bayes': GaussianNB(),
+        'logistic_regression': LogisticRegression(max_iter=10000),
+        'decision_tree': DecisionTreeClassifier(),
+    }
+
+    nr_unsafe_predicted = None
+    for name, estimator in classifiers.items():
+        estimator.fit(X_train, y_train)
+        y_pred = estimator.predict(X_test)
+        nr_unsafe_predicted = np.sum(y_pred)
+
+        rand_sim_times = []
+        nr_trials = 10
+        for i in range(nr_trials):
+            random_unsafe_predicted = np.random.permutation(np.append(np.ones(nr_unsafe_predicted, dtype='int32'),
+                                                            np.zeros(len(y_pred-nr_unsafe_predicted), dtype='int32')))
+            rand_sim_times.append(np.sum(X_test_time[random_unsafe_predicted]))
+
+        random_tot_sim_time = np.mean(rand_sim_times)
+
+        sdc_scissor_tot_sim_time = np.sum(X_test_time[y_pred])
+        print('SDC-SCISSOr')
+        print('{}:\tnr_tests: {}\ttot_sim_time {}'.
+              format(name, nr_unsafe_predicted, sdc_scissor_tot_sim_time))
+        print('RANDOM BASELINE:')
+        print('{}:\tnr_tests: {}\ttot_sim_time {}'.
+              format(name, nr_unsafe_predicted, random_tot_sim_time))
+        print('{}:\trandom_baseline_time/sdc_scissor_time = {}'.format(name, random_tot_sim_time/sdc_scissor_tot_sim_time))
+        print('{}:\tsdc_scissor_time/random_baseline_time = {}\n'.format(name, sdc_scissor_tot_sim_time/random_tot_sim_time))
 
 
 if __name__ == '__main__':
