@@ -1,6 +1,6 @@
 # SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software 
 
-This project extends the tool competition plathform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop in 2021](https://sbst21.github.io/).
+This project extends the tool competition platform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop in 2021](https://sbst21.github.io/).
 
 ## SDC-Scissor Architecture
 

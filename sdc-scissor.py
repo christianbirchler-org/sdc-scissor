@@ -14,7 +14,7 @@ import numpy as np
 import joblib
 
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate
+from sklearn.model_selection import KFold, cross_validate, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -155,7 +155,7 @@ def get_road_features(road_points):
     return road_features
 
 
-def load_data_as_data_frame(abs_path):
+def load_data_as_data_frame(abs_path, with_simulation_time=False):
     """
     abs_path contains various json files with the test results
     returns a pandas dataframe
@@ -180,13 +180,15 @@ def load_data_as_data_frame(abs_path):
         test_is_valid = test_dict['is_valid']
         if test_is_valid:
             valid_tests_json_lst.append(test_dict)
-            # click.echo(test_dict)
+
             road_points = test_dict['road_points']
             road_features = get_road_features(road_points)
-            # click.echo(road_features.to_dict())
             road_features_dict = road_features.to_dict()
             road_features_dict['safety'] = test_dict['test_outcome']
-            # click.echo(road_features_dict.keys())
+
+            if with_simulation_time:
+                road_features_dict['simulation_time'] = test_dict['simulation_time']
+
             df = df.append(road_features_dict, ignore_index=True)
 
     return df, valid_tests_json_lst
@@ -272,16 +274,16 @@ def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argumen
 
 
 @cli.command()
-@click.option('--scenarios', required=True, help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--tests', required=True, help='Path to unlabeled tests', type=click.Path(exists=True))
 @click.option('--predicted-tests', required=True, help='Path to store predicted tests', type=click.Path())
 @click.option('--classifier', required=True, help='Path to classifier.joblib', type=click.Path(exists=True))
-def predict_scenarios(scenarios, predicted_tests, classifier):
+def predict_tests(tests, predicted_tests, classifier):
     if not os.path.exists(predicted_tests):
         os.mkdir(predicted_tests)
     abs_path_predicted_tests = os.path.abspath(predicted_tests)
 
-    # laod road scenarios
-    abs_path_scenarios = os.path.abspath(scenarios)
+    # laod road tests
+    abs_path_scenarios = os.path.abspath(tests)
     df, valid_tests_dict_lst = load_data_as_data_frame(abs_path_scenarios)
     # load pre-trained classifier
     abs_path_classifier = os.path.realpath(classifier)
@@ -302,7 +304,7 @@ def predict_scenarios(scenarios, predicted_tests, classifier):
     y_pred = clf.predict(X)
 
     # report predictions
-    print('Predicted {} scenarios.'.format(len(y_pred)))
+    print('Predicted {} tests.'.format(len(y_pred)))
     print('Predicted as unsafe: {}'.format(sum(y_pred)))
     print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
 
@@ -324,11 +326,11 @@ def predict_scenarios(scenarios, predicted_tests, classifier):
 
 
 @cli.command()
-@click.option('--time-budget', default=10, help='Time budget for generating tests')
+@click.option('--time-budget', default=100, help='Time budget for generating tests')
 @click.option('--generator', default='frenetic', help='Test case generator')
-@click.option('--out-path', default='./valid_roads', help='Path to store the generated valid scenarios', type=click.Path())
+@click.option('--out-path', default='./valid_tests', help='Path to store the generated valid scenarios', type=click.Path())
 @click.pass_context
-def generate_scenarios(ctx, time_budget, generator, out_path):
+def generate_tests(ctx, time_budget, generator, out_path):
 
     if not os.path.exists(out_path):
         os.mkdir(out_path)
@@ -348,14 +350,14 @@ def generate_scenarios(ctx, time_budget, generator, out_path):
 
 
 @cli.command()
-@click.option('--road-scenarios', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
+@click.option('--tests', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
 @click.option('--beamng-home', required=True, default=BEAMNG_HOME, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the home of the simulator.")
 @click.option('--beamng-user', required=True, default=BEAMNG_USER, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the location of the folder "
                    "where levels, props, and other BeamNG-related data will be copied."
                    "** Use this to avoid spaces in URL/PATHS! **")
-@click.option('--result-folder', help='Path for the labeled data', type=click.Path())
+@click.option('--labeled-tests', help='Path for the labeled data', type=click.Path())
 @click.option('--risk-factor', default=0.7, help='Risk factor of the driving AI')
 @click.option('--time-budget', default=1000, help='Time budget for generating tests')
 @click.option('--oob-tolerance', default=0.95, help='Proportion of the car allowd to go off the lane')
@@ -363,18 +365,17 @@ def generate_scenarios(ctx, time_budget, generator, out_path):
 @click.option('--map-size', default=200, help='Size of the road map')
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
 @click.pass_context
-def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder, risk_factor, time_budget, oob_tolerance,
-                    speed_limit, map_size, random_speed):
-    # only import the pipeline if required
+def label_tests(ctx, tests, beamng_home, beamng_user, labeled_tests, risk_factor, time_budget, oob_tolerance,
+                speed_limit, map_size, random_speed):
     from code_pipeline.tests_generation import RoadTestFactory  # pylint: disable=import-outside-toplevel
     from code_pipeline.beamng_executor import BeamngExecutor  # pylint: disable=import-outside-toplevel
 
-    if not os.path.exists(result_folder):
-        os.mkdir(result_folder)
+    if not os.path.exists(labeled_tests):
+        os.mkdir(labeled_tests)
 
-    result_dir_abs_path = os.path.abspath(result_folder)
+    result_dir_abs_path = os.path.abspath(labeled_tests)
 
-    abs_path_to_road_scenarios = os.path.abspath(road_scenarios)
+    abs_path_to_road_scenarios = os.path.abspath(tests)
 
     pattern = r"road_\d+\.json\Z"
     re_obj = re.compile(pattern)
@@ -412,16 +413,16 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
         the_executor.close()
 
     # We still need this here to post process the results if the execution takes the regular flow
-    post_process(ctx, result_folder, the_executor)
+    post_process(ctx, labeled_tests, the_executor)
 
 
 @cli.command()
-@click.option('--scenarios', required=True, help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--tests', required=True, help='Path to unlabeled tests', type=click.Path(exists=True))
 @click.option('--train-dir', required=True, help='Path to directory of training data to be stored', type=click.Path())
 @click.option('--test-dir', required=True, help='Path to directory of test data to be stored', type=click.Path())
 @click.option('--train-ratio', required=True, help='Ratio used for training', type=click.FLOAT)
-def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
-    abs_path = os.path.abspath(scenarios)
+def split_train_test_data(tests, train_dir, test_dir, train_ratio):
+    abs_path = os.path.abspath(tests)
 
     if not os.path.exists(train_dir):
         os.mkdir(train_dir)
@@ -490,11 +491,11 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
 
 
 @cli.command()
-@click.option('--scenarios', help='Path to labeled test set', type=click.Path(exists=True))
-@click.option('--classifier', help='Path to classifier.joblib', type=click.Path(exists=True))
-def evaluate(scenarios, classifier):
+@click.option('--tests', help='Path to labeled test set', type=click.Path(exists=True))
+@click.option('--classifier', help='Path to trained classifier.joblib', type=click.Path(exists=True))
+def evaluate(tests, classifier):
     # laod road scenarios
-    abs_path_scenarios = os.path.abspath(scenarios)
+    abs_path_scenarios = os.path.abspath(tests)
     df, _ = load_data_as_data_frame(abs_path_scenarios)
     # load pre-trained classifier
     abs_path_classifier = os.path.realpath(classifier)
@@ -517,7 +518,7 @@ def evaluate(scenarios, classifier):
     y_pred = clf.predict(X)
 
     # report predictions
-    print('Predicted {} scenarios.'.format(len(y_pred)))
+    print('Predicted {} tests.'.format(len(y_pred)))
     print('Predicted as unsafe: {}'.format(sum(y_pred)))
     print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
 
@@ -527,7 +528,7 @@ def evaluate(scenarios, classifier):
     y_real[y_real == 'PASS'] = 0
     y_real = np.array(y_real, dtype='int32')
 
-    # calculate scores (the unsafe scenarios are the positives)
+    # calculate scores (the unsafe tests are the positives)
     acc = metrics.accuracy_score(y_real, y_pred)
     prec = metrics.precision_score(y_real, y_pred, pos_label=1)
     rec = metrics.recall_score(y_real, y_pred, pos_label=1)
@@ -539,7 +540,81 @@ def evaluate(scenarios, classifier):
     print('Recall: {}'.format(rec))
     print('F1: {}'.format(f1))
 
-    # TODO: implement cost effectiveness analysis
+
+@cli.command()
+@click.option('--tests', help='Path to labeled tests', type=click.Path(exists=True))
+@click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
+def evaluate_cost_effectiveness(data, train_ratio):
+    abs_path = os.path.abspath(data)
+    df, _ = load_data_as_data_frame(abs_path, with_simulation_time=True)
+
+    # consider only data we know before the execution of the scenario
+    X_model_attributes = ['direct_distance', 'max_angle',
+                          'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
+                          'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
+                          'num_r_turns', 'num_straights', 'road_distance', 'std_angle',
+                          'std_pivot_off', 'total_angle']
+
+    y_attribute = 'safety'
+
+    time_attribute = 'simulation_time'
+
+    X_attributes = X_model_attributes + [time_attribute]
+
+    # train models CV
+    X = df[X_attributes].to_numpy()
+    # print(X)
+    # print(X[:, -1])
+    # TODO: provide preprocessing options to the user???
+    # X = preprocessing.normalize(X)
+    # X = preprocessing.scale(X)
+    y = df[y_attribute].to_numpy()
+    y[y == 'FAIL'] = 1
+    y[y == 'PASS'] = 0
+    y = np.array(y, dtype='int32')
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_ratio)
+
+    X_test_time = X_test[:, -1]
+
+    X_train = X_train[:, :-1]
+    X_test = X_test[:, :-1]
+
+    classifiers = {}
+
+    classifiers = {
+        'random_forest': RandomForestClassifier(),
+        'gradient_boosting': GradientBoostingClassifier(),
+        # 'multinomial_naive_bayes': MultinomialNB(),
+        'gaussian_naive_bayes': GaussianNB(),
+        'logistic_regression': LogisticRegression(max_iter=10000),
+        'decision_tree': DecisionTreeClassifier(),
+    }
+
+    nr_unsafe_predicted = None
+    for name, estimator in classifiers.items():
+        estimator.fit(X_train, y_train)
+        y_pred = estimator.predict(X_test)
+        nr_unsafe_predicted = np.sum(y_pred)
+
+        rand_sim_times = []
+        nr_trials = 10
+        for i in range(nr_trials):
+            random_unsafe_predicted = np.random.permutation(np.append(np.ones(nr_unsafe_predicted, dtype='int32'),
+                                                            np.zeros(len(y_pred-nr_unsafe_predicted), dtype='int32')))
+            rand_sim_times.append(np.sum(X_test_time[random_unsafe_predicted]))
+
+        random_tot_sim_time = np.mean(rand_sim_times)
+
+        sdc_scissor_tot_sim_time = np.sum(X_test_time[y_pred])
+        print('SDC-SCISSOr')
+        print('{}:\tnr_tests: {}\ttot_sim_time {}'.
+              format(name, nr_unsafe_predicted, sdc_scissor_tot_sim_time))
+        print('RANDOM BASELINE:')
+        print('{}:\tnr_tests: {}\ttot_sim_time {}'.
+              format(name, nr_unsafe_predicted, random_tot_sim_time))
+        print('{}:\trandom_baseline_time/sdc_scissor_time = {}'.format(name, random_tot_sim_time/sdc_scissor_tot_sim_time))
+        print('{}:\tsdc_scissor_time/random_baseline_time = {}\n'.format(name, sdc_scissor_tot_sim_time/random_tot_sim_time))
 
 
 if __name__ == '__main__':
