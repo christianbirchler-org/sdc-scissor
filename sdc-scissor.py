@@ -277,16 +277,16 @@ def evaluate_models(model, cv, dataset, save):  # pylint: disable=unused-argumen
 
 
 @cli.command()
-@click.option('--scenarios', required=True, help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--tests', required=True, help='Path to unlabeled tests', type=click.Path(exists=True))
 @click.option('--predicted-tests', required=True, help='Path to store predicted tests', type=click.Path())
 @click.option('--classifier', required=True, help='Path to classifier.joblib', type=click.Path(exists=True))
-def predict_scenarios(scenarios, predicted_tests, classifier):
+def predict_tests(tests, predicted_tests, classifier):
     if not os.path.exists(predicted_tests):
         os.mkdir(predicted_tests)
     abs_path_predicted_tests = os.path.abspath(predicted_tests)
 
-    # laod road scenarios
-    abs_path_scenarios = os.path.abspath(scenarios)
+    # laod road tests
+    abs_path_scenarios = os.path.abspath(tests)
     df, valid_tests_dict_lst = load_data_as_data_frame(abs_path_scenarios)
     # load pre-trained classifier
     abs_path_classifier = os.path.realpath(classifier)
@@ -307,7 +307,7 @@ def predict_scenarios(scenarios, predicted_tests, classifier):
     y_pred = clf.predict(X)
 
     # report predictions
-    print('Predicted {} scenarios.'.format(len(y_pred)))
+    print('Predicted {} tests.'.format(len(y_pred)))
     print('Predicted as unsafe: {}'.format(sum(y_pred)))
     print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
 
@@ -329,11 +329,11 @@ def predict_scenarios(scenarios, predicted_tests, classifier):
 
 
 @cli.command()
-@click.option('--time-budget', default=10, help='Time budget for generating tests')
+@click.option('--time-budget', default=100, help='Time budget for generating tests')
 @click.option('--generator', default='frenetic', help='Test case generator')
-@click.option('--out-path', default='./valid_roads', help='Path to store the generated valid scenarios', type=click.Path())
+@click.option('--out-path', default='./valid_tests', help='Path to store the generated valid scenarios', type=click.Path())
 @click.pass_context
-def generate_scenarios(ctx, time_budget, generator, out_path):
+def generate_tests(ctx, time_budget, generator, out_path):
 
     if not os.path.exists(out_path):
         os.mkdir(out_path)
@@ -353,14 +353,14 @@ def generate_scenarios(ctx, time_budget, generator, out_path):
 
 
 @cli.command()
-@click.option('--road-scenarios', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
+@click.option('--tests', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
 @click.option('--beamng-home', required=True, default=BEAMNG_HOME, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the home of the simulator.")
 @click.option('--beamng-user', required=True, default=BEAMNG_USER, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the location of the folder "
                    "where levels, props, and other BeamNG-related data will be copied."
                    "** Use this to avoid spaces in URL/PATHS! **")
-@click.option('--result-folder', help='Path for the labeled data', type=click.Path())
+@click.option('--labeled-tests', help='Path for the labeled data', type=click.Path())
 @click.option('--risk-factor', default=0.7, help='Risk factor of the driving AI')
 @click.option('--time-budget', default=1000, help='Time budget for generating tests')
 @click.option('--oob-tolerance', default=0.95, help='Proportion of the car allowd to go off the lane')
@@ -368,15 +368,15 @@ def generate_scenarios(ctx, time_budget, generator, out_path):
 @click.option('--map-size', default=200, help='Size of the road map')
 @click.option('--random-speed', is_flag=True, help='Max speed for a test is uniform random')
 @click.pass_context
-def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder, risk_factor, time_budget, oob_tolerance,
-                    speed_limit, map_size, random_speed):
+def label_tests(ctx, tests, beamng_home, beamng_user, labeled_tests, risk_factor, time_budget, oob_tolerance,
+                speed_limit, map_size, random_speed):
 
-    if not os.path.exists(result_folder):
-        os.mkdir(result_folder)
+    if not os.path.exists(labeled_tests):
+        os.mkdir(labeled_tests)
 
-    result_dir_abs_path = os.path.abspath(result_folder)
+    result_dir_abs_path = os.path.abspath(labeled_tests)
 
-    abs_path_to_road_scenarios = os.path.abspath(road_scenarios)
+    abs_path_to_road_scenarios = os.path.abspath(tests)
 
     pattern = r"road_\d+\.json\Z"
     re_obj = re.compile(pattern)
@@ -414,16 +414,16 @@ def label_scenarios(ctx, road_scenarios, beamng_home, beamng_user, result_folder
         the_executor.close()
 
     # We still need this here to post process the results if the execution takes the regular flow
-    post_process(ctx, result_folder, the_executor)
+    post_process(ctx, labeled_tests, the_executor)
 
 
 @cli.command()
-@click.option('--scenarios', required=True, help='Path to unlabeled secenarios', type=click.Path(exists=True))
+@click.option('--tests', required=True, help='Path to unlabeled tests', type=click.Path(exists=True))
 @click.option('--train-dir', required=True, help='Path to directory of training data to be stored', type=click.Path())
 @click.option('--test-dir', required=True, help='Path to directory of test data to be stored', type=click.Path())
 @click.option('--train-ratio', required=True, help='Ratio used for training', type=click.FLOAT)
-def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
-    abs_path = os.path.abspath(scenarios)
+def split_train_test_data(tests, train_dir, test_dir, train_ratio):
+    abs_path = os.path.abspath(tests)
 
     if not os.path.exists(train_dir):
         os.mkdir(train_dir)
@@ -492,11 +492,11 @@ def split_train_test_data(scenarios, train_dir, test_dir, train_ratio):
 
 
 @cli.command()
-@click.option('--scenarios', help='Path to labeled test set', type=click.Path(exists=True))
-@click.option('--classifier', help='Path to classifier.joblib', type=click.Path(exists=True))
-def evaluate(scenarios, classifier):
+@click.option('--tests', help='Path to labeled test set', type=click.Path(exists=True))
+@click.option('--classifier', help='Path to trained classifier.joblib', type=click.Path(exists=True))
+def evaluate(tests, classifier):
     # laod road scenarios
-    abs_path_scenarios = os.path.abspath(scenarios)
+    abs_path_scenarios = os.path.abspath(tests)
     df, _ = load_data_as_data_frame(abs_path_scenarios)
     # load pre-trained classifier
     abs_path_classifier = os.path.realpath(classifier)
@@ -519,7 +519,7 @@ def evaluate(scenarios, classifier):
     y_pred = clf.predict(X)
 
     # report predictions
-    print('Predicted {} scenarios.'.format(len(y_pred)))
+    print('Predicted {} tests.'.format(len(y_pred)))
     print('Predicted as unsafe: {}'.format(sum(y_pred)))
     print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
 
@@ -529,7 +529,7 @@ def evaluate(scenarios, classifier):
     y_real[y_real == 'PASS'] = 0
     y_real = np.array(y_real, dtype='int32')
 
-    # calculate scores (the unsafe scenarios are the positives)
+    # calculate scores (the unsafe tests are the positives)
     acc = metrics.accuracy_score(y_real, y_pred)
     prec = metrics.precision_score(y_real, y_pred, pos_label=1)
     rec = metrics.recall_score(y_real, y_pred, pos_label=1)
@@ -543,7 +543,7 @@ def evaluate(scenarios, classifier):
 
 
 @cli.command()
-@click.option('--data', help='Path to labeled data set', type=click.Path(exists=True))
+@click.option('--tests', help='Path to labeled tests', type=click.Path(exists=True))
 @click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
 def evaluate_cost_effectiveness(data, train_ratio):
     abs_path = os.path.abspath(data)
