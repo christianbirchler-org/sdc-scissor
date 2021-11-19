@@ -13,8 +13,8 @@ wrapt = ">=1.11,<1.14"
 
 [[package]]
 name = "beamngpy"
-version = "1.21"
-description = "Python API to interact with BeamNG.tech."
+version = "1.18"
+description = "Python API to interact with BeamNG.research."
 category = "main"
 optional = false
 python-versions = "*"
@@ -404,7 +404,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9,<3.10"
-content-hash = "6e789c8cf8a7d5e2c777315ccddfadc8bf0bc45054e1d34e09aad6f7bcb2da29"
+content-hash = "8ec63bec7a9b45258070b338194760b10e3d6cd8a882af16a7cd7bc23abbf376"
 
 [metadata.files]
 astroid = [
@@ -412,7 +412,8 @@ astroid = [
     {file = "astroid-2.8.4.tar.gz", hash = "sha256:1e83a69fd51b013ebf5912d26b9338d6643a55fec2f20c787792680610eed4a2"},
 ]
 beamngpy = [
-    {file = "beamngpy-1.21-py2.py3-none-any.whl", hash = "sha256:36d1d00268b53cfbb784e3e9f53082c107ffd47654a47b34dbb5dae3ed8085e7"},
+    {file = "beamngpy-1.18-py2.py3-none-any.whl", hash = "sha256:392d658c46a227b8583c848217d890d34008bf0f9684df492326290a5b704be8"},
+    {file = "beamngpy-1.18.tar.gz", hash = "sha256:efe863f00576e8fd82f350b5124daa7a534f873ba89d667e1b980232cc2ac0e2"},
 ]
 click = [
     {file = "click-8.0.1-py3-none-any.whl", hash = "sha256:fba402a4a47334742d782209a7c79bc448911afe1149d07bdabdf480b3e2f4b6"},
