@@ -2,6 +2,7 @@ import os
 import subprocess
 import json
 import re
+import random
 
 
 NR_TRIALS = 10
@@ -22,10 +23,10 @@ def _make_results_directory(trial):
     return results_abs_path
 
 
-def _run_simulations(result_dir):
+def _run_simulations(tests, result_dir):
     print('* run simulations')
     command = ['python', 'sdc-scissor.py', 'label-tests',
-               '--tests', DATA_DIR,
+               '--tests', tests,
                '--labeled-tests', result_dir,
                '--risk-factor', '1.5',
                '--time-budget', '500000',
@@ -65,17 +66,69 @@ def _persist_sim_times():
         json.dump(SIM_TIMES_DICT, fp)
 
 
-def _sample_tests():
-    pass
+def _write_sample_tests_to_dir(sample, sample_dir_name):
+    for cnt, test in enumerate(sample):
+        filename = 'sample_test_{}.json'.format(cnt)
+        filepath = os.path.join(sample_dir_name, filename)
+        with open(filepath, 'w') as fp:
+            json.dump(test, fp)
+
+
+def _random_sample_tests(size, stratified=False):
+    print('* random sample tests')
+
+    sample_dir_name = os.path.join(DATA_DIR, 'sample')
+    os.mkdir(sample_dir_name)
+
+    pattern = r".*test.*\.json\Z"
+    re_obj = re.compile(pattern)
+
+    cnt_safe = 0
+    cnt_unsafe = 0
+    safe_tests_lst = []
+    unsafe_tests_lst = []
+    for root, _, files in os.walk(DATA_DIR):
+        for file in files:
+            if re_obj.fullmatch(file):
+                abs_file_path = os.path.join(root, file)
+                json_dict = _parse_json_test_file(abs_file_path)
+                test_outcome = json_dict['test_outcome']
+                if test_outcome == 'PASS':
+                    safe_tests_lst.append(json_dict)
+                elif test_outcome == 'FAIL':
+                    unsafe_tests_lst.append(json_dict)
+
+    random.shuffle(safe_tests_lst)
+    random.shuffle(unsafe_tests_lst)
+    sample = []
+    if stratified:
+        group_size = size//2
+        if cnt_safe < group_size:
+            raise Exception('Not enough safe tests for the sample!')
+        if cnt_unsafe < group_size:
+            raise Exception('Not enough unsafe tests for the sample!')
+
+        sample += random.sample(safe_tests_lst, group_size)
+        sample += random.sample(unsafe_tests_lst, group_size)
+    else:
+        sample += safe_tests_lst
+        sample += unsafe_tests_lst
+        random.shuffle(sample)
+        sample = random.sample(sample, size)
+    random.shuffle(sample)
+
+    _write_sample_tests_to_dir(sample, sample_dir_name)
+
+    return sample_dir_name
 
 
 def main():
     print('* start script')
-    tests = _sample_tests()
+    sample_dir = _random_sample_tests(50, stratified=True)
     for trial in range(NR_TRIALS):
         print('* Trial {}'.format(trial))
         result_dir = _make_results_directory(trial)
-        _run_simulations(result_dir)
+        _run_simulations(sample_dir, result_dir)
         sim_times = _retrieve_sim_times(result_dir)
         key = 'trial_{}'.format(trial)
         SIM_TIMES_DICT[key] = sim_times
