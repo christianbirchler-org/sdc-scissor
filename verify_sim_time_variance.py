@@ -5,6 +5,7 @@ import re
 import random
 
 
+SAMPLE_SIZE = 50
 NR_TRIALS = 10
 DATA_DIR = r'C:\Users\birc\Desktop\time-variance-analysis\data'
 RESULTS_BASE_DIR = r'C:\Users\birc\Desktop\time-variance-analysis\results'
@@ -67,6 +68,7 @@ def _persist_sim_times():
 
 
 def _write_sample_tests_to_dir(sample, sample_dir_name):
+    print('* write sample tests to sample directory')
     for cnt, test in enumerate(sample):
         filename = 'sample_test_{}.json'.format(cnt)
         filepath = os.path.join(sample_dir_name, filename)
@@ -78,7 +80,8 @@ def _random_sample_tests(size, stratified=False):
     print('* random sample tests')
 
     sample_dir_name = os.path.join(DATA_DIR, 'sample')
-    os.mkdir(sample_dir_name)
+    if not os.path.exists(sample_dir_name):
+        os.mkdir(sample_dir_name)
 
     pattern = r".*test.*\.json\Z"
     re_obj = re.compile(pattern)
@@ -92,11 +95,15 @@ def _random_sample_tests(size, stratified=False):
             if re_obj.fullmatch(file):
                 abs_file_path = os.path.join(root, file)
                 json_dict = _parse_json_test_file(abs_file_path)
-                test_outcome = json_dict['test_outcome']
-                if test_outcome == 'PASS':
-                    safe_tests_lst.append(json_dict)
-                elif test_outcome == 'FAIL':
-                    unsafe_tests_lst.append(json_dict)
+                test_is_valid = json_dict['is_valid']
+                if test_is_valid:
+                    test_outcome = json_dict['test_outcome']
+                    if test_outcome == 'PASS':
+                        safe_tests_lst.append(json_dict)
+                        cnt_safe += 1
+                    elif test_outcome == 'FAIL':
+                        unsafe_tests_lst.append(json_dict)
+                        cnt_unsafe += 1
 
     random.shuffle(safe_tests_lst)
     random.shuffle(unsafe_tests_lst)
@@ -124,7 +131,7 @@ def _random_sample_tests(size, stratified=False):
 
 def main():
     print('* start script')
-    sample_dir = _random_sample_tests(50, stratified=True)
+    sample_dir = _random_sample_tests(SAMPLE_SIZE, stratified=True)
     for trial in range(NR_TRIALS):
         print('* Trial {}'.format(trial))
         result_dir = _make_results_directory(trial)
