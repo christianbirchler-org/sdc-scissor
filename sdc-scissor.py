@@ -377,7 +377,8 @@ def label_tests(ctx, tests, beamng_home, beamng_user, labeled_tests, risk_factor
 
     abs_path_to_road_scenarios = os.path.abspath(tests)
 
-    pattern = r"road_\d+\.json\Z"
+    # pattern = r"road_\d+\.json\Z"
+    pattern = r".*test.*\.json\Z"
     re_obj = re.compile(pattern)
 
     try:
