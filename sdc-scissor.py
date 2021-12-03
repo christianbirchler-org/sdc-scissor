@@ -34,7 +34,6 @@ from feature_extraction.angle_based_strategy import AngleBasedStrategy
 def run_pipeline(context, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
                  map_size, random_speed, angle_threshold, decision_distance, results_dir, prevent_simulation=True):
     arguments = {
-        '--visualize-tests': False,
         '--time-budget': time_budget,
         '--oob-tolerance': oob_tolerance,
         '--risk-factor': risk_factor,
@@ -353,8 +352,10 @@ def generate_tests(ctx, time_budget, generator, out_path):
     random_speed = True
     angle_threshold = 13
     decision_distance = 10
-    run_pipeline(ctx, executor, None, None, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size,
-                 random_speed, angle_threshold, decision_distance, results_dir=out_dir_abs_path)
+    beamng_home = None
+    beamng_user = None
+    run_pipeline(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+                 map_size, random_speed, angle_threshold, decision_distance, results_dir=out_dir_abs_path)
 
 
 @cli.command()
