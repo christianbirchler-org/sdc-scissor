@@ -554,8 +554,8 @@ def evaluate(tests, classifier):
 @cli.command()
 @click.option('--tests', help='Path to labeled tests', type=click.Path(exists=True))
 @click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
-def evaluate_cost_effectiveness(data, train_ratio):
-    abs_path = os.path.abspath(data)
+def evaluate_cost_effectiveness(tests, train_ratio):
+    abs_path = os.path.abspath(tests)
     df, _ = load_data_as_data_frame(abs_path, with_simulation_time=True)
 
     # consider only data we know before the execution of the scenario
