@@ -27,14 +27,14 @@ from feature_extraction.angle_based_strategy import AngleBasedStrategy
 
 
 # THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
-BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
-BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
+# BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
+# BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
 
 
-def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
-                 angle_threshold, decision_distance, results_dir, prevent_simulation=True):
+def run_pipeline(context, beamng_home, beamng_user, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+                 map_size, random_speed, angle_threshold, decision_distance, results_dir, prevent_simulation=True):
     arguments = {
-        '--visualize-tests': True,
+        '--visualize-tests': False,
         '--time-budget': time_budget,
         '--oob-tolerance': oob_tolerance,
         '--risk-factor': risk_factor,
@@ -51,6 +51,8 @@ def run_pipeline(context, executor, generator, risk_factor, time_budget, oob_tol
         arguments['--speed-limit'] = speed_limit
 
     if executor == 'beamng':
+        BEAMNG_HOME = Path(beamng_home)
+        BEAMNG_USER = Path(beamng_user)
         if platform.system() != 'Windows':
             context.fail('The beamng executor only works on windows')
         if not BEAMNG_HOME.exists():
@@ -113,6 +115,12 @@ def cli():
 
 @cli.command()
 @click.option('--executor', default='mock', help='mock or beamng')
+@click.option('--beamng-home', required=False, default=None, type=click.Path(exists=True),
+              show_default='None',
+              help="Customize BeamNG executor by specifying the home of the simulator.")
+@click.option('--beamng-user', required=False, default=None, type=click.Path(exists=True),
+              show_default='Currently Active User (~/BeamNG.research/)',
+              help="Customize BeamNG executor by specifying the location of the folder")
 @click.option('--generator', default='frenetic', help='Test case generator')
 @click.option('--risk-factor', default=0.7, help='Risk factor of the driving AI')
 @click.option('--time-budget', default=10, help='Time budget for generating tests')
@@ -125,16 +133,16 @@ def cli():
 @click.option('--prevent-simulation', default=False, help="For some reasons you don't want to run the simulator")
 @click.option('--results-dir', default='./results', help='Path to store all generated tests', type=click.Path())
 @click.pass_context
-def run_simulations(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
-                    angle_threshold, decision_distance, prevent_simulation, results_dir):
+def run_simulations(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+                    map_size, random_speed, angle_threshold, decision_distance, prevent_simulation, results_dir):
 
     if not os.path.exists(results_dir):
         os.mkdir(results_dir)
 
     results_dir_abs_path = os.path.abspath(results_dir)
 
-    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
-                 angle_threshold, decision_distance, results_dir_abs_path, prevent_simulation)
+    run_pipeline(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+                 map_size, random_speed, angle_threshold, decision_distance, results_dir_abs_path, prevent_simulation)
 
 
 def parse_json_test_file(file):
@@ -345,15 +353,15 @@ def generate_tests(ctx, time_budget, generator, out_path):
     random_speed = True
     angle_threshold = 13
     decision_distance = 10
-    run_pipeline(ctx, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size, random_speed,
-                 angle_threshold, decision_distance, results_dir=out_dir_abs_path)
+    run_pipeline(ctx, executor, None, None, generator, risk_factor, time_budget, oob_tolerance, speed_limit, map_size,
+                 random_speed, angle_threshold, decision_distance, results_dir=out_dir_abs_path)
 
 
 @cli.command()
 @click.option('--tests', help='Path to road secenarios to be labeled', type=click.Path(exists=True))
-@click.option('--beamng-home', required=True, default=BEAMNG_HOME, type=click.Path(exists=True),
+@click.option('--beamng-home', required=True, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the home of the simulator.")
-@click.option('--beamng-user', required=True, default=BEAMNG_USER, type=click.Path(exists=True),
+@click.option('--beamng-user', required=True, type=click.Path(exists=True),
               help="Customize BeamNG executor by specifying the location of the folder "
                    "where levels, props, and other BeamNG-related data will be copied."
                    "** Use this to avoid spaces in URL/PATHS! **")
