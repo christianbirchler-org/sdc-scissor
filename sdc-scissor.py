@@ -31,7 +31,7 @@ from feature_extraction.angle_based_strategy import AngleBasedStrategy
 # BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
 
 
-def run_pipeline(context, beamng_home, beamng_user, executor, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+def run_pipeline(context, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
                  map_size, random_speed, angle_threshold, decision_distance, results_dir, prevent_simulation=True):
     arguments = {
         '--visualize-tests': False,
