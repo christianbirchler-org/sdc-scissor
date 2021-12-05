@@ -8,6 +8,9 @@ This project extends the tool competition platform from the [Cyber-Phisical Syst
 
 ## Usage
 
+### Demo
+[![Watch the video](https://img.youtube.com/vi/GlQ3jI0CQYA/maxresdefault.jpg)](https://youtu.be/GlQ3jI0CQYA)
+
 ### Installation
 
 The tool can either be run with [Docker](https://docs.docker.com/get-docker/) or locally using [Poetry](https://python-poetry.org/docs/).
