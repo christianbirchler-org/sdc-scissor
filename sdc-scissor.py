@@ -113,11 +113,11 @@ def cli():
 
 
 @cli.command()
-@click.option('--executor', default='mock', help='mock or beamng')
-@click.option('--beamng-home', required=False, default=None, type=click.Path(exists=True),
+@click.option('--executor', default='beamng', help='mock or beamng')
+@click.option('--beamng-home', required=True, default=None, type=click.Path(exists=True),
               show_default='None',
               help="Customize BeamNG executor by specifying the home of the simulator.")
-@click.option('--beamng-user', required=False, default=None, type=click.Path(exists=True),
+@click.option('--beamng-user', required=True, default=None, type=click.Path(exists=True),
               show_default='Currently Active User (~/BeamNG.research/)',
               help="Customize BeamNG executor by specifying the location of the folder")
 @click.option('--generator', default='frenetic', help='Test case generator')
