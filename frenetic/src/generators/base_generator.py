@@ -92,7 +92,9 @@ class BaseGenerator(ABC):
                 log.info('Weaker mutant: Disabling current test for future mutations.')
 
             # Retrieving file name
-            last_file = sorted(Path('simulations/beamng_executor').iterdir(), key=os.path.getmtime)[-1]
+            root_dir = str(self.executor.result_folder)
+            sim_path = os.path.join(root_dir, 'simulations/beamng_executor')
+            last_file = sorted(Path(sim_path).iterdir(), key=os.path.getmtime)[-1]
             info['simulation_file'] = last_file.name
 
             min_oob_distance = info['min_oob_distance']

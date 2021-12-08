@@ -59,9 +59,9 @@ class SimulationData:
     f_road = 'road'
     f_records = 'records'
 
-    def __init__(self, simulation_name: str):
+    def __init__(self, simulation_name: str, root_dir: str):
         self.name = simulation_name
-        root: Path = Path(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+        root: Path = Path(root_dir)
         self.simulations: Path = root.joinpath('simulations')
         self.path_root: Path = self.simulations.joinpath(simulation_name)
         self.path_json: Path = self.path_root.joinpath('simulation.full.json')

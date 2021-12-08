@@ -160,6 +160,7 @@ class BeamngExecutor(AbstractTestExecutor):
         simulation_id = time.strftime('%Y-%m-%d--%H-%M-%S', time.localtime())
         name = 'beamng_executor/sim_$(id)'.replace('$(id)', simulation_id)
         sim_data_collector = SimulationDataCollector(self.vehicle, beamng, brewer.decal_road, brewer.params,
+                                                     root_dir=self.result_folder,
                                                      vehicle_state_reader=vehicle_state_reader,
                                                      simulation_name=name)
 
