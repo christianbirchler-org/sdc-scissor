@@ -10,6 +10,7 @@ class SimulationDataCollector:
 
     def __init__(self, vehicle: Vehicle, beamng: BeamNGpy, road: DecalRoad,
                  params: SimulationParams,
+                 root_dir: str,
                  vehicle_state_reader: VehicleStateReader = None,
                  simulation_name: str = None):
         self.vehicle_state_reader = vehicle_state_reader if vehicle_state_reader \
@@ -20,7 +21,7 @@ class SimulationDataCollector:
         self.params: SimulationParams = params
         self.name = simulation_name
         self.states: SimulationDataRecords = []
-        self.simulation_data: SimulationData = SimulationData(simulation_name)
+        self.simulation_data: SimulationData = SimulationData(simulation_name, root_dir)
         self.simulation_data.set(self.params, self.road, self.states)
         self.simulation_data.clean()
 
