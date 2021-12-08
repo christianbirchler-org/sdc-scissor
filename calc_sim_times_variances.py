@@ -21,7 +21,7 @@ def cli(data):
     mean_std = np.mean(std_np)
     variations_np = variation(times_np, axis=1)
     mean_variations = np.mean(variations_np)
-    
+
     click.echo('Standard deviations:')
     click.echo(std_np)
     click.echo('Mean: {}'.format(mean_std))
