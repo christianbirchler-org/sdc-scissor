@@ -9,13 +9,13 @@ This project extends the tool competition platform from the [Cyber-Phisical Syst
 ## Usage
 
 ### Demo
-[![Watch the video](https://img.youtube.com/vi/GlQ3jI0CQYA/maxresdefault.jpg)](https://youtu.be/GlQ3jI0CQYA)
+[![Watch the video](https://img.youtube.com/vi/xKaeK-3rffw/maxresdefault.jpg)](https://youtu.be/xKaeK-3rffw)
 
 ### Installation
 
 The tool can either be run with [Docker](https://docs.docker.com/get-docker/) or locally using [Poetry](https://python-poetry.org/docs/).
 
-When running the simluations a working installation of [BeamNG.research](https://beamng.gmbh/research/) is required.
+When running the simulations a working installation of [BeamNG.research](https://beamng.gmbh/research/) is required.
 Additionally this simulation cannot be run in a Docker container but must run locally.
 
 To install the application use one of the following approaches:
