@@ -9,7 +9,8 @@ This project extends the tool competition platform from the [Cyber-Phisical Syst
 ## Usage
 
 ### Demo
-[![Watch the video](https://img.youtube.com/vi/xKaeK-3rffw/maxresdefault.jpg)](https://youtu.be/xKaeK-3rffw)
+[![Watch the video](https://img.youtube.com/vi/Cn8p648KnfQ/maxresdefault.jpg)](https://youtu.be/Cn8p648KnfQ)
+[YouTube Link](https://youtu.be/Cn8p648KnfQ)
 
 ### Installation
 
