@@ -74,3 +74,16 @@ Sajad Khatiri - Zurich University of Applied Science (ZHAW), Switzerland - mazr@
 Dr. Alessio Gambi  - Passau University, Germany - alessio.gambi@uni-passau.de
 
 Dr. Sebastiano Panichella - Zurich University of Applied Science (ZHAW), Switzerland - panc@zhaw.ch
+
+## References
+- Christian Birchler, Nicolas Ganz, Sajad Khatiri, Alessio Gambi, and Sebastiano Panichella. 2022. Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor. In 2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER), IEEE.
+
+**If you use this tool in your research, please cite the following papers:**
+```
+@INPROCEEDINGS{Birchler2022,
+  author={Birchler, Christian and Ganz, Nicolas and Khatiri, Sajad and Gambi, Alessio, and Panichella, Sebastiano},
+  booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER), 
+  title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor}, 
+  year={2022},
+}
+```
