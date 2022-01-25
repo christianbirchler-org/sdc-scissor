@@ -13,8 +13,7 @@ This project extends the tool competition platform from the [Cyber-Phisical Syst
 [YouTube Link](https://youtu.be/Cn8p648KnfQ)
 
 ### Data
-The data used for the demo and evaluation we made available on Zenodo.
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5903161.svg)](https://doi.org/10.5281/zenodo.5903161)
+The data used for the demo and evaluation we made available on Zenodo: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5903161.svg)](https://doi.org/10.5281/zenodo.5903161)
 
 
 ### Installation
