@@ -1,4 +1,5 @@
 import os
+import pathlib
 import re
 import json
 import logging as log
@@ -204,6 +205,15 @@ def get_avg_scores(scores):
     avg_scores['f1'] = np.mean(scores['test_f1'])
 
     return avg_scores
+
+
+@cli.command()
+@click.option('--tests', type=click.Path(exists=True))
+@click.option('--of', default='extracted_road_features.csv')
+def save_extracted_features(tests, of):
+    tests_abs_path = os.path.abspath(tests)
+    df, _ = load_data_as_data_frame(tests_abs_path)
+    df.to_csv(of)
 
 
 @cli.command()
