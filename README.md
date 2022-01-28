@@ -26,6 +26,8 @@ To install the application use one of the following approaches:
 
 ### Using the Tool
 
+Sample test cases you can find here: https://doi.org/10.5281/zenodo.5914130
+
 The tool can be used with the following two commands:
 
 * Docker: `docker run --volume "$(pwd)/results:/out" --rm sdc-scissor [COMMAND] [OPTIONS]` (this will write all files written to `/out` to the local folder `results`)
