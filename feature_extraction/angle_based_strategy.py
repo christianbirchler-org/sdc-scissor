@@ -1,3 +1,5 @@
+from typing import List
+
 from feature_extraction.segmentation_strategy import SegmentationStrategy
 from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
 
