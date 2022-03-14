@@ -4,14 +4,14 @@ import time
 import traceback
 from typing import Tuple
 
-from self_driving.beamng_brewer import BeamNGBrewer
+from SBST2022.self_driving.beamng_brewer import BeamNGBrewer
 # maps is a global variable in the module, which is initialized to Maps()
-from self_driving.beamng_tig_maps import maps, LevelsFolder
-from self_driving.beamng_waypoint import BeamNGWaypoint
-from self_driving.simulation_data import SimulationDataRecord, SimulationData
-from self_driving.simulation_data_collector import SimulationDataCollector
-from self_driving.utils import get_node_coords, points_distance
-from self_driving.vehicle_state_reader import VehicleStateReader
+from SBST2022.self_driving.beamng_tig_maps import maps, LevelsFolder
+from SBST2022.self_driving.beamng_waypoint import BeamNGWaypoint
+from SBST2022.self_driving.simulation_data import SimulationDataRecord, SimulationData
+from SBST2022.self_driving.simulation_data_collector import SimulationDataCollector
+from SBST2022.self_driving.utils import get_node_coords, points_distance
+from SBST2022.self_driving.vehicle_state_reader import VehicleStateReader
 
 from shapely.geometry import Point
 

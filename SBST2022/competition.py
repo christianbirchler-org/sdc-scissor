@@ -12,11 +12,11 @@ import errno
 import logging as log
 import csv
 
-from code_pipeline.visualization import RoadTestVisualizer
-from code_pipeline.tests_generation import TestGenerationStatistic
-from code_pipeline.test_generation_utils import register_exit_fun
+from SBST2022.code_pipeline.visualization import RoadTestVisualizer
+from SBST2022.code_pipeline.tests_generation import TestGenerationStatistic
+from SBST2022.code_pipeline.test_generation_utils import register_exit_fun
 
-from code_pipeline.tests_evaluation import OOBAnalyzer
+from SBST2022.code_pipeline.tests_evaluation import OOBAnalyzer
 
 OUTPUT_RESULTS_TO = 'results'
 # Sentinel values
@@ -24,13 +24,13 @@ ANY = object()
 ANY_NOT_NONE = object()
 DEFAULT = object()
 
+
 # Probably this could be simplified with HO functions?
 def check_command_with_complex_conditions(
-        check_option_is_defined_when_another_is_defined = {},
-        at_least_one_must_be_defined = [],
-        mutually_exclusive = []
+        check_option_is_defined_when_another_is_defined={},
+        at_least_one_must_be_defined=[],
+        mutually_exclusive=[]
 ):
-
     class CommandOptionRequiredClass(click.Command):
 
         def _get_real_names(self, parameter_list):
@@ -67,14 +67,17 @@ def check_command_with_complex_conditions(
                         at_least_one_defined = True
                 if not at_least_one_defined:
                     # Show the error message
-                    raise click.ClickException(f"At least one of those options must be defined {self._get_real_names(list_of_options)}")
+                    raise click.ClickException(
+                        f"At least one of those options must be defined {self._get_real_names(list_of_options)}")
 
             # check_option_is_defined_when_another_is_defined
             for requiring_tuple, required_parameters in check_option_is_defined_when_another_is_defined.items():
                 # Check if the requiring parameter is set
                 if requiring_tuple[0] in ctx.params:
                     # Check if the value of the requiring parameter is the expected one
-                    if requiring_tuple[0] == str(ANY) or (ctx.params[requiring_tuple[0]] is not None and requiring_tuple[0] == str(ANY_NOT_NONE)) or ctx.params[requiring_tuple[0]] == requiring_tuple[1]:
+                    if requiring_tuple[0] == str(ANY) or (
+                            ctx.params[requiring_tuple[0]] is not None and requiring_tuple[0] == str(ANY_NOT_NONE)) or \
+                            ctx.params[requiring_tuple[0]] == requiring_tuple[1]:
                         # In this case, all the required parameters must be declared. Note we do not check their value.
                         # Note each parameter is validated by a callback, so at this point we assume that if their value
                         #   is given, it is correct
@@ -84,7 +87,6 @@ def check_command_with_complex_conditions(
                                 # Show the error message
                                 raise click.ClickException(f"If {requiring_tuple[0]} is set to {requiring_tuple[1]}"
                                                            f" the option {option_name} must be specified")
-
 
             super(CommandOptionRequiredClass, self).invoke(ctx)
 
@@ -236,20 +238,21 @@ def setup_logging(log_to, debug):
 
     log.info(start_msg)
 
+
 # Pay attention that here we use the names of Python parameters, so we use dave2_model instead of dave2-model
 @click.command(cls=check_command_with_complex_conditions(
     # Conditionally check one option if others are set
-    check_option_is_defined_when_another_is_defined = {
+    check_option_is_defined_when_another_is_defined={
         # If executor is dave2 then the dave2_model becomes mandatory
         ('executor', 'dave2'): ['dave2_model'],
         # If generation_budget is given then the execution_budget must be given as well
-        ('generation_budget', ANY_NOT_NONE ): ['execution_budget'],
+        ('generation_budget', ANY_NOT_NONE): ['execution_budget'],
         # If execution_budget is given then the generation_budget must be given as well
-        ('execution_budget', ANY_NOT_NONE ): ['generation_budget'],
+        ('execution_budget', ANY_NOT_NONE): ['generation_budget'],
     },
     # Conditionally check that at least one option among the defined is set
-    at_least_one_must_be_defined = [ ['time_budget', 'generation_budget', 'execution_budget'] ],
-    mutually_exclusive = [('time_budget', 'generation_budget'), ('time_budget', 'execution_budget')]
+    at_least_one_must_be_defined=[['time_budget', 'generation_budget', 'execution_budget']],
+    mutually_exclusive=[('time_budget', 'generation_budget'), ('time_budget', 'execution_budget')]
 
 ))
 @click.option('--executor', type=click.Choice(['mock', 'beamng', 'dave2'], case_sensitive=False), default="mock",
@@ -274,7 +277,6 @@ def setup_logging(log_to, debug):
               help="Overall budget for the generation and execution. Expressed in 'real-time'"
                    "seconds. This option is here to be back-ward compatible and will take "
                    "precedence over generation-budget and execution-budget")
-
 @click.option('--map-size', type=int, default=200, callback=validate_map_size,
               show_default='200m, which leads to a 200x200m^2 squared map',
               help="The lenght of the size of the squared map where the road must fit."
@@ -304,13 +306,18 @@ def setup_logging(log_to, debug):
 @click.option('--debug', required=False, is_flag=True, default=False,
               show_default='Disabled',
               help="Activate debugging (results in more logging)")
+@click.option('--risk-factor')
+@click.option('--angle-threshold')
+@click.option('--decision-distance')
+@click.option('--prevent-simulation')
+@click.option('--results-dir')
 @click.pass_context
 def generate(ctx, executor, dave2_model, beamng_home, beamng_user,
              generation_budget, execution_budget, time_budget,
              map_size, oob_tolerance, speed_limit,
              module_name, module_path, class_name,
-             visualize_tests, log_to, debug):
-
+             visualize_tests, log_to, debug, risk_factor, angle_threshold, decision_distance, prevent_simulation,
+             results_dir):
     ctx.ensure_object(dict)
 
     # TODO Refactor by adding a create summary command and forwarding the output of this run to that command
@@ -322,7 +329,7 @@ def generate(ctx, executor, dave2_model, beamng_home, beamng_user,
     if module_path:
         log.info(f"Loading module from {module_path}")
         sys.path.append(module_path)
-        
+
     log.info(f"Try to import {class_name} from {module_name}")
     module = importlib.import_module(module_name)
     the_class = getattr(module, class_name)
@@ -356,6 +363,7 @@ def generate(ctx, executor, dave2_model, beamng_home, beamng_user,
 
     log.info("Outputting results to " + result_folder)
 
+    print('generation budge: {}'.format(generation_budget))
     # Setup executor. All the executor must output the execution data into the result_folder
     if executor == "mock":
         from code_pipeline.executors import MockExecutor
@@ -364,7 +372,7 @@ def generate(ctx, executor, dave2_model, beamng_home, beamng_user,
                                     time_budget=time_budget,
                                     road_visualizer=road_visualizer)
     elif executor == "beamng":
-        from code_pipeline.beamng_executor import BeamngExecutor
+        from SBST2022.code_pipeline.beamng_executor import BeamngExecutor
         the_executor = BeamngExecutor(result_folder, map_size,
                                       generation_budget=generation_budget, execution_budget=execution_budget,
                                       time_budget=time_budget,
