@@ -14,7 +14,7 @@ class AngleBasedStrategy(SegmentationStrategy):
         self.__angle_threshold = angle_threshold
         self.__decision_distance = decision_distance
 
-    def extract_segments(self, road_points) -> list[tuple[int, int]]:
+    def extract_segments(self, road_points):
         # iterate according to the decision distance
         segment_indexes = []
         segment_start_index = 0

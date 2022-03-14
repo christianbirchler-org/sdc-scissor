@@ -87,7 +87,7 @@ class FeatureExtractor:
     #       IMPLEMENTATION DETAILS BELOW
     ############################################################################
 
-    def __get_full_road_features_from(self, segments: list[RoadSegment]) -> RoadFeatures:
+    def __get_full_road_features_from(self, segments):
         road_features = RoadFeatures()
 
         raw_feature_data = {

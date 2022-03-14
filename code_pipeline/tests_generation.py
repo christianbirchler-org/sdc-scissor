@@ -62,7 +62,7 @@ def _incremental_id_generator():
         test_id += 1
 
 
-def get_min_segment_length(road_points: list[tuple[int, int]], segmentation_strategy: SegmentationStrategy) -> float:
+def get_min_segment_length(road_points, segmentation_strategy):
     """
     Get the minimum segment lengths baased on the segmentation strategy.
     """
