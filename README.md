@@ -12,6 +12,10 @@ This project extends the tool competition platform from the [Cyber-Phisical Syst
 [![Watch the video](https://img.youtube.com/vi/Cn8p648KnfQ/maxresdefault.jpg)](https://youtu.be/Cn8p648KnfQ)
 [YouTube Link](https://youtu.be/Cn8p648KnfQ)
 
+### Data
+The data used for the demo and evaluation we made available on Zenodo: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5903161.svg)](https://doi.org/10.5281/zenodo.5903161)
+
+
 ### Installation
 
 The tool can either be run with [Docker](https://docs.docker.com/get-docker/) or locally using [Poetry](https://python-poetry.org/docs/).

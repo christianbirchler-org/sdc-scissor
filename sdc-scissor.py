@@ -1,4 +1,5 @@
 import os
+import pathlib
 import re
 import json
 import logging as log
@@ -24,11 +25,6 @@ from SBST2022.competition import post_process, generate
 
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
-
-
-# THE PATH SHOULD BE ADAPTED TO YOUR BEAMNG INSTALLATION!!!
-# BEAMNG_HOME = Path.home() / 'Documents' / 'BeamNG.research.v1.7.0.1'
-# BEAMNG_USER = Path.home() / 'Documents' / 'BeamNG.research'
 
 
 def run_pipeline(context, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
@@ -211,6 +207,15 @@ def get_avg_scores(scores):
     avg_scores['f1'] = np.mean(scores['test_f1'])
 
     return avg_scores
+
+
+@cli.command()
+@click.option('--tests', type=click.Path(exists=True))
+@click.option('--of', default='extracted_road_features.csv')
+def save_extracted_features(tests, of):
+    tests_abs_path = os.path.abspath(tests)
+    df, _ = load_data_as_data_frame(tests_abs_path)
+    df.to_csv(of)
 
 
 @cli.command()
