@@ -3,9 +3,9 @@ import logging
 from shapely.geometry import Point, LineString
 from shapely.ops import nearest_points
 
-from self_driving.edit_distance_polyline import iterative_levenshtein
+from SBST2022.self_driving.edit_distance_polyline import iterative_levenshtein
 
-from self_driving.simulation_data import SimulationDataRecord
+from SBST2022.self_driving.simulation_data import SimulationDataRecord
 
 from scipy.interpolate import splev, splprep
 

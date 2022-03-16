@@ -395,7 +395,7 @@ def generate(ctx, executor, dave2_model, beamng_home, beamng_user,
 
     try:
         # Instantiate the test generator
-        test_generator = the_class(executor=the_executor, map_size=map_size)
+        test_generator = the_class(time_budget=time_budget, executor=the_executor, map_size=map_size)
         # Start the generation
         test_generator.start()
     except Exception:

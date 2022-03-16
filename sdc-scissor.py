@@ -27,11 +27,13 @@ from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 
 
-def run_pipeline(context, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
-                 map_size, random_speed, angle_threshold, decision_distance, results_dir, prevent_simulation=True):
+def run_pipeline(context, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance,
+                 speed_limit, map_size, random_speed, angle_threshold, decision_distance, results_dir,
+                 prevent_simulation=True):
+    from SBST2022.competition import DEFAULT
     arguments = {
-        #'--generation-budget': time_budget,
-       # '--execution-budget': time_budget,
+        '--generation-budget': DEFAULT,
+        '--execution-budget': DEFAULT,
         '--time-budget': time_budget,
         '--oob-tolerance': oob_tolerance,
         '--risk-factor': risk_factor,
@@ -130,15 +132,16 @@ def cli():
 @click.option('--prevent-simulation', default=False, help="For some reasons you don't want to run the simulator")
 @click.option('--results-dir', default='./results', help='Path to store all generated tests', type=click.Path())
 @click.pass_context
-def run_simulations(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+def run_simulations(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance,
+                    speed_limit,
                     map_size, random_speed, angle_threshold, decision_distance, prevent_simulation, results_dir):
-
     if not os.path.exists(results_dir):
         os.mkdir(results_dir)
 
     results_dir_abs_path = os.path.abspath(results_dir)
 
-    run_pipeline(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+    run_pipeline(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance,
+                 speed_limit,
                  map_size, random_speed, angle_threshold, decision_distance, results_dir_abs_path, prevent_simulation)
 
 
@@ -320,7 +323,7 @@ def predict_tests(tests, predicted_tests, classifier):
     # report predictions
     print('Predicted {} tests.'.format(len(y_pred)))
     print('Predicted as unsafe: {}'.format(sum(y_pred)))
-    print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
+    print('Predicted as safe: {}'.format(len(y_pred) - sum(y_pred)))
 
     if len(y_pred) != len(valid_tests_dict_lst):
         raise Exception('number of predictions is not equal to the number of valid tests')
@@ -342,10 +345,10 @@ def predict_tests(tests, predicted_tests, classifier):
 @cli.command()
 @click.option('--time-budget', default=100, help='Time budget for generating tests')
 @click.option('--generator', default='frenetic', help='Test case generator')
-@click.option('--out-path', default='./valid_tests', help='Path to store the generated valid scenarios', type=click.Path())
+@click.option('--out-path', default='./valid_tests', help='Path to store the generated valid scenarios',
+              type=click.Path())
 @click.pass_context
 def generate_tests(ctx, time_budget, generator, out_path):
-
     if not os.path.exists(out_path):
         os.mkdir(out_path)
 
@@ -361,7 +364,8 @@ def generate_tests(ctx, time_budget, generator, out_path):
     decision_distance = 10
     beamng_home = None
     beamng_user = None
-    run_pipeline(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance, speed_limit,
+    run_pipeline(ctx, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance,
+                 speed_limit,
                  map_size, random_speed, angle_threshold, decision_distance, results_dir=out_dir_abs_path)
 
 
@@ -416,7 +420,8 @@ def label_tests(ctx, tests, beamng_home, beamng_user, labeled_tests, risk_factor
                     print(road_points)
 
                     the_test = RoadTestFactory.create_road_test(road_points, risk_factor)
-                    _test_outcome, _description, _execution_data = the_executor.execute_test(the_test, prevent_simulation=False)
+                    _test_outcome, _description, _execution_data = the_executor.execute_test(the_test,
+                                                                                             prevent_simulation=False)
 
                     time.sleep(10)
 
@@ -467,7 +472,7 @@ def split_train_test_data(tests, train_dir, test_dir, train_ratio):
             valid_tests.append(test_dict)
 
     random.shuffle(valid_tests)
-    split_index = int(train_ratio*len(valid_tests))
+    split_index = int(train_ratio * len(valid_tests))
 
     train_data = valid_tests[0:split_index]
     test_data = valid_tests[split_index:]
@@ -487,9 +492,9 @@ def split_train_test_data(tests, train_dir, test_dir, train_ratio):
             train_data_safe.append(test)
 
     if cnt_safe < cnt_unsafe:
-        train_data = train_data_safe + train_data_unsafe + random.choices(train_data_safe, k=(cnt_unsafe-cnt_safe))
+        train_data = train_data_safe + train_data_unsafe + random.choices(train_data_safe, k=(cnt_unsafe - cnt_safe))
     elif cnt_safe > cnt_unsafe:
-        train_data = random.choices(train_data_unsafe, k=(cnt_safe-cnt_unsafe)) + train_data_safe + train_data_unsafe
+        train_data = random.choices(train_data_unsafe, k=(cnt_safe - cnt_unsafe)) + train_data_safe + train_data_unsafe
 
     cnt = 0
     abs_path_train_dir = os.path.abspath(train_dir)
@@ -537,7 +542,7 @@ def evaluate(tests, classifier):
     # report predictions
     print('Predicted {} tests.'.format(len(y_pred)))
     print('Predicted as unsafe: {}'.format(sum(y_pred)))
-    print('Predicted as safe: {}'.format(len(y_pred)-sum(y_pred)))
+    print('Predicted as safe: {}'.format(len(y_pred) - sum(y_pred)))
 
     y_real = df[y_attribute].to_numpy()
     # print(y_real)
@@ -618,7 +623,8 @@ def evaluate_cost_effectiveness(tests, train_ratio):
         nr_trials = 10
         for i in range(nr_trials):
             random_unsafe_predicted = np.random.permutation(np.append(np.ones(nr_unsafe_predicted, dtype='int32'),
-                                                            np.zeros(len(y_pred-nr_unsafe_predicted), dtype='int32')))
+                                                                      np.zeros(len(y_pred - nr_unsafe_predicted),
+                                                                               dtype='int32')))
             rand_sim_times.append(np.sum(X_test_time[random_unsafe_predicted]))
 
         random_tot_sim_time = np.mean(rand_sim_times)
@@ -630,8 +636,10 @@ def evaluate_cost_effectiveness(tests, train_ratio):
         print('RANDOM BASELINE:')
         print('{}:\tnr_tests: {}\ttot_sim_time {}'.
               format(name, nr_unsafe_predicted, random_tot_sim_time))
-        print('{}:\trandom_baseline_time/sdc_scissor_time = {}'.format(name, random_tot_sim_time/sdc_scissor_tot_sim_time))
-        print('{}:\tsdc_scissor_time/random_baseline_time = {}\n'.format(name, sdc_scissor_tot_sim_time/random_tot_sim_time))
+        print('{}:\trandom_baseline_time/sdc_scissor_time = {}'.format(name,
+                                                                       random_tot_sim_time / sdc_scissor_tot_sim_time))
+        print('{}:\tsdc_scissor_time/random_baseline_time = {}\n'.format(name,
+                                                                         sdc_scissor_tot_sim_time / random_tot_sim_time))
 
 
 if __name__ == '__main__':

@@ -1,10 +1,10 @@
 from math import sqrt
 
-from self_driving.bbox import RoadBoundingBox
+from SBST2022.self_driving.bbox import RoadBoundingBox
 import numpy as np
 
 # from code_pipeline.tests_generation import RoadTest
-from code_pipeline.tests_generation import RoadTestFactory
+from SBST2022.code_pipeline.tests_generation import RoadTestFactory
 
 
 def find_circle(p1, p2, p3):
