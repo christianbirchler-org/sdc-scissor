@@ -2,8 +2,8 @@ from typing import Tuple
 
 from shapely.geometry import Point, Polygon
 
-from self_driving.road_polygon import RoadPolygon
-from self_driving.vehicle_state_reader import VehicleStateReader
+from SBST2022.self_driving.road_polygon import RoadPolygon
+from SBST2022.self_driving.vehicle_state_reader import VehicleStateReader
 
 
 class OutOfBoundsMonitor:

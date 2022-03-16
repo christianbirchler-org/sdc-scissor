@@ -4,13 +4,13 @@ import logging as log
 from beamngpy import BeamNGpy, Scenario, Vehicle
 from beamngpy.sensors import Camera
 
-from self_driving.beamng_waypoint import BeamNGWaypoint
-from self_driving.decal_road import DecalRoad
-from self_driving.road_points import List4DTuple, RoadPoints
-from self_driving.simulation_data import SimulationParams
-from self_driving.beamng_pose import BeamNGPose
-from self_driving.utils import get_node_coords
-from self_driving.beamng_tig_maps import maps
+from SBST2022.self_driving.beamng_waypoint import BeamNGWaypoint
+from SBST2022.self_driving.decal_road import DecalRoad
+from SBST2022.self_driving.road_points import List4DTuple, RoadPoints
+from SBST2022.self_driving.simulation_data import SimulationParams
+from SBST2022.self_driving.beamng_pose import BeamNGPose
+from SBST2022.self_driving.utils import get_node_coords
+from SBST2022.self_driving.beamng_tig_maps import maps
 
 
 class BeamNGCamera:

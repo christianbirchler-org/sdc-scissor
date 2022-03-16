@@ -1,9 +1,9 @@
 from beamngpy import Vehicle, BeamNGpy
-from self_driving.decal_road import DecalRoad
-from self_driving.oob_monitor import OutOfBoundsMonitor
-from self_driving.road_polygon import RoadPolygon
-from self_driving.simulation_data import SimulationParams, SimulationDataRecords, SimulationData, SimulationDataRecord
-from self_driving.vehicle_state_reader import VehicleStateReader
+from SBST2022.self_driving.decal_road import DecalRoad
+from SBST2022.self_driving.oob_monitor import OutOfBoundsMonitor
+from SBST2022.self_driving.road_polygon import RoadPolygon
+from SBST2022.self_driving.simulation_data import SimulationParams, SimulationDataRecords, SimulationData, SimulationDataRecord
+from SBST2022.self_driving.vehicle_state_reader import VehicleStateReader
 
 
 class SimulationDataCollector:

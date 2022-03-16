@@ -1,7 +1,7 @@
 import numpy as np
 
-from self_driving.simulation_data import SimulationDataRecord
-from self_driving.image_processing import preprocess
+from SBST2022.self_driving.simulation_data import SimulationDataRecord
+from SBST2022.self_driving.image_processing import preprocess
 
 MIN_SPEED = 10
 
