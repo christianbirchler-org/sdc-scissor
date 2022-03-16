@@ -8,10 +8,10 @@ import os
 
 from abc import ABC, abstractmethod
 
-from code_pipeline.validation import TestValidator
-from code_pipeline.tests_generation import TestGenerationStatistic
-from code_pipeline.test_analysis import compute_all_features
-from self_driving.simulation_data import SimulationDataRecord
+from SBST2022.code_pipeline.validation import TestValidator
+from SBST2022.code_pipeline.tests_generation import TestGenerationStatistic
+from SBST2022.code_pipeline.test_analysis import compute_all_features
+from SBST2022.self_driving.simulation_data import SimulationDataRecord
 
 
 class Budget:
@@ -114,7 +114,7 @@ class AbstractTestExecutor(ABC):
         with open(output_file_name, 'w') as test_file:
             test_file.write(the_test.to_json())
 
-    def execute_test(self, the_test):
+    def execute_test(self, the_test, prevent_simulation=True):
         # Mark that generation is over and log generation time
         elapsed_generation_time = time.monotonic() - self.start_generation_time
         # Update the budget

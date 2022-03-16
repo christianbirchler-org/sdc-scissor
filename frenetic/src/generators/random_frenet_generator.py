@@ -62,7 +62,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         sleep(10)
 
     def generate_initial_population(self):
-        while self.executor.get_remaining_time() > (self.time_budget - self.random_gen_budget):
+        while self.executor.get_remaining_time()['time-budget'] > (self.time_budget - self.random_gen_budget):
             log.info("Random generation. Remaining time %s", self.executor.get_remaining_time())
             kappas = self.generate_random_test()
             self.execute_frenet_test(kappas, frenet_step=self.frenet_step, prevent_simulation=self.prevent_simulation)

@@ -9,7 +9,7 @@ from time import sleep
 import numpy as np
 import pandas as pd
 
-from code_pipeline.tests_generation import RoadTestFactory
+from SBST2022.code_pipeline.tests_generation import RoadTestFactory
 
 
 class BaseGenerator(ABC):

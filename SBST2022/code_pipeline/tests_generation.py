@@ -1,4 +1,6 @@
-from self_driving.road_polygon import RoadPolygon
+from SBST2022.self_driving.road_polygon import RoadPolygon
+from feature_extraction.angle_based_strategy import AngleBasedStrategy
+from feature_extraction.road_geometry_calculator import RoadGeometryCalculator
 from shapely.geometry import  LineString
 from scipy.interpolate import splev, splprep
 from numpy.ma import arange
@@ -58,6 +60,29 @@ def _incremental_id_generator():
         test_id += 1
 
 
+def get_min_segment_length(road_points, segmentation_strategy):
+    """
+    Get the minimum segment lengths baased on the segmentation strategy.
+    """
+    road_geometry_calculator = RoadGeometryCalculator()
+    segment_indexes = segmentation_strategy.extract_segments(road_points)
+
+    segment_lengths_lst = []
+    for (start, end) in segment_indexes:
+        # print('start index: {}, end index: {}'.format(start, end))
+        road_segment = road_points[start: end+1]
+        length_of_road_segment = road_geometry_calculator.get_road_length(road_segment)
+        # print('segment length: {}'.format(length_of_road_segment))
+        segment_lengths_lst.append(length_of_road_segment)
+
+    segment_lengths_lst.sort()
+    # print('sorted length list: {}'.format(segment_lengths_lst))
+    for segment_length in segment_lengths_lst:
+        if segment_length >= 0.1:
+            return segment_length
+    return None
+
+
 class RoadTestFactory:
 
     # Static variable
@@ -69,11 +94,21 @@ class RoadTestFactory:
             Note that this class is nested in the RoadTestFactory to avoid direct creation
         """
 
-        def __init__(self, road_points):
+        def __init__(self, road_points, risk_factor=None, angle_threshold=13, decision_distance=10):
             assert type(road_points) is list, "You must provide a list of road points to create a RoadTest"
             assert all(len(i) == 2 for i in road_points), "Malformed list of road points"
             # The original input
             self.road_points = road_points[:]
+
+            segmentation_strategy = AngleBasedStrategy(angle_threshold=angle_threshold,
+                                                       decision_distance=decision_distance)
+
+            min_segment_length = get_min_segment_length(road_points, segmentation_strategy)
+            print('Minimum regular segment length: {}'.format(min_segment_length))
+
+            self.risk_factor = risk_factor
+            self.min_segment_length = min_segment_length
+
             # The interpolated input
             self.interpolated_points = _interpolate(self.road_points)
             # The rendered road
@@ -131,8 +166,9 @@ class RoadTestFactory:
             return json.dumps(theobj)
 
     @staticmethod
-    def create_road_test(road_points):
-        road_test = RoadTestFactory.RoadTest(road_points)
+    def create_road_test(road_points, risk_factor, angle_threshold=13, decision_distance=10):
+        road_test = RoadTestFactory.RoadTest(road_points, risk_factor=risk_factor, angle_threshold=angle_threshold,
+                                             decision_distance=decision_distance)
         # TODO Why not simply declare the id as field of RoadTest?
         # Generate the new id. Call next otherwise we return the generator
         setattr(road_test, 'id', next(RoadTestFactory.test_id_generator))

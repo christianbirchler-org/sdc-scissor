@@ -1,4 +1,4 @@
-from code_pipeline.executors import AbstractTestExecutor
+from SBST2022.code_pipeline.executors import AbstractTestExecutor
 
 import time
 import traceback

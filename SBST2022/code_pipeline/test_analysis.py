@@ -14,7 +14,7 @@ import math
 import numpy as np
 
 from shapely.geometry import Point
-from code_pipeline.utils import pairwise
+from SBST2022.code_pipeline.utils import pairwise
 
 THE_NORTH = [0, 1]
 
