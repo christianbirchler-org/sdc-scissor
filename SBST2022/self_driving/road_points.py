@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from self_driving.beamng_pose import BeamNGPose
+from SBST2022.self_driving.beamng_pose import BeamNGPose
 
 List4DTuple = List[Tuple[float, float, float, float]]
 List2DTuple = List[Tuple[float, float]]

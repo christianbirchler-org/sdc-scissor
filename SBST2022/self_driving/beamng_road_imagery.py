@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from self_driving.road_points import RoadPoints
+from SBST2022.self_driving.road_points import RoadPoints
 
 
 class BeamNGRoadImagery:
