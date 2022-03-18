@@ -26,6 +26,8 @@ from SBST2022.competition import post_process, generate
 from feature_extraction.feature_extraction import FeatureExtractor
 from feature_extraction.angle_based_strategy import AngleBasedStrategy
 
+from refactored_pipeline.main import main as new_main
+
 
 def run_pipeline(context, executor, beamng_home, beamng_user, generator, risk_factor, time_budget, oob_tolerance,
                  speed_limit, map_size, random_speed, angle_threshold, decision_distance, results_dir,
@@ -640,6 +642,11 @@ def evaluate_cost_effectiveness(tests, train_ratio):
                                                                        random_tot_sim_time / sdc_scissor_tot_sim_time))
         print('{}:\tsdc_scissor_time/random_baseline_time = {}\n'.format(name,
                                                                          sdc_scissor_tot_sim_time / random_tot_sim_time))
+
+
+@cli.command()
+def refactored_pipeline():
+    new_main()
 
 
 if __name__ == '__main__':
