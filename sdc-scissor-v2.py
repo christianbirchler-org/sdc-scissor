@@ -8,6 +8,26 @@ def cli():
     pass
 
 
+@click.command()
+def generate_tests():
+    pass
+
+
+@click.command()
+def label_tests():
+    pass
+
+
+@click.command()
+def evaluate_models():
+    pass
+
+
+@click.command()
+def predict_tests():
+    pass
+
+
 @cli.command()
 def refactored_pipeline():
     new_main()
