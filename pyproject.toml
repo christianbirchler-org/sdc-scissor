@@ -7,6 +7,7 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 click = "^8.0.4"
+beamngpy = "^1.22"
 
 [tool.poetry.dev-dependencies]
 
