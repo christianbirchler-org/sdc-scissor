@@ -1,4 +1,4 @@
-from feature_extraction.segmentation_strategy import SegmentationStrategy
+from refactored_pipeline.feature_extraction_api.segmentation_strategy import SegmentationStrategy
 
 
 class EquiDistanceStrategy(SegmentationStrategy):
