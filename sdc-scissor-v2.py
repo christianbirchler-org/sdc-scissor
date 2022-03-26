@@ -10,22 +10,23 @@ def cli():
     pass
 
 
-@click.command()
-def generate_tests():
-    pass
+@cli.command()
+@click.option('-c', '--count')
+def generate_tests(count):
+    click.echo(count)
 
 
-@click.command()
+@cli.command()
 def label_tests():
     pass
 
 
-@click.command()
+@cli.command()
 def evaluate_models():
     pass
 
 
-@click.command()
+@cli.command()
 def predict_tests():
     pass
 
