@@ -14,6 +14,9 @@ class TestRunner:
         self.simulator: BeamNGpy = kwargs.get('simulator', None)
 
     def run(self, test: Test) -> None:
+        """
+        Runs the test with the simulator given by instantiation of the test runner.
+        """
         print('* refactored pipeline')
 
         self.simulator.open()
