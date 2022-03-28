@@ -8,6 +8,8 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.9"
 click = "^8.0.4"
 beamngpy = "^1.22"
+pandas = "^1.4.1"
+Shapely = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 
