@@ -25,8 +25,10 @@ def generate_tests(count, destination):
     if not os.path.exists(destination):
         os.makedirs(destination)
 
-    test_generator = TestGenerator()
-    test_generator.generate(destination)
+    test_generator = TestGenerator(count=count, destination=destination)
+    test_generator.generate()
+    test_generator.save_tests()
+
 
 
 @cli.command()

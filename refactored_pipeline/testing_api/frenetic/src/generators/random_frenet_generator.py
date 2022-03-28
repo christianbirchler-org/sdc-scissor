@@ -2,7 +2,8 @@ import numpy as np
 import logging as log
 import random
 from time import sleep
-from src.generators.base_frenet_generator import BaseFrenetGenerator
+
+from refactored_pipeline.testing_api.frenetic.src.generators.base_frenet_generator import BaseFrenetGenerator
 
 
 class CustomFrenetGenerator(BaseFrenetGenerator):
@@ -11,7 +12,8 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
     """
 
     def __init__(self, time_budget=None, executor=None, map_size=None, kill_ancestors=1, strict_father=True,
-                 random_budget=3600, crossover_candidates=20, crossover_frequency=0):
+                 random_budget=3600, crossover_candidates=20, crossover_frequency=0, count=None):
+        self.count = count
         # Spending 20% of the time on random generation
         # Set this value to 1.0 to generate fully random results.
         self.random_gen_budget = random_budget
@@ -45,16 +47,23 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father)
 
     def start(self):
-        self.generate_initial_population()
-        self.generate_mutants()
-        sleep(10)
+        return self.generate_initial_population()
+        # self.generate_mutants()
+        # sleep(10)
 
     def generate_initial_population(self):
-        while self.executor.get_remaining_time() > (self.time_budget - self.random_gen_budget):
-            log.info("Random generation. Remaining time %s", self.executor.get_remaining_time())
+        # while self.executor.get_remaining_time() > (self.time_budget - self.random_gen_budget):
+        road_points_collection = []
+        cnt = 0
+        while cnt < self.count:
+            # print(cnt)
+            cnt += 1
+            log.info("Random generation. Remaining time %s", 10)
             kappas = self.generate_random_test()
-            self.execute_frenet_test(kappas, frenet_step=self.frenet_step)
-        return
+            road_points = self.execute_frenet_test(kappas, frenet_step=self.frenet_step)
+            road_points_collection.append(road_points)
+            # print(road_points)
+        return road_points_collection
 
     def generate_mutants(self):
         # Iterating the tests according to the value of the min_oob_distance (closer to fail).
