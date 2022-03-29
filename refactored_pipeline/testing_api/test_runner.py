@@ -5,6 +5,7 @@ from beamngpy.sensors import Electrics
 
 from refactored_pipeline.testing_api.test_loader import TestLoader
 from refactored_pipeline.testing_api.test import Test
+from refactored_pipeline.testing_api.test_monitor import TestMonitor
 
 
 class TestRunner:
@@ -48,25 +49,10 @@ class TestRunner:
         vehicle.set_color(rgba=(0, 0, 1, 0.5))
         vehicle.ai_set_speed(12)
 
-        for _ in range(10):
-            vehicle.update_vehicle()
-            sensors = self.simulator.poll_sensors(vehicle)
-
-            pos = vehicle.state['pos']
-            print('The vehicle position is: {}'.format(pos))
-
-            direction = vehicle.state['dir']
-            print('The vehicle direction is: {}'.format(direction))
-
-            wheel_speed = sensors['electrics']['wheelspeed']
-            print('The wheel speed is: {}'.format(wheel_speed))
-
-            throttle = sensors['electrics']['throttle']
-            print('The throttle intensity is: {}'.format(throttle))
-
-            brake = sensors['electrics']['brake']
-            print('The brake intensity is: {}'.format(brake))
-            time.sleep(1)
+        test_monitor = TestMonitor(self.simulator, vehicle, test)
+        while not test_monitor.is_finished:
+            test_monitor.check()
+            time.sleep(0.1)
 
         input('Hit enter...')
 
