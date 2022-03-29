@@ -26,8 +26,7 @@ class TestRunner:
         scenario = Scenario('tig', 'example')
 
         road = Road(material='tig_road_rubber_sticky', rid='flat_road', interpolate=True)
-
-        road.nodes.extend(test.road_points)
+        road.nodes.extend(test.interpolated_points)
 
         scenario.add_road(road)
 
