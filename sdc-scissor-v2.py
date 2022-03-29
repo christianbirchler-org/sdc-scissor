@@ -1,12 +1,15 @@
+import json
 import os.path
 from pathlib import Path
 
 import click
+import re
 
 from refactored_pipeline.testing_api.test import Test
 from refactored_pipeline.simulator_api.simulator_factory import SimulatorFactory
 from refactored_pipeline.testing_api.test_runner import TestRunner
 from refactored_pipeline.testing_api.test_generator import TestGenerator
+from refactored_pipeline.testing_api.test_validator import TestValidator
 
 
 @click.group()
@@ -31,10 +34,27 @@ def generate_tests(count, destination):
     test_generator.save_tests()
 
 
-
 @cli.command()
-def label_tests():
-    pass
+@click.option('-t', '--tests', default='./destination', type=click.Path(exists=True))
+def label_tests(tests):
+    print('* label_tests')
+    tests = Path(tests)
+    beamng = SimulatorFactory.get_beamng_simulator()
+    test_runner = TestRunner(simulator=beamng)
+
+    pattern: str = r'\d*_test.json'
+    for root, dirs, files in os.walk(tests):
+        for file in files:
+            if re.fullmatch(pattern, file):
+                full_path = tests / file
+                with open(full_path, 'r') as fp:
+                    road_points = json.load(fp)
+
+                test = Test(road_points=road_points)
+                test_validator = TestValidator(map_size=200)
+                is_valid, validation_msg = test_validator.validate_test(test)
+                print('is_valid: {}\nvalidation_msg: {}'.format(is_valid, validation_msg))
+                test_runner.run(test)
 
 
 @cli.command()
