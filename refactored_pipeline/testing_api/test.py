@@ -1,9 +1,11 @@
-from dataclasses import dataclass
-
-
-@dataclass
 class Test:
-    road_points: list[tuple]
+    def __init__(self, road_points: list[tuple]):
+        self.road_points = road_points
+        self.interpolated_points = self.__interpolate(road_points)
+
+    @staticmethod
+    def __interpolate(road_points: list[tuple]):
+        return road_points
 
 
 if __name__ == '__main__':
