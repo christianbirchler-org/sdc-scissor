@@ -22,6 +22,7 @@ class TestRunner:
         for road_point in test.interpolated_points:
             road_point.extend([-28, 10])
 
+        print(test.interpolated_points)
         self.simulator.open()
         scenario = Scenario('tig', 'example')
 
