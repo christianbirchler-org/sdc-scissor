@@ -1,4 +1,6 @@
+import math
 import time
+from math import sqrt
 
 from beamngpy import BeamNGpy, Scenario, Vehicle, Road
 from beamngpy.sensors import Electrics
@@ -36,7 +38,10 @@ class TestRunner:
         electrics = Electrics()
         vehicle.attach_sensor('electrics', electrics)
 
-        scenario.add_vehicle(vehicle, pos=(-2.5, 0, -28.0))
+        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(test)
+        rot_quat = (0, 0, 1, -0.1)
+        rot = (0, 0, alpha/(2*math.pi))
+        scenario.add_vehicle(vehicle, pos=(x_start, y_start, z_start), rot_quat=rot_quat)
 
         scenario.make(self.simulator)
 
@@ -55,6 +60,18 @@ class TestRunner:
             time.sleep(0.1)
 
         input('Hit enter...')
+
+    def __compute_start_position(self, test: Test):
+        print('* compute_start_position')
+        first_road_point = test.interpolated_points[0]
+        second_road_point = test.interpolated_points[1]
+        x_dir, y_dir = (second_road_point[0] - first_road_point[1], second_road_point[1] - first_road_point[1])
+        x_dir_norm, y_dir_norm = (x_dir / sqrt(x_dir ** 2 + y_dir ** 2), y_dir / sqrt(x_dir ** 2 + y_dir ** 2))
+        alpha = math.asin(y_dir_norm)
+
+        x_cross_dir_norm, y_cross_dir_norm = y_dir_norm, -x_dir_norm
+
+        return first_road_point[0]+2.5*x_cross_dir_norm, first_road_point[1]+2.5*y_cross_dir_norm, -28.0, x_dir, y_dir, alpha
 
 
 if __name__ == '__main__':
