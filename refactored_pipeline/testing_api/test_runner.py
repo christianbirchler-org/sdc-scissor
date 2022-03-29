@@ -17,7 +17,10 @@ class TestRunner:
         """
         Runs the test with the simulator given by instantiation of the test runner.
         """
-        print('* refactored pipeline')
+        print('* run')
+
+        for road_point in test.interpolated_points:
+            road_point.extend([-28, 10])
 
         self.simulator.open()
         scenario = Scenario('tig', 'example')
