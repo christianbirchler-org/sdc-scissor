@@ -21,6 +21,7 @@ def generate_tests(count, destination):
     """
     Generate tests (road specifications) for self-driving cars.
     """
+    print('* generate_tests')
     destination = Path(destination)
     if not os.path.exists(destination):
         os.makedirs(destination)
