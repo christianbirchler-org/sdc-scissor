@@ -1,4 +1,5 @@
 import json
+import logging
 import os.path
 from pathlib import Path
 
@@ -24,7 +25,7 @@ def generate_tests(count, destination):
     """
     Generate tests (road specifications) for self-driving cars.
     """
-    print('* generate_tests')
+    logging.info('* generate_tests')
     destination = Path(destination)
     if not os.path.exists(destination):
         os.makedirs(destination)
@@ -37,7 +38,7 @@ def generate_tests(count, destination):
 @cli.command()
 @click.option('-t', '--tests', default='./destination', type=click.Path(exists=True))
 def label_tests(tests):
-    print('* label_tests')
+    logging.info('* label_tests')
     tests = Path(tests)
     beamng = SimulatorFactory.get_beamng_simulator()
     test_runner = TestRunner(simulator=beamng)
@@ -53,7 +54,10 @@ def label_tests(tests):
                 test = Test(road_points=road_points)
                 test_validator = TestValidator(map_size=200)
                 is_valid, validation_msg = test_validator.validate_test(test)
-                print('is_valid: {}\nvalidation_msg: {}'.format(is_valid, validation_msg))
+                logging.info('is_valid: {}\nvalidation_msg: {}'.format(is_valid, validation_msg))
+
+                test_runner.load_test(test)
+                test_runner.setup_scenario()
                 test_runner.run(test)
 
 

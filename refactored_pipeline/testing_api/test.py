@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 
 from scipy.interpolate import CubicSpline, splprep, splev
@@ -10,7 +11,7 @@ class Test:
 
     @staticmethod
     def __interpolate(road_points: list[list]):
-        print('* __interpolate')
+        logging.info('* __interpolate')
         road_matrix = np.array(road_points)
         x = road_matrix[:, 0]
         y = road_matrix[:, 1]
@@ -36,4 +37,4 @@ class Test:
 
 
 if __name__ == '__main__':
-    print('* test.py')
+    logging.info('* test.py')

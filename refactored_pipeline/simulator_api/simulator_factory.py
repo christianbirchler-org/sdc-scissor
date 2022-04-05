@@ -11,4 +11,4 @@ class SimulatorFactory:
 
 
 if __name__ == '__main__':
-    print('* simulator_factory.py')
+    logging.info('* simulator_factory.py')

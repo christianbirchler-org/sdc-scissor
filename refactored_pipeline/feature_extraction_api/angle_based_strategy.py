@@ -83,6 +83,7 @@ class AngleBasedStrategy(SegmentationStrategy):
 if __name__ == '__main__':
     import unittest
     import math
+    import logging
 
     class AngleBasedSegmentationTest(unittest.TestCase):
         def test_90_degree_right_turn_only(self):
@@ -220,7 +221,7 @@ if __name__ == '__main__':
 
             segment_indexes = strategy.extract_segments(road_points)
 
-            print(segment_indexes)
+            logging.info(segment_indexes)
 
         def test_angle_based_segmentation(self):
 

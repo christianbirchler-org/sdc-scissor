@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 
 from refactored_pipeline.testing_api.frenetic.src.generators.random_frenet_generator import CustomFrenetGenerator
@@ -26,20 +27,20 @@ class TestGenerator:
         self.random_frenet_generator = CustomFrenetGenerator(**kwargs)
 
     def generate(self):
-        print('* generate')
+        logging.info('* generate')
         road_points = self.random_frenet_generator.start()
 
         road_points = self.__extract_valid_roads(road_points)
 
         self.generated_tests.extend(road_points)
-        print('** {} tests generated'.format(len(road_points)))
-        print('** test generator has {} tests'.format(len(self.generated_tests)))
+        logging.info('** {} tests generated'.format(len(road_points)))
+        logging.info('** test generator has {} tests'.format(len(self.generated_tests)))
 
     def __extract_valid_roads(self, road_points):
         return road_points
 
     def save_tests(self):
-        print('* save_tests')
+        logging.info('* save_tests')
 
         file_post_fix: str = '_test.json'
         for i, test in enumerate(self.generated_tests):
@@ -60,4 +61,4 @@ class TestGenerator:
 
 
 if __name__ == '__main__':
-    print('* test_generator.py')
+    logging.info('* test_generator.py')
