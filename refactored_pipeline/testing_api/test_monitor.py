@@ -1,6 +1,7 @@
 import logging
 
 from beamngpy import BeamNGpy, Vehicle
+from scipy.spatial import distance
 
 from refactored_pipeline.testing_api.test import Test
 
@@ -29,12 +30,13 @@ class TestMonitor:
         logging.info('* __car_at_end_of_road')
         road_end_point = self.test.interpolated_points[-1]
         x_end, y_end = road_end_point[0], road_end_point[1]
-        res: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 2)
+        res: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 8)
         return res
 
     @staticmethod
     def __are_points_close(a: tuple[float, float], b: tuple[float, float], threshold: float):
-        return False
+        dist = distance.euclidean(a, b)
+        return dist < threshold
 
 
 if __name__ == '__main__':
