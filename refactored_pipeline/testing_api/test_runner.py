@@ -3,7 +3,7 @@ import time
 import logging
 from math import sqrt
 
-from beamngpy import BeamNGpy, Scenario, Vehicle, Road, BNGError
+from beamngpy import BeamNGpy, Scenario, Vehicle, Road
 from beamngpy.sensors import Electrics
 
 from refactored_pipeline.testing_api.test import Test
@@ -59,26 +59,17 @@ class TestRunner:
         """
         logging.info('* run')
 
-        scenario.add_checkpoints(positions=[end_point], scales=[(5, 5, 5)], ids=['end_point'])
-        scenario.make(self.simulator)
-
-        self.simulator.load_scenario(scenario)
         self.simulator.start_scenario()
+        self.vehicle.ai_set_mode('span')
+        self.vehicle.ai_drive_in_lane(lane=True)
+        self.vehicle.ai_set_aggression(0.5)
+        self.vehicle.set_color(rgba=(0, 0, 1, 0.5))
+        self.vehicle.ai_set_speed(12)
+        self.vehicle.ai_set_waypoint('end_point')
+        # self.vehicle.start_in_game_logging(outputDir='./')
 
-        vehicle.ai_set_mode('span')
-        vehicle.ai_drive_in_lane(lane=True)
-        vehicle.ai_set_aggression(0.5)
-        vehicle.set_color(rgba=(0, 0, 1, 0.5))
-        vehicle.ai_set_speed(12)
-        vehicle.ai_set_waypoint('end_point')
-        # vehicle.start_in_game_logging(outputDir='./')
-
-        test_monitor = TestMonitor(self.simulator, vehicle, test)
+        test_monitor = TestMonitor(self.simulator, self.vehicle, test)
         while not test_monitor.is_car_at_end_of_road:
-            # try:
-            #     print('waypoints: {}'.format(scenario.find_waypoints()))
-            # except BNGError:
-            #     pass
             try:
                 test_monitor.check()
             except Exception:
@@ -101,7 +92,8 @@ class TestRunner:
 
         x_cross_dir_norm, y_cross_dir_norm = y_dir_norm, -x_dir_norm
 
-        return first_road_point[0] + 2.5 * x_cross_dir_norm, first_road_point[1] + 2.5 * y_cross_dir_norm, -28.0, x_dir, y_dir, alpha
+        return first_road_point[0] + 2.5 * x_cross_dir_norm, first_road_point[
+            1] + 2.5 * y_cross_dir_norm, -28.0, x_dir, y_dir, alpha
 
 
 if __name__ == '__main__':
