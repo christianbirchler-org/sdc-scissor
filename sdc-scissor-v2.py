@@ -67,6 +67,8 @@ def label_tests(tests):
                 test_runner.setup_scenario()
                 test_runner.run(test)
 
+    beamng.close()
+
 
 @cli.command()
 def evaluate_models():
@@ -84,7 +86,7 @@ def refactored_pipeline():
     test = Test(road_points=road_points)
     beamng = SimulatorFactory.get_beamng_simulator()
     test_runner = TestRunner(simulator=beamng)
-    test_runner.run(test)
+    test_runner.run_test_suite(test)
 
 
 if __name__ == '__main__':
