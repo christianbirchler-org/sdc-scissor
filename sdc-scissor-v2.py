@@ -11,6 +11,7 @@ from refactored_pipeline.simulator_api.simulator_factory import SimulatorFactory
 from refactored_pipeline.testing_api.test_runner import TestRunner
 from refactored_pipeline.testing_api.test_generator import TestGenerator
 from refactored_pipeline.testing_api.test_validator import TestValidator
+from refactored_pipeline.testing_api.test_loader import TestLoader
 
 
 @click.group()
@@ -41,7 +42,10 @@ def label_tests(tests):
     logging.info('* label_tests')
     tests = Path(tests)
     beamng = SimulatorFactory.get_beamng_simulator()
-    test_runner = TestRunner(simulator=beamng)
+    beamng.open()
+    test_loader = TestLoader(test_dir=tests)
+    test_runner = TestRunner(simulator=beamng, test_loader=test_loader)
+    test_runner.run_test_suite()
 
     pattern: str = r'\d*_test.json'
     for root, dirs, files in os.walk(tests):

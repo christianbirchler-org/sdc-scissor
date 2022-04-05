@@ -8,6 +8,7 @@ from beamngpy.sensors import Electrics
 
 from refactored_pipeline.testing_api.test_loader import TestLoader
 from refactored_pipeline.testing_api.test import Test
+from refactored_pipeline.testing_api.test_loader import TestLoader
 from refactored_pipeline.testing_api.test_monitor import TestMonitor
 
 
