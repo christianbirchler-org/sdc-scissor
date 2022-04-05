@@ -55,7 +55,10 @@ def label_tests(tests):
                 with open(full_path, 'r') as fp:
                     road_points = json.load(fp)
 
+                # load test case
                 test = Test(road_points=road_points)
+
+                # test validation
                 test_validator = TestValidator(map_size=200)
                 is_valid, validation_msg = test_validator.validate_test(test)
                 logging.info('is_valid: {}\nvalidation_msg: {}'.format(is_valid, validation_msg))

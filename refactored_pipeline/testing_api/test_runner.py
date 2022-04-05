@@ -6,7 +6,6 @@ from math import sqrt
 from beamngpy import BeamNGpy, Scenario, Vehicle, Road, BNGError
 from beamngpy.sensors import Electrics
 
-from refactored_pipeline.testing_api.test_loader import TestLoader
 from refactored_pipeline.testing_api.test import Test
 from refactored_pipeline.testing_api.test_loader import TestLoader
 from refactored_pipeline.testing_api.test_monitor import TestMonitor
@@ -89,7 +88,7 @@ class TestRunner:
                 self.simulator.start_scenario()
             time.sleep(0.1)
 
-        input('Hit enter...')
+        # input('Hit enter...')
 
     @staticmethod
     def __compute_start_position(test: Test):

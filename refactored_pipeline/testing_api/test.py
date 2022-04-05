@@ -9,6 +9,10 @@ class Test:
         self.road_points = road_points
         self.interpolated_points = self.__interpolate(road_points)
 
+        # add z-coordinate and road width to the test
+        for road_point in self.interpolated_points:
+            road_point.extend([-28, 10])
+
     @staticmethod
     def __interpolate(road_points: list[list]):
         logging.info('* __interpolate')
