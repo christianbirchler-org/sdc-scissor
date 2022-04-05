@@ -2,7 +2,7 @@ import math
 import time
 from math import sqrt
 
-from beamngpy import BeamNGpy, Scenario, Vehicle, Road
+from beamngpy import BeamNGpy, Scenario, Vehicle, Road, BNGError
 from beamngpy.sensors import Electrics
 
 from refactored_pipeline.testing_api.test_loader import TestLoader
@@ -40,9 +40,12 @@ class TestRunner:
 
         x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(test)
         rot_quat = (0, 0, 1, -0.1)
-        rot = (0, 0, alpha/(2*math.pi))
+        rot = (0, 0, alpha / (2 * math.pi))
         scenario.add_vehicle(vehicle, pos=(x_start, y_start, z_start), rot_quat=rot_quat)
 
+        end_point = test.interpolated_points[-1][:3]
+
+        scenario.add_checkpoints(positions=[end_point], scales=[(5, 5, 5)], ids=['end_point'])
         scenario.make(self.simulator)
 
         self.simulator.load_scenario(scenario)
@@ -53,15 +56,25 @@ class TestRunner:
         vehicle.ai_set_aggression(0.5)
         vehicle.set_color(rgba=(0, 0, 1, 0.5))
         vehicle.ai_set_speed(12)
+        vehicle.ai_set_waypoint('end_point')
+        # vehicle.start_in_game_logging(outputDir='./')
 
         test_monitor = TestMonitor(self.simulator, vehicle, test)
-        while not test_monitor.is_finished:
-            test_monitor.check()
+        while not test_monitor.is_car_at_end_of_road:
+            # try:
+            #     print('waypoints: {}'.format(scenario.find_waypoints()))
+            # except BNGError:
+            #     pass
+            try:
+                test_monitor.check()
+            except Exception:
+                pass
             time.sleep(0.1)
 
         input('Hit enter...')
 
-    def __compute_start_position(self, test: Test):
+    @staticmethod
+    def __compute_start_position(test: Test):
         print('* compute_start_position')
         first_road_point = test.interpolated_points[0]
         second_road_point = test.interpolated_points[1]
@@ -71,7 +84,7 @@ class TestRunner:
 
         x_cross_dir_norm, y_cross_dir_norm = y_dir_norm, -x_dir_norm
 
-        return first_road_point[0]+2.5*x_cross_dir_norm, first_road_point[1]+2.5*y_cross_dir_norm, -28.0, x_dir, y_dir, alpha
+        return first_road_point[0] + 2.5 * x_cross_dir_norm, first_road_point[1] + 2.5 * y_cross_dir_norm, -28.0, x_dir, y_dir, alpha
 
 
 if __name__ == '__main__':
