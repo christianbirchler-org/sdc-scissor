@@ -43,29 +43,29 @@ def label_tests(tests):
     tests = Path(tests)
     beamng = SimulatorFactory.get_beamng_simulator()
     beamng.open()
-    test_loader = TestLoader(test_dir=tests)
+    test_loader = TestLoader(tests_dir=tests)
     test_runner = TestRunner(simulator=beamng, test_loader=test_loader)
     test_runner.run_test_suite()
 
-    pattern: str = r'\d*_test.json'
-    for root, dirs, files in os.walk(tests):
-        for file in files:
-            if re.fullmatch(pattern, file):
-                full_path = tests / file
-                with open(full_path, 'r') as fp:
-                    road_points = json.load(fp)
-
-                # load test case
-                test = Test(road_points=road_points)
-
-                # test validation
-                test_validator = TestValidator(map_size=200)
-                is_valid, validation_msg = test_validator.validate_test(test)
-                logging.info('is_valid: {}\nvalidation_msg: {}'.format(is_valid, validation_msg))
-
-                test_runner.load_test(test)
-                test_runner.setup_scenario()
-                test_runner.run(test)
+    # pattern: str = r'\d*_test.json'
+    # for root, dirs, files in os.walk(tests):
+    #     for file in files:
+    #         if re.fullmatch(pattern, file):
+    #             full_path = tests / file
+    #             with open(full_path, 'r') as fp:
+    #                 road_points = json.load(fp)
+    #
+    #             # load test case
+    #             test = Test(road_points=road_points)
+    #
+    #             # test validation
+    #             test_validator = TestValidator(map_size=200)
+    #             is_valid, validation_msg = test_validator.validate_test(test)
+    #             logging.info('is_valid: {}\nvalidation_msg: {}'.format(is_valid, validation_msg))
+    #
+    #             test_runner.load_test(test)
+    #             test_runner.setup_scenario()
+    #             test_runner.run(test)
 
     beamng.close()
 
@@ -82,7 +82,7 @@ def predict_tests():
 
 @cli.command()
 def refactored_pipeline():
-    road_points = [(0, 0, -28, 10), (30, -30, -28, 10), (30, -100, -28, 10), (0, -200, -28, 10)]
+    road_points = [[0, 0, -28, 10], [30, -30, -28, 10], [30, -100, -28, 10], [0, -200, -28, 10]]
     test = Test(road_points=road_points)
     beamng = SimulatorFactory.get_beamng_simulator()
     test_runner = TestRunner(simulator=beamng)
@@ -90,4 +90,7 @@ def refactored_pipeline():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    logging.info('Start SDC-Scissor')
     cli()
+    logging.info('SDC-Scissor finished')

@@ -29,11 +29,11 @@ class TestRunner:
         logging.info('* load_test')
         self.test_loader.load(test)
 
-    def setup_scenario(self):
+    def setup_scenario(self, test: Test):
         logging.info('* setup_scenario')
         scenario = Scenario('tig', 'example')
         road = Road(material='tig_road_rubber_sticky', rid='flat_road', interpolate=True)
-        road.nodes.extend(self.test_loader.current_test.interpolated_points)
+        road.nodes.extend(test.interpolated_points)
 
         scenario.add_road(road)
 
@@ -41,23 +41,30 @@ class TestRunner:
         electrics = Electrics()
         self.vehicle.attach_sensor('electrics', electrics)
 
-        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(self.test_loader.current_test)
+        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(test)
+        # TODO: Calculate the start rotation of the car in quaterion
         rot_quat = (0, 0, 1, -0.1)
         rot = (0, 0, alpha / (2 * math.pi))
         scenario.add_vehicle(self.vehicle, pos=(x_start, y_start, z_start), rot_quat=rot_quat)
 
-        end_point = self.test_loader.current_test.interpolated_points[-1][:3]
+        end_point = test.interpolated_points[-1][:3]
 
         scenario.add_checkpoints(positions=[end_point], scales=[(5, 5, 5)], ids=['end_point'])
+
+        # TODO: Here the simulator breaks sometimes
         scenario.make(self.simulator)
 
         self.simulator.load_scenario(scenario)
+        time.sleep(5)
 
     def run(self, test: Test) -> None:
         """
         Runs the test with the simulator given by instantiation of the test runner.
         """
         logging.info('* run')
+        time.sleep(5)
+
+        self.setup_scenario(test)
 
         self.simulator.start_scenario()
         self.vehicle.ai_set_mode('span')
@@ -73,10 +80,9 @@ class TestRunner:
             try:
                 test_monitor.check()
             except Exception:
-                logging.info('* run except clause')
-                time.sleep(10)
+                logging.warning('* run except clause')
                 # self.simulator.connect()
-                self.simulator.start_scenario()
+                self.run(test)
             time.sleep(0.1)
 
         # input('Hit enter...')
