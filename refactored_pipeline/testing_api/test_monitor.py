@@ -4,10 +4,11 @@ from beamngpy import BeamNGpy, Vehicle
 from scipy.spatial import distance
 
 from refactored_pipeline.testing_api.test import Test
+from refactored_pipeline.simulator_api.simulator_factory import AbstractSimulator
 
 
 class TestMonitor:
-    def __init__(self, simulator: BeamNGpy, vehicle: Vehicle, test: Test):
+    def __init__(self, simulator: AbstractSimulator, vehicle: Vehicle, test: Test):
         self.simulator = simulator
         self.vehicle = vehicle
         self.test = test
@@ -17,7 +18,9 @@ class TestMonitor:
 
     def check(self):
         logging.info('* check')
+        self.simulator.update_sensors()
         self.vehicle.update_vehicle()
+        # TODO: implement 'update_sensors' from the abstract base class of the simulator
         sensors = self.simulator.poll_sensors(self.vehicle)
         state = self.vehicle.state
         x_pos = state['pos'][0]

@@ -41,33 +41,10 @@ def generate_tests(count, destination):
 def label_tests(tests):
     logging.info('* label_tests')
     tests = Path(tests)
-    beamng = SimulatorFactory.get_beamng_simulator()
-    beamng.open()
+    beamng_simulator = SimulatorFactory.get_beamng_simulator()
     test_loader = TestLoader(tests_dir=tests)
-    test_runner = TestRunner(simulator=beamng, test_loader=test_loader)
+    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader)
     test_runner.run_test_suite()
-
-    # pattern: str = r'\d*_test.json'
-    # for root, dirs, files in os.walk(tests):
-    #     for file in files:
-    #         if re.fullmatch(pattern, file):
-    #             full_path = tests / file
-    #             with open(full_path, 'r') as fp:
-    #                 road_points = json.load(fp)
-    #
-    #             # load test case
-    #             test = Test(road_points=road_points)
-    #
-    #             # test validation
-    #             test_validator = TestValidator(map_size=200)
-    #             is_valid, validation_msg = test_validator.validate_test(test)
-    #             logging.info('is_valid: {}\nvalidation_msg: {}'.format(is_valid, validation_msg))
-    #
-    #             test_runner.load_test(test)
-    #             test_runner.setup_scenario()
-    #             test_runner.run(test)
-
-    beamng.close()
 
 
 @cli.command()
@@ -91,6 +68,4 @@ def refactored_pipeline():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    logging.info('Start SDC-Scissor')
     cli()
-    logging.info('SDC-Scissor finished')
