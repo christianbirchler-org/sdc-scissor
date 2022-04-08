@@ -8,9 +8,8 @@ from refactored_pipeline.simulator_api.abstract_simulator import AbstractSimulat
 
 
 class TestMonitor:
-    def __init__(self, simulator: AbstractSimulator, vehicle: Vehicle, test: Test):
+    def __init__(self, simulator: AbstractSimulator, test: Test):
         self.simulator = simulator
-        self.vehicle = vehicle
         self.test = test
         self.is_car_at_end_of_road = False
         self.car_is_out_of_lane = False
@@ -20,16 +19,11 @@ class TestMonitor:
         self.data = {}
 
     def check(self):
-        logging.info('* check')
-        self.simulator.update_sensors()
-        self.vehicle.update_vehicle()
-        # TODO: implement 'update_sensors' from the abstract base class of the simulator
-        sensors = self.simulator.poll_sensors(self.vehicle)
-        state = self.vehicle.state
-        x_pos = state['pos'][0]
-        y_pos = state['pos'][1]
+        logging.info('check')
+        self.simulator.update_car()
+        x_pos, y_pos = self.simulator.get_car_position()
         logging.info('** x: {}\ny: {}\n\n'.format(x_pos, y_pos))
-        if self.__car_at_end_of_road(x_pos, y_pos):
+        if self.__is_car_at_end_of_road(x_pos, y_pos):
             self.is_car_at_end_of_road = True
 
     def start_timer(self):
