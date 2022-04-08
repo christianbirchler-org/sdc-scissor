@@ -22,9 +22,11 @@ class TestMonitor:
         logging.info('check')
         self.simulator.update_car()
         x_pos, y_pos = self.simulator.get_car_position()
-        logging.info('** x: {}\ny: {}\n\n'.format(x_pos, y_pos))
+        current_time = time.time() - self.start_time
+        logging.info('time: {}\tx: {}\ty: {}'.format(current_time, x_pos, y_pos))
         if self.__is_car_at_end_of_road(x_pos, y_pos):
             self.is_car_at_end_of_road = True
+            self.end_time = time.time()
 
     def start_timer(self):
         logging.info('start_timer')
