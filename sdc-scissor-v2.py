@@ -39,6 +39,9 @@ def generate_tests(count, destination):
 @cli.command()
 @click.option('-t', '--tests', default='./destination', type=click.Path(exists=True))
 def label_tests(tests):
+    """
+    Execute the tests in simulation to label them as safe or unsafe scenarios.
+    """
     logging.info('* label_tests')
     tests = Path(tests)
     beamng_simulator = SimulatorFactory.get_beamng_simulator()
@@ -54,6 +57,9 @@ def evaluate_models():
 
 @cli.command()
 def predict_tests():
+    """
+    Predict the most likely outcome of a test scenario without executing them in simulation.
+    """
     pass
 
 
