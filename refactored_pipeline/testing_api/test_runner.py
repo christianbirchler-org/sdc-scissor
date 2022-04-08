@@ -1,15 +1,10 @@
-import math
 import time
 import logging
-from math import sqrt
-
-from beamngpy import BeamNGpy, Scenario, Vehicle, Road
-from beamngpy.sensors import Electrics
 
 from refactored_pipeline.testing_api.test import Test
 from refactored_pipeline.testing_api.test_loader import TestLoader
 from refactored_pipeline.testing_api.test_monitor import TestMonitor
-from refactored_pipeline.simulator_api.simulator_factory import AbstractSimulator
+from refactored_pipeline.simulator_api.abstract_simulator import AbstractSimulator
 
 
 class TestRunner:
@@ -47,13 +42,17 @@ class TestRunner:
 
         self.simulator.load_scenario(test)
         time.sleep(5)
+
+        test_monitor = TestMonitor(self.simulator, test)
+        test_monitor.start_timer()
         self.simulator.start_scenario()
 
-        test_monitor = TestMonitor(self.simulator, self.vehicle, test)
         while not test_monitor.is_car_at_end_of_road:
             test_monitor.check()
             time.sleep(0.1)
 
+        test_monitor.stop_timer()
+        test_monitor.dump_data()
 
 
 if __name__ == '__main__':
