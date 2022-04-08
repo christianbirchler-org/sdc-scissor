@@ -41,6 +41,8 @@ class TestRunner:
         time.sleep(5)
 
         self.simulator.load_scenario(test)
+
+        # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
         test_monitor = TestMonitor(self.simulator, test)
