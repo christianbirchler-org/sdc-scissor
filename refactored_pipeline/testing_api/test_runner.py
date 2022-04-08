@@ -27,6 +27,7 @@ class TestRunner:
             try:
                 self.run(test)
                 has_execution_failed = False
+                time.sleep(5)
             except Exception:
                 logging.warning('Test case execution raised an exception!')
                 has_execution_failed = True
