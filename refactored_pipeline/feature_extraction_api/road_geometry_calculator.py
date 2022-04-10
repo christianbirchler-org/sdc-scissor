@@ -45,7 +45,7 @@ class RoadGeometryCalculator:
         return angle_in_degrees
 
     @staticmethod
-    def get_distance_between(first_point: tuple, second_point: tuple) -> float:
+    def get_distance_between(first_point, second_point) -> float:
         a1, a2 = first_point
         b1, b2 = second_point
         c1, c2 = (b1-a1, b2-a2)

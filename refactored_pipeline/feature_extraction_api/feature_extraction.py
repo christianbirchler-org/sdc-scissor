@@ -1,8 +1,15 @@
+import logging
 import math
 import statistics
+
+import pandas as pd
+
+from pathlib import Path
+
 from refactored_pipeline.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
 from refactored_pipeline.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from refactored_pipeline.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
+from refactored_pipeline.testing_api.test import Test
 
 
 class RoadFeatures:
@@ -32,7 +39,7 @@ class RoadFeatures:
         members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         res = {}
         for member in members:
-            res[member] = getattr(self, member)
+            res[member] = [getattr(self, member)]
         return res
 
 
@@ -52,16 +59,35 @@ class SegmentType:
 
 
 class FeatureExtractor:
-    def __init__(self, road_points, segmentation_strategy):
+    def __init__(self, segmentation_strategy):
         self.__road_features = RoadFeatures()
-        self.__road_points = road_points
         self.__segments = []
         self.__road_geometry_calculator = RoadGeometryCalculator()
 
         # TODO: find a more usable way to instantiate the desired strategy
-        self.__segmentation_strategy = segmentation_strategy
+        if segmentation_strategy == 'angle-based':
+            self.__segmentation_strategy = AngleBasedStrategy()
+        else:
+            logging.error('Invalid segmentation strategy!')
+            raise Exception('Invalid segmentation strategy!')
 
-    def extract_features(self):
+    @staticmethod
+    def save_to_csv(road_features: list, out_dir: Path):
+        logging.info('save_to_csv')
+        dd = pd.DataFrame()
+        for test_id, rf in road_features:
+            rf_dict = rf.to_dict()
+            rf_dict['test_id'] = test_id
+            logging.info(rf_dict)
+            rf_dd = pd.DataFrame(rf_dict)
+            logging.info(rf_dd)
+            dd = pd.concat([dd, rf_dd], ignore_index=True)
+
+        logging.info(dd)
+        out_path = out_dir / 'road_features.csv'
+        dd.to_csv(out_path)
+
+    def extract_features(self, test: Test):
         """
         Input is a list of (x, y) tuples which defines the road.
         This function extract the angles and radius of segments.
@@ -72,14 +98,14 @@ class FeatureExtractor:
         # self.__angles = self.__extract_turn_angles(self.__road_points)
 
         # define segments (allow different strategies)
-        segment_indexes_list = self.__segmentation_strategy.extract_segments(self.__road_points)
+        segment_indexes_list = self.__segmentation_strategy.extract_segments(test.road_points)
 
         # calculate segment features
         for indexes in segment_indexes_list:
-            segment = self.__get_road_segment_with_features(indexes)
+            segment = self.__get_road_segment_with_features(test, indexes)
             self.__segments.append(segment)
 
-        self.__road_features = self.__get_full_road_features_from(self.__segments)
+        self.__road_features = self.__get_full_road_features_from(test, self.__segments)
 
         return self.__road_features
 
@@ -87,7 +113,7 @@ class FeatureExtractor:
     #       IMPLEMENTATION DETAILS BELOW
     ############################################################################
 
-    def __get_full_road_features_from(self, segments):
+    def __get_full_road_features_from(self, test: Test, segments):
         road_features = RoadFeatures()
 
         raw_feature_data = {
@@ -129,13 +155,13 @@ class FeatureExtractor:
         else:
             road_features.std_pivot_off = 0
 
-        road_features.direct_distance = self.__road_geometry_calculator.get_distance_between(self.__road_points[0],
-                                                                                             self.__road_points[-1])
-        road_features.road_distance = self.__road_geometry_calculator.get_road_length(self.__road_points)
+        road_features.direct_distance = self.__road_geometry_calculator.get_distance_between(test.road_points[0],
+                                                                                             test.road_points[-1])
+        road_features.road_distance = self.__road_geometry_calculator.get_road_length(test.road_points)
 
         return road_features
 
-    def __get_segment_type(self, road_segment, angle_threshold):
+    def __get_segment_type(self, test: Test, road_segment, angle_threshold):
         """
         Return the type of segment (straight, left turn, right turn). The segment
         is defined by its start and end index that are already specified.
@@ -143,13 +169,13 @@ class FeatureExtractor:
         start_index = road_segment.start_index
         end_index = road_segment.end_index
 
-        segment_road_points = self.__road_points[start_index:end_index+1]
+        segment_road_points = test.road_points[start_index:end_index+1]
 
         angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
 
         angles_sum = sum(angles_lst)
 
-        if angles_sum < angle_threshold and angles_sum > -angle_threshold:
+        if angle_threshold > angles_sum > -angle_threshold:
             return SegmentType.straight
         if angles_sum >= angle_threshold:
             return SegmentType.l_turn
@@ -157,11 +183,11 @@ class FeatureExtractor:
             return SegmentType.r_turn
         return None
 
-    def __get_segment_angle(self, road_segment):
+    def __get_segment_angle(self, test: Test, road_segment):
         start_index = road_segment.start_index
         end_index = road_segment.end_index
 
-        segment_road_points = self.__road_points[start_index:end_index+1]
+        segment_road_points = test.road_points[start_index:end_index+1]
 
         angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
 
@@ -169,14 +195,14 @@ class FeatureExtractor:
 
         return angles_sum
 
-    def __get_segment_radius(self, road_segment):
+    def __get_segment_radius(self, test: Test, road_segment):
         if road_segment.type == SegmentType.straight:
             return 0
 
         start_index = road_segment.start_index
         end_index = road_segment.end_index
 
-        segment_road_points = self.__road_points[start_index:end_index+1]
+        segment_road_points = test.road_points[start_index:end_index+1]
 
         angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
         segment_length = self.__road_geometry_calculator.get_road_length(segment_road_points)
@@ -192,19 +218,19 @@ class FeatureExtractor:
 
         return radius
 
-    def __get_road_segment_with_features(self, indexes):
+    def __get_road_segment_with_features(self, test: Test, indexes):
         road_segment = RoadSegment()
         road_segment.start_index = indexes[0]
         road_segment.end_index = indexes[1]
 
         # classify segment type
-        road_segment.type = self.__get_segment_type(road_segment, angle_threshold=5)
+        road_segment.type = self.__get_segment_type(test, road_segment, angle_threshold=5)
 
         # update angle
-        road_segment.angle = self.__get_segment_angle(road_segment)
+        road_segment.angle = self.__get_segment_angle(test, road_segment)
 
         # calculate radius
-        road_segment.radius = self.__get_segment_radius(road_segment)
+        road_segment.radius = self.__get_segment_radius(test, road_segment)
 
         return road_segment
 

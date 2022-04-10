@@ -39,7 +39,13 @@ class TestLoader:
     def __load_test_from_path(test_path: Path):
         with open(test_path, 'r') as fp:
             road_points = json.load(fp)
-        test = Test(road_points=road_points)
+
+        id_pattern = r'.*(\d+)_.*.json'
+        logging.info('test_path: {}'.format(str(test_path)))
+        match_obj = re.match(pattern=id_pattern, string=str(test_path))
+        test_id = match_obj.group(1)
+        logging.info('test_id: {}'.format(test_id))
+        test = Test(test_id=test_id, road_points=road_points)
         return test
 
 

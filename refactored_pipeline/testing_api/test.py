@@ -1,11 +1,12 @@
 import logging
 import numpy as np
 
-from scipy.interpolate import CubicSpline, splprep, splev
+from scipy.interpolate import splprep, splev
 
 
 class Test:
-    def __init__(self, road_points: list[list]):
+    def __init__(self, test_id: str, road_points: list[list]):
+        self.test_id = test_id
         self.road_points = road_points
         self.interpolated_points = self.__interpolate(road_points)
 
