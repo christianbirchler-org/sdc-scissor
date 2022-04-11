@@ -15,12 +15,14 @@ class TestLoader:
         self.__set_test_paths(self.test_paths)
 
     def __set_test_paths(self, tests_paths: list):
-        logging.info('* _test_loader_gen')
-        pattern: str = r'\d*_test.json'
+        logging.debug('* _test_loader_gen')
+        pattern: str = r'.*test.*.json'
         for root, dirs, files in os.walk(self.tests_dir):
+            if 'unlabeled' in root:
+                continue
             for file in files:
                 if re.fullmatch(pattern, file):
-                    full_path = self.tests_dir / file
+                    full_path = Path(root) / file
                     tests_paths.append(full_path)
 
     def has_next(self) -> bool:
@@ -38,14 +40,19 @@ class TestLoader:
     @staticmethod
     def __load_test_from_path(test_path: Path):
         with open(test_path, 'r') as fp:
-            road_points = json.load(fp)
+            test_json = json.load(fp)
 
-        id_pattern = r'.*(\d+)_.*.json'
+        road_points = test_json['interpolated_points']
+        if 'test_outcome' in test_json.keys():
+            test_outcome = test_json['test_outcome']
+        else:
+            test_outcome = None
+        id_pattern = r'(.*test.*)'
         logging.info('test_path: {}'.format(str(test_path)))
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
         test_id = match_obj.group(1)
         logging.info('test_id: {}'.format(test_id))
-        test = Test(test_id=test_id, road_points=road_points)
+        test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome)
         return test
 
 

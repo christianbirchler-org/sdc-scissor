@@ -33,7 +33,7 @@ class RoadFeatures:
         self.start_time = 0
         self.end_time = 0
         self.duration_seconds = 0
-        self.safety = 0
+        self.safety = None
 
     def to_dict(self):
         members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
