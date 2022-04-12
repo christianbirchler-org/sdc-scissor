@@ -69,14 +69,14 @@ class TestValidator:
 
     @staticmethod
     def is_too_sharp(the_test, TSHD_RADIUS=47):
-        return TSHD_RADIUS > min_radius(the_test.interpolated_points) > 0.0
+        return TSHD_RADIUS > min_radius(the_test.interpolated_road_points) > 0.0
 
     def is_inside_map(self, the_test):
         """
             Take the extreme points and ensure that their distance is smaller than the map side
         """
-        xs = [t[0] for t in the_test.interpolated_points]
-        ys = [t[1] for t in the_test.interpolated_points]
+        xs = [t[0] for t in the_test.interpolated_road_points]
+        ys = [t[1] for t in the_test.interpolated_road_points]
 
         min_x, max_x = min(xs), max(xs)
         min_y, max_y = min(ys), max(ys)

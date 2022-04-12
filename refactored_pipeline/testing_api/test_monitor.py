@@ -42,7 +42,7 @@ class TestMonitor:
 
     def __is_car_at_end_of_road(self, x_pos: float, y_pos: float) -> bool:
         logging.info('__car_at_end_of_road')
-        road_end_point = self.test.interpolated_points[-1]
+        road_end_point = self.test.interpolated_road_points[-1]
         x_end, y_end = road_end_point[0], road_end_point[1]
         res: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 8)
         return res

@@ -56,13 +56,13 @@ class RoadTestVisualizer:
 
 
         # Road Geometry.
-        road_poly = LineString([(t[0], t[1]) for t in the_test.interpolated_points]).buffer(8.0, cap_style=2, join_style=2)
+        road_poly = LineString([(t[0], t[1]) for t in the_test.interpolated_road_points]).buffer(8.0, cap_style=2, join_style=2)
         road_patch = PolygonPatch(road_poly, fc='gray', ec='dimgray')  # ec='#555555', alpha=0.5, zorder=4)
         plt.gca().add_patch(road_patch )
 
         # Interpolated Points
-        sx = [t[0] for t in the_test.interpolated_points]
-        sy = [t[1] for t in the_test.interpolated_points]
+        sx = [t[0] for t in the_test.interpolated_road_points]
+        sy = [t[1] for t in the_test.interpolated_road_points]
         plt.plot(sx, sy, 'yellow')
 
         # Road Points
@@ -103,7 +103,3 @@ class RoadTestVisualizer:
         plt.suptitle(title_string, fontsize=14)
         plt.draw()
         plt.pause(0.001)
-
-
-
-

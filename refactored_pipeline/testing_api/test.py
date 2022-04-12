@@ -5,15 +5,15 @@ from scipy.interpolate import splprep, splev
 
 
 class Test:
-    def __init__(self, test_id: str, road_points: list[list], test_outcome=None):
+    def __init__(self, test_id, road_points: list[list], test_outcome):
         self.test_id = test_id
         self.test_outcome = test_outcome
         self.road_points = road_points
-        self.interpolated_points = self.__interpolate(road_points)
+        self.interpolated_road_points = self.__interpolate(road_points)
 
-        # add z-coordinate and road width to the test
-        for road_point in self.interpolated_points:
-            road_point.extend([-28, 10])
+        ## add z-coordinate and road width to the test
+        #for road_point in self.interpolated_points:
+        #    road_point.extend([-28, 10])
 
     @staticmethod
     def __interpolate(road_points: list[list]):

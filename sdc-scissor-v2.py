@@ -80,7 +80,12 @@ def evaluate_models(csv):
     logging.info('evaluate_models')
     data_path = Path(csv)
     dd = CSVLoader.load_dataframe_from_csv(data_path)
-    logging.info(dd)
+    features = ['direct_distance', 'duration_seconds', 'end_time', 'max_angle', 'max_pivot_off', 'mean_angle',
+                'mean_pivot_off', 'median_angle', 'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
+                'num_r_turns', 'num_straights', 'road_distance', 'start_time', 'std_angle', 'std_pivot_off',
+                'total_angle']
+    label = 'safety'
+    logging.info(dd['end_time'])
     ###############################################################
     ############################ OLD CODE #########################
     ###############################################################

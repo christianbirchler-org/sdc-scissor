@@ -39,6 +39,7 @@ class TestLoader:
 
     @staticmethod
     def __load_test_from_path(test_path: Path):
+        logging.info(str(test_path))
         with open(test_path, 'r') as fp:
             test_json = json.load(fp)
 

@@ -50,7 +50,13 @@ class BeamNGSimulator(AbstractSimulator):
         logging.info('load_scenario')
         self.scenario = Scenario('tig', 'example')
         road = Road(material='tig_road_rubber_sticky', rid='flat_road', interpolate=True)
-        road.nodes.extend(test.interpolated_points)
+
+        # Ensure not overriding the test object (copy first the whole list)
+        road_nodes = test.interpolated_road_points.copy()
+        for road_node in road_nodes:
+            road_node.extend([-28, 10])
+
+        road.nodes.extend(road_nodes)
 
         self.scenario.add_road(road)
 
@@ -58,13 +64,13 @@ class BeamNGSimulator(AbstractSimulator):
         electrics = Electrics()
         self.vehicle.attach_sensor('electrics', electrics)
 
-        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(test)
+        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(road_nodes)
         # TODO: Calculate the start rotation of the car in quaterion
         rot_quat = (0, 0, 1, -0.1)
         rot = (0, 0, alpha / (2 * math.pi))
         self.scenario.add_vehicle(self.vehicle, pos=(x_start, y_start, z_start), rot_quat=rot_quat)
 
-        end_point = test.interpolated_points[-1][:3]
+        end_point = road_nodes[-1][:3]
 
         self.scenario.add_checkpoints(positions=[end_point], scales=[(5, 5, 5)], ids=['end_point'])
         self.scenario.make(self.beamng)
@@ -83,10 +89,10 @@ class BeamNGSimulator(AbstractSimulator):
         return x_pos, y_pos
 
     @staticmethod
-    def __compute_start_position(test: Test):
+    def __compute_start_position(road_nodes):
         logging.info('compute_start_position')
-        first_road_point = test.interpolated_points[0]
-        second_road_point = test.interpolated_points[1]
+        first_road_point = road_nodes[0]
+        second_road_point = road_nodes[1]
         x_dir, y_dir = (second_road_point[0] - first_road_point[1], second_road_point[1] - first_road_point[1])
         x_dir_norm, y_dir_norm = (x_dir / math.sqrt(x_dir ** 2 + y_dir ** 2),
                                   y_dir / math.sqrt(x_dir ** 2 + y_dir ** 2))

@@ -78,7 +78,7 @@ def _define_circle(p1, p2, p3):
 def direction_coverage(the_test, n_bins=25):
     coverage_buckets = np.linspace(0.0, 360.0, num=n_bins + 1)
     direction_list = []
-    for a, b in pairwise(the_test.interpolated_points):
+    for a, b in pairwise(the_test.interpolated_road_points):
         # Compute the direction of the segment defined by the two points
         road_direction = [b[0] - a[0], b[1] - a[1]]
         # Compute the angle between THE_NORTH and the road_direction.
@@ -97,7 +97,7 @@ def direction_coverage(the_test, n_bins=25):
 
 def max_curvature(the_test, w=5):
     min_radius = np.inf
-    nodes = the_test.interpolated_points
+    nodes = the_test.interpolated_road_points
     for i in range(len(nodes) - w):
         p1 = nodes[i]
         p2 = nodes[i + int((w - 1) / 2)]

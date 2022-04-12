@@ -119,7 +119,7 @@ class BeamngExecutor(AbstractTestExecutor):
             self.vehicle = self.brewer.setup_vehicle()
 
         # For the execution we need the interpolated points
-        nodes = the_test.interpolated_points
+        nodes = the_test.interpolated_road_points
 
         brewer = self.brewer
         brewer.setup_road_nodes(nodes)
