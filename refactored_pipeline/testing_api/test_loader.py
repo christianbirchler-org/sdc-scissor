@@ -48,12 +48,16 @@ class TestLoader:
             test_outcome = test_json['test_outcome']
         else:
             test_outcome = None
+        if 'simulation_time' in test_json.keys():
+            sim_time = test_json['simulation_time']
+        else:
+            sim_time = None
         id_pattern = r'(.*test.*)'
         logging.info('test_path: {}'.format(str(test_path)))
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
         test_id = match_obj.group(1)
         logging.info('test_id: {}'.format(test_id))
-        test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome)
+        test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
         return test
 
 

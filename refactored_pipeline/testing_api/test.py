@@ -5,9 +5,10 @@ from scipy.interpolate import splprep, splev
 
 
 class Test:
-    def __init__(self, test_id, road_points: list[list], test_outcome):
+    def __init__(self, test_id, road_points: list[list], test_outcome, test_duration=None):
         self.test_id = test_id
         self.test_outcome = test_outcome
+        self.test_duration = test_duration
         self.road_points = road_points
         self.interpolated_road_points = self.__interpolate(road_points)
 

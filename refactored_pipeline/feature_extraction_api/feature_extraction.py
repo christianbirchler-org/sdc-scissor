@@ -75,9 +75,10 @@ class FeatureExtractor:
     def save_to_csv(road_features: list, out_dir: Path):
         logging.info('save_to_csv')
         dd = pd.DataFrame()
-        for test_id, rf in road_features:
+        for test_id, rf, duration in road_features:
             rf_dict = rf.to_dict()
             rf_dict['test_id'] = test_id
+            rf_dict['duration'] = duration
             logging.info(rf_dict)
             rf_dd = pd.DataFrame(rf_dict)
             logging.info(rf_dd)

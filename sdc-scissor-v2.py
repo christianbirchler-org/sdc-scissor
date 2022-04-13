@@ -1,8 +1,19 @@
 import logging
 import os.path
 import click
+import joblib
+
+import numpy as np
 
 from pathlib import Path
+
+from sklearn import preprocessing
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.model_selection import KFold, cross_validate, train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import metrics
 
 from refactored_pipeline.testing_api.test import Test
 from refactored_pipeline.simulator_api.simulator_factory import SimulatorFactory
@@ -52,7 +63,7 @@ def extract_features(tests, segmentation):
         test = test_loader.next()
         road_features = feature_extractor.extract_features(test)
         road_features.safety = test.test_outcome
-        road_features_lst.append((test.test_id, road_features))
+        road_features_lst.append((test.test_id, road_features, test.test_duration))
 
     FeatureExtractor.save_to_csv(road_features_lst, tests)
 
@@ -71,85 +82,80 @@ def label_tests(tests):
     test_runner.run_test_suite()
 
 
+def get_avg_scores(scores):
+    avg_scores = {}
+    avg_scores['accuracy'] = np.mean(scores['test_accuracy'])
+    avg_scores['precision'] = np.mean(scores['test_precision'])
+    avg_scores['recall'] = np.mean(scores['test_recall'])
+    avg_scores['f1'] = np.mean(scores['test_f1'])
+
+    return avg_scores
+
+
 @cli.command()
 @click.option('--csv', default='./destination/road_features.csv', type=click.Path(exists=True))
-def evaluate_models(csv):
+@click.option('--models-dir', default='./trained_models', type=click.Path())
+def evaluate_models(csv, models_dir):
     """
     Evaluate different machine learning models.
     """
     logging.info('evaluate_models')
     data_path = Path(csv)
+
+    if not os.path.exists(models_dir):
+        os.makedirs(models_dir)
+    models_path = Path(models_dir)
+
     dd = CSVLoader.load_dataframe_from_csv(data_path)
-    features = ['direct_distance', 'duration_seconds', 'end_time', 'max_angle', 'max_pivot_off', 'mean_angle',
-                'mean_pivot_off', 'median_angle', 'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
-                'num_r_turns', 'num_straights', 'road_distance', 'start_time', 'std_angle', 'std_pivot_off',
-                'total_angle']
+    road_features = ['direct_distance', 'max_angle', 'max_pivot_off', 'mean_angle',
+                     'mean_pivot_off', 'median_angle', 'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
+                     'num_r_turns', 'num_straights', 'road_distance', 'std_angle', 'std_pivot_off',
+                     'total_angle']
     label = 'safety'
-    logging.info(dd['end_time'])
-    ###############################################################
-    ############################ OLD CODE #########################
-    ###############################################################
-    # logging.info('evaluate_models')
-    # abs_path = os.path.abspath(tests)
-    # df, _ = load_data_as_data_frame(abs_path)
-    #
-    # # consider only data we know before the execution of the scenario
-    # X_attributes = ['direct_distance', 'max_angle',
-    #                 'max_pivot_off', 'mean_angle', 'mean_pivot_off', 'median_angle',
-    #                 'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
-    #                 'num_r_turns', 'num_straights', 'road_distance', 'std_angle',
-    #                 'std_pivot_off', 'total_angle']
-    #
-    # y_attribute = 'safety'
-    #
-    # # train models CV
-    # X = df[X_attributes].to_numpy()
-    # # TODO: provide preprocessing options to the user???
-    # # X = preprocessing.normalize(X)
-    # # X = preprocessing.scale(X)
-    # y = df[y_attribute].to_numpy()
-    # y[y == 'FAIL'] = 1
-    # y[y == 'PASS'] = 0
-    # y = np.array(y, dtype='int32')
-    #
-    # classifiers = {}
-    # scoring = ['accuracy', 'precision', 'recall', 'f1']
-    #
-    # classifiers = {
-    #     'random_forest': RandomForestClassifier(),
-    #     'gradient_boosting': GradientBoostingClassifier(),
-    #     # 'multinomial_naive_bayes': MultinomialNB(),
-    #     'gaussian_naive_bayes': GaussianNB(),
-    #     'logistic_regression': LogisticRegression(max_iter=10000),
-    #     'decision_tree': DecisionTreeClassifier(),
-    # }
-    #
-    # for name, estimator in classifiers.items():
-    #     scores = cross_validate(estimator, X, y, cv=KFold(n_splits=10, shuffle=True), scoring=scoring)
-    #     classifiers[name] = {
-    #         'estimator': estimator,
-    #         'scores': scores,
-    #         # average the scores
-    #         'avg_scores': get_avg_scores(scores),
-    #     }
-    #
-    # # output results
-    # for key, value in classifiers.items():
-    #     avg_scores = value['avg_scores']
-    #     model = key
-    #     accuracy = avg_scores['accuracy']
-    #     recall = avg_scores['recall']
-    #     precision = avg_scores['precision']
-    #     f1 = avg_scores['f1']
-    #
-    #     if save:
-    #         model_file_name = key + '.joblib'
-    #         trained_model = value['estimator'].fit(X, y)
-    #         joblib.dump(trained_model, model_file_name)
-    #
-    #     # TODO: order the models according to an argument (e.g. acc, rec, prec, f1)
-    #     print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'
-    #           .format(model, accuracy, recall, precision, f1))
+    duration_attr = 'duration'
+
+    X = dd[road_features].to_numpy()
+    X = preprocessing.normalize(X)
+    X = preprocessing.scale(X)
+    y = dd[label].to_numpy()
+
+    y[y == 'FAIL'] = 1
+    y[y == 'PASS'] = 0
+    y = np.array(y, dtype='int32')
+
+    scoring = ['accuracy', 'precision', 'recall', 'f1']
+
+    classifiers = {
+        'random_forest': RandomForestClassifier(),
+        'gradient_boosting': GradientBoostingClassifier(),
+        'gaussian_naive_bayes': GaussianNB(),
+        'logistic_regression': LogisticRegression(max_iter=10000),
+        'decision_tree': DecisionTreeClassifier(),
+    }
+
+    for name, estimator in classifiers.items():
+        scores = cross_validate(estimator, X, y, cv=KFold(n_splits=10, shuffle=True), scoring=scoring)
+        classifiers[name] = {
+            'estimator': estimator,
+            'scores': scores,
+            'avg_scores': get_avg_scores(scores)
+        }
+
+    for key, value in classifiers.items():
+        avg_scores = value['avg_scores']
+        model = key
+        accuracy = avg_scores['accuracy']
+        recall = avg_scores['recall']
+        precision = avg_scores['precision']
+        f1 = avg_scores['f1']
+
+        model_file_name = key + '.joblib'
+        model_file_path = models_path / model_file_name
+        trained_model = value['estimator'].fit(X, y)
+        joblib.dump(trained_model, model_file_path)
+
+        print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'
+              .format(model, accuracy, recall, precision, f1))
 
 
 @cli.command()
