@@ -13,6 +13,7 @@ from sklearn.model_selection import KFold, cross_validate, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
 
 from refactored_pipeline.testing_api.test import Test
@@ -154,6 +155,7 @@ def evaluate_models(csv, models_dir):
     classifiers = {
         'random_forest': RandomForestClassifier(),
         'gradient_boosting': GradientBoostingClassifier(),
+        'SVM': LinearSVC(max_iter=10000),
         'gaussian_naive_bayes': GaussianNB(),
         'logistic_regression': LogisticRegression(max_iter=10000),
         'decision_tree': DecisionTreeClassifier(),
@@ -220,6 +222,7 @@ def evaluate_cost_effectiveness(csv, train_ratio):
         'random_forest': RandomForestClassifier(),
         'gradient_boosting': GradientBoostingClassifier(),
         # 'multinomial_naive_bayes': MultinomialNB(),
+        'SVM': LinearSVC(),
         'gaussian_naive_bayes': GaussianNB(),
         'logistic_regression': LogisticRegression(max_iter=10000),
         'decision_tree': DecisionTreeClassifier(),
