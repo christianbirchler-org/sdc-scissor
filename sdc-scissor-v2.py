@@ -23,6 +23,7 @@ from refactored_pipeline.testing_api.test_generator import TestGenerator
 from refactored_pipeline.testing_api.test_loader import TestLoader
 from refactored_pipeline.feature_extraction_api.feature_extraction import FeatureExtractor
 from refactored_pipeline.machine_learning_api.csv_loader import CSVLoader
+from refactored_pipeline.machine_learning_api.model_evaluator import ModelEvaluator
 
 
 @click.group()
@@ -107,74 +108,16 @@ def evaluate_models(csv, models_dir):
         os.makedirs(models_dir)
     models_path = Path(models_dir)
 
+
+
     dd = CSVLoader.load_dataframe_from_csv(data_path)
-    road_features = ['direct_distance', 'max_angle', 'max_pivot_off', 'mean_angle',
-                     'mean_pivot_off', 'median_angle', 'median_pivot_off', 'min_angle', 'min_pivot_off', 'num_l_turns',
-                     'num_r_turns', 'num_straights', 'road_distance', 'std_angle', 'std_pivot_off',
-                     'total_angle']
     label = 'safety'
     duration_attr = 'duration'
 
-    dd = dd.sample(frac=1).reset_index(drop=True)
-    N = dd.shape[0]
-    N_train = int(N*0.8)
-    N_test = N - N_train
+    model_evaluator = ModelEvaluator(data_frame=dd, label=label)
+    model_evaluator.evaluate()
+    model_evaluator.save_models(out_dir=models_dir)
 
-    X = dd[road_features].to_numpy()
-    X_train = X[0:N_train, :]
-    X_test = X[N_train:, :]
-    X = preprocessing.normalize(X)
-    X = preprocessing.scale(X)
-
-    y = dd[label].to_numpy()
-    y[y == 'FAIL'] = 1
-    y[y == 'PASS'] = 0
-    y = np.array(y, dtype='int32')
-
-    y_train = y[:N_train]
-
-    X_train_pass = X_train[y_train == 0, :]
-    X_train_fail = X_train[y_train == 1, :]
-    y_train_pass = y_train[y_train == 0]
-    y_train_fail = y_train[y_train == 1]
-    y_test = y[N_train:]
-
-    print(y_train_pass)
-
-    n_fail = len(y_train_fail)
-    n_pass = len(y_train_pass)
-    if n_fail < n_pass:
-        y_train = np.concatenate((y_train_fail, y_train_pass[:n_fail]))
-        X_train = np.concatenate((X_train_fail, X_train_pass[:n_fail, :]), axis=0)
-    else:
-        y_train = np.concatenate((y_train_pass, y_train_fail[:n_pass]))
-        X_train = np.concatenate((X_train_pass, X_train_fail[:n_pass, :]), axis=0)
-
-    scoring = ['accuracy', 'precision', 'recall', 'f1']
-
-    classifiers = {
-        'random_forest': RandomForestClassifier(),
-        'gradient_boosting': GradientBoostingClassifier(),
-        'SVM': LinearSVC(max_iter=10000),
-        'gaussian_naive_bayes': GaussianNB(),
-        'logistic_regression': LogisticRegression(max_iter=10000),
-        'decision_tree': DecisionTreeClassifier(),
-    }
-
-    file_path = None
-    for model_name, model in classifiers.items():
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        acc = accuracy_score(y_test, y_pred)
-        prec = precision_score(y_test, y_pred)
-        rec = recall_score(y_test, y_pred)
-        f1 = f1_score(y_test, y_pred)
-        filename = model_name + '.joblib'
-        file_path = models_path / filename
-        logging.info('save model: {}'.format(model_name))
-        joblib.dump(model, file_path)
-        print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'
-              .format(model_name, acc, rec, prec, f1))
 
 
 @cli.command()
