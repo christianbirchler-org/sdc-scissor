@@ -23,7 +23,7 @@ class TestRunner:
                 self.simulator.create_new_instance()
                 self.simulator.open()
             else:
-                test = self.test_loader.next()
+                test, _ = self.test_loader.next()
             try:
                 self.run(test)
                 has_execution_failed = False

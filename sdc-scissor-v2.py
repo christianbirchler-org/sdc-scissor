@@ -55,7 +55,7 @@ def extract_features(tests, segmentation):
     feature_extractor = FeatureExtractor(segmentation_strategy=segmentation)
     road_features_lst = []
     while test_loader.has_next():
-        test = test_loader.next()
+        test, _ = test_loader.next()
         road_features = feature_extractor.extract_features(test)
         road_features.safety = test.test_outcome
         road_features_lst.append((test.test_id, road_features, test.test_duration))
