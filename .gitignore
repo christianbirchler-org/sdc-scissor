@@ -151,3 +151,4 @@ dmypy.json
 .idea/
 
 /destination/
+/analysis.ipynb
