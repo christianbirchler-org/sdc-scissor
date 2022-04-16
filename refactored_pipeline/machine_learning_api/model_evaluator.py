@@ -65,8 +65,6 @@ class ModelEvaluator:
             y_train = np.concatenate((y_train_pass, y_train_fail[:n_pass]))
             X_train = np.concatenate((X_train_pass, X_train_fail[:n_pass, :]), axis=0)
 
-        scoring = ['accuracy', 'precision', 'recall', 'f1']
-
         self.__classifiers['random_forest'] = RandomForestClassifier()
         self.__classifiers['gradient_boosting'] = GradientBoostingClassifier()
         self.__classifiers['SVM'] = LinearSVC(max_iter=10000)
@@ -74,7 +72,6 @@ class ModelEvaluator:
         self.__classifiers['logistic_regression'] = LogisticRegression(max_iter=10000)
         self.__classifiers['decision_tree'] = DecisionTreeClassifier()
 
-        file_path = None
         for model_name, model in self.__classifiers.items():
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
@@ -90,7 +87,6 @@ class ModelEvaluator:
     def save_models(self, out_dir: Path):
         logging.info('save_models')
 
-        file_path = None
         for model_name, model in self.__classifiers.items():
             filename = model_name + '.joblib'
             file_path = out_dir / filename

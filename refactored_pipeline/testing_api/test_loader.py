@@ -43,7 +43,7 @@ class TestLoader:
         with open(test_path, 'r') as fp:
             test_json = json.load(fp)
 
-        road_points = test_json['interpolated_points']
+        road_points = test_json['interpolated_road_points']
         if 'test_outcome' in test_json.keys():
             test_outcome = test_json['test_outcome']
         else:
