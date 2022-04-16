@@ -116,21 +116,17 @@ def evaluate_cost_effectiveness(csv, train_ratio):
 
 
 @cli.command()
-def predict_tests():
+@click.option('-t', '--tests', default='./destination', type=click.Path(exists=True))
+@click.option('-c', '--classifier', default='./trained_models/decision_tree.joblib', type=click.Path(exists=True))
+def predict_tests(tests, classifier):
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.
     """
-    pass
+    tests_dir = Path(tests)
+    classifier_path = Path(classifier)
 
-
-@cli.command()
-def refactored_pipeline():
-    road_points = [[0, 0, -28, 10], [30, -30, -28, 10], [30, -100, -28, 10], [0, -200, -28, 10]]
-    test = Test(road_points=road_points)
-    simulator = SimulatorFactory.get_beamng_simulator()
-    test_runner = TestRunner(simulator=simulator)
-    simulator.open()
-    test_runner.run(test)
+    predictor = Predictor(tests_dir=tests_dir, joblib_classifier=classifier_path)
+    predictor.predict()
 
 
 if __name__ == '__main__':
