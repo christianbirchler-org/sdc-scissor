@@ -28,14 +28,14 @@ class TestLoader:
     def has_next(self) -> bool:
         return len(self.test_paths) > 0
 
-    def next(self) -> Test:
+    def next(self) -> tuple[Test, Path]:
         if not self.has_next():
             logging.warning('There are no remaining tests!')
             raise Exception('There are no remaining tests!')
 
         test_path: Path = self.test_paths.pop()
         test: Test = self.__load_test_from_path(test_path)
-        return test
+        return test, test_path
 
     @staticmethod
     def __load_test_from_path(test_path: Path):

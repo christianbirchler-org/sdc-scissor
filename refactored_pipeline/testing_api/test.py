@@ -1,20 +1,26 @@
 import logging
+import json
+
 import numpy as np
 
 from scipy.interpolate import splprep, splev
+from pathlib import Path
 
 
 class Test:
     def __init__(self, test_id, road_points: list[list], test_outcome, test_duration=None):
         self.test_id = test_id
         self.test_outcome = test_outcome
+        self.predicted_test_outcome = None
         self.test_duration = test_duration
         self.road_points = road_points
         self.interpolated_road_points = self.__interpolate(road_points)
 
-        ## add z-coordinate and road width to the test
-        #for road_point in self.interpolated_points:
-        #    road_point.extend([-28, 10])
+    def save_as_json(self, file_path: Path):
+        logging.info('save_as_json')
+        with open(file_path, 'w') as fp:
+            test_dict = vars(self)
+            json.dump(test_dict, fp, indent=2)
 
     @staticmethod
     def __interpolate(road_points: list[list]):

@@ -125,7 +125,9 @@ def predict_tests(tests, classifier):
     tests_dir = Path(tests)
     classifier_path = Path(classifier)
 
-    predictor = Predictor(tests_dir=tests_dir, joblib_classifier=classifier_path)
+    test_loader = TestLoader(tests_dir=tests_dir)
+
+    predictor = Predictor(test_loader=test_loader, joblib_classifier=classifier_path)
     predictor.predict()
 
 
