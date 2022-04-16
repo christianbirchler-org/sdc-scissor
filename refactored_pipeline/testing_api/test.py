@@ -15,6 +15,7 @@ class Test:
         self.test_duration = test_duration
         self.road_points = road_points
         self.interpolated_road_points = self.__interpolate(road_points)
+        self.simulation_data = None
 
     def save_as_json(self, file_path: Path):
         logging.info('save_as_json')
@@ -28,7 +29,7 @@ class Test:
         road_matrix = np.array(road_points)
         x = road_matrix[:, 0]
         y = road_matrix[:, 1]
-        num_nodes = 8
+        num_nodes = 50
 
         if len(x) == 2:
             # With two points the only option is a straight segment

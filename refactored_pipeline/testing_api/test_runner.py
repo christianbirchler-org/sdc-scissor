@@ -18,14 +18,16 @@ class TestRunner:
         self.simulator.open()
         has_execution_failed = False
         test = None
+        test_filename = None
         while self.test_loader.has_next() or has_execution_failed:
             if has_execution_failed:
                 self.simulator.create_new_instance()
                 self.simulator.open()
             else:
-                test, _ = self.test_loader.next()
+                test, test_filename = self.test_loader.next()
             try:
                 self.run(test)
+                test.save_as_json(file_path=test_filename)
                 has_execution_failed = False
                 time.sleep(5)
             except Exception:

@@ -16,17 +16,20 @@ class TestMonitor:
         self.road = None
         self.start_time = None
         self.end_time = None
-        self.data = {}
+        self.data = []
 
     def check(self):
         logging.info('check')
         self.simulator.update_car()
-        x_pos, y_pos = self.simulator.get_car_position()
+        x_pos, y_pos, z_pos = self.simulator.get_car_position()
         current_time = time.time() - self.start_time
-        logging.info('time: {}\tx: {}\ty: {}'.format(current_time, x_pos, y_pos))
+        logging.info('time: {}\tx: {}\ty: {}\tz: {}'.format(current_time, x_pos, y_pos, z_pos))
+        self.data.append((current_time, x_pos, y_pos, z_pos))
         if self.__is_car_at_end_of_road(x_pos, y_pos):
             self.is_car_at_end_of_road = True
             self.end_time = time.time()
+            self.test.test_duration = self.end_time - self.start_time
+            self.test.simulation_data = self.data
 
     def start_timer(self):
         logging.info('start_timer')

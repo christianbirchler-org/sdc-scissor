@@ -86,7 +86,8 @@ class BeamNGSimulator(AbstractSimulator):
         logging.info('get_car_position')
         x_pos = self.car_state['pos'][0]
         y_pos = self.car_state['pos'][1]
-        return x_pos, y_pos
+        z_pos = self.car_state['pos'][2]
+        return x_pos, y_pos, z_pos
 
     @staticmethod
     def __compute_start_position(road_nodes):
