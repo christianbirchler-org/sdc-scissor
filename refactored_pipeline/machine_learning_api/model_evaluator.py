@@ -54,8 +54,6 @@ class ModelEvaluator:
         y_train_fail = y_train[y_train == 1]
         y_test = y[N_train:]
 
-        print(y_train_pass)
-
         n_fail = len(y_train_fail)
         n_pass = len(y_train_pass)
         if n_fail < n_pass:

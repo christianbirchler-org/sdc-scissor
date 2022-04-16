@@ -88,7 +88,7 @@ class FeatureExtractor:
         out_path = out_dir / 'road_features.csv'
         dd.to_csv(out_path)
 
-    def extract_features(self, test: Test):
+    def extract_features(self, test: Test) -> RoadFeatures:
         """
         Input is a list of (x, y) tuples which defines the road.
         This function extract the angles and radius of segments.
