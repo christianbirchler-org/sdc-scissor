@@ -32,7 +32,7 @@ class RoadFeatures:
         self.min_pivot_off = 0
         self.start_time = 0
         self.end_time = 0
-        self.duration_seconds = 0
+        self.test_duration = 0
         self.safety = None
 
     def to_dict(self):
@@ -116,6 +116,7 @@ class FeatureExtractor:
 
     def __get_full_road_features_from(self, test: Test, segments):
         road_features = RoadFeatures()
+        road_features.test_duration = test.test_duration
 
         raw_feature_data = {
             "angles": [],

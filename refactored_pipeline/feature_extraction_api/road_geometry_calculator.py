@@ -46,8 +46,8 @@ class RoadGeometryCalculator:
 
     @staticmethod
     def get_distance_between(first_point, second_point) -> float:
-        a1, a2 = first_point
-        b1, b2 = second_point
+        a1, a2 = first_point[0], first_point[1]
+        b1, b2 = second_point[0], second_point[1]
         c1, c2 = (b1-a1, b2-a2)
         distance = math.sqrt(c1**2 + c2**2)
         return distance
@@ -65,8 +65,8 @@ class RoadGeometryCalculator:
 
         road_length = 0
         for i in range(1, nr_of_road_points):
-            a1, a2 = road_points[i-1]
-            b1, b2 = road_points[i]
+            a1, a2 = road_points[i-1][0], road_points[i-1][1]
+            b1, b2 = road_points[i][0], road_points[i][1]
 
             c1, c2 = (b1-a1, b2-a2)
 
