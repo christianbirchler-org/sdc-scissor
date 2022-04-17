@@ -6,10 +6,10 @@ import pandas as pd
 
 from pathlib import Path
 
-from refactored_pipeline.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
-from refactored_pipeline.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
-from refactored_pipeline.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
-from refactored_pipeline.testing_api.test import Test
+from sdc_scissor.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
+from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
+from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
+from sdc_scissor.testing_api.test import Test
 
 
 class RoadFeatures:

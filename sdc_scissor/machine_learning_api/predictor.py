@@ -6,8 +6,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from refactored_pipeline.feature_extraction_api.feature_extraction import FeatureExtractor, RoadFeatures
-from refactored_pipeline.testing_api.test_loader import TestLoader
+from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor, RoadFeatures
+from sdc_scissor.testing_api.test_loader import TestLoader
 
 
 class Predictor:

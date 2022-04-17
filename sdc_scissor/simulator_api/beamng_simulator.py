@@ -5,8 +5,8 @@ import time
 from beamngpy import BeamNGpy, Scenario, Road, Vehicle
 from beamngpy.sensors import Electrics
 
-from refactored_pipeline.simulator_api.abstract_simulator import AbstractSimulator
-from refactored_pipeline.testing_api.test import Test
+from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.testing_api.test import Test
 
 
 class BeamNGSimulator(AbstractSimulator):

@@ -3,8 +3,8 @@ import time
 
 from scipy.spatial import distance
 
-from refactored_pipeline.testing_api.test import Test
-from refactored_pipeline.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.testing_api.test import Test
+from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 
 
 class TestMonitor:

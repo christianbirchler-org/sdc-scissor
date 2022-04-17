@@ -4,7 +4,7 @@ from self_driving.bbox import RoadBoundingBox
 
 # from code_pipeline.tests_generation import RoadTest
 # from code_pipeline.tests_generation import RoadTestFactory
-from refactored_pipeline.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
+from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 
 
 def find_circle(p1, p2, p3):

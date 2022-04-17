@@ -1,7 +1,7 @@
 import logging
 
-from refactored_pipeline.simulator_api.abstract_simulator import AbstractSimulator
-from refactored_pipeline.simulator_api.beamng_simulator import BeamNGSimulator
+from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.simulator_api.beamng_simulator import BeamNGSimulator
 
 
 class SimulatorFactory:

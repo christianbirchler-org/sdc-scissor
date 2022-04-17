@@ -2,8 +2,8 @@ import json
 import logging
 from pathlib import Path
 
-from refactored_pipeline.testing_api.frenetic.src.generators.random_frenet_generator import CustomFrenetGenerator
-from refactored_pipeline.testing_api.test import Test
+from sdc_scissor.testing_api.frenetic.src.generators.random_frenet_generator import CustomFrenetGenerator
+from sdc_scissor.testing_api.test import Test
 
 
 def _id_generator():

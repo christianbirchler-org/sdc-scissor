@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 
-from refactored_pipeline.testing_api.test import Test
+from sdc_scissor.testing_api.test import Test
 
 
 class TestLoader:

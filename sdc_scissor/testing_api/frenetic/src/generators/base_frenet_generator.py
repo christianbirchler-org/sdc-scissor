@@ -1,5 +1,5 @@
-from refactored_pipeline.testing_api.frenetic.src.generators.base_generator import BaseGenerator
-import refactored_pipeline.testing_api.frenetic.src.utils.frenet as frenet
+from sdc_scissor.testing_api.frenetic.src.generators.base_generator import BaseGenerator
+import sdc_scissor.testing_api.frenetic.src.utils.frenet as frenet
 import numpy as np
 import logging as log
 

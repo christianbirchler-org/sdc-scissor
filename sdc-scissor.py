@@ -7,16 +7,16 @@ import numpy as np
 from pathlib import Path
 
 
-from refactored_pipeline.testing_api.test import Test
-from refactored_pipeline.simulator_api.simulator_factory import SimulatorFactory
-from refactored_pipeline.testing_api.test_runner import TestRunner
-from refactored_pipeline.testing_api.test_generator import TestGenerator
-from refactored_pipeline.testing_api.test_loader import TestLoader
-from refactored_pipeline.feature_extraction_api.feature_extraction import FeatureExtractor
-from refactored_pipeline.machine_learning_api.csv_loader import CSVLoader
-from refactored_pipeline.machine_learning_api.model_evaluator import ModelEvaluator
-from refactored_pipeline.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
-from refactored_pipeline.machine_learning_api.predictor import Predictor
+from sdc_scissor.testing_api.test import Test
+from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
+from sdc_scissor.testing_api.test_runner import TestRunner
+from sdc_scissor.testing_api.test_generator import TestGenerator
+from sdc_scissor.testing_api.test_loader import TestLoader
+from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
+from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
+from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
+from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
+from sdc_scissor.machine_learning_api.predictor import Predictor
 
 
 @click.group()
