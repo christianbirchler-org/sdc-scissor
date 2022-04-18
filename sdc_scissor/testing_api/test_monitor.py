@@ -60,6 +60,7 @@ class TestMonitor:
         is_car_model_inside_road_model = self.road_model.right_lane.covers(car_model)
         if not is_car_model_inside_road_model:
             logging.warning('CAR IS OFF THE LANE!')
+            self.test.test_outcome = 'FAIL'
         return not is_car_model_inside_road_model
 
     def __is_car_at_end_of_road(self, x_pos: float, y_pos: float) -> bool:
@@ -69,6 +70,7 @@ class TestMonitor:
         is_car_at_the_end_of_the_road: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 7)
         if is_car_at_the_end_of_the_road:
             logging.warning('CAR IS AT THE END OF THE ROAD!')
+            self.test.test_outcome = 'PASS'
         return is_car_at_the_end_of_the_road
 
     @staticmethod
