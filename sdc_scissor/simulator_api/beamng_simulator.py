@@ -36,6 +36,10 @@ class BeamNGSimulator(AbstractSimulator):
             time.sleep(5)
             self.beamng = BeamNGpy(self.host, self.port, home=self.home, user=self.user)
 
+    def stop_scenario(self):
+        logging.info('stop_scenario')
+        self.beamng.stop_scenario()
+
     def start_scenario(self):
         logging.info('start_scenario')
         self.beamng.start_scenario()
