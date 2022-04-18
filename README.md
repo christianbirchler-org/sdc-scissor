@@ -3,8 +3,10 @@
 This project extends the tool competition platform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop in 2021](https://sbst21.github.io/).
 
 ## SDC-Scissor Architecture
-
 ![Architecture Diagram](images/sdc-scissor-architecture.jpg)
+
+## SDC-Scissor Components and APIs
+![Component Diagram](images/sdc-scissor-APIs.jpg)
 
 ## Usage
 
@@ -18,7 +20,7 @@ The data used for the demo and evaluation we made available on Zenodo: [![DOI](h
 
 ### Installation
 
-The tool can either be run with [Docker](https://docs.docker.com/get-docker/) or locally using [Poetry](https://python-poetry.org/docs/).
+The tool can either be run locally using [Poetry](https://python-poetry.org/docs/) (**RECOMMENDED**) or with [Docker](https://docs.docker.com/get-docker/).
 
 When running the simulations a working installation of [BeamNG.research](https://beamng.gmbh/research/) is required.
 Additionally this simulation cannot be run in a Docker container but must run locally.
@@ -56,15 +58,6 @@ For simplifying the documentation only the command and their options are describ
 
 The possible parameters are always documented with `--help`.
 
-### Linting
-
-The tool is verified the linters [flake8](https://flake8.pycqa.org/en/latest/) and [pylint](https://pylint.org).
-These are automatically enabled in [Visual Studio Code](https://code.visualstudio.com) and can be run manually with the following commands:
-
-```bash
-poetry run flake8 .
-poetry run pylint **/*.py
-```
 
 ## License
 The software we developed is distributed under GNU GPL license. See the [LICENSE.md](LICENSE.md) file.
