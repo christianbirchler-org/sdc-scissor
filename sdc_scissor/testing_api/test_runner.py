@@ -52,7 +52,7 @@ class TestRunner:
         test_monitor.start_timer()
         self.simulator.start_scenario()
 
-        while not test_monitor.is_car_at_end_of_road:
+        while not test_monitor.is_test_finished:
             test_monitor.check()
             time.sleep(0.1)
 
