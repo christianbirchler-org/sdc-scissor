@@ -66,8 +66,10 @@ class TestMonitor:
         logging.info('__car_at_end_of_road')
         road_end_point = self.test.interpolated_road_points[-1]
         x_end, y_end = road_end_point[0], road_end_point[1]
-        res: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 8)
-        return res
+        is_car_at_the_end_of_the_road: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 7)
+        if is_car_at_the_end_of_the_road:
+            logging.warning('CAR IS AT THE END OF THE ROAD!')
+        return is_car_at_the_end_of_the_road
 
     @staticmethod
     def __are_points_close(a: tuple[float, float], b: tuple[float, float], threshold: float):
