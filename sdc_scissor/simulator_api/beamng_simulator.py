@@ -4,6 +4,7 @@ import time
 
 from beamngpy import BeamNGpy, Scenario, Road, Vehicle
 from beamngpy.sensors import Electrics
+from shapely.geometry import LineString
 
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.test import Test
@@ -103,10 +104,14 @@ class BeamNGSimulator(AbstractSimulator):
                                   y_dir / math.sqrt(x_dir ** 2 + y_dir ** 2))
         alpha = math.asin(y_dir_norm)
 
-        x_cross_dir_norm, y_cross_dir_norm = y_dir_norm, -x_dir_norm
+        center_line = LineString(coordinates=[(x[0], x[1]) for x in road_nodes])
+        optimal_trajectory = center_line.parallel_offset(distance=2.5)
+        start_point = optimal_trajectory.interpolate(distance=-2.5)
+        logging.info('start_point: {}'.format(start_point))
 
-        return first_road_point[0] + 2.5 * x_cross_dir_norm, first_road_point[
-            1] + 2.5 * y_cross_dir_norm, -28.0, x_dir, y_dir, alpha
+        start_position = (start_point.x, start_point.y)
+
+        return start_position[0], start_position[1], -28.0, x_dir, y_dir, alpha
 
 
 if __name__ == '__main__':
