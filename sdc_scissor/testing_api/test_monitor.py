@@ -2,6 +2,7 @@ import logging
 import time
 
 from scipy.spatial import distance
+from shapely.geometry import LineString, box
 
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
@@ -18,8 +19,8 @@ class TestMonitor:
     def __init__(self, simulator: AbstractSimulator, test: Test):
         self.simulator = simulator
         self.test = test
-        self.is_car_at_end_of_road = False
-        self.car_is_out_of_lane = False
+        self.is_test_finished = False
+        self.is_car_out_of_lane = False
         self.road = None
         self.start_time = None
         self.end_time = None
@@ -33,8 +34,9 @@ class TestMonitor:
         current_time = time.time() - self.start_time
         logging.info('time: {}\tx: {}\ty: {}\tz: {}'.format(current_time, x_pos, y_pos, z_pos))
         self.data.append((current_time, x_pos, y_pos, z_pos))
-        if self.__is_car_at_end_of_road(x_pos, y_pos):
-            self.is_car_at_end_of_road = True
+
+        if self.__is_car_at_end_of_road(x_pos, y_pos) or self.__is_car_out_of_lane(x_pos, y_pos):
+            self.is_test_finished = True
             self.end_time = time.time()
             self.test.test_duration = self.end_time - self.start_time
             self.test.simulation_data = self.data
