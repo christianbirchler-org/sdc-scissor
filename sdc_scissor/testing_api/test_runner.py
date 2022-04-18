@@ -31,8 +31,10 @@ class TestRunner:
                 has_execution_failed = False
                 time.sleep(5)
             except Exception:
+                # TODO: create a counter to limit the number of trials for a single test
                 logging.warning('Test case execution raised an exception!')
                 has_execution_failed = True
+                test.test_outcome = 'ERROR'
 
         self.simulator.close()
 
