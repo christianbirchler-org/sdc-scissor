@@ -29,7 +29,7 @@ def cli() -> None:
 
 
 @cli.command()
-@click.option('-c', '--count', type=int)
+@click.option('-c', '--count', type=int, default=10)
 @click.option('-d', '--destination', default=_DESTINATION, type=click.Path())
 def generate_tests(count: int, destination: Path) -> None:
     """
@@ -98,7 +98,7 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 
 
 @cli.command()
-@click.option('--csv', help='Path to labeled tests', type=click.Path(exists=True))
+@click.option('--csv', default=_DESTINATION / 'road_features.csv', help='Path to labeled tests', type=click.Path(exists=True))
 @click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
 def evaluate_cost_effectiveness(csv: Path, train_ratio: float) -> None:
     """
