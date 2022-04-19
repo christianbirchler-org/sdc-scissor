@@ -19,6 +19,10 @@ class AbstractSimulator(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def stop_scenario(self):
+        pass
+
+    @abc.abstractmethod
     def start_scenario(self):
         pass
 

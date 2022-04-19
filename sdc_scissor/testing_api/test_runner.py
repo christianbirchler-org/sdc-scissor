@@ -31,8 +31,10 @@ class TestRunner:
                 has_execution_failed = False
                 time.sleep(5)
             except Exception:
+                # TODO: create a counter to limit the number of trials for a single test
                 logging.warning('Test case execution raised an exception!')
                 has_execution_failed = True
+                test.test_outcome = 'ERROR'
 
         self.simulator.close()
 
@@ -52,12 +54,13 @@ class TestRunner:
         test_monitor.start_timer()
         self.simulator.start_scenario()
 
-        while not test_monitor.is_car_at_end_of_road:
+        while not test_monitor.is_test_finished:
             test_monitor.check()
             time.sleep(0.1)
 
         test_monitor.stop_timer()
         test_monitor.dump_data()
+        self.simulator.stop_scenario()
 
 
 if __name__ == '__main__':

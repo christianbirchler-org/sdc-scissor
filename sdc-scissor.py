@@ -1,12 +1,8 @@
 import logging
 import click
 
-import numpy as np
-
 from pathlib import Path
 
-
-from sdc_scissor.testing_api.test import Test
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_generator import TestGenerator
