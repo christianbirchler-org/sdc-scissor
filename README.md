@@ -1,4 +1,4 @@
-# SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software 
+# SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 
 This project extends the tool competition platform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop in 2021](https://sbst21.github.io/).
 
@@ -56,16 +56,6 @@ For simplifying the documentation only the command and their options are describ
 
 The possible parameters are always documented with `--help`.
 
-### Linting
-
-The tool is verified the linters [flake8](https://flake8.pycqa.org/en/latest/) and [pylint](https://pylint.org).
-These are automatically enabled in [Visual Studio Code](https://code.visualstudio.com) and can be run manually with the following commands:
-
-```bash
-poetry run flake8 .
-poetry run pylint **/*.py
-```
-
 ## License
 The software we developed is distributed under GNU GPL license. See the [LICENSE.md](LICENSE.md) file.
 
@@ -88,8 +78,8 @@ Dr. Sebastiano Panichella - Zurich University of Applied Science (ZHAW), Switzer
 ```
 @INPROCEEDINGS{Birchler2022,
   author={Birchler, Christian and Ganz, Nicolas and Khatiri, Sajad and Gambi, Alessio, and Panichella, Sebastiano},
-  booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER), 
-  title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor}, 
+  booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER),
+  title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor},
   year={2022},
 }
 ```
