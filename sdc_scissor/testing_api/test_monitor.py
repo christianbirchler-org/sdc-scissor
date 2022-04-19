@@ -16,7 +16,7 @@ class _RoadModel:
 
 
 class TestMonitor:
-    def __init__(self, simulator: AbstractSimulator, test: Test):
+    def __init__(self, simulator: AbstractSimulator, test: Test, oob: float):
         self.simulator = simulator
         self.test = test
         self.is_test_finished = False
@@ -26,6 +26,7 @@ class TestMonitor:
         self.end_time = None
         self.data = []
         self.road_model = _RoadModel(test.interpolated_road_points)
+        self.oob = oob
 
     def check(self):
         logging.info('check')
@@ -56,8 +57,14 @@ class TestMonitor:
     def __is_car_out_of_lane(self, x_pos: float, y_pos: float) -> bool:
         # TODO: Issue #22
         logging.info('__is_car_out_of_lane')
+
+        # Shapely box geometry
         car_model = box(x_pos-1, y_pos-1, x_pos+1, y_pos+1)
-        is_car_model_inside_road_model = self.road_model.right_lane.covers(car_model)
+
+        diff = car_model.difference(self.road_model.right_lane)
+        actual_oob = diff.area / car_model.area
+        is_car_model_inside_road_model: bool = actual_oob < self.oob
+
         if not is_car_model_inside_road_model:
             logging.warning('CAR IS OFF THE LANE!')
             self.test.test_outcome = 'FAIL'

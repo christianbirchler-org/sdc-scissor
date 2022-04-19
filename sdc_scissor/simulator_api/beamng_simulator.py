@@ -11,7 +11,7 @@ from sdc_scissor.testing_api.test import Test
 
 
 class BeamNGSimulator(AbstractSimulator):
-    def __init__(self, host: str, port: int, home: str, user: str):
+    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
         super().__init__()
         self.host = host
         self.port = port
@@ -21,6 +21,8 @@ class BeamNGSimulator(AbstractSimulator):
         self.vehicle = None
         self.car_state = None
         self.scenario = None
+        self.rf = rf
+        self.max_speed = max_speed
 
     def open(self):
         self.beamng.open()
@@ -46,10 +48,14 @@ class BeamNGSimulator(AbstractSimulator):
         self.beamng.start_scenario()
         self.vehicle.ai_set_mode('span')
         self.vehicle.ai_drive_in_lane(lane=True)
-        self.vehicle.ai_set_aggression(0.5)
+        self.vehicle.ai_set_aggression(self.rf)
         self.vehicle.set_color(rgba=(0, 0, 1, 0.5))
-        self.vehicle.ai_set_speed(12)
+        self.vehicle.ai_set_speed(self.__kmh_to_ms(self.max_speed))
         self.vehicle.ai_set_waypoint('end_point')
+
+    @staticmethod
+    def __kmh_to_ms(kmh):
+        return kmh/3.6
 
     def load_scenario(self, test: Test):
         logging.info('load_scenario')

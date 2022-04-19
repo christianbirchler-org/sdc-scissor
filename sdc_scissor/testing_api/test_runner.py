@@ -12,6 +12,7 @@ class TestRunner:
         self.test_loader: TestLoader = kwargs.get('test_loader', None)
         self.ml_component = kwargs.get('machine_learning_api', None)
         self.simulator: AbstractSimulator = kwargs.get('simulator', None)
+        self.oob: float = kwargs.get('oob', None)
 
     def run_test_suite(self):
         logging.info('* run_test_suite')
@@ -50,7 +51,7 @@ class TestRunner:
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(self.simulator, test)
+        test_monitor = TestMonitor(self.simulator, test, oob=self.oob)
         test_monitor.start_timer()
         self.simulator.start_scenario()
 

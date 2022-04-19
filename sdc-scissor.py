@@ -63,14 +63,17 @@ def extract_features(tests: Path, segmentation: str) -> None:
 
 @cli.command()
 @click.option('-t', '--tests', default=_DESTINATION, type=click.Path(exists=True))
-def label_tests(tests: Path) -> None:
+@click.option('--rf', default=1.5, type=float)
+@click.option('--oob', default=0.3, type=float)
+@click.option('--max-speed', default=50, type=float)
+def label_tests(tests: Path, rf, oob, max_speed) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
     logging.info('label_tests')
-    beamng_simulator = SimulatorFactory.get_beamng_simulator()
+    beamng_simulator = SimulatorFactory.get_beamng_simulator(rf=rf, max_speed=max_speed)
     test_loader = TestLoader(tests_dir=tests)
-    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader)
+    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader, oob=oob)
     test_runner.run_test_suite()
 
 
