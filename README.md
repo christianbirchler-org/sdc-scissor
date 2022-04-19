@@ -22,7 +22,7 @@ The data used for the demo and evaluation of SDC-Scissor v1.0 we made available 
 
 The tool can either be run locally using [Poetry](https://python-poetry.org/docs/) (**RECOMMENDED**) or with [Docker](https://docs.docker.com/get-docker/).
 
-When running the simulations a working installation of [BeamNG.research](https://beamng.gmbh/research/) is required.
+When running the simulations a working installation of [BeamNG.tech](https://beamng.tech) is required.
 Additionally this simulation cannot be run in a Docker container but must run locally.
 
 To install the application use one of the following approaches:
@@ -32,7 +32,9 @@ To install the application use one of the following approaches:
 
 ### Using the Tool
 
-Sample test cases you can find here: https://doi.org/10.5281/zenodo.5914130
+Sample test cases for SDC-Scissor v1.0 you can find here: https://doi.org/10.5281/zenodo.5914130
+
+For SDC-Scissor v2.0 you can use the tests in the `sample_tests` directory.
 
 The tool can be used with the following two commands:
 
