@@ -3,6 +3,7 @@
 
 # Ignore results
 /results/
+/destination/
 
 # Ignore simulation data
 /simulations/

@@ -150,3 +150,7 @@ dmypy.json
 # PyCharm
 .idea/
 
+/destination/
+/analysis.ipynb
+/.vscode/
+/trained_models/

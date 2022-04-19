@@ -1,15 +1,13 @@
-FROM python:3.9.5-slim
+FROM python:3.9.6-slim
 
 RUN apt-get update \
   && apt-get install -y \
     gcc \
-    # Update insecure packages
-    libsystemd0=241-7~deb10u8 \
-    libudev1=241-7~deb10u8 \
+    python3-opengl \
   && rm -rf /var/lib/apt/lists/*
 
 ENV SHELL=/bin/bash
-ARG POETRY_VERSION=1.1.8
+ARG POETRY_VERSION=1.1.13
 
 RUN pip install "poetry==$POETRY_VERSION"
 
