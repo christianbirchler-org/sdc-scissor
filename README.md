@@ -1,4 +1,4 @@
-# SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software 
+# SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 
 This project extends the tool competition platform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop in 2021](https://sbst21.github.io/).
 
@@ -36,25 +36,25 @@ Sample test cases you can find here: https://doi.org/10.5281/zenodo.5914130
 
 The tool can be used with the following two commands:
 
-* Docker: `docker run --volume "$(pwd)/results:/out" --rm sdc-scissor [COMMAND] [OPTIONS]` (this will write all files written to `/out` to the local folder `results`)
+* Docker: `docker run --volume "$(pwd)/destination:/var/project/destination" --rm sdc-scissor [COMMAND] [OPTIONS]` (this will write all files written to `/var/project/destination` to the local folder `destination`)
 * Poetry: `poetry run python sdc-scissor.py [COMMAND] [OPTIONS]`
 
 There are multiple commands to use.
 For simplifying the documentation only the command and their options are described.
 
 * Generation of tests:
-  * `generate-tests --out-path /path/to/store/tests`
+  * `generate-tests`
+* Extract the features into a CSV file:
+  * `extract-features`
 * Automated labeling of Tests:
-  * `label-tests --road-scenarios /path/to/tests --result-folder /path/to/store/labeled/tests`
+  * `label-tests`
   * *Note:* This only works locally with BeamNG.research installed
 * Model evaluation:
-  * `evaluate-models --dataset /path/to/train/set --save`
-* Split train and test data:
-  * `split-train-test-data --scenarios /path/to/scenarios --train-dir /path/for/train/data --test-dir /path/for/test/data --train-ratio 0.8`
+  * `evaluate-models`
+* Evaluate the cost effectiveness of the models:
+  * `evaluate_cost_effectiveness`
 * Test outcome prediction:
-  * `predict-tests --scenarios /path/to/scenarios --classifier /path/to/model.joblib`
-* Evaluation based on random strategy:
-  * `evaluate --scenarios /path/to/test/scenarios --classifier /path/to/model.joblib`
+  * `predict-tests`
 
 The possible parameters are always documented with `--help`.
 
@@ -81,8 +81,8 @@ Dr. Sebastiano Panichella - Zurich University of Applied Science (ZHAW), Switzer
 ```
 @INPROCEEDINGS{Birchler2022,
   author={Birchler, Christian and Ganz, Nicolas and Khatiri, Sajad and Gambi, Alessio, and Panichella, Sebastiano},
-  booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER), 
-  title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor}, 
+  booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER),
+  title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor},
   year={2022},
 }
 ```

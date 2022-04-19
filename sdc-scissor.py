@@ -1,5 +1,4 @@
 import logging
-import os.path
 import click
 
 from pathlib import Path
@@ -15,22 +14,26 @@ from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEf
 from sdc_scissor.machine_learning_api.predictor import Predictor
 
 
+_ROOT_DIR = Path(__file__).parent
+_DESTINATION = _ROOT_DIR / 'destination'
+_TRAINED_MODELS = _ROOT_DIR / 'trained_models'
+
+
 @click.group()
-def cli():
+def cli() -> None:
     pass
 
 
 @cli.command()
-@click.option('-c', '--count', type=int)
-@click.option('-d', '--destination', default='./destination', type=click.Path())
-def generate_tests(count, destination):
+@click.option('-c', '--count', type=int, default=10)
+@click.option('-d', '--destination', default=_DESTINATION, type=click.Path())
+def generate_tests(count: int, destination: Path) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
     """
     logging.info('generate_tests')
-    destination = Path(destination)
-    if not os.path.exists(destination):
-        os.makedirs(destination)
+    if not destination.exists():
+        destination.mkdir()
 
     test_generator = TestGenerator(count=count, destination=destination)
     test_generator.generate()
@@ -38,14 +41,13 @@ def generate_tests(count, destination):
 
 
 @cli.command()
-@click.option('-t', '--tests', default='./destination', type=click.Path(exists=True))
+@click.option('-t', '--tests', default=_DESTINATION, type=click.Path(exists=True))
 @click.option('-s', '--segmentation', default='angle-based', type=click.STRING)
-def extract_features(tests, segmentation):
+def extract_features(tests: Path, segmentation: str) -> None:
     """
     Extract road features from given test scenarios.
     """
     logging.info('extract_features')
-    tests = Path(tests)
 
     test_loader = TestLoader(tests)
     feature_extractor = FeatureExtractor(segmentation_strategy=segmentation)
@@ -60,13 +62,12 @@ def extract_features(tests, segmentation):
 
 
 @cli.command()
-@click.option('-t', '--tests', default='./destination', type=click.Path(exists=True))
-def label_tests(tests):
+@click.option('-t', '--tests', default=_DESTINATION, type=click.Path(exists=True))
+def label_tests(tests: Path) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
     logging.info('label_tests')
-    tests = Path(tests)
     beamng_simulator = SimulatorFactory.get_beamng_simulator()
     test_loader = TestLoader(tests_dir=tests)
     test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader)
@@ -74,20 +75,18 @@ def label_tests(tests):
 
 
 @cli.command()
-@click.option('--csv', default='./destination/road_features.csv', type=click.Path(exists=True))
-@click.option('--models-dir', default='./trained_models', type=click.Path())
-def evaluate_models(csv, models_dir):
+@click.option('--csv', default=_DESTINATION / 'road_features.csv', type=click.Path(exists=True))
+@click.option('--models-dir', default=_TRAINED_MODELS, type=click.Path())
+def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
     Evaluate different machine learning models.
     """
     logging.info('evaluate_models')
-    data_path = Path(csv)
-    models_dir = Path(models_dir)
 
-    if not os.path.exists(models_dir):
-        os.makedirs(models_dir)
+    if not models_dir.exists():
+        models_dir.mkdir()
 
-    dd = CSVLoader.load_dataframe_from_csv(data_path)
+    dd = CSVLoader.load_dataframe_from_csv(csv)
 
     model_evaluator = ModelEvaluator(data_frame=dd, label='safety')
     model_evaluator.evaluate()
@@ -95,15 +94,14 @@ def evaluate_models(csv, models_dir):
 
 
 @cli.command()
-@click.option('--csv', help='Path to labeled tests', type=click.Path(exists=True))
+@click.option('--csv', default=_DESTINATION / 'road_features.csv', help='Path to labeled tests', type=click.Path(exists=True))
 @click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
-def evaluate_cost_effectiveness(csv, train_ratio):
+def evaluate_cost_effectiveness(csv: Path, train_ratio: float) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
     """
     logging.info('evaluate_cost_effectiveness')
-    data_path = Path(csv)
-    dd = CSVLoader.load_dataframe_from_csv(data_path)
+    dd = CSVLoader.load_dataframe_from_csv(csv)
 
     df = dd.sample(frac=1).reset_index(drop=True)
 
@@ -112,18 +110,15 @@ def evaluate_cost_effectiveness(csv, train_ratio):
 
 
 @cli.command()
-@click.option('-t', '--tests', default='./destination', type=click.Path(exists=True))
-@click.option('-c', '--classifier', default='./trained_models/decision_tree.joblib', type=click.Path(exists=True))
-def predict_tests(tests, classifier):
+@click.option('-t', '--tests', default=_DESTINATION, type=click.Path(exists=True))
+@click.option('-c', '--classifier', default=_TRAINED_MODELS / 'decision_tree.joblib', type=click.Path(exists=True))
+def predict_tests(tests: Path, classifier: Path) -> None:
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.
     """
-    tests_dir = Path(tests)
-    classifier_path = Path(classifier)
+    test_loader = TestLoader(tests_dir=tests)
 
-    test_loader = TestLoader(tests_dir=tests_dir)
-
-    predictor = Predictor(test_loader=test_loader, joblib_classifier=classifier_path)
+    predictor = Predictor(test_loader=test_loader, joblib_classifier=classifier)
     predictor.predict()
 
 
