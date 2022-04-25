@@ -11,9 +11,12 @@ from sdc_scissor.testing_api.test import Test
 
 
 class BeamNGSimulator(AbstractSimulator):
+    """
+    This class implements the interface for the specific BeamNG.tech simulator.
+    """
     def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
         """
-        Implementation for the BeamNG.tech simulator.
+        :param host: The host address.
         """
         super().__init__()
         self.host = host

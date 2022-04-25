@@ -5,4 +5,3 @@ API
 
 .. autoclass:: BeamNGSimulator
     :members:
-    :undoc-members:

@@ -33,6 +33,12 @@ release = 'v2.0'
 extensions = [
     'sphinx.ext.autodoc',
 ]
+autodoc_default_options = {
+    'member-order': 'bysource',
+    'special-members': '__init__',
+    'undoc-members': True,
+    'members': True,
+}
 
 
 # Add any paths that contain templates here, relative to this directory.
