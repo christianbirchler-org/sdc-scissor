@@ -12,6 +12,9 @@ from sdc_scissor.testing_api.test import Test
 
 class BeamNGSimulator(AbstractSimulator):
     def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
+        """
+        Implementation for the BeamNG.tech simulator.
+        """
         super().__init__()
         self.host = host
         self.port = port
@@ -25,6 +28,9 @@ class BeamNGSimulator(AbstractSimulator):
         self.max_speed = max_speed
 
     def open(self):
+        """
+        Some doc string.
+        """
         self.beamng.open()
 
     def close(self):
@@ -58,6 +64,9 @@ class BeamNGSimulator(AbstractSimulator):
         return kmh/3.6
 
     def load_scenario(self, test: Test):
+        """
+        :param test: Test object
+        """
         logging.info('load_scenario')
         self.scenario = Scenario('tig', 'example')
         road = Road(material='tig_road_rubber_sticky', rid='flat_road', interpolate=True)
