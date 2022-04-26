@@ -1,3 +1,3 @@
 Demo
 ====
-Some videos for demonstration purposes.
+We made a demo available on `YouTube <https://youtu.be/Cn8p648KnfQ>`_.
