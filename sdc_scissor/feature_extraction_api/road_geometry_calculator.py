@@ -7,6 +7,8 @@ class RoadGeometryCalculator:
     def extract_turn_angles(self, road_points):
         """
         Extract angles of raod points and ad them to the instance variable
+        :param road_points:
+        :return:
         """
         angles = []
         # iterate over "all" road points
@@ -28,6 +30,11 @@ class RoadGeometryCalculator:
 
     # TODO
     def is_right_turn(self, prev_angle, current_angle):
+        """
+
+        :param prev_angle:
+        :param current_angle:
+        """
         pass
 
     @staticmethod
@@ -35,6 +42,9 @@ class RoadGeometryCalculator:
         """
         Returns the angle in degrees between the first and second vector.
         A left turn as positive angles whereas right turns have negatives.
+        :param first_vec:
+        :param second_vec:
+        :return:
         """
         a1, a2 = first_vec[0], first_vec[1]
         b1, b2 = second_vec[0], second_vec[1]
@@ -46,6 +56,12 @@ class RoadGeometryCalculator:
 
     @staticmethod
     def get_distance_between(first_point, second_point) -> float:
+        """
+
+        :param first_point:
+        :param second_point:
+        :return:
+        """
         a1, a2 = first_point[0], first_point[1]
         b1, b2 = second_point[0], second_point[1]
         c1, c2 = (b1-a1, b2-a2)
@@ -56,11 +72,19 @@ class RoadGeometryCalculator:
     def get_direction(first_point, second_point):
         """
         Return the difference vector (second_point-first_point)
+        :param first_point:
+        :param second_point:
+        :return:
         """
         return (second_point[0]-first_point[0], second_point[1]-first_point[1])
 
     @staticmethod
     def get_road_length(road_points):
+        """
+
+        :param road_points:
+        :return:
+        """
         nr_of_road_points = len(road_points)
 
         road_length = 0

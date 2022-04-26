@@ -14,6 +14,9 @@ from sdc_scissor.testing_api.test import Test
 
 class RoadFeatures:
     def __init__(self):
+        """
+
+        """
         self.direct_distance = 0
         self.road_distance = 0
         self.num_l_turns = 0
@@ -36,6 +39,10 @@ class RoadFeatures:
         self.safety = None
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         res = {}
         for member in members:
@@ -45,6 +52,9 @@ class RoadFeatures:
 
 class RoadSegment:
     def __init__(self):
+        """
+
+        """
         self.start_index = None
         self.end_index = None
         self.type = None
@@ -60,6 +70,10 @@ class SegmentType:
 
 class FeatureExtractor:
     def __init__(self, segmentation_strategy):
+        """
+
+        :param segmentation_strategy:
+        """
         self.__road_features = RoadFeatures()
         self.__segments = []
         self.__road_geometry_calculator = RoadGeometryCalculator()
@@ -73,6 +87,11 @@ class FeatureExtractor:
 
     @staticmethod
     def save_to_csv(road_features: list, out_dir: Path):
+        """
+
+        :param road_features:
+        :param out_dir:
+        """
         logging.info('save_to_csv')
         dd = pd.DataFrame()
         for test_id, rf, duration in road_features:
@@ -93,6 +112,8 @@ class FeatureExtractor:
         Input is a list of (x, y) tuples which defines the road.
         This function extract the angles and radius of segments.
         Futhermore, the statistics of angles and radius are calculated.
+        :param test:
+        :return:
         """
 
         # get turn angles
@@ -115,6 +136,12 @@ class FeatureExtractor:
     ############################################################################
 
     def __get_full_road_features_from(self, test: Test, segments):
+        """
+
+        :param test:
+        :param segments:
+        :return:
+        """
         road_features = RoadFeatures()
         road_features.test_duration = test.test_duration
 
@@ -167,6 +194,10 @@ class FeatureExtractor:
         """
         Return the type of segment (straight, left turn, right turn). The segment
         is defined by its start and end index that are already specified.
+        :param test:
+        :param road_segment:
+        :param angle_threshold:
+        :return:
         """
         start_index = road_segment.start_index
         end_index = road_segment.end_index
@@ -186,6 +217,12 @@ class FeatureExtractor:
         return None
 
     def __get_segment_angle(self, test: Test, road_segment):
+        """
+
+        :param test:
+        :param road_segment:
+        :return:
+        """
         start_index = road_segment.start_index
         end_index = road_segment.end_index
 
@@ -198,6 +235,12 @@ class FeatureExtractor:
         return angles_sum
 
     def __get_segment_radius(self, test: Test, road_segment):
+        """
+
+        :param test:
+        :param road_segment:
+        :return:
+        """
         if road_segment.type == SegmentType.straight:
             return 0
 
@@ -221,6 +264,12 @@ class FeatureExtractor:
         return radius
 
     def __get_road_segment_with_features(self, test: Test, indexes):
+        """
+
+        :param test:
+        :param indexes:
+        :return:
+        """
         road_segment = RoadSegment()
         road_segment.start_index = indexes[0]
         road_segment.end_index = indexes[1]

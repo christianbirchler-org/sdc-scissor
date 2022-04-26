@@ -15,6 +15,11 @@ def _id_generator():
 
 class TestGenerator:
     def __init__(self, count: int, destination: Path):
+        """
+
+        :param count:
+        :param destination:
+        """
         self.count: int = count
         self.__id_generator = _id_generator()
         self.__nr_prefix_digits: int = 5
@@ -28,6 +33,9 @@ class TestGenerator:
         self.random_frenet_generator = CustomFrenetGenerator(**kwargs)
 
     def generate(self):
+        """
+
+        """
         logging.debug('* generate')
         generated_tests_as_list_of_road_points = self.random_frenet_generator.start()
         generated_tests_as_list_of_road_points = self.__extract_valid_roads(generated_tests_as_list_of_road_points)
@@ -42,10 +50,18 @@ class TestGenerator:
         logging.info('** test generator has {} tests'.format(len(self.generated_tests)))
 
     def __extract_valid_roads(self, road_points):
+        """
+
+        :param road_points:
+        :return:
+        """
         # TODO
         return road_points
 
     def save_tests(self):
+        """
+
+        """
         logging.info('* save_tests')
 
         file_post_fix: str = '_test.json'
@@ -57,6 +73,12 @@ class TestGenerator:
                 json.dump(test_dict, fp, indent=2)
 
     def __get_next_filename(self, test: Test, file_post_fix):
+        """
+
+        :param test:
+        :param file_post_fix:
+        :return:
+        """
         test_id: str = str(test.test_id)
         nr_zeros: int = self.__nr_prefix_digits - len(test_id)
         file_pre_fix: str = ''

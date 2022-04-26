@@ -16,7 +16,13 @@ class BeamNGSimulator(AbstractSimulator):
     """
     def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
         """
-        :param host: The host address.
+
+        :param host:
+        :param port:
+        :param home:
+        :param user:
+        :param rf:
+        :param max_speed:
         """
         super().__init__()
         self.host = host
@@ -32,14 +38,20 @@ class BeamNGSimulator(AbstractSimulator):
 
     def open(self):
         """
-        Some doc string.
+
         """
         self.beamng.open()
 
     def close(self):
+        """
+
+        """
         self.beamng.close()
 
     def create_new_instance(self):
+        """
+
+        """
         logging.info('restart simulator')
         try:
             self.beamng.close()
@@ -49,10 +61,16 @@ class BeamNGSimulator(AbstractSimulator):
             self.beamng = BeamNGpy(self.host, self.port, home=self.home, user=self.user)
 
     def stop_scenario(self):
+        """
+
+        """
         logging.info('stop_scenario')
         self.beamng.stop_scenario()
 
     def start_scenario(self):
+        """
+
+        """
         logging.info('start_scenario')
         self.beamng.start_scenario()
         self.vehicle.ai_set_mode('span')
@@ -64,11 +82,17 @@ class BeamNGSimulator(AbstractSimulator):
 
     @staticmethod
     def __kmh_to_ms(kmh):
+        """
+
+        :param kmh:
+        :return:
+        """
         return kmh/3.6
 
     def load_scenario(self, test: Test):
         """
-        :param test: Test object
+
+        :param test:
         """
         logging.info('load_scenario')
         self.scenario = Scenario('tig', 'example')
@@ -100,12 +124,19 @@ class BeamNGSimulator(AbstractSimulator):
         self.beamng.load_scenario(self.scenario)
 
     def update_car(self):
+        """
+
+        """
         logging.info('update_car')
         self.vehicle.update_vehicle()
         _ = self.beamng.poll_sensors(self.vehicle)  # otherwise, the values are not updated (bug of beamngpy)
         self.car_state = self.vehicle.state
 
     def get_car_position(self):
+        """
+
+        :return:
+        """
         logging.info('get_car_position')
         x_pos = self.car_state['pos'][0]
         y_pos = self.car_state['pos'][1]
@@ -114,6 +145,11 @@ class BeamNGSimulator(AbstractSimulator):
 
     @staticmethod
     def __compute_start_position(road_nodes):
+        """
+
+        :param road_nodes:
+        :return:
+        """
         logging.info('compute_start_position')
         first_road_point = road_nodes[0]
         second_road_point = road_nodes[1]

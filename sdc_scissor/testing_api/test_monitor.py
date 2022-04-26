@@ -17,6 +17,12 @@ class _RoadModel:
 
 class TestMonitor:
     def __init__(self, simulator: AbstractSimulator, test: Test, oob: float):
+        """
+
+        :param simulator:
+        :param test:
+        :param oob:
+        """
         self.simulator = simulator
         self.test = test
         self.is_test_finished = False
@@ -29,6 +35,9 @@ class TestMonitor:
         self.oob = oob
 
     def check(self):
+        """
+
+        """
         logging.info('check')
         self.simulator.update_car()
         x_pos, y_pos, z_pos = self.simulator.get_car_position()
@@ -43,19 +52,33 @@ class TestMonitor:
             self.test.simulation_data = self.data
 
     def start_timer(self):
+        """
+
+        """
         logging.info('start_timer')
         self.start_time = time.time()
 
     def stop_timer(self):
+        """
+
+        """
         logging.info('stop_timer')
         self.end_time = time.time()
 
     def dump_data(self):
+        """
+
+        """
         logging.info('dump_data')
         # TODO
 
     def __is_car_out_of_lane(self, x_pos: float, y_pos: float) -> bool:
-        # TODO: Issue #22
+        """
+
+        :param x_pos:
+        :param y_pos:
+        :return:
+        """
         logging.info('__is_car_out_of_lane')
 
         # Shapely box geometry
@@ -71,6 +94,12 @@ class TestMonitor:
         return not is_car_model_inside_road_model
 
     def __is_car_at_end_of_road(self, x_pos: float, y_pos: float) -> bool:
+        """
+
+        :param x_pos:
+        :param y_pos:
+        :return:
+        """
         logging.info('__car_at_end_of_road')
         road_end_point = self.test.interpolated_road_points[-1]
         x_end, y_end = road_end_point[0], road_end_point[1]
@@ -82,6 +111,13 @@ class TestMonitor:
 
     @staticmethod
     def __are_points_close(a: tuple[float, float], b: tuple[float, float], threshold: float):
+        """
+
+        :param a:
+        :param b:
+        :param threshold:
+        :return:
+        """
         dist = distance.euclidean(a, b)
         return dist < threshold
 

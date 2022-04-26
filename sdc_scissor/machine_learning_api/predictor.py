@@ -12,6 +12,12 @@ from sdc_scissor.testing_api.test_loader import TestLoader
 
 class Predictor:
     def __init__(self, test_loader: TestLoader, joblib_classifier: Path, label='safety'):
+        """
+
+        :param test_loader:
+        :param joblib_classifier:
+        :param label:
+        """
         self.test_loader = test_loader
         self.__classifier = joblib.load(joblib_classifier)
         self.feature_extractor = FeatureExtractor(segmentation_strategy='angle-based')

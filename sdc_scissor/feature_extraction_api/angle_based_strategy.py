@@ -10,11 +10,21 @@ class AngleBasedStrategy(SegmentationStrategy):
     """
 
     def __init__(self, angle_threshold=5, decision_distance=10):
+        """
+
+        :param angle_threshold:
+        :param decision_distance:
+        """
         self.__road_geometry_calculator = RoadGeometryCalculator()
         self.__angle_threshold = angle_threshold
         self.__decision_distance = decision_distance
 
     def extract_segments(self, road_points):
+        """
+
+        :param road_points:
+        :return:
+        """
         # iterate according to the decision distance
         segment_indexes = []
         segment_start_index = 0
@@ -74,6 +84,12 @@ class AngleBasedStrategy(SegmentationStrategy):
         # define segment when the type of segment will change
 
     def __has_current_angle_changed(self, previous_angle, current_angle):
+        """
+
+        :param previous_angle:
+        :param current_angle:
+        :return:
+        """
         angle_threshold = self.__angle_threshold
         if current_angle <= previous_angle+angle_threshold and current_angle >= previous_angle-angle_threshold:
             return False

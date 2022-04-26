@@ -13,6 +13,12 @@ from sklearn.svm import LinearSVC
 
 class CostEffectivenessEvaluator:
     def __init__(self, data_frame: pd.DataFrame, label: str, time_attribute: str):
+        """
+
+        :param data_frame:
+        :param label:
+        :param time_attribute:
+        """
         self.data_frame = data_frame
         self.label = label
         self.time_attribute = time_attribute
@@ -22,6 +28,9 @@ class CostEffectivenessEvaluator:
                               'std_pivot_off', 'total_angle']
 
     def evaluate(self):
+        """
+
+        """
         logging.info('evaluate')
         X_attributes = self.X_model_attributes + [self.time_attribute]
 

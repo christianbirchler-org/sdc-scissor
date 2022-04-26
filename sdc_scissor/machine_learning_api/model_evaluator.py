@@ -17,6 +17,11 @@ from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_sc
 
 class ModelEvaluator:
     def __init__(self, data_frame: pd.DataFrame, label: str):
+        """
+
+        :param data_frame:
+        :param label:
+        """
         self.data_frame = data_frame
         self.label = label
         self.road_features = ['direct_distance', 'max_angle', 'max_pivot_off', 'mean_angle',
@@ -28,6 +33,9 @@ class ModelEvaluator:
         self.__classifiers = {}
 
     def evaluate(self):
+        """
+
+        """
         logging.info('evaluate')
 
         dd = self.data_frame.sample(frac=1).reset_index(drop=True)
@@ -83,6 +91,10 @@ class ModelEvaluator:
                   .format(model_name, acc, rec, prec, f1))
 
     def save_models(self, out_dir: Path):
+        """
+
+        :param out_dir:
+        """
         logging.info('save_models')
 
         for model_name, model in self.__classifiers.items():

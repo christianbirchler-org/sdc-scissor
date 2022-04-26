@@ -8,10 +8,19 @@ class EquiDistanceStrategy(SegmentationStrategy):
     predefined number of segments.
     """
     def __init__(self, number_of_segments):
+        """
+
+        :param number_of_segments:
+        """
         super().__init__()
         self.__number_of_segments = number_of_segments
 
     def extract_segments(self, road_points):
+        """
+
+        :param road_points:
+        :return:
+        """
         segments = []
 
         # only two road points for a segment

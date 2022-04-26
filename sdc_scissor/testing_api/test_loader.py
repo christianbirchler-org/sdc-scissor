@@ -9,12 +9,20 @@ from sdc_scissor.testing_api.test import Test
 
 class TestLoader:
     def __init__(self, tests_dir: Path):
+        """
+
+        :param tests_dir:
+        """
         self.tests_dir: Path = tests_dir
 
         self.test_paths: list[Path] = []
         self.__set_test_paths(self.test_paths)
 
     def __set_test_paths(self, tests_paths: list):
+        """
+
+        :param tests_paths:
+        """
         logging.debug('* _test_loader_gen')
         pattern: str = r'.*test.*.json'
         for root, dirs, files in os.walk(self.tests_dir):
@@ -26,9 +34,17 @@ class TestLoader:
                     tests_paths.append(full_path)
 
     def has_next(self) -> bool:
+        """
+
+        :return:
+        """
         return len(self.test_paths) > 0
 
     def next(self) -> tuple[Test, Path]:
+        """
+
+        :return:
+        """
         if not self.has_next():
             logging.warning('There are no remaining tests!')
             raise Exception('There are no remaining tests!')
@@ -39,6 +55,11 @@ class TestLoader:
 
     @staticmethod
     def __load_test_from_path(test_path: Path):
+        """
+
+        :param test_path:
+        :return:
+        """
         logging.info(str(test_path))
         with open(test_path, 'r') as fp:
             test_json = json.load(fp)

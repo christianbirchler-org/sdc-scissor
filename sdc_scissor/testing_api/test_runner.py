@@ -9,12 +9,19 @@ from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 
 class TestRunner:
     def __init__(self, **kwargs) -> None:
+        """
+
+        :param kwargs:
+        """
         self.test_loader: TestLoader = kwargs.get('test_loader', None)
         self.ml_component = kwargs.get('machine_learning_api', None)
         self.simulator: AbstractSimulator = kwargs.get('simulator', None)
         self.oob: float = kwargs.get('oob', None)
 
     def run_test_suite(self):
+        """
+
+        """
         logging.info('* run_test_suite')
         self.simulator.open()
         has_execution_failed = False
@@ -42,6 +49,7 @@ class TestRunner:
     def run(self, test: Test) -> None:
         """
         Runs the test with the simulator given by instantiation of the test runner.
+        :param test:
         """
         logging.info('* run')
         time.sleep(5)
