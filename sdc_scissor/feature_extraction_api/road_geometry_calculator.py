@@ -6,9 +6,10 @@ import math
 class RoadGeometryCalculator:
     def extract_turn_angles(self, road_points):
         """
-        Extract angles of raod points and ad them to the instance variable
-        :param road_points:
-        :return:
+        Extract angles of raod points and ad them to the instance variable.
+
+        :param road_points: Points that define the road in the test scenario.
+        :return: Angles in degrees of road's turns defined by the road points.
         """
         angles = []
         # iterate over "all" road points
@@ -42,6 +43,7 @@ class RoadGeometryCalculator:
         """
         Returns the angle in degrees between the first and second vector.
         A left turn as positive angles whereas right turns have negatives.
+
         :param first_vec:
         :param second_vec:
         :return:
