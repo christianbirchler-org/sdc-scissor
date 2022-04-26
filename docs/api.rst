@@ -1,5 +1,6 @@
 API
 ===
+Some preliminary words about the API.
 
 .. automodule:: sdc_scissor.testing_api.test
 .. automodule:: sdc_scissor.testing_api.test_generator
