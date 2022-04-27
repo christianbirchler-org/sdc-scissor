@@ -1,6 +1,6 @@
 # SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 
-![](https://readthedocs.org/projects/sdc-scissor/badge/?version=latest&style=plastic)
+![](https://readthedocs.org/projects/sdc-scissor/badge)
 
 
 SDC-Scissor is a tool that let you test self-driving cars more efficiently in simulation. It uses a machine-learning
