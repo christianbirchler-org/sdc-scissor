@@ -1,8 +1,15 @@
 # SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
-This project extends the tool competition platform from the [Cyber-Phisical Systems Testing Competition](https://github.com/se2p/tool-competition-av) which was part of the [SBST Workshop in 2021](https://sbst21.github.io/).
+
+![](https://readthedocs.org/projects/sdc-scissor/badge/?version=latest&style=plastic)
+
+
+SDC-Scissor is a tool that let you test self-driving cars more efficiently in simulation. It uses a machine-learning
+approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
+are diverse and try to challenge the car with corner cases.
 
 ## Demo
 [![Watch the video](https://img.youtube.com/vi/Cn8p648KnfQ/maxresdefault.jpg)](https://youtu.be/Cn8p648KnfQ)
+
 [YouTube Link](https://youtu.be/Cn8p648KnfQ)
 
 ## Data
@@ -76,11 +83,11 @@ Dr. Sebastiano Panichella - Zurich University of Applied Science (ZHAW), Switzer
 }
 
 @article{Birchler2022Single,
-author = {Birchler, Christian and Khatiri, Sajad and Derakhshanfar, Pouria and Panichella, Sebastiano and Panichella, Annibale},
-title = {Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments},
-year = {2022},
-publisher = {Association for Computing Machinery},
-journal = {ACM Transactions on Software Engineering and Methodology (TOSEM)},
-doi = {to appear}
+  author = {Birchler, Christian and Khatiri, Sajad and Derakhshanfar, Pouria and Panichella, Sebastiano and Panichella, Annibale},
+  title = {Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments},
+  year = {2022},
+  publisher = {Association for Computing Machinery},
+  journal = {ACM Transactions on Software Engineering and Methodology (TOSEM)},
+  doi = {to appear}
 }
 ```
