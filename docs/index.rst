@@ -45,12 +45,22 @@ References
 **If you use this tool in your research, please cite the following papers:**
 
 - Christian Birchler, Nicolas Ganz, Sajad Khatiri, Alessio Gambi, and Sebastiano Panichella. 2022. Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor. In 2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER), IEEE.
+- Christian Birchler, Sajad Khatiri, Pouria Derakhshanfar, Sebastiano Panichella, and Annibale Panichella. 2022. Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments. ACM Transactions on Software Engineering and Methodology (TOSEM) (2022). DOI:https://doi.org/to appear
 
 .. code-block:: bibtex
 
-   @INPROCEEDINGS{Birchler2022,
+   @INPROCEEDINGS{Birchler2022Cost,
      author={Birchler, Christian and Ganz, Nicolas and Khatiri, Sajad and Gambi, Alessio, and Panichella, Sebastiano},
      booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER)},
      title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor},
      year={2022},
+   }
+
+   @article{Birchler2022Single,
+      author = {Birchler, Christian and Khatiri, Sajad and Derakhshanfar, Pouria and Panichella, Sebastiano and Panichella, Annibale},
+      title = {Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments},
+      year = {2022},
+      publisher = {Association for Computing Machinery},
+      journal = {ACM Transactions on Software Engineering and Methodology (TOSEM)},
+      doi = {to appear}
    }
