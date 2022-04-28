@@ -12,8 +12,8 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
     def __init__(self, risk_factor: str, max_seg_length_to_full_road):
         """
 
-        :param risk_factor:
-        :param max_seg_length_to_full_road:
+        :param risk_factor: Risk factor of the driving AI.
+        :param max_seg_length_to_full_road: Relative size of the longest allowed segment compared to the full road length.
         """
         # dependend on the risk factor
         self.__seg_length_in_meters = seg_lengths_dict[risk_factor]
@@ -29,8 +29,9 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
         """
         Returns a list of tuples that contain start end end indexes of road
         segments.
-        :param road_points:
-        :return:
+
+        :param road_points: List of coordinates specifying the road.
+        :return: List of start and end indexes defining the start and end  road points of segments.
         """
         road_length = self.__road_geometry_calculator.get_road_length(road_points)
 
