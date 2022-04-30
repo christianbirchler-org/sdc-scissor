@@ -3,6 +3,10 @@ SDC-Scissor is a tool that let you test self-driving cars more efficiently in si
 approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
 are diverse and try to challenge the car with corner cases.
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
+
 ## Docs
 [![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
 
