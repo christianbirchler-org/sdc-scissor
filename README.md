@@ -7,7 +7,7 @@ are diverse and try to challenge the car with corner cases.
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
 
-![test](https://github.com/github/docs/actions/workflows/test.yml/badge.svg?branch=dev)
+![example workflow](https://github.com/ChristianBirchler/sdc-scissor/actions/workflows/test.yml/badge.svg)
 
 ## Docs
 [![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
