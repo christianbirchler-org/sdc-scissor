@@ -1,4 +1,4 @@
-name: Build
+name: Static Analysis
 on:
   push:
     branches:
