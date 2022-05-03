@@ -16,9 +16,10 @@ def _id_generator():
 class TestGenerator:
     def __init__(self, count: int, destination: Path):
         """
+        This class is used to generate tests for a virtual environment.
 
-        :param count:
-        :param destination:
+        :param count: Number of tests to be generated
+        :param destination: Directory where the tests should be saved
         """
         self.count: int = count
         self.__id_generator = _id_generator()
@@ -34,11 +35,14 @@ class TestGenerator:
 
     def generate(self):
         """
-
+        Generate tests according to the parameters set while instantiating this object.
         """
         logging.debug('* generate')
         generated_tests_as_list_of_road_points = self.random_frenet_generator.start()
         generated_tests_as_list_of_road_points = self.__extract_valid_roads(generated_tests_as_list_of_road_points)
+
+        generated_tests_as_list_of_road_points = self.__add_sine_bumps(generated_tests_as_list_of_road_points)
+
         for road_points in generated_tests_as_list_of_road_points:
             test = Test(
                 test_id=next(self.__id_generator),
@@ -49,18 +53,24 @@ class TestGenerator:
         logging.info('** {} tests generated'.format(len(generated_tests_as_list_of_road_points)))
         logging.info('** test generator has {} tests'.format(len(self.generated_tests)))
 
+    def __add_sine_bumps(self, generated_tests_as_list_of_road_points):
+        for road_as_points in generated_tests_as_list_of_road_points:
+            pass
+        return generated_tests_as_list_of_road_points
+
     def __extract_valid_roads(self, road_points):
         """
+        Check if the road points are actual valid roads without intersections or too sharp turns.
 
-        :param road_points:
-        :return:
+        :param road_points: List of road points specifying potential roads
+        :return: List of road points that define proper valid roads
         """
         # TODO
         return road_points
 
     def save_tests(self):
         """
-
+        Save the tests as json files in a separate directory.
         """
         logging.info('* save_tests')
 

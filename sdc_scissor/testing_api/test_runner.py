@@ -49,7 +49,8 @@ class TestRunner:
     def run(self, test: Test) -> None:
         """
         Runs the test with the simulator given by instantiation of the test runner.
-        :param test:
+
+        :param test: Test object that needs to be executed in simulation
         """
         logging.info('* run')
         time.sleep(5)
