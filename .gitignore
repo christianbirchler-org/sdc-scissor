@@ -154,3 +154,4 @@ dmypy.json
 /analysis.ipynb
 /.vscode/
 /trained_models/
+/debug_scenario.py
