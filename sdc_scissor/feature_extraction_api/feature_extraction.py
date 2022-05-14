@@ -15,7 +15,7 @@ from sdc_scissor.testing_api.test import Test
 class RoadFeatures:
     def __init__(self):
         """
-
+        Class representing the road features as attributes
         """
         self.direct_distance = 0
         self.road_distance = 0
@@ -40,8 +40,9 @@ class RoadFeatures:
 
     def to_dict(self):
         """
+        Serialize the road features to a python dictionary
 
-        :return:
+        :return: A dictionary with the road features
         """
         members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
         res = {}
@@ -53,7 +54,7 @@ class RoadFeatures:
 class RoadSegment:
     def __init__(self):
         """
-
+        A class representing a road segment
         """
         self.start_index = None
         self.end_index = None
@@ -71,8 +72,9 @@ class SegmentType:
 class FeatureExtractor:
     def __init__(self, segmentation_strategy):
         """
+        A class that is responsible for extracting road features of test scenarios.
 
-        :param segmentation_strategy:
+        :param segmentation_strategy: A road segmentation strategy
         """
         self.__road_features = RoadFeatures()
         self.__segments = []
@@ -88,9 +90,10 @@ class FeatureExtractor:
     @staticmethod
     def save_to_csv(road_features: list, out_dir: Path):
         """
+        Save the road features to a csv file.
 
-        :param road_features:
-        :param out_dir:
+        :param road_features: List of road features
+        :param out_dir: Path to store the csv file
         """
         logging.info('save_to_csv')
         dd = pd.DataFrame()
@@ -111,9 +114,10 @@ class FeatureExtractor:
         """
         Input is a list of (x, y) tuples which defines the road.
         This function extract the angles and radius of segments.
-        Futhermore, the statistics of angles and radius are calculated.
-        :param test:
-        :return:
+        Furthermore, the statistics of angles and radius are calculated.
+
+        :param test: A test object
+        :return: A road feature object
         """
 
         # get turn angles

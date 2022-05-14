@@ -9,17 +9,19 @@ class EquiDistanceStrategy(SegmentationStrategy):
     """
     def __init__(self, number_of_segments):
         """
+        Initialize the strategy by providing the number of segments that should be generated
 
-        :param number_of_segments:
+        :param number_of_segments: The number of segments with equal distances that should be generated
         """
         super().__init__()
         self.__number_of_segments = number_of_segments
 
     def extract_segments(self, road_points):
         """
+        Extract the segments of the road specified by the road points
 
-        :param road_points:
-        :return:
+        :param road_points: Road points defining the road
+        :return: List of indexes representing the start and end point of segments
         """
         segments = []
 
