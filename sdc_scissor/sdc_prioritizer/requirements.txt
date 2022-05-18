@@ -1,0 +1,4 @@
+pymoo==0.5.0
+numpy==1.20.0
+pyrecorder==0.2.1
+scikit-learn==1.0.2

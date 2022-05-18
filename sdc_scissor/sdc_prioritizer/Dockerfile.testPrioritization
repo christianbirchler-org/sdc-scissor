@@ -1,0 +1,41 @@
+FROM    python:3.9.1
+
+RUN adduser --disabled-password --gecos '' user
+USER user
+
+RUN mkdir ~/experiment
+
+
+# set work directory
+WORKDIR /home/user/experiment
+
+# Set virtual environment
+ENV VIRTUAL_ENV=venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+
+# Install dependencies for setting up virtual env
+RUN python3 -m pip install --upgrade pip virtualenv
+RUN pip install --upgrade pip setuptools wheel
+USER root
+RUN apt-get update
+RUN apt install -y libgl1-mesa-glx
+USER user
+
+# Copy files required for setting up virtual env
+COPY    setup.py /home/user/experiment
+COPY    setup.cfg /home/user/experiment
+COPY    requirements.txt /home/user/experiment
+
+
+# Copy the module
+# COPY    /testPrioritization /home/user/experiment/testPrioritization
+
+# Copy inputs directory
+COPY /datasets /home/user/experiment/datasets
+
+# Install dependencies
+RUN pip install -r requirements.txt
+# setup the project
+# RUN pip install --editable /home/user/experiment
