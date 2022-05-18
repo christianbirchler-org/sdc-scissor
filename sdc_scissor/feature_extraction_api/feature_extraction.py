@@ -79,13 +79,7 @@ class FeatureExtractor:
         self.__road_features = RoadFeatures()
         self.__segments = []
         self.__road_geometry_calculator = RoadGeometryCalculator()
-
-        # TODO: find a more usable way to instantiate the desired strategy
-        if segmentation_strategy == 'angle-based':
-            self.__segmentation_strategy = AngleBasedStrategy()
-        else:
-            logging.error('Invalid segmentation strategy!')
-            raise Exception('Invalid segmentation strategy!')
+        self.__segmentation_strategy = segmentation_strategy
 
     @staticmethod
     def save_to_csv(road_features: list, out_dir: Path):

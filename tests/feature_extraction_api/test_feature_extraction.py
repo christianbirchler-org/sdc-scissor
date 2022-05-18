@@ -11,8 +11,8 @@ from sdc_scissor.testing_api.test import Test
 
 class TestFeatureExtraction:
     @parameterized.expand([
-        (999, 20),
-        (200, 12)
+        [999, 20],
+        [200, 12]
     ])
     def test_straight_road_equi_distance_strategy(self, distance, nr_segments):
         road_points = [[x, 0] for x in range(distance + 1)]
@@ -166,16 +166,3 @@ class TestFeatureExtraction:
         assert road_features.mean_pivot_off == approx(radius, abs=2)
         assert road_features.max_pivot_off == approx(radius, abs=2)
         assert road_features.min_pivot_off == approx(radius, abs=2)
-
-    def test_angle_based_segmentation(self):
-
-        road_points = [[20, 20], [50, 30], [70, 50], [80, 80], [70, 110], [50, 130], [50, 150], [60, 160], [80, 170],
-                       [100, 17], [120, 160], [140, 120], [150, 80], [150, 50], [150, 30], [150, 20]]
-
-        test = Test(0, road_points, 'NOT_EXECUTED')
-        segmentation_strategy = AngleBasedStrategy(angle_threshold=10, decision_distance=10)
-        segmentation_strategy.extract_segments(road_points)
-        feature_extractor = FeatureExtractor(segmentation_strategy)
-        feature_extractor.extract_features(test)
-
-        assert False
