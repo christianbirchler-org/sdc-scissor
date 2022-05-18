@@ -3,6 +3,11 @@ SDC-Scissor is a tool that let you test self-driving cars more efficiently in si
 approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
 are diverse and try to challenge the car with corner cases.
 
+Furthermore, this repository contains also code for test multi-objective test case prioritization with an evolutionary
+genetic search algorithm. If you are interested in prioritizing test cases, then you should read the dedicated
+[README.md](sdc_scissor/sdc_prioritizer/testPrioritization/README.md) for this.
+If you use the prioritization technique then also cite the papers from the reference section!
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
