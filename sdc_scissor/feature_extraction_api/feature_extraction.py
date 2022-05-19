@@ -6,8 +6,6 @@ import pandas as pd
 
 from pathlib import Path
 
-from sdc_scissor.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
-from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 from sdc_scissor.testing_api.test import Test
 
@@ -113,31 +111,20 @@ class FeatureExtractor:
         :param test: A test object
         :return: A road feature object
         """
-
-        # get turn angles
-        # self.__angles = self.__extract_turn_angles(self.__road_points)
-
-        # define segments (allow different strategies)
         segment_indexes_list = self.__segmentation_strategy.extract_segments(test.road_points)
-
-        # calculate segment features
         for indexes in segment_indexes_list:
             segment = self.__get_road_segment_with_features(test, indexes)
             self.__segments.append(segment)
 
         self.__road_features = self.__get_full_road_features_from(test, self.__segments)
-
         return self.__road_features
 
-    ############################################################################
-    #       IMPLEMENTATION DETAILS BELOW
-    ############################################################################
-
-    def __get_full_road_features_from(self, test: Test, segments):
+    def __get_full_road_features_from(self, test: Test, segments: list[RoadSegment]):
         """
+        Compute full road features based on all segments.
 
-        :param test:
-        :param segments:
+        :param test: Test object.
+        :param segments: List of road segments.
         :return:
         """
         road_features = RoadFeatures()
@@ -263,10 +250,11 @@ class FeatureExtractor:
 
     def __get_road_segment_with_features(self, test: Test, indexes):
         """
+        Compute segment features and create a segment object accordingly.
 
-        :param test:
-        :param indexes:
-        :return:
+        :param test: A test object
+        :param indexes: Start and end index of a single segment of the road specified in the test.
+        :return: A road segment object with segment specific features.
         """
         road_segment = RoadSegment()
         road_segment.start_index = indexes[0]
