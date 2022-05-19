@@ -10,7 +10,7 @@ class AngleBasedStrategy(SegmentationStrategy):
     """
     def __init__(self, angle_threshold=5, decision_distance=10):
         """
-        Instantiate a strategy object defijing the segmentation strategy of the road. Class is coherent to the strategy pattern.
+        Instantiate a strategy object defining the segmentation strategy of the road. Class is coherent to the strategy pattern.
 
         :param angle_threshold: Angle threshold defining a new segment.
         :param decision_distance: Road distance for calculating the turn angle.

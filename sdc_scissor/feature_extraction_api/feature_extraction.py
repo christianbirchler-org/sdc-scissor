@@ -125,7 +125,7 @@ class FeatureExtractor:
 
         :param test: Test object.
         :param segments: List of road segments.
-        :return:
+        :return: An object containing road features as attributes.
         """
         road_features = RoadFeatures()
         road_features.test_duration = test.test_duration
