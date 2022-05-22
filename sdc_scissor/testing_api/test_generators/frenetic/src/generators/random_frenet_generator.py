@@ -3,7 +3,7 @@ import logging as log
 import random
 from time import sleep
 
-from sdc_scissor.testing_api.frenetic.src.generators.base_frenet_generator import BaseFrenetGenerator
+from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_frenet_generator import BaseFrenetGenerator
 
 
 class CustomFrenetGenerator(BaseFrenetGenerator):

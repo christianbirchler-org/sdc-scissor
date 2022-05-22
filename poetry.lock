@@ -1,4 +1,16 @@
 [[package]]
+name = "autograd"
+version = "1.4"
+description = "Efficiently computes derivatives of numpy code."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+future = ">=0.15.2"
+numpy = ">=1.12"
+
+[[package]]
 name = "alabaster"
 version = "0.7.12"
 description = "A configurable sidebar-enabled Sphinx theme"
@@ -36,8 +48,6 @@ category = "dev"
 optional = false
 python-versions = ">=3.6"
 
-[package.dependencies]
-pytz = ">=2015.7"
 
 [[package]]
 name = "beamngpy"
@@ -86,6 +96,14 @@ python-versions = ">=3.7"
 
 [package.dependencies]
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
+
+[[package]]
+name = "cma"
+version = "2.7.0"
+description = "CMA-ES, Covariance Matrix Adaptation Evolution Strategy for non-linear numerical optimization in Python"
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "colorama"
@@ -158,6 +176,14 @@ unicode = ["unicodedata2 (>=14.0.0)"]
 woff = ["zopfli (>=0.1.4)", "brotlicffi (>=0.8.0)", "brotli (>=1.0.1)"]
 
 [[package]]
+name = "future"
+version = "0.18.2"
+description = "Clean single-source support for Python 3 and 2"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[[package]]
 name = "idna"
 version = "3.3"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -196,6 +222,7 @@ description = "iniconfig: brain-dead simple config-ini parsing"
 category = "dev"
 optional = false
 python-versions = "*"
+
 
 [[package]]
 name = "jinja2"
@@ -332,6 +359,21 @@ python-versions = ">=3.7"
 [package.extras]
 docs = ["olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-issues (>=3.0.1)", "sphinx-removed-in", "sphinx-rtd-theme (>=1.0)", "sphinxext-opengraph"]
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
+
+[[package]]
+name = "pymoo"
+version = "0.4.2.2"
+description = "Multi-Objective Optimization in Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+autograd = ">=1.3"
+cma = "2.7"
+matplotlib = ">=3"
+numpy = ">=1.15"
+scipy = ">=1.1"
 
 [[package]]
 name = "pluggy"
@@ -692,9 +734,14 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2bcff246fe80fedef3334137e1eb703f3f3c82d1926e023f9f17dc4e86dee5f7"
+
+content-hash = "e135fb815fbbcf5d979fb166981973093c756b597051242849d9a6e34a38f29a"
 
 [metadata.files]
+autograd = [
+    {file = "autograd-1.4-py3-none-any.whl", hash = "sha256:5cd6051bf1440643bf8f1104c933b2dedefb7610b951091768c1c680b1e0ceda"},
+    {file = "autograd-1.4.tar.gz", hash = "sha256:383de0f537ef2e38b85ff9692593b0cfae8958c9b3bd451b52c255fd9171ffce"},
+]
 alabaster = [
     {file = "alabaster-0.7.12-py2.py3-none-any.whl", hash = "sha256:446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359"},
     {file = "alabaster-0.7.12.tar.gz", hash = "sha256:a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02"},
@@ -726,6 +773,11 @@ charset-normalizer = [
 click = [
     {file = "click-8.1.2-py3-none-any.whl", hash = "sha256:24e1a4a9ec5bf6299411369b208c1df2188d9eb8d916302fe6bf03faed227f1e"},
     {file = "click-8.1.2.tar.gz", hash = "sha256:479707fe14d9ec9a0757618b7a100a0ae4c4e236fac5b7f80ca68028141a1a72"},
+]
+cma = [
+    {file = "cma-2.7.0-py2.py3-none-any.whl", hash = "sha256:136e457c97e837152404b868c4ec6f163dee923fcee8b94ff446d13d4242b227"},
+    {file = "cma-2.7.0.macosx-10.7-x86_64.exe", hash = "sha256:924946fcf2e94911956d02bb75121e4aec325eb2fc148c6edf97337eddef8418"},
+    {file = "cma-2.7.0.tar.gz", hash = "sha256:f4630d405efdbf4d85ba42b6bdfe5708b716bb088880b938b60c3bfbf1c1cd59"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
@@ -805,6 +857,9 @@ importlib-metadata = [
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
+]
+future = [
+    {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
 ]
 jinja2 = [
     {file = "Jinja2-3.1.1-py3-none-any.whl", hash = "sha256:539835f51a74a69f41b848a9645dbdc35b4f20a3b601e2d9a7e22947b15ff119"},
@@ -1071,6 +1126,17 @@ pillow = [
     {file = "Pillow-9.1.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:8d79c6f468215d1a8415aa53d9868a6b40c4682165b8cb62a221b1baa47db458"},
     {file = "Pillow-9.1.0.tar.gz", hash = "sha256:f401ed2bbb155e1ade150ccc63db1a4f6c1909d3d378f7d1235a44e90d75fb97"},
 ]
+
+pymoo = [
+    {file = "pymoo-0.4.2.2-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:c8fa16b516d57d3e4361700dd7b2fa2850038cd172048c6407c8375b43ccf168"},
+    {file = "pymoo-0.4.2.2-cp37-cp37m-win_amd64.whl", hash = "sha256:f5fc37220d82c7d4ed48e905edb2fa42c944dd0250d9a30efe19eded44240129"},
+    {file = "pymoo-0.4.2.2-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:258f641077a9a9704a857d52ea534f83a6d344f9ac3493a2761a156269d8737c"},
+    {file = "pymoo-0.4.2.2-cp38-cp38-win_amd64.whl", hash = "sha256:38195042c3d32ee3b07ee7e297cf0beed28de7e12165e845f51aa79d1e8f0f17"},
+    {file = "pymoo-0.4.2.2-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:a480d6ad6f95c1648e7292494648bf5db589c3ae7f9ed61744a3e4f30385fd3d"},
+    {file = "pymoo-0.4.2.2-cp39-cp39-win_amd64.whl", hash = "sha256:0d2b13d01f6ac1ac730b2896d65433a4207f0e965b25fa9d5a24f84b287c3aa0"},
+    {file = "pymoo-0.4.2.2.tar.gz", hash = "sha256:8b22309295f141466047a913dc867f0e8c9297b205b1dd4bfcb3c1fb516b6fec"},
+]
+
 pluggy = [
     {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},
     {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
@@ -1090,6 +1156,7 @@ pyflakes = [
 pygments = [
     {file = "Pygments-2.12.0-py3-none-any.whl", hash = "sha256:dc9c10fb40944260f6ed4c688ece0cd2048414940f1cea51b8b226318411c519"},
     {file = "Pygments-2.12.0.tar.gz", hash = "sha256:5eb116118f9612ff1ee89ac96437bb6b49e8f04d8a13b514ba26f620208e26eb"},
+
 ]
 pyopengl = [
     {file = "PyOpenGL-3.1.6-py2-none-any.whl", hash = "sha256:57c597d989178e1413002df6b923619f6d29807501dece1c60cc6f12c0c8e8a7"},
