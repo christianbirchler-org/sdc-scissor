@@ -18,9 +18,6 @@ class TestGenerator:
     def __init__(self, count: int, destination: Path, tool: str):
         """
         This class is used to generate tests for a virtual environment.
-
-        :param count: Number of tests to be generated
-        :param destination: Directory where the tests should be saved
         """
 
         self.count: int = count
@@ -28,16 +25,16 @@ class TestGenerator:
         self.__nr_prefix_digits: int = 5
         self.destination: Path = destination
         self.generated_tests: list[Test] = []
-        self.tool: str=tool
+        self.tool: str = tool
         kwargs: dict = {
             'map_size': 200,
             'time_budget': 100,
             'count': count
         }
         # Types of test generator 
-        if(self.tool=='frenetic'):
+        if(self.tool == 'frenetic'):
             self.random_generator = CustomFrenetGenerator(**kwargs)
-        elif(self.tool=='ambiegen'):
+        elif(self.tool == 'ambiegen'):
             self.random_generator = CustomAmbieGenGenerator()
 
     def generate(self):
