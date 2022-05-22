@@ -26,7 +26,7 @@ class CustomAmbieGenGenerator:
     the Pareto optimal solutions are provided and executed. Then the algorithm is launched again.
     """
 
-    def __init__(self, time_budget=None, executor=None, map_size=None):
+    def __init__(self, time_budget=None, executor=None, map_size=200):
         self.map_size = map_size
         self.time_budget = time_budget
         self.executor = executor

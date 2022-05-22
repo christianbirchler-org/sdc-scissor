@@ -30,7 +30,7 @@ class TestGenerator:
         if(self.tool=='frenetic'):
             self.random_generator = CustomFrenetGenerator(**kwargs)
         elif(self.tool=='ambiegen'):
-            self.random_generator = CustomAmbieGenGenerator(map_size=200)
+            self.random_generator = CustomAmbieGenGenerator()
 
     def generate(self):
         logging.debug('* generate')
