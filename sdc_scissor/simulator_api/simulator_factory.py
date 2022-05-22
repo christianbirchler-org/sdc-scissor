@@ -7,6 +7,14 @@ from sdc_scissor.simulator_api.beamng_simulator import BeamNGSimulator
 class SimulatorFactory:
     @staticmethod
     def get_beamng_simulator(home, user, rf: float, max_speed: float) -> AbstractSimulator:
+        """
+
+        :param home:
+        :param user:
+        :param rf:
+        :param max_speed:
+        :return:
+        """
         beamng_simulator = BeamNGSimulator(
             host='localhost',
             port=64256,

@@ -11,7 +11,20 @@ from sdc_scissor.testing_api.test import Test
 
 
 class BeamNGSimulator(AbstractSimulator):
+    """
+    This class implements the interface for the specific BeamNG.tech simulator.
+    """
     def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
+        """
+        API for enabling inter-process communication with the BeamNG simulator.
+
+        :param host: Hostname of the machine, e.g., 'localhost'
+        :param port: The port for communication with the BeamNG process
+        :param home: Path to BeamNG installation
+        :param user: The user path (path to your license key file)
+        :param rf: The risk factor, e.g., 1.5
+        :param max_speed: The maximal speed allowed for a vehicle in km/h
+        """
         super().__init__()
         self.host = host
         self.port = port
@@ -25,12 +38,21 @@ class BeamNGSimulator(AbstractSimulator):
         self.max_speed = max_speed
 
     def open(self):
+        """
+        Start the BeamNG.tech process
+        """
         self.beamng.open()
 
     def close(self):
+        """
+        Quit the BeamNG.tech process
+        """
         self.beamng.close()
 
     def create_new_instance(self):
+        """
+        Restart the BeamNG.tech process
+        """
         logging.info('restart simulator')
         try:
             self.beamng.close()
@@ -40,10 +62,16 @@ class BeamNGSimulator(AbstractSimulator):
             self.beamng = BeamNGpy(self.host, self.port, home=self.home, user=self.user)
 
     def stop_scenario(self):
+        """
+
+        """
         logging.info('stop_scenario')
         self.beamng.stop_scenario()
 
     def start_scenario(self):
+        """
+
+        """
         logging.info('start_scenario')
         self.beamng.start_scenario()
         self.vehicle.ai_set_mode('span')
@@ -55,9 +83,18 @@ class BeamNGSimulator(AbstractSimulator):
 
     @staticmethod
     def __kmh_to_ms(kmh):
+        """
+
+        :param kmh:
+        :return:
+        """
         return kmh/3.6
 
     def load_scenario(self, test: Test):
+        """
+
+        :param test:
+        """
         logging.info('load_scenario')
         self.scenario = Scenario('tig', 'example')
         road = Road(material='tig_road_rubber_sticky', rid='flat_road', interpolate=True)
@@ -65,7 +102,7 @@ class BeamNGSimulator(AbstractSimulator):
         # Ensure not overriding the test object (copy first the whole list)
         road_nodes = test.interpolated_road_points.copy()
         for road_node in road_nodes:
-            road_node.extend([-28, 10])
+            road_node.extend([28, 10])
 
         road.nodes.extend(road_nodes)
 
@@ -88,12 +125,20 @@ class BeamNGSimulator(AbstractSimulator):
         self.beamng.load_scenario(self.scenario)
 
     def update_car(self):
+        """
+
+        """
         logging.info('update_car')
         self.vehicle.update_vehicle()
         _ = self.beamng.poll_sensors(self.vehicle)  # otherwise, the values are not updated (bug of beamngpy)
         self.car_state = self.vehicle.state
 
     def get_car_position(self):
+        """
+        Compute the car's position
+
+        :return: x,y,z coordinates of the car
+        """
         logging.info('get_car_position')
         x_pos = self.car_state['pos'][0]
         y_pos = self.car_state['pos'][1]
@@ -102,6 +147,12 @@ class BeamNGSimulator(AbstractSimulator):
 
     @staticmethod
     def __compute_start_position(road_nodes):
+        """
+        Compute start position of the car. The car should be on the right lane in the beginning of the road.
+
+        :param road_nodes: Road nodes specifying the road for a BeamNG scenario
+        :return: The coordinates of the start position of the car.
+        """
         logging.info('compute_start_position')
         first_road_point = road_nodes[0]
         second_road_point = road_nodes[1]
@@ -117,7 +168,7 @@ class BeamNGSimulator(AbstractSimulator):
 
         start_position = (start_point.x, start_point.y)
 
-        return start_position[0], start_position[1], -28.0, x_dir, y_dir, alpha
+        return start_position[0], start_position[1], first_road_point[2], x_dir, y_dir, alpha
 
 
 if __name__ == '__main__':

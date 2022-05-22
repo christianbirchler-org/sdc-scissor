@@ -16,6 +16,13 @@ def _id_generator():
 
 class TestGenerator:
     def __init__(self, count: int, destination: Path,tool: str):
+        """
+        This class is used to generate tests for a virtual environment.
+
+        :param count: Number of tests to be generated
+        :param destination: Directory where the tests should be saved
+        """
+
         self.count: int = count
         self.__id_generator = _id_generator()
         self.__nr_prefix_digits: int = 5
@@ -33,9 +40,15 @@ class TestGenerator:
             self.random_generator = CustomAmbieGenGenerator()
 
     def generate(self):
+        """
+        Generate tests according to the parameters set while instantiating this object.
+        """
         logging.debug('* generate')
         generated_tests_as_list_of_road_points = self.random_generator.start()
         generated_tests_as_list_of_road_points = self.__extract_valid_roads(generated_tests_as_list_of_road_points)
+
+        generated_tests_as_list_of_road_points = self.__add_sine_bumps(generated_tests_as_list_of_road_points)
+
         for road_points in generated_tests_as_list_of_road_points:
             test = Test(
                 test_id=next(self.__id_generator),
@@ -46,11 +59,25 @@ class TestGenerator:
         logging.info('** {} tests generated'.format(len(generated_tests_as_list_of_road_points)))
         logging.info('** test generator has {} tests'.format(len(self.generated_tests)))
 
+    def __add_sine_bumps(self, generated_tests_as_list_of_road_points):
+        for road_as_points in generated_tests_as_list_of_road_points:
+            pass
+        return generated_tests_as_list_of_road_points
+
     def __extract_valid_roads(self, road_points):
+        """
+        Check if the road points are actual valid roads without intersections or too sharp turns.
+
+        :param road_points: List of road points specifying potential roads
+        :return: List of road points that define proper valid roads
+        """
         # TODO
         return road_points
 
     def save_tests(self):
+        """
+        Save the tests as json files in a separate directory.
+        """
         logging.info('* save_tests')
 
         file_post_fix: str = '_test.json'
@@ -62,6 +89,12 @@ class TestGenerator:
                 json.dump(test_dict, fp, indent=2)
 
     def __get_next_filename(self, test: Test, file_post_fix):
+        """
+
+        :param test:
+        :param file_post_fix:
+        :return:
+        """
         test_id: str = str(test.test_id)
         nr_zeros: int = self.__nr_prefix_digits - len(test_id)
         file_pre_fix: str = ''

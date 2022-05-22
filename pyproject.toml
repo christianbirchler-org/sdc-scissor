@@ -15,6 +15,11 @@ pymoo = "0.4.2.2"
 
 [tool.poetry.dev-dependencies]
 parameterized = "^0.8.1"
+Sphinx = "^4.5.0"
+sphinx-rtd-theme = "^1.0.0"
+flake8 = "^4.0.1"
+pytest = "^7.1.2"
+coverage = "^6.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

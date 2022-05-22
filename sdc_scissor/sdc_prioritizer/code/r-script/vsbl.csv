@@ -1,0 +1,7 @@
+benchmark,config,config2,VD.magnitude,VD.estimate,wilcox.test.pvalue,avg.ga,avg.bl
+BeamNG.AI.AF1,mo-10_feature_GA,Greedy,large,0.8660416666666667,0,0.8090877979166666,0.78693
+BeamNG.AI.AF1,mo-10_feature_GA,random,large,1,0,0.8090877979166666,0.4998356666666667
+BeamNG.AI.AF1.5,mo-10_feature_GA,Greedy,large,0.9558333333333333,0,0.8041828041666667,0.77053
+BeamNG.AI.AF1.5,mo-10_feature_GA,random,large,1,0,0.8041828041666667,0.499838
+DeepDriving,mo-10_feature_GA,Greedy,large,0.996875,0,0.8567744125,0.8292
+DeepDriving,mo-10_feature_GA,random,large,1,0,0.8567744125,0.4999633333333333

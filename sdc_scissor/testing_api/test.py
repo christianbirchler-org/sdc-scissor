@@ -9,6 +9,14 @@ from pathlib import Path
 
 class Test:
     def __init__(self, test_id, road_points: list[list], test_outcome, test_duration=None):
+        """
+        Class representing a test case.
+
+        :param test_id: Unique test identifier
+        :param road_points: Road points defining the test
+        :param test_outcome: Outcome of the test execution
+        :param test_duration: The duration of the test execution
+        """
         self.test_id = test_id
         self.test_outcome = test_outcome
         self.predicted_test_outcome = None
@@ -18,6 +26,10 @@ class Test:
         self.simulation_data = None
 
     def save_as_json(self, file_path: Path):
+        """
+
+        :param file_path: File path to save the test as a json file
+        """
         logging.info('save_as_json')
         with open(file_path, 'w') as fp:
             test_dict = vars(self)
@@ -25,6 +37,11 @@ class Test:
 
     @staticmethod
     def __interpolate(road_points: list[list]):
+        """
+
+        :param road_points:
+        :return:
+        """
         logging.info('* __interpolate')
         road_matrix = np.array(road_points)
         x = road_matrix[:, 0]

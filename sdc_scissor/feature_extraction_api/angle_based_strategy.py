@@ -8,13 +8,24 @@ class AngleBasedStrategy(SegmentationStrategy):
     angles possibly reaches the maximum will also be the center of the segment.
     Straight segments are identified where no significant turn angles are present.
     """
-
     def __init__(self, angle_threshold=5, decision_distance=10):
+        """
+        Instantiate a strategy object defijing the segmentation strategy of the road. Class is coherent to the strategy pattern.
+
+        :param angle_threshold: Angle threshold defining a new segment.
+        :param decision_distance: Road distance for calculating the turn angle.
+        """
         self.__road_geometry_calculator = RoadGeometryCalculator()
         self.__angle_threshold = angle_threshold
         self.__decision_distance = decision_distance
 
     def extract_segments(self, road_points):
+        """
+        Extract segments from road points according to the angle-based segmentation strategy.
+
+        :param road_points: List of 2D  points, defining the road to be segmented
+        :return: List of indexes defining the start and end of segments
+        """
         # iterate according to the decision distance
         segment_indexes = []
         segment_start_index = 0
@@ -74,6 +85,13 @@ class AngleBasedStrategy(SegmentationStrategy):
         # define segment when the type of segment will change
 
     def __has_current_angle_changed(self, previous_angle, current_angle):
+        """
+        Check if there is a significant change of turn angles.
+
+        :param previous_angle: Previous angle
+        :param current_angle: Current angle to be compared with the previous angle
+        :return: True or False if there is a change greater than the specified threshold
+        """
         angle_threshold = self.__angle_threshold
         if current_angle <= previous_angle+angle_threshold and current_angle >= previous_angle-angle_threshold:
             return False
