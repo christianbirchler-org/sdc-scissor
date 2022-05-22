@@ -3,6 +3,7 @@ import click
 
 from pathlib import Path
 
+
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_generator import TestGenerator
@@ -27,17 +28,20 @@ def cli() -> None:
 @cli.command()
 @click.option('-c', '--count', type=int, default=10)
 @click.option('-d', '--destination', default=_DESTINATION, type=click.Path())
-def generate_tests(count: int, destination: Path) -> None:
+@click.option('-t', '--tool', default='frenetic', type=click.STRING)
+def generate_tests(count: int, destination: Path,tool: str) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
     """
     logging.info('generate_tests')
+    destination = Path(destination)
     if not destination.exists():
         destination.mkdir()
 
-    test_generator = TestGenerator(count=count, destination=destination)
+    test_generator = TestGenerator(count=count, destination=destination,tool=tool)
     test_generator.generate()
     test_generator.save_tests()
+
 
 
 @cli.command()
