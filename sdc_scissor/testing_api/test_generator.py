@@ -34,6 +34,7 @@ class TestGenerator:
             'time_budget': 100,
             'count': count
         }
+        # Types of test generator 
         if(self.tool=='frenetic'):
             self.random_generator = CustomFrenetGenerator(**kwargs)
         elif(self.tool=='ambiegen'):
