@@ -3,11 +3,8 @@ name: Tests
 on:
   push:
     branches: [main,dev]
-  pull_request:
+  pull_request_target:
     branches: [main, dev]
-
-permissions:
-  pull-requests: read
 
 jobs:
   test:
