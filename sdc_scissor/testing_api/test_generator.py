@@ -53,7 +53,7 @@ class TestGenerator:
                 road_points=road_points,
                 test_outcome='NOT_EXECUTED'
             )
-            self.generated_tests.append(test)            
+            self.generated_tests.append(test)
         logging.info('** {} tests generated'.format(len(generated_tests_as_list_of_road_points)))
         logging.info('** test generator has {} tests'.format(len(self.generated_tests)))
 
