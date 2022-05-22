@@ -15,7 +15,7 @@ def _id_generator():
 
 
 class TestGenerator:
-    def __init__(self, count: int, destination: Path,tool: str):
+    def __init__(self, count: int, destination: Path, tool: str):
         """
         This class is used to generate tests for a virtual environment.
 

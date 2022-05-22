@@ -29,7 +29,7 @@ def cli() -> None:
 @click.option('-c', '--count', type=int, default=10)
 @click.option('-d', '--destination', default=_DESTINATION, type=click.Path())
 @click.option('-t', '--tool', default='frenetic', type=click.STRING)
-def generate_tests(count: int, destination: Path,tool: str) -> None:
+def generate_tests(count: int, destination: Path, tool: str) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
     """
@@ -41,8 +41,7 @@ def generate_tests(count: int, destination: Path,tool: str) -> None:
     test_generator = TestGenerator(count=count, destination=destination,tool=tool)
     test_generator.generate()
     test_generator.save_tests()
-
-
+    
 
 @cli.command()
 @click.option('-t', '--tests', default=_DESTINATION, type=click.Path(exists=True))
