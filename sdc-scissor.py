@@ -36,7 +36,7 @@ def generate_tests(count: int, destination: Path, tool: str) -> None:
     logging.info('generate_tests')
     destination = Path(destination)
     if not destination.exists():
-        destination.mkdir()
+        destination.mkdir(parents=True)
 
     test_generator = TestGenerator(count=count, destination=destination,tool=tool)
     test_generator.generate()
