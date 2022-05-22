@@ -2,8 +2,9 @@ import json
 import logging
 from pathlib import Path
 
-from sdc_scissor.testing_api.frenetic.src.generators.random_frenet_generator import CustomFrenetGenerator
 from sdc_scissor.testing_api.test import Test
+from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
+from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import CustomFrenetGenerator
 
 
 def _id_generator():
@@ -14,31 +15,34 @@ def _id_generator():
 
 
 class TestGenerator:
-    def __init__(self, count: int, destination: Path):
+    def __init__(self, count: int, destination: Path, tool: str):
         """
         This class is used to generate tests for a virtual environment.
-
-        :param count: Number of tests to be generated
-        :param destination: Directory where the tests should be saved
         """
+
         self.count: int = count
         self.__id_generator = _id_generator()
         self.__nr_prefix_digits: int = 5
         self.destination: Path = destination
         self.generated_tests: list[Test] = []
+        self.tool: str = tool
         kwargs: dict = {
             'map_size': 200,
             'time_budget': 100,
             'count': count
         }
-        self.random_frenet_generator = CustomFrenetGenerator(**kwargs)
+        # Types of test generator 
+        if(self.tool == 'frenetic'):
+            self.random_generator = CustomFrenetGenerator(**kwargs)
+        elif(self.tool == 'ambiegen'):
+            self.random_generator = CustomAmbieGenGenerator()
 
     def generate(self):
         """
         Generate tests according to the parameters set while instantiating this object.
         """
         logging.debug('* generate')
-        generated_tests_as_list_of_road_points = self.random_frenet_generator.start()
+        generated_tests_as_list_of_road_points = self.random_generator.start()
         generated_tests_as_list_of_road_points = self.__extract_valid_roads(generated_tests_as_list_of_road_points)
 
         generated_tests_as_list_of_road_points = self.__add_sine_bumps(generated_tests_as_list_of_road_points)
