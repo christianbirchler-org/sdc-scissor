@@ -37,9 +37,8 @@ class AngleBasedStrategy(SegmentationStrategy):
         is_last_iteration = False
 
         for i in range(len(road_points)):
-
             # check if it is the last iteration
-            if i == len(road_points)-1:
+            if i == (len(road_points) - 1):
                 is_last_iteration = True
 
             # the start of a new piece has to be 2 indexes ahead of the current i
