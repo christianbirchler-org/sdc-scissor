@@ -1,3 +1,9 @@
+![example workflow](https://github.com/ChristianBirchler/sdc-scissor/actions/workflows/pipeline.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
+[![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
+
 # SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 SDC-Scissor is a tool that let you test self-driving cars more efficiently in simulation. It uses a machine-learning
 approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
@@ -8,14 +14,8 @@ genetic search algorithm. If you are interested in prioritizing test cases, then
 [README.md](sdc_scissor/sdc_prioritizer/testPrioritization/README.md) for this.
 If you use the prioritization technique then also cite the papers from the reference section!
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
-
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
-
-![example workflow](https://github.com/ChristianBirchler/sdc-scissor/actions/workflows/test.yml/badge.svg)
 
 ## Docs
-[![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
 
 You find the documentation here: https://sdc-scissor.readthedocs.io
 
