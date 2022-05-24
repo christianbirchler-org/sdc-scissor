@@ -8,13 +8,12 @@ from pathlib import Path
 
 from time import sleep
 from datetime import datetime
-# from code_pipeline.tests_generation import RoadTestFactory
+#from code_pipeline.tests_generation import RoadTestFactory
 
 
 class BaseGenerator(ABC):
 
-    def __init__(self, time_budget=None, executor=None, map_size=None, strict_father=False):
-        self.time_budget = time_budget
+    def __init__(self, executor=None, map_size=None, strict_father=False, store_additional_data=False):
         self.executor = executor
         self.map_size = map_size
         self.df = pd.DataFrame()
@@ -26,35 +25,38 @@ class BaseGenerator(ABC):
         # Adding mutants for future mutation only if its min_oob_distance is better than its parent's min_oob_distance
         # min_oob_distance < parent_min_oob_distance
         self.strict_father = strict_father
+        self.store_additional_data = store_additional_data
 
     @abstractmethod
     def start(self):
         pass
 
     def store_dataframe(self):
-        log.info("Storing the all the experiment results in a csv.")
-        # Storing the results as csv in experiments folders
-        with open(self.file_name, 'w') as outfile:
-            self.df.to_csv(outfile)
+        if self.store_additional_data:
+            log.info("Storing the all the experiment results in a csv.")
+            # Storing the results as csv in experiments folders
+            with open(self.file_name, 'w') as outfile:
+                self.df.to_csv(outfile)
 
     # def execute_test(self, road_points, method='random', extra_info={}, parent_info={}):
+
     #     # Some more debugging
     #     log.info("Generated test using: %s", road_points)
     #     the_test = RoadTestFactory.create_road_test(road_points)
-    #
+
     #     # Try to execute the test
     #     test_outcome, description, execution_data = self.executor.execute_test(the_test)
-    #
+
     #     # Print the result from the test and continue
     #     log.info("test_outcome %s", test_outcome)
     #     log.info("description %s", description)
     #     info = {'outcome': test_outcome, 'description': description, 'road': road_points, 'method': method,
     #             'visited': False, 'ancestors': [], 'generation': 0}
-    #
+
     #     # Adding extra info to the dataframe
     #     for k, v in extra_info.items():
     #         info[k] = v
-    #
+
     #     min_oob_distance = None
     #     # Storing the data in a dataframe for next phase
     #     if execution_data:
@@ -67,32 +69,36 @@ class BaseGenerator(ABC):
     #             if metric_data:
     #                 info['{:s}_{:s}'.format(name, metric)] = func(metric_data)
     #         info['max_oob_percentage'] = execution_data[-1].max_oob_percentage
-    #
+
     #         # complex metrics
     #         accum_neg_oob = self.accumulated_negative_oob(execution_data)
     #         info['accum_neg_oob'] = accum_neg_oob
-    #
+
     #         # parent info
     #         for k, v in parent_info.items():
     #             info[k] = v
-    #
+
     #         # avoid visiting mutants that perform worst than its parents
     #         if self.strict_father and parent_info and info['min_oob_distance'] > info['parent_min_oob_distance']:
     #             info['visited'] = True
     #             log.info('Weaker mutant: Disabling current test for future mutations.')
-    #
+
     #         # Retrieving file name
-    #         last_file = sorted(Path('simulations/beamng_executor').iterdir(), key=os.path.getmtime)[-1]
-    #         info['simulation_file'] = last_file.name
-    #
+    #         try:
+    #             last_file = sorted(Path('simulations/beamng_executor').iterdir(), key=os.path.getmtime)[-1]
+    #             info['simulation_file'] = last_file.name
+    #         except FileNotFoundError:
+    #             info['simulation_file'] = None
+
     #         min_oob_distance = info['min_oob_distance']
-    #
+
     #         # Logging some info for debugging
     #         log.info('Min oob_distance: {:0.3f}'.format(info['min_oob_distance']))
     #         log.info('Accumulated negative oob_distance: {:0.3f}'.format(accum_neg_oob))
-    #
     #     self.df = self.df.append(info, ignore_index=True)
-    #
+    #     # Storing the dataframe in case of crash...
+    #     self.store_dataframe()
+
     #     if self.executor.road_visualizer:
     #         sleep(5)
     #     return info['outcome'], min_oob_distance
