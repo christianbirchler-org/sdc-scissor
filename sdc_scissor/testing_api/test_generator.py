@@ -5,6 +5,7 @@ from pathlib import Path
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
 from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import CustomFrenetGenerator
+from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.random_frenet_generator import CustomFrenetVGenerator
 
 
 def _id_generator():
@@ -32,10 +33,15 @@ class TestGenerator:
             'count': count
         }
         # Types of test generator 
-        if(self.tool == 'frenetic'):
+        if(self.tool.lower()  == 'frenetic'):
             self.random_generator = CustomFrenetGenerator(**kwargs)
-        elif(self.tool == 'ambiegen'):
+        elif(self.tool.lower()  == 'freneticv'):
+            self.random_generator = CustomFrenetVGenerator(**kwargs)
+        elif(self.tool.lower() == 'ambiegen'):
             self.random_generator = CustomAmbieGenGenerator()
+        else:
+            raise Exception(" Invalid tool name. Supported tools [frenetic, freneticv, ambiegen]")
+            
 
     def generate(self):
         """

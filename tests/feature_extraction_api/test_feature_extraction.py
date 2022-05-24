@@ -40,6 +40,33 @@ class TestFeatureExtraction:
         assert road_features.max_pivot_off == 0
         assert road_features.min_pivot_off == 0
 
+    @parameterized.expand([(20, 1), (33, 1), (68, 1), (200, 1), (287, 1)])
+    def test_straight_road_angle_based_strategy(self, distance, nr_segments):
+        road_points = [[x, 0] for x in range(distance + 1)]
+        test = Test(0, road_points, 'NOT_EXECUTED')
+        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+
+        feature_extractor = FeatureExtractor(segmentation_strategy)
+
+        road_features = feature_extractor.extract_features(test)
+
+        assert road_features.direct_distance == distance
+        assert road_features.road_distance == distance
+        assert road_features.num_l_turns == 0
+        assert road_features.num_r_turns == 0
+        assert road_features.num_straights == nr_segments
+        assert road_features.median_angle == 0
+        assert road_features.total_angle == 0
+        assert road_features.mean_angle == 0
+        assert road_features.std_angle == 0
+        assert road_features.max_angle == 0
+        assert road_features.min_angle == 0
+        assert road_features.median_pivot_off == 0
+        assert road_features.mean_pivot_off == 0
+        assert road_features.std_pivot_off == 0
+        assert road_features.max_pivot_off == 0
+        assert road_features.min_pivot_off == 0
+
     def test_90_degree_right_turn_only(self):
         nr_segments = 2
         road_points = []
@@ -75,12 +102,9 @@ class TestFeatureExtraction:
         assert road_features.max_pivot_off == approx(radius, abs=2)
         assert road_features.min_pivot_off == approx(radius, abs=2)
 
-    def test_90_degree_left_turn_only(self):
+    def test_90_degree_left_turn_only_angle_based(self):
         nr_segments = 1
-        # nr_segments = 2
-        # segmentation_strategy = EquiDistanceStrategy(nr_segments)
         segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
-
         road_points = []
         radius = 50
         angle = 90
@@ -90,7 +114,6 @@ class TestFeatureExtraction:
             x = radius * math.cos(math.radians(i))  # minus for right turn
             y = radius * math.sin(math.radians(i))
 
-            # translation of coordinates
             x = x + center_of_turn[0]
 
             road_points.append([x, y])
@@ -108,6 +131,40 @@ class TestFeatureExtraction:
         assert road_features.mean_angle == approx(angle / nr_segments, abs=2)
         assert road_features.max_angle == approx(angle / nr_segments, abs=2)
         assert road_features.min_angle == approx(angle / nr_segments, abs=2)
+        assert road_features.median_pivot_off == approx(radius, abs=2)
+        assert road_features.mean_pivot_off == approx(radius, abs=2)
+        assert road_features.max_pivot_off == approx(radius, abs=2)
+        assert road_features.min_pivot_off == approx(radius, abs=2)
+
+    def test_90_degree_right_turn_only_angle_based(self):
+        nr_segments = 1
+        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        road_points = []
+        radius = 50
+        angle = 90
+        center_of_turn = (0, 0)
+
+        for i in range(0, angle + 1, 1):
+            x = -radius * math.cos(math.radians(i))  # minus for right turn
+            y = radius * math.sin(math.radians(i))
+
+            x = x + center_of_turn[0]
+
+            road_points.append([x, y])
+
+        test = Test(0, road_points, 'NOT_EXECUTED')
+        feature_extractor = FeatureExtractor(segmentation_strategy)
+
+        road_features = feature_extractor.extract_features(test)
+
+        assert road_features.num_l_turns == 0
+        assert road_features.num_r_turns == nr_segments
+        assert road_features.num_straights == 0
+        assert road_features.median_angle == approx(-angle / nr_segments, abs=2)
+        assert road_features.total_angle == approx(-angle, abs=2)
+        assert road_features.mean_angle == approx(-angle / nr_segments, abs=2)
+        assert road_features.max_angle == approx(-angle / nr_segments, abs=2)
+        assert road_features.min_angle == approx(-angle / nr_segments, abs=2)
         assert road_features.median_pivot_off == approx(radius, abs=2)
         assert road_features.mean_pivot_off == approx(radius, abs=2)
         assert road_features.max_pivot_off == approx(radius, abs=2)
