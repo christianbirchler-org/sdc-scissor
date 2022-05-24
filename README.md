@@ -1,4 +1,4 @@
-![example workflow](https://github.com/ChristianBirchler/sdc-scissor/actions/workflows/test.yml/badge.svg)
+![example workflow](https://github.com/ChristianBirchler/sdc-scissor/actions/workflows/pipeline.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor)
 [![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
 
