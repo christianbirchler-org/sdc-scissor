@@ -49,6 +49,7 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
                          store_additional_data=store_additional_data)
 
     def start(self):
+        log.info('Test generation freneticV.')
         return self.generate_initial_population()
         #self.generate_mutants()
         #self.store_dataframe()

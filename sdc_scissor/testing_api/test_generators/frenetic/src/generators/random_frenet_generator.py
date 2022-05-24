@@ -47,6 +47,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father)
 
     def start(self):
+        log.info('Test generation frenetic.')
         return self.generate_initial_population()
         # self.generate_mutants()
         # sleep(10)

@@ -38,6 +38,7 @@ class CustomAmbieGenGenerator:
         the Pareto optimal solutions are returned
         """
 
+        log.info('Test generation ambiegen.')
         algorithm = NSGA2(
             n_offsprings=50,
             pop_size=cf.ga["population"],
