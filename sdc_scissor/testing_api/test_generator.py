@@ -5,6 +5,7 @@ from pathlib import Path
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
 from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import CustomFrenetGenerator
+from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.random_frenet_generator import CustomFrenetVGenerator
 
 
 def _id_generator():
@@ -34,6 +35,8 @@ class TestGenerator:
         # Types of test generator 
         if(self.tool.lower()  == 'frenetic'):
             self.random_generator = CustomFrenetGenerator(**kwargs)
+        if(self.tool.lower()  == 'freneticv'):
+            self.random_generator = CustomFrenetVGenerator(**kwargs)
         elif(self.tool.lower() == 'ambiegen'):
             self.random_generator = CustomAmbieGenGenerator()
         else:
