@@ -32,10 +32,13 @@ class TestGenerator:
             'count': count
         }
         # Types of test generator 
-        if(self.tool == 'frenetic'):
+        if(self.tool.lower()  == 'frenetic'):
             self.random_generator = CustomFrenetGenerator(**kwargs)
-        elif(self.tool == 'ambiegen'):
+        elif(self.tool.lower() == 'ambiegen'):
             self.random_generator = CustomAmbieGenGenerator()
+        else:
+            raise Exception(" Invalid tool name. Supported tools [Frenetic, Ambiegen]")
+            
 
     def generate(self):
         """
