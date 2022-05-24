@@ -102,7 +102,7 @@ class BeamNGSimulator(AbstractSimulator):
         # Ensure not overriding the test object (copy first the whole list)
         road_nodes = test.interpolated_road_points.copy()
         for road_node in road_nodes:
-            road_node.extend([28, 10])
+            road_node.extend([-28, 10])
 
         road.nodes.extend(road_nodes)
 

@@ -32,9 +32,9 @@ class TestGenerator:
             'count': count
         }
         # Types of test generator 
-        if(self.tool == 'frenetic'):
+        if self.tool == 'frenetic':
             self.random_generator = CustomFrenetGenerator(**kwargs)
-        elif(self.tool == 'ambiegen'):
+        elif self.tool == 'ambiegen':
             self.random_generator = CustomAmbieGenGenerator()
 
     def generate(self):
