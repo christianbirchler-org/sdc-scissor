@@ -32,12 +32,12 @@ class CustomAmbieGenGenerator:
         self.executor = executor
 
     def start(self):
-        
         """
         In this function the algorithm is launched and
         the Pareto optimal solutions are returned
         """
 
+        log.info('Test generation ambiegen.')
         algorithm = NSGA2(
             n_offsprings=50,
             pop_size=cf.ga["population"],
