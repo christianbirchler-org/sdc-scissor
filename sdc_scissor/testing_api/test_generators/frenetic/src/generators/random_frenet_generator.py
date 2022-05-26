@@ -8,7 +8,7 @@ from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_frenet
 
 class CustomFrenetGenerator(BaseFrenetGenerator):
     """
-        Generates tests using the frenet framework to determine curvatures.
+    Generates tests using the frenet framework to determine curvatures.
     """
 
     def __init__(self, time_budget=None, executor=None, map_size=None, kill_ancestors=1, strict_father=True,
