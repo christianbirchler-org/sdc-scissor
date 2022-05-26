@@ -22,8 +22,8 @@ genetic search algorithm. If you are interested in prioritizing test cases, then
 If you use the prioritization technique then also cite the papers from the reference section!
 
 
-Docs
-----
+Documentation
+-------------
 .. image:: https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/readthedocs.png
     :target: https://sdc-scissor.readthedocs.io/en/latest/
 
