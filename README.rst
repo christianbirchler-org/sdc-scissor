@@ -31,7 +31,8 @@ License
 -------
 .. code-block:: text
 
-    SDC-Scissor, a cost-effective test selector for self-driving cars.
+    SDC-Scissor tool for cost-effective simulation-based test selection
+    in self-driving cars software.
     Copyright (C) 2022  Christian Birchler
 
     This program is free software: you can redistribute it and/or modify
