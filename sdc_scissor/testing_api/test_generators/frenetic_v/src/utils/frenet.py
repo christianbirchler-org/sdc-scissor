@@ -2,7 +2,9 @@ import numpy as np
 
 
 def frenetv_to_cartesian(x0, y0, theta0, ss, kappas):
-    """Trapezoidal integration to compute Cartesian coordinates from given curvature values."""
+    """
+    Trapezoidal integration to compute Cartesian coordinates from given curvature values.
+    """
     xs = np.zeros(len(kappas))
     ys = np.zeros(len(kappas))
     thetas = np.zeros(len(kappas))
