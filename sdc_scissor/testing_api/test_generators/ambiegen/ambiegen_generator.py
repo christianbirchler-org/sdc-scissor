@@ -32,7 +32,6 @@ class CustomAmbieGenGenerator:
         self.executor = executor
 
     def start(self):
-        
         """
         In this function the algorithm is launched and
         the Pareto optimal solutions are returned
