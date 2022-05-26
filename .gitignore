@@ -155,3 +155,4 @@ dmypy.json
 /.vscode/
 /trained_models/
 /debug_scenario.py
+/sample_tests/
