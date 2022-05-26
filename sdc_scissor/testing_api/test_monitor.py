@@ -16,12 +16,16 @@ class _RoadModel:
 
 
 class TestMonitor:
+    """
+    The test monitor checks the execution states of the test and logs them.
+    """
     def __init__(self, simulator: AbstractSimulator, test: Test, oob: float):
         """
+        The test monitor retrieves data from the simulator and tracks the trajectory of the car.
 
-        :param simulator:
-        :param test:
-        :param oob:
+        :param simulator: The simulator object to get the data from.
+        :param test: The test object.
+        :param oob: Parameter to define how much percentage the car is allowed to be off the lane.
         """
         self.simulator = simulator
         self.test = test
@@ -33,10 +37,14 @@ class TestMonitor:
         self.data = []
         self.road_model = _RoadModel(test.interpolated_road_points)
         self.oob = oob
+        self.has_test_failed = None
+        self.current_test_outcome = 'UNDEFINED'
 
-    def check(self):
+    def check(self, interrupt_on_failure):
         """
+        Checks the current state of the vehicle and test execution.
 
+        :param interrupt_on_failure: Boolean flag if the test should be interrupted when the car drives off the lane.
         """
         logging.info('check')
         self.simulator.update_car()
@@ -45,22 +53,25 @@ class TestMonitor:
         logging.info('time: {}\tx: {}\ty: {}\tz: {}'.format(current_time, x_pos, y_pos, z_pos))
         self.data.append((current_time, x_pos, y_pos, z_pos))
 
-        if self.__is_car_at_end_of_road(x_pos, y_pos) or self.__is_car_out_of_lane(x_pos, y_pos):
+        if self.__is_car_at_end_of_road(x_pos, y_pos) or\
+                (self.__is_car_out_of_lane(x_pos, y_pos) and interrupt_on_failure):
+            logging.info('TEST IS FINISHED!')
             self.is_test_finished = True
             self.end_time = time.time()
+            self.test.test_outcome = self.current_test_outcome
             self.test.test_duration = self.end_time - self.start_time
             self.test.simulation_data = self.data
 
     def start_timer(self):
         """
-
+        Start the timer for the test execution.
         """
         logging.info('start_timer')
         self.start_time = time.time()
 
     def stop_timer(self):
         """
-
+        Stop the timer for the test execution.
         """
         logging.info('stop_timer')
         self.end_time = time.time()
@@ -90,7 +101,8 @@ class TestMonitor:
 
         if not is_car_model_inside_road_model:
             logging.warning('CAR IS OFF THE LANE!')
-            self.test.test_outcome = 'FAIL'
+            self.has_test_failed = True
+            self.current_test_outcome = 'FAIL'
         return not is_car_model_inside_road_model
 
     def __is_car_at_end_of_road(self, x_pos: float, y_pos: float) -> bool:
@@ -106,7 +118,8 @@ class TestMonitor:
         is_car_at_the_end_of_the_road: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 7)
         if is_car_at_the_end_of_the_road:
             logging.warning('CAR IS AT THE END OF THE ROAD!')
-            self.test.test_outcome = 'PASS'
+            if not self.has_test_failed:
+                self.current_test_outcome = 'PASS'
         return is_car_at_the_end_of_the_road
 
     @staticmethod
