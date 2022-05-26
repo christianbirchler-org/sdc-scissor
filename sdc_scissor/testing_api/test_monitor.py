@@ -16,12 +16,16 @@ class _RoadModel:
 
 
 class TestMonitor:
+    """
+    The test monitor checks the execution states of the test and logs them.
+    """
     def __init__(self, simulator: AbstractSimulator, test: Test, oob: float):
         """
+        The test monitor retrieves data from the simulator and tracks the trajectory of the car.
 
-        :param simulator:
-        :param test:
-        :param oob:
+        :param simulator: The simulator object to get the data from.
+        :param test: The test object.
+        :param oob: Parameter to define how much percentage the car is allowed to be off the lane.
         """
         self.simulator = simulator
         self.test = test
@@ -39,6 +43,8 @@ class TestMonitor:
     def check(self, interrupt_on_failure):
         """
         Checks the current state of the vehicle and test execution.
+
+        :param interrupt_on_failure: Boolean flag if the test should be interrupted when the car drives off the lane.
         """
         logging.info('check')
         self.simulator.update_car()
@@ -58,14 +64,14 @@ class TestMonitor:
 
     def start_timer(self):
         """
-
+        Start the timer for the test execution.
         """
         logging.info('start_timer')
         self.start_time = time.time()
 
     def stop_timer(self):
         """
-
+        Stop the timer for the test execution.
         """
         logging.info('stop_timer')
         self.end_time = time.time()
