@@ -24,7 +24,7 @@ If you use the prioritization technique then also cite the papers from the refer
 
 Docs
 ----
-.. image:: https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/docs/docs/readthedocs.png
+.. image:: https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/readthedocs.png
     :target: https://sdc-scissor.readthedocs.io/en/latest/
 
 License
