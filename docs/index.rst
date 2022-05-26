@@ -1,11 +1,12 @@
-.. include:: ../README.md
-   :parser: myst_parser.sphinx_
+.. include:: ../README.rst
 
 Content
 -------
 .. toctree::
    :maxdepth: 2
 
+   architecture
+   components
    demo
    installation
    usage
