@@ -32,7 +32,6 @@ release = 'v2.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'myst_parser'
 ]
 autodoc_default_options = {
     'member-order': 'bysource',
