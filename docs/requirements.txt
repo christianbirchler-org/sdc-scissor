@@ -1,9 +1,16 @@
+autograd==1.4; python_version >= "3.7" \
+    --hash=sha256:5cd6051bf1440643bf8f1104c933b2dedefb7610b951091768c1c680b1e0ceda \
+    --hash=sha256:383de0f537ef2e38b85ff9692593b0cfae8958c9b3bd451b52c255fd9171ffce
 beamngpy==1.22 \
     --hash=sha256:eeb8ed1a9431f224807b820c9e2608be4396dac1e9651a9771aa5d33439ecaee \
     --hash=sha256:164043f6134a1f5f6b6dddf490ea2c064627519fa4388578b30812cb3fece923
 click==8.1.2; python_version >= "3.7" \
     --hash=sha256:24e1a4a9ec5bf6299411369b208c1df2188d9eb8d916302fe6bf03faed227f1e \
     --hash=sha256:479707fe14d9ec9a0757618b7a100a0ae4c4e236fac5b7f80ca68028141a1a72
+cma==2.7.0; python_version >= "3.7" \
+    --hash=sha256:136e457c97e837152404b868c4ec6f163dee923fcee8b94ff446d13d4242b227 \
+    --hash=sha256:924946fcf2e94911956d02bb75121e4aec325eb2fc148c6edf97337eddef8418 \
+    --hash=sha256:f4630d405efdbf4d85ba42b6bdfe5708b716bb088880b938b60c3bfbf1c1cd59
 colorama==0.4.4; python_version >= "3.7" and python_full_version < "3.0.0" and platform_system == "Windows" or platform_system == "Windows" and python_version >= "3.7" and python_full_version >= "3.5.0" \
     --hash=sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2 \
     --hash=sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b
@@ -13,6 +20,8 @@ cycler==0.11.0; python_version >= "3.7" \
 fonttools==4.33.2; python_version >= "3.7" \
     --hash=sha256:b4da40696829845ea8c1cb33ce51c552179754cbee7ab4e8b96a6bcf421f437a \
     --hash=sha256:696fe922a271584c3ec8325ba31d4001a4fd6c4953b22900b767f1cb53ce1044
+future==0.18.2; python_version >= "3.7" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.7" \
+    --hash=sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d
 jinja2==3.1.1; python_version >= "3.7" \
     --hash=sha256:539835f51a74a69f41b848a9645dbdc35b4f20a3b601e2d9a7e22947b15ff119 \
     --hash=sha256:640bed4bb501cbd17194b3cace1dc2126f5b619cf068a726b98192a0fde74ae9
@@ -260,6 +269,14 @@ pillow==9.1.0; python_version >= "3.7" \
     --hash=sha256:c7110ec1701b0bf8df569a7592a196c9d07c764a0a74f65471ea56816f10e2c8 \
     --hash=sha256:8d79c6f468215d1a8415aa53d9868a6b40c4682165b8cb62a221b1baa47db458 \
     --hash=sha256:f401ed2bbb155e1ade150ccc63db1a4f6c1909d3d378f7d1235a44e90d75fb97
+pymoo==0.4.2.2; python_version >= "3.7" \
+    --hash=sha256:c8fa16b516d57d3e4361700dd7b2fa2850038cd172048c6407c8375b43ccf168 \
+    --hash=sha256:f5fc37220d82c7d4ed48e905edb2fa42c944dd0250d9a30efe19eded44240129 \
+    --hash=sha256:258f641077a9a9704a857d52ea534f83a6d344f9ac3493a2761a156269d8737c \
+    --hash=sha256:38195042c3d32ee3b07ee7e297cf0beed28de7e12165e845f51aa79d1e8f0f17 \
+    --hash=sha256:a480d6ad6f95c1648e7292494648bf5db589c3ae7f9ed61744a3e4f30385fd3d \
+    --hash=sha256:0d2b13d01f6ac1ac730b2896d65433a4207f0e965b25fa9d5a24f84b287c3aa0 \
+    --hash=sha256:8b22309295f141466047a913dc867f0e8c9297b205b1dd4bfcb3c1fb516b6fec
 pyopengl==3.1.6 \
     --hash=sha256:57c597d989178e1413002df6b923619f6d29807501dece1c60cc6f12c0c8e8a7 \
     --hash=sha256:a7139bc3e15d656feae1f7e3ef68c799941ed43fadc78177a23db7e946c20738 \
