@@ -17,18 +17,16 @@ class BaseFrenetVGenerator(BaseGenerator):
         self.lane_width = lane_width
         self.margin = 10  # to be safe... there were some out of margin with (lane_width * 2)
         self.recent_count = 0
-        self.theta0 = 1.57
+        self.theta0 = 1.57 # theta0: The initial angle of the line. (1.57 == 90 degrees)
         super().__init__(executor=executor, map_size=map_size, strict_father=strict_father,
                          store_additional_data=store_additional_data)
 
     def kappas_to_road_points(self, kappas) -> np.array:
         """
-        Args:
-            kappas: list of kappa values
-            frenet_step: The distance between to points.
-            theta0: The initial angle of the line. (1.57 == 90 degrees)
-        Returns:
-            road points in cartesian coordinates
+        The FreneticV main algorithm.
+        
+        :param kappas: list of kappa values
+        :return: road points in cartesian coordinates
         """
         # Using the bottom center of the map.
         y0 = self.margin
