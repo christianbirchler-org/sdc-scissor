@@ -8,7 +8,7 @@ from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.base_fren
 
 class CustomFrenetVGenerator(BaseFrenetVGenerator):
     """
-        Generates tests using the frenet framework to determine curvatures.
+    Generates tests using the frenet framework to determine curvatures.
     """
 
     def __init__(self, time_budget=None, executor=None, map_size=None, kill_ancestors=1, strict_father=True,
@@ -177,9 +177,10 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
     @staticmethod
     def chromosome_crossover(parent_1, parent_2):
         """
-            parent_1: list of kappas
-            parent_2: list of kappas
-            returns: a list of kappas of the length of the shortest list
+        
+        :param parent_1: list of kappas
+        :param parent_2: list of kappas
+        :return: a list of kappas of the length of the shortest list
         """
         child = []
         for i in range(min(len(parent_1), len(parent_2))):
@@ -192,9 +193,10 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
     @staticmethod
     def single_point_crossover(parent_1, parent_2):
         """
-            parent_1: list of test
-            parent_2: list of test
-            returns: Two lists of test
+        
+        :param parent_1: list of test
+        :param parent_2: list of test
+        :return: Two lists of test
         """
 
         # more or less in the middle
@@ -276,10 +278,10 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
         return modified_kappas
 
     def generate_random_test(self):
-        """ Generates a test using frenet framework to determine the curvature of the points.
+        """
+        Generates a test using frenet framework to determine the curvature of the points.
 
-        Returns:
-            a list of kappa values and its cartesian representation.
+        :return: a list of kappa values and its cartesian representation.
         """
         points = self.number_of_points + random.randint(-5, 5)
         # Producing randomly generated kappas for the given setting.
