@@ -34,9 +34,9 @@ class TestMonitor:
         self.road_model = _RoadModel(test.interpolated_road_points)
         self.oob = oob
 
-    def check(self):
+    def check(self, interrupt_on_failure):
         """
-
+        Checks the current state of the vehicle and test execution.
         """
         logging.info('check')
         self.simulator.update_car()
@@ -45,7 +45,8 @@ class TestMonitor:
         logging.info('time: {}\tx: {}\ty: {}\tz: {}'.format(current_time, x_pos, y_pos, z_pos))
         self.data.append((current_time, x_pos, y_pos, z_pos))
 
-        if self.__is_car_at_end_of_road(x_pos, y_pos) or self.__is_car_out_of_lane(x_pos, y_pos):
+        if self.__is_car_at_end_of_road(x_pos, y_pos) or\
+                (self.__is_car_out_of_lane(x_pos, y_pos) and interrupt_on_failure):
             self.is_test_finished = True
             self.end_time = time.time()
             self.test.test_duration = self.end_time - self.start_time

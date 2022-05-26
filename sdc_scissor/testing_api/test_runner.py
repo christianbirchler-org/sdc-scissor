@@ -17,6 +17,7 @@ class TestRunner:
         self.ml_component = kwargs.get('machine_learning_api', None)
         self.simulator: AbstractSimulator = kwargs.get('simulator', None)
         self.oob: float = kwargs.get('oob', None)
+        self.interrupt: bool = kwargs.get('interrupt', None)
 
     def run_test_suite(self):
         """
@@ -65,7 +66,7 @@ class TestRunner:
         self.simulator.start_scenario()
 
         while not test_monitor.is_test_finished:
-            test_monitor.check()
+            test_monitor.check(self.interrupt)
             time.sleep(0.1)
 
         test_monitor.stop_timer()
