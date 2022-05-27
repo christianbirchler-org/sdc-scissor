@@ -72,7 +72,9 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option('--oob', default=0.3, type=float)
 @click.option('--max-speed', default=50, type=float)
 @click.option('--interrupt/--no-interrupt', default=True, type=click.BOOL)
-def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt) -> None:
+@click.option('--bump-dist', default=None, type=click.FLOAT)
+@click.option('--delineator-dist', default=None, type=click.FLOAT)
+def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dist, delineator_dist) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
