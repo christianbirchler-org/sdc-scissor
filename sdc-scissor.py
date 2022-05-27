@@ -20,6 +20,14 @@ _DESTINATION = _ROOT_DIR / 'destination'
 _TRAINED_MODELS = _ROOT_DIR / 'trained_models'
 
 
+class Bump:
+    pass
+
+
+class Delineator:
+    pass
+
+
 @click.group()
 def cli() -> None:
     pass
@@ -80,8 +88,14 @@ def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dis
     """
     logging.info('label_tests')
     beamng_simulator = SimulatorFactory.get_beamng_simulator(home=home, user=user, rf=rf, max_speed=max_speed)
+
+    bump = Bump()
+    delineator = Delineator()
     test_loader = TestLoader(tests_dir=tests)
-    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader, oob=oob, interrupt=interrupt)
+    obstacles = [bump, delineator]
+
+    test_runner = TestRunner(simulator=beamng_simulator, obstacle=obstacles, test_loader=test_loader, oob=oob,
+                             interrupt=interrupt)
     test_runner.run_test_suite()
 
 
