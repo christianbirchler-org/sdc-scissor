@@ -34,7 +34,7 @@ class Obstacle:
         x = road_matrix[:, 0]
         y = road_matrix[:, 1]
 
-        pos_tck, *_pos_u = splprep([x, y], s=0, k=3)
+        pos_tck, *_pos_u = splprep([x, y], s=3, k=3)
         step_size = 1 / (self.count-1)
         unew = np.arange(0, 1 + step_size, step_size)
         x_new, y_new = splev(unew, pos_tck)
@@ -43,7 +43,7 @@ class Obstacle:
         #logging.info(new_obstacle_points)
         return new_obstacle_points
 class Bump(Obstacle):
-    def __init__(self, width=4, length=4, height=0.5, upper_length=2, upper_width=2,rot=None,rot_quat=(0, 0, 0, 1), bump_dist=None):
+    def __init__(self, width=6, length=2, height=0.5, upper_length=1, upper_width=2,rot=None,rot_quat=(0, 0, 0, 1), bump_dist=None):
         """
 
         :param width: width of Obstacle
@@ -71,7 +71,7 @@ class Bump(Obstacle):
         Create Bump Obstacle
         :param pos: Position of Obstacle
         """
-        x_start, y_start, z_start =pos[0],pos[1], -28
+        x_start, y_start, z_start =pos[0]+5,pos[1]+5, -28
         return ProceduralBump(name='pybump',pos=(x_start, y_start, z_start),rot=self.rot, rot_quat=self.rot_quat,width=self.width,length=self.length,height=self.height,upper_length=self.upper_length,upper_width=self.upper_width)
 
 
