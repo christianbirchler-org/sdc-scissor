@@ -3,6 +3,10 @@ import click
 
 from pathlib import Path
 
+import numpy as np
+from scipy.interpolate import splprep, splev
+from beamngpy import ProceduralBump,ProceduralCylinder
+
 
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
@@ -19,13 +23,83 @@ _ROOT_DIR = Path(__file__).parent
 _DESTINATION = _ROOT_DIR / 'destination'
 _TRAINED_MODELS = _ROOT_DIR / 'trained_models'
 
+class Obstacle:
+    def interpolated_obstacle_points(self, road_nodes=None):
+        """
+        Generate interpolated point for Obstacles
+        :param road_nodes:
+        """    
+        logging.info('* __interpolate obstacle points')
+        road_matrix = np.array(road_nodes)
+        x = road_matrix[:, 0]
+        y = road_matrix[:, 1]
 
-class Bump:
-    pass
+        pos_tck, *_pos_u = splprep([x, y], s=0, k=3)
+        step_size = 1 / (self.count-1)
+        unew = np.arange(0, 1 + step_size, step_size)
+        x_new, y_new = splev(unew, pos_tck)
+        new_obstacle_points = np.column_stack((x_new, y_new)).tolist()
+        
+        #logging.info(new_obstacle_points)
+        return new_obstacle_points
+class Bump(Obstacle):
+    def __init__(self, width=6, length=2, height=2, upper_length=2, upper_width=2,rot=None,rot_quat=(0, 0, 0, 1), bump_dist=None):
+        """
+
+        :param width: width of Obstacle
+        :param length:  length of Obstacle
+        :param height:  length of Obstacle
+        :param upper_length:  upper length of Obstacle
+        :param upper_width:  upper width of Obstacle
+        :param rot: 
+        :param rot_quat: 
+        :param bump_dist: Number of Obstacle, e.g., 3
+        """
+
+        self.width=width
+        self.length=length
+        self.height=height
+        self.upper_length=upper_length
+        self.upper_width=upper_width
+        self.count=bump_dist
+        self.rot=rot
+        self.rot_quat=rot_quat
+    
+    
+    def get_beamng_obstacle_object(self,pos=None):
+        """
+        Create Bump Obstacle
+        :param pos: Position of Obstacle
+        """
+        return ProceduralBump(name='pybump',pos=pos,rot=self.rot, rot_quat=self.rot_quat,width=self.width,length=self.length,height=self.height,upper_length=self.upper_length,upper_width=self.upper_width)
 
 
-class Delineator:
-    pass
+
+
+class Delineator(Obstacle):
+    def __init__(self, radius=3.5, height=5,rot=None, rot_quat=(0, 0, 0, 1), delineator_dist=None):
+        """
+
+        :param radius: radius of Obstacle
+        :param height:  height of Obstacle
+        :param rot: 
+        :param rot_quat: 
+        :param delineator_dist: Number of Obstacle, e.g., 3
+        """
+        self.radius=radius
+        self.height=height
+        self.count=delineator_dist
+        self.rot=rot
+        self.rot_quat=rot_quat
+        
+    
+    def get_beamng_obstacle_object(self,pos=None):
+        """
+        Create Cylinder Obstacle
+        :param pos: Position of Obstacle
+        """
+        return ProceduralCylinder(name='pyCylinder',pos=pos,rot=self.rot, rot_quat=self.rot_quat, radius=self.radius, height=self.height)
+
 
 
 @click.group()
@@ -80,8 +154,8 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option('--oob', default=0.3, type=float)
 @click.option('--max-speed', default=50, type=float)
 @click.option('--interrupt/--no-interrupt', default=True, type=click.BOOL)
-@click.option('--bump-dist', default=None, type=click.FLOAT)
-@click.option('--delineator-dist', default=None, type=click.FLOAT)
+@click.option('--bump-dist', default=2, type=click.INT)
+@click.option('--delineator-dist', default=2, type=click.INT)
 def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dist, delineator_dist) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
@@ -89,12 +163,12 @@ def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dis
     logging.info('label_tests')
     beamng_simulator = SimulatorFactory.get_beamng_simulator(home=home, user=user, rf=rf, max_speed=max_speed)
 
-    bump = Bump()
-    delineator = Delineator()
+    bump = Bump(bump_dist=bump_dist)
+    delineator = Delineator(delineator_dist=delineator_dist)
     test_loader = TestLoader(tests_dir=tests)
-    obstacles = [bump, delineator]
+    obstacles = [bump,delineator]
 
-    test_runner = TestRunner(simulator=beamng_simulator, obstacle=obstacles, test_loader=test_loader, oob=oob,
+    test_runner = TestRunner(simulator=beamng_simulator, obstacles=obstacles, test_loader=test_loader, oob=oob,
                              interrupt=interrupt)
     test_runner.run_test_suite()
 

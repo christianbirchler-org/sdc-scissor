@@ -18,6 +18,7 @@ class TestRunner:
         self.simulator: AbstractSimulator = kwargs.get('simulator', None)
         self.oob: float = kwargs.get('oob', None)
         self.interrupt: bool = kwargs.get('interrupt', None)
+        self.obstacles: list = kwargs.get('obstacles', None)
 
     def run_test_suite(self):
         """
@@ -56,7 +57,7 @@ class TestRunner:
         logging.info('* run')
         time.sleep(5)
 
-        self.simulator.load_scenario(test)
+        self.simulator.load_scenario(test, obstacles=self.obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
