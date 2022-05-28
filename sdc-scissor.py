@@ -100,6 +100,7 @@ class Delineator(Obstacle):
         :param pos: Position of Obstacle
         """
         x_start, y_start, z_start =pos[0],pos[1], -28
+        
         return ProceduralCylinder(name='pyCylinder',pos=(x_start, y_start, z_start),rot=self.rot, rot_quat=self.rot_quat, radius=self.radius, height=self.height)
 
 
