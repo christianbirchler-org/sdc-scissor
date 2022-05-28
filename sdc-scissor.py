@@ -43,7 +43,7 @@ class Obstacle:
         #logging.info(new_obstacle_points)
         return new_obstacle_points
 class Bump(Obstacle):
-    def __init__(self, width=6, length=2, height=2, upper_length=2, upper_width=2,rot=None,rot_quat=(0, 0, 0, 1), bump_dist=None):
+    def __init__(self, width=4, length=4, height=0.5, upper_length=2, upper_width=2,rot=None,rot_quat=(0, 0, 0, 1), bump_dist=None):
         """
 
         :param width: width of Obstacle
@@ -71,13 +71,14 @@ class Bump(Obstacle):
         Create Bump Obstacle
         :param pos: Position of Obstacle
         """
-        return ProceduralBump(name='pybump',pos=pos,rot=self.rot, rot_quat=self.rot_quat,width=self.width,length=self.length,height=self.height,upper_length=self.upper_length,upper_width=self.upper_width)
+        x_start, y_start, z_start =pos[0],pos[1], -28
+        return ProceduralBump(name='pybump',pos=(x_start, y_start, z_start),rot=self.rot, rot_quat=self.rot_quat,width=self.width,length=self.length,height=self.height,upper_length=self.upper_length,upper_width=self.upper_width)
 
 
 
 
 class Delineator(Obstacle):
-    def __init__(self, radius=3.5, height=5,rot=None, rot_quat=(0, 0, 0, 1), delineator_dist=None):
+    def __init__(self, radius=2, height=2.5,rot=None, rot_quat=(0, 0, 0, 1), delineator_dist=None):
         """
 
         :param radius: radius of Obstacle
@@ -98,7 +99,8 @@ class Delineator(Obstacle):
         Create Cylinder Obstacle
         :param pos: Position of Obstacle
         """
-        return ProceduralCylinder(name='pyCylinder',pos=pos,rot=self.rot, rot_quat=self.rot_quat, radius=self.radius, height=self.height)
+        x_start, y_start, z_start =pos[0],pos[1], -28
+        return ProceduralCylinder(name='pyCylinder',pos=(x_start, y_start, z_start),rot=self.rot, rot_quat=self.rot_quat, radius=self.radius, height=self.height)
 
 
 
@@ -140,7 +142,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
     while test_loader.has_next():
         test, _ = test_loader.next()
         road_features = feature_extractor.extract_features(test)
-        road_features.safety = test.test_outcome
+        road_features.safety = test.test_outcomey
         road_features_lst.append((test.test_id, road_features, test.test_duration))
 
     FeatureExtractor.save_to_csv(road_features_lst, tests)

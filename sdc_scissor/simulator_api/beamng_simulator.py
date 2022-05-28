@@ -111,6 +111,7 @@ class BeamNGSimulator(AbstractSimulator):
         logging.info('* generate obstacle points')
         for obstacle in obstacles:
              obstacle_points=obstacle.interpolated_obstacle_points(road_nodes=road_nodes)
+             #logging.info('obstacle_points: {}'.format(obstacle_points))
              for obstacle_point in obstacle_points:
                 self.scenario.add_procedural_mesh(obstacle.get_beamng_obstacle_object(obstacle_point)) 
 
