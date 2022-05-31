@@ -19,6 +19,7 @@ class TestRunner:
         self.oob: float = kwargs.get('oob', None)
         self.interrupt: bool = kwargs.get('interrupt', None)
         self.obstacles: list = kwargs.get('obstacles', None)
+        self.fov: list = kwargs.get('fov', None)
 
     def run_test_suite(self):
         """

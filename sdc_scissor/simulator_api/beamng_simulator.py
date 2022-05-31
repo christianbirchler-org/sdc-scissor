@@ -15,7 +15,7 @@ class BeamNGSimulator(AbstractSimulator):
     """
     This class implements the interface for the specific BeamNG.tech simulator.
     """
-    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
+    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float, fov: int):
         """
         API for enabling inter-process communication with the BeamNG simulator.
 
@@ -25,6 +25,7 @@ class BeamNGSimulator(AbstractSimulator):
         :param user: The user path (path to your license key file)
         :param rf: The risk factor, e.g., 1.5
         :param max_speed: The maximal speed allowed for a vehicle in km/h
+        :param fov: The field of view  for a Camera e.g., 120
         """
         super().__init__()
         self.host = host
@@ -37,6 +38,7 @@ class BeamNGSimulator(AbstractSimulator):
         self.scenario = None
         self.rf = rf
         self.max_speed = max_speed
+        self.fov = fov
 
     def open(self):
         """
@@ -110,7 +112,7 @@ class BeamNGSimulator(AbstractSimulator):
         self.scenario.add_road(road)
 
         logging.info('* add camera to scenario: ')
-        self.camera = BeamNGCamera(self.beamng, 'brewer_camera')
+        self.camera = BeamNGCamera(self.beamng, 'brewer_camera',fov=self.fov)
         self.scenario.add_camera(self.camera.camera, self.camera.name)
         
         logging.info('* generate obstacle points')
