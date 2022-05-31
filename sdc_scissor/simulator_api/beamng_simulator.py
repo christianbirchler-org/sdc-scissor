@@ -8,6 +8,7 @@ from shapely.geometry import LineString
 
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.test import Test
+from self_driving.beamng_brewer import BeamNGCamera
 
 
 class BeamNGSimulator(AbstractSimulator):
@@ -108,6 +109,10 @@ class BeamNGSimulator(AbstractSimulator):
 
         self.scenario.add_road(road)
 
+        logging.info('* add camera to scenario: ')
+        self.camera = BeamNGCamera(self.beamng, 'brewer_camera')
+        self.scenario.add_camera(self.camera.camera, self.camera.name)
+        
         logging.info('* generate obstacle points')
         for obstacle in obstacles:
              obstacle_points=obstacle.interpolated_obstacle_points(road_nodes=road_nodes)

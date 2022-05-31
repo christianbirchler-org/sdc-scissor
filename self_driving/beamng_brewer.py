@@ -13,7 +13,7 @@ class BeamNGCamera:
         self.pose: BeamNGPose = BeamNGPose()
         self.camera = camera
         if not self.camera:
-            self.camera = Camera((0, 0, 0), (0, 0, 0), 120, (1280, 1280), colour=True, depth=True, annotation=True)
+            self.camera = Camera((0, 0, 0), (0, 0, 0), 110, (1280, 1280), colour=True, depth=True, annotation=False)
         self.beamng = beamng
 
     def get_rgb_image(self):
