@@ -25,7 +25,7 @@ _TRAINED_MODELS = _ROOT_DIR / 'trained_models'
 class Obstacle:
     def interpolated_obstacle_points(self, road_nodes=None):
         """
-        Generate interpolated point for Obstacles
+        Generate interpolated point for Obstacles
         :param road_nodes:
         """
         logging.info('* __interpolate obstacle points')
@@ -70,7 +70,7 @@ class Bump(Obstacle):
     def get_beamng_obstacle_object(self, pos=None):
         """
         Create Bump Obstacle
-        :param pos: Position of Obstacle
+        :param pos: Position of Obstacle
         """
         x_start, y_start, z_start = pos[0] + 5, pos[1] + 5, -28
         return ProceduralBump(name='pybump', pos=(x_start, y_start, z_start), rot=self.rot, rot_quat=self.rot_quat,
@@ -97,7 +97,7 @@ class Delineator(Obstacle):
     def get_beamng_obstacle_object(self, pos=None):
         """
         Create Cylinder Obstacle
-        :param pos: Position of Obstacle
+        :param pos: Position of Obstacle
         """
         x_start, y_start, z_start = pos[0], pos[1], -28
 
