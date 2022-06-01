@@ -2,24 +2,18 @@ import logging
 import time
 
 from scipy.spatial import distance
-from shapely.geometry import LineString, box
+from shapely.geometry import box
 
 from sdc_scissor.testing_api.test import Test
+from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
-
-
-class _RoadModel:
-    def __init__(self, road_points: list[list]):
-        self.coordinates = [(x[0], x[1]) for x in road_points]
-        self.center_line: LineString = LineString(coordinates=self.coordinates)
-        self.right_lane = self.center_line.buffer(distance=-5, single_sided=True)
 
 
 class TestMonitor:
     """
     The test monitor checks the execution states of the test and logs them.
     """
-    def __init__(self, simulator: AbstractSimulator, test: Test, oob: float):
+    def __init__(self, simulator: AbstractSimulator, test: Test, oob: float, road_model: RoadModel):
         """
         The test monitor retrieves data from the simulator and tracks the trajectory of the car.
 
@@ -35,7 +29,7 @@ class TestMonitor:
         self.start_time = None
         self.end_time = None
         self.data = []
-        self.road_model = _RoadModel(test.interpolated_road_points)
+        self.road_model = road_model
         self.oob = oob
         self.has_test_failed = None
         self.current_test_outcome = 'UNDEFINED'

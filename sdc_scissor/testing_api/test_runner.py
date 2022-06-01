@@ -4,6 +4,7 @@ import logging
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
+from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 
 
@@ -62,7 +63,8 @@ class TestRunner:
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(self.simulator, test, oob=self.oob)
+        road_model = RoadModel(test.interpolated_road_points)
+        test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
         test_monitor.start_timer()
         self.simulator.start_scenario()
 
