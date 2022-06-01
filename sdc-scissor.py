@@ -5,8 +5,7 @@ from pathlib import Path
 
 import numpy as np
 from scipy.interpolate import splprep, splev
-from beamngpy import ProceduralBump,ProceduralCylinder
-
+from beamngpy import ProceduralBump, ProceduralCylinder
 
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
@@ -18,32 +17,35 @@ from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
 from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
 from sdc_scissor.machine_learning_api.predictor import Predictor
 
-
 _ROOT_DIR = Path(__file__).parent
 _DESTINATION = _ROOT_DIR / 'destination'
 _TRAINED_MODELS = _ROOT_DIR / 'trained_models'
+
 
 class Obstacle:
     def interpolated_obstacle_points(self, road_nodes=None):
         """
         Generate interpolated point for Obstacles
         :param road_nodes:
-        """    
+        """
         logging.info('* __interpolate obstacle points')
         road_matrix = np.array(road_nodes)
         x = road_matrix[:, 0]
         y = road_matrix[:, 1]
 
         pos_tck, *_pos_u = splprep([x, y], s=3, k=3)
-        step_size = 1 / (self.count-1)
+        step_size = 1 / (self.count - 1)
         unew = np.arange(0, 1 + step_size, step_size)
         x_new, y_new = splev(unew, pos_tck)
         new_obstacle_points = np.column_stack((x_new, y_new)).tolist()
-        
-        #logging.info(new_obstacle_points)
+
+        # logging.info(new_obstacle_points)
         return new_obstacle_points
+
+
 class Bump(Obstacle):
-    def __init__(self, width=6, length=2, height=0.5, upper_length=1, upper_width=2,rot=None,rot_quat=(0, 0, 0, 1), bump_dist=None):
+    def __init__(self, width=6, length=2, height=0.5, upper_length=1, upper_width=2, rot=None, rot_quat=(0, 0, 0, 1),
+                 bump_dist=None):
         """
 
         :param width: width of Obstacle
@@ -56,29 +58,28 @@ class Bump(Obstacle):
         :param bump_dist: Number of Obstacle, e.g., 3
         """
 
-        self.width=width
-        self.length=length
-        self.height=height
-        self.upper_length=upper_length
-        self.upper_width=upper_width
-        self.count=bump_dist
-        self.rot=rot
-        self.rot_quat=rot_quat
-    
-    
-    def get_beamng_obstacle_object(self,pos=None):
+        self.width = width
+        self.length = length
+        self.height = height
+        self.upper_length = upper_length
+        self.upper_width = upper_width
+        self.count = bump_dist
+        self.rot = rot
+        self.rot_quat = rot_quat
+
+    def get_beamng_obstacle_object(self, pos=None):
         """
         Create Bump Obstacle
         :param pos: Position of Obstacle
         """
-        x_start, y_start, z_start =pos[0]+5,pos[1]+5, -28
-        return ProceduralBump(name='pybump',pos=(x_start, y_start, z_start),rot=self.rot, rot_quat=self.rot_quat,width=self.width,length=self.length,height=self.height,upper_length=self.upper_length,upper_width=self.upper_width)
-
-
+        x_start, y_start, z_start = pos[0] + 5, pos[1] + 5, -28
+        return ProceduralBump(name='pybump', pos=(x_start, y_start, z_start), rot=self.rot, rot_quat=self.rot_quat,
+                              width=self.width, length=self.length, height=self.height, upper_length=self.upper_length,
+                              upper_width=self.upper_width)
 
 
 class Delineator(Obstacle):
-    def __init__(self, radius=2, height=2.5,rot=None, rot_quat=(0, 0, 0, 1), delineator_dist=None):
+    def __init__(self, radius=2, height=2.5, rot=None, rot_quat=(0, 0, 0, 1), delineator_dist=None):
         """
 
         :param radius: radius of Obstacle
@@ -87,22 +88,21 @@ class Delineator(Obstacle):
         :param rot_quat: 
         :param delineator_dist: Number of Obstacle, e.g., 3
         """
-        self.radius=radius
-        self.height=height
-        self.count=delineator_dist
-        self.rot=rot
-        self.rot_quat=rot_quat
-        
-    
-    def get_beamng_obstacle_object(self,pos=None):
+        self.radius = radius
+        self.height = height
+        self.count = delineator_dist
+        self.rot = rot
+        self.rot_quat = rot_quat
+
+    def get_beamng_obstacle_object(self, pos=None):
         """
         Create Cylinder Obstacle
         :param pos: Position of Obstacle
         """
-        x_start, y_start, z_start =pos[0],pos[1], -28
-        
-        return ProceduralCylinder(name='pyCylinder',pos=(x_start, y_start, z_start),rot=self.rot, rot_quat=self.rot_quat, radius=self.radius, height=self.height)
+        x_start, y_start, z_start = pos[0], pos[1], -28
 
+        return ProceduralCylinder(name='pyCylinder', pos=(x_start, y_start, z_start), rot=self.rot,
+                                  rot_quat=self.rot_quat, radius=self.radius, height=self.height)
 
 
 @click.group()
@@ -123,10 +123,10 @@ def generate_tests(count: int, destination: Path, tool: str) -> None:
     if not destination.exists():
         destination.mkdir(parents=True)
 
-    test_generator = TestGenerator(count=count, destination=destination,tool=tool)
+    test_generator = TestGenerator(count=count, destination=destination, tool=tool)
     test_generator.generate()
     test_generator.save_tests()
-    
+
 
 @cli.command()
 @click.option('-t', '--tests', default=_DESTINATION, type=click.Path(exists=True))
@@ -169,7 +169,7 @@ def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dis
     bump = Bump(bump_dist=bump_dist)
     delineator = Delineator(delineator_dist=delineator_dist)
     test_loader = TestLoader(tests_dir=tests)
-    obstacles = [bump,delineator]
+    obstacles = [bump, delineator]
 
     test_runner = TestRunner(simulator=beamng_simulator, obstacles=obstacles, test_loader=test_loader, oob=oob,
                              interrupt=interrupt)
@@ -196,7 +196,8 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 
 
 @cli.command()
-@click.option('--csv', default=_DESTINATION / 'road_features.csv', help='Path to labeled tests', type=click.Path(exists=True))
+@click.option('--csv', default=_DESTINATION / 'road_features.csv', help='Path to labeled tests',
+              type=click.Path(exists=True))
 @click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
 def evaluate_cost_effectiveness(csv: Path, train_ratio: float) -> None:
     """
