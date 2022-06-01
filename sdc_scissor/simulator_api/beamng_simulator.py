@@ -14,6 +14,7 @@ class BeamNGSimulator(AbstractSimulator):
     """
     This class implements the interface for the specific BeamNG.tech simulator.
     """
+
     def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
         """
         API for enabling inter-process communication with the BeamNG simulator.
@@ -88,7 +89,7 @@ class BeamNGSimulator(AbstractSimulator):
         :param kmh:
         :return:
         """
-        return kmh/3.6
+        return kmh / 3.6
 
     def load_scenario(self, test: Test, obstacles: list):
         """
