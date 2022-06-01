@@ -44,7 +44,7 @@ class Obstacle:
 
 
 class Bump(Obstacle):
-    def __init__(self, width=6, length=2, height=0.5, upper_length=1, upper_width=2, rot=None, rot_quat=(0, 0, 0, 1),
+    def __init__(self, width=6, length=2, height=0.2, upper_length=1, upper_width=2, rot=None, rot_quat=(0, 0, 0, 1),
                  bump_dist=None):
         """
 
