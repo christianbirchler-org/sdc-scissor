@@ -6,6 +6,23 @@ from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
 from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.obstacle_api.obstacle import Bump, Delineator
+
+
+def _define_obstacles(road_model, bump_dist, delineator_dist) -> list:
+    logging.info('__define_obstacles')
+    obstacles_lst = []
+    length = int(road_model.ideal_trajectory.length)
+
+    for current_distance in range(bump_dist, length, bump_dist):
+        point = road_model.ideal_trajectory.interpolate(-current_distance)
+        obstacles_lst.append(Bump(x_pos=point.x, y_pos=point.y))
+
+    for current_distance in range(delineator_dist, length, delineator_dist):
+        point = road_model.center_line.interpolate(-current_distance)
+        obstacles_lst.append(Delineator(x_pos=point.x, y_pos=point.y))
+
+    return obstacles_lst
 
 
 class TestRunner:
@@ -19,7 +36,8 @@ class TestRunner:
         self.simulator: AbstractSimulator = kwargs.get('simulator', None)
         self.oob: float = kwargs.get('oob', None)
         self.interrupt: bool = kwargs.get('interrupt', None)
-        self.obstacles: list = kwargs.get('obstacles', None)
+        self.bump_dist = kwargs.get('bump_dist', None)
+        self.delineator_dist = kwargs.get('delineator_dist', None)
 
     def run_test_suite(self):
         """
@@ -58,12 +76,13 @@ class TestRunner:
         logging.info('* run')
         time.sleep(5)
 
-        self.simulator.load_scenario(test, obstacles=self.obstacles)
+        road_model = RoadModel(test.interpolated_road_points)
+        obstacles = _define_obstacles(road_model, self.bump_dist, self.delineator_dist)
+        self.simulator.load_scenario(test, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        road_model = RoadModel(test.interpolated_road_points)
         test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
         test_monitor.start_timer()
         self.simulator.start_scenario()
