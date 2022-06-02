@@ -12,6 +12,8 @@ from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist) -> list:
     logging.info('__define_obstacles')
     obstacles_lst = []
+    if obstacle_factory is None:
+        return obstacles_lst
     length = int(road_model.ideal_trajectory.length)
 
     for current_distance in range(bump_dist, length, bump_dist):

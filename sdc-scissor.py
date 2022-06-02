@@ -71,9 +71,10 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option('--oob', default=0.3, type=float)
 @click.option('--max-speed', default=50, type=float)
 @click.option('--interrupt/--no-interrupt', default=True, type=click.BOOL)
+@click.option('--obstacles/--no-obstacles', default=False, type=click.BOOL)
 @click.option('--bump-dist', default=20, type=click.INT)
 @click.option('--delineator-dist', default=5, type=click.INT)
-def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dist, delineator_dist) -> None:
+def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, obstacles, bump_dist, delineator_dist) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
@@ -82,7 +83,10 @@ def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dis
 
     test_loader = TestLoader(tests_dir=tests)
 
-    obstacle_factory = BeamngObstacleFactory()
+    if obstacles:
+        obstacle_factory = BeamngObstacleFactory()
+    else:
+        obstacle_factory = None
 
     test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader, oob=oob, interrupt=interrupt,
                              obstacle_factory=obstacle_factory, bump_dist=bump_dist, delineator_dist=delineator_dist)
