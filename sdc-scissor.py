@@ -3,7 +3,6 @@ import click
 
 from pathlib import Path
 
-
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_generator import TestGenerator
@@ -13,7 +12,7 @@ from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
 from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
 from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
 from sdc_scissor.machine_learning_api.predictor import Predictor
-
+from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFactory
 
 _ROOT_DIR = Path(__file__).parent
 _DESTINATION = _ROOT_DIR / 'destination'
@@ -38,10 +37,10 @@ def generate_tests(count: int, destination: Path, tool: str) -> None:
     if not destination.exists():
         destination.mkdir(parents=True)
 
-    test_generator = TestGenerator(count=count, destination=destination,tool=tool)
+    test_generator = TestGenerator(count=count, destination=destination, tool=tool)
     test_generator.generate()
     test_generator.save_tests()
-    
+
 
 @cli.command()
 @click.option('-t', '--tests', default=_DESTINATION, type=click.Path(exists=True))
@@ -72,14 +71,26 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option('--oob', default=0.3, type=float)
 @click.option('--max-speed', default=50, type=float)
 @click.option('--interrupt/--no-interrupt', default=True, type=click.BOOL)
-def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt) -> None:
+@click.option('--obstacles/--no-obstacles', default=False, type=click.BOOL)
+@click.option('--bump-dist', default=20, type=click.INT)
+@click.option('--delineator-dist', default=5, type=click.INT)
+def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, obstacles, bump_dist, delineator_dist) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
     logging.info('label_tests')
     beamng_simulator = SimulatorFactory.get_beamng_simulator(home=home, user=user, rf=rf, max_speed=max_speed)
+
     test_loader = TestLoader(tests_dir=tests)
-    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader, oob=oob, interrupt=interrupt)
+
+    if obstacles:
+        obstacle_factory = BeamngObstacleFactory()
+    else:
+        obstacle_factory = None
+
+    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader, oob=oob, interrupt=interrupt,
+                             obstacle_factory=obstacle_factory, bump_dist=bump_dist, delineator_dist=delineator_dist)
+
     test_runner.run_test_suite()
 
 
@@ -103,7 +114,8 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 
 
 @cli.command()
-@click.option('--csv', default=_DESTINATION / 'road_features.csv', help='Path to labeled tests', type=click.Path(exists=True))
+@click.option('--csv', default=_DESTINATION / 'road_features.csv', help='Path to labeled tests',
+              type=click.Path(exists=True))
 @click.option('--train-ratio', default=0.7, help='Ratio used for training the models', type=click.FLOAT)
 def evaluate_cost_effectiveness(csv: Path, train_ratio: float) -> None:
     """
