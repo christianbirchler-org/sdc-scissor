@@ -12,6 +12,7 @@ from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
 from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
 from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
 from sdc_scissor.machine_learning_api.predictor import Predictor
+from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFactory
 
 _ROOT_DIR = Path(__file__).parent
 _DESTINATION = _ROOT_DIR / 'destination'
@@ -81,8 +82,11 @@ def label_tests(tests: Path, home, user, rf, oob, max_speed, interrupt, bump_dis
 
     test_loader = TestLoader(tests_dir=tests)
 
-    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader, oob=oob,
-                             interrupt=interrupt, bump_dist=bump_dist, delineator_dist=delineator_dist)
+    obstacle_factory = BeamngObstacleFactory()
+
+    test_runner = TestRunner(simulator=beamng_simulator, test_loader=test_loader, oob=oob, interrupt=interrupt,
+                             obstacle_factory=obstacle_factory, bump_dist=bump_dist, delineator_dist=delineator_dist)
+
     test_runner.run_test_suite()
 
 

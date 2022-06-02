@@ -112,7 +112,7 @@ class BeamNGSimulator(AbstractSimulator):
 
         logging.info('* generate obstacle points')
         for obstacle in obstacles:
-            self.scenario.add_procedural_mesh(obstacle.get_beamng_obstacle_object())
+            self.scenario.add_procedural_mesh(obstacle.get())
 
         self.vehicle = Vehicle(vid='ego_vehicle', model='etk800', licence='Scissor')
         electrics = Electrics()

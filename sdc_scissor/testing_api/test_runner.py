@@ -6,21 +6,29 @@ from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
 from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
-from sdc_scissor.obstacle_api.obstacle import Bump, Delineator
+from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 
 
-def _define_obstacles(road_model, bump_dist, delineator_dist) -> list:
+def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist) -> list:
     logging.info('__define_obstacles')
     obstacles_lst = []
     length = int(road_model.ideal_trajectory.length)
 
     for current_distance in range(bump_dist, length, bump_dist):
         point = road_model.ideal_trajectory.interpolate(-current_distance)
-        obstacles_lst.append(Bump(x_pos=point.x, y_pos=point.y))
+        bump = obstacle_factory.create_bump()
+        bump.x_pos = point.x
+        bump.y_pos = point.y
+        bump.z_pos = -28.0
+        obstacles_lst.append(bump)
 
     for current_distance in range(delineator_dist, length, delineator_dist):
         point = road_model.center_line.interpolate(-current_distance)
-        obstacles_lst.append(Delineator(x_pos=point.x, y_pos=point.y))
+        delineator = obstacle_factory.create_delineator()
+        delineator.x_pos = point.x
+        delineator.y_pos = point.y
+        delineator.z_pos = -28.0
+        obstacles_lst.append(delineator)
 
     return obstacles_lst
 
@@ -38,6 +46,7 @@ class TestRunner:
         self.interrupt: bool = kwargs.get('interrupt', None)
         self.bump_dist = kwargs.get('bump_dist', None)
         self.delineator_dist = kwargs.get('delineator_dist', None)
+        self.obstacle_factory: ObstacleFactory = kwargs.get('obstacle_factory', None)
 
     def run_test_suite(self):
         """
@@ -77,7 +86,7 @@ class TestRunner:
         time.sleep(5)
 
         road_model = RoadModel(test.interpolated_road_points)
-        obstacles = _define_obstacles(road_model, self.bump_dist, self.delineator_dist)
+        obstacles = _define_obstacles(road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist)
         self.simulator.load_scenario(test, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
