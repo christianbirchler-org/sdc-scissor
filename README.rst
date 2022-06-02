@@ -7,7 +7,7 @@
 .. image:: https://readthedocs.org/projects/sdc-scissor/badge
     :target: https://sdc-scissor.readthedocs.io
 
-SDC-Scissor tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
+SDC-Scissor Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 =================================================================================================
 .. image:: https://sonarcloud.io/images/project_badges/sonarcloud-white.svg
     :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
