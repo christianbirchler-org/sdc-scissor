@@ -9,6 +9,20 @@ from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 
 
+def _get_t_previous_data(data, time_delta) -> tuple:
+    """
+    Return data of t-delta
+    """
+    logging.info('_get_t_previous_data')
+    t1, _, _, _ = data[-1]
+    reversed_data_iterator = reversed(data)
+    for t, x_pos, y_pos, z_pos in reversed_data_iterator:
+        if t1 - t > time_delta:
+            return t, x_pos, y_pos, z_pos
+    logging.info('Not enough data. An exception will be thrown.')
+    raise Exception('Not enough data')
+
+
 class TestMonitor:
     """
     The test monitor checks the execution states of the test and logs them.
@@ -48,13 +62,38 @@ class TestMonitor:
         self.data.append((current_time, x_pos, y_pos, z_pos))
 
         if self.__is_car_at_end_of_road(x_pos, y_pos) or\
-                (self.__is_car_out_of_lane(x_pos, y_pos) and interrupt_on_failure):
+                (self.__is_car_out_of_lane(x_pos, y_pos) and interrupt_on_failure) or not self.is_car_moving():
             logging.info('TEST IS FINISHED!')
             self.is_test_finished = True
             self.end_time = time.time()
             self.test.test_outcome = self.current_test_outcome
             self.test.test_duration = self.end_time - self.start_time
             self.test.simulation_data = self.data
+
+    def is_car_moving(self) -> bool:
+        """
+        Checks if the car is currently moving.
+        """
+        time_delta = 3
+        decision_distance = 1
+
+        current_time, current_x_pos, current_y_pos, _ = self.data[-1]
+        start_time, _, _, _ = self.data[0]
+
+        # We need at least of `time_delta` seconds of simulation data.
+        if current_time - start_time < time_delta:
+            return True
+
+        _, last_x_pos, last_y_pos, _ = _get_t_previous_data(self.data, time_delta)
+
+        is_car_moving = not self.__are_points_close((current_x_pos, current_y_pos), (last_x_pos, last_y_pos),
+                                                    decision_distance)
+
+        if not is_car_moving:
+            logging.warning('CAR IS NOT MOVING!')
+            self.has_test_failed = True
+            self.current_test_outcome = 'FAIL'
+        return is_car_moving
 
     def start_timer(self):
         """
