@@ -25,6 +25,12 @@ class TestTestMonitor:
         actual = self.test_monitor.is_car_moving()
         assert expected == actual
 
+    def test_is_car_moving_not_enough_sim_data_yet_to_make_decision(self):
+        self.test_monitor.data = [(0, 0, 0, 0), (0.1, 0, 0, 0)]
+        expected = True
+        actual = self.test_monitor.is_car_moving()
+        assert expected == actual
+
 
 if __name__ == '__main__':
     logging.info('test_test_monitor.py')
