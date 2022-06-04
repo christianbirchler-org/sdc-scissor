@@ -4,7 +4,35 @@ import logging
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
+from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
+
+
+def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist) -> list:
+    logging.info('__define_obstacles')
+    obstacles_lst = []
+    if obstacle_factory is None:
+        return obstacles_lst
+    length = int(road_model.ideal_trajectory.length)
+
+    for current_distance in range(bump_dist, length, bump_dist):
+        point = road_model.ideal_trajectory.interpolate(-current_distance)
+        bump = obstacle_factory.create_bump()
+        bump.x_pos = point.x
+        bump.y_pos = point.y
+        bump.z_pos = -28.0
+        obstacles_lst.append(bump)
+
+    for current_distance in range(delineator_dist, length, delineator_dist):
+        point = road_model.center_line.interpolate(-current_distance)
+        delineator = obstacle_factory.create_delineator()
+        delineator.x_pos = point.x
+        delineator.y_pos = point.y
+        delineator.z_pos = -28.0
+        obstacles_lst.append(delineator)
+
+    return obstacles_lst
 
 
 class TestRunner:
@@ -18,7 +46,9 @@ class TestRunner:
         self.simulator: AbstractSimulator = kwargs.get('simulator', None)
         self.oob: float = kwargs.get('oob', None)
         self.interrupt: bool = kwargs.get('interrupt', None)
-        self.obstacles: list = kwargs.get('obstacles', None)
+        self.bump_dist = kwargs.get('bump_dist', None)
+        self.delineator_dist = kwargs.get('delineator_dist', None)
+        self.obstacle_factory: ObstacleFactory = kwargs.get('obstacle_factory', None)
         self.fov: list = kwargs.get('fov', None)
 
     def run_test_suite(self):
@@ -58,12 +88,14 @@ class TestRunner:
         logging.info('* run')
         time.sleep(5)
 
-        self.simulator.load_scenario(test, obstacles=self.obstacles)
+        road_model = RoadModel(test.interpolated_road_points)
+        obstacles = _define_obstacles(road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist)
+        self.simulator.load_scenario(test, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(self.simulator, test, oob=self.oob)
+        test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
         test_monitor.start_timer()
         self.simulator.start_scenario()
 

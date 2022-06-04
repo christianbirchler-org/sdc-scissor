@@ -15,7 +15,7 @@ class BeamNGSimulator(AbstractSimulator):
     """
     This class implements the interface for the specific BeamNG.tech simulator.
     """
-    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float, fov: int):
+    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
         """
         API for enabling inter-process communication with the BeamNG simulator.
 
@@ -91,12 +91,13 @@ class BeamNGSimulator(AbstractSimulator):
         :param kmh:
         :return:
         """
-        return kmh/3.6
+        return kmh / 3.6
 
     def load_scenario(self, test: Test, obstacles: list):
         """
 
         :param test:
+        :param obstacles:
         """
         logging.info('load_scenario')
         self.scenario = Scenario('tig', 'example')
@@ -117,10 +118,7 @@ class BeamNGSimulator(AbstractSimulator):
         
         logging.info('* generate obstacle points')
         for obstacle in obstacles:
-             obstacle_points=obstacle.interpolated_obstacle_points(road_nodes=road_nodes)
-             #logging.info('obstacle_points: {}'.format(obstacle_points))
-             for obstacle_point in obstacle_points:
-                self.scenario.add_procedural_mesh(obstacle.get_beamng_obstacle_object(obstacle_point)) 
+            self.scenario.add_procedural_mesh(obstacle.get())
 
         self.vehicle = Vehicle(vid='ego_vehicle', model='etk800', licence='Scissor')
         electrics = Electrics()
