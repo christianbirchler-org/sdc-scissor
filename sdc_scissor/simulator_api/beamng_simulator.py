@@ -15,7 +15,7 @@ class BeamNGSimulator(AbstractSimulator):
     """
     This class implements the interface for the specific BeamNG.tech simulator.
     """
-    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float):
+    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float, fov: int):
         """
         API for enabling inter-process communication with the BeamNG simulator.
 
