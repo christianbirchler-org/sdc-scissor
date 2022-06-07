@@ -17,5 +17,5 @@ class CSVLoader:
         return dd
 
 
-if __name__ == '__main__':
-    logging.info('csv_loader.py')
+if __name__ == "__main__":
+    logging.info("csv_loader.py")

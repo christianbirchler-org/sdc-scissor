@@ -7,5 +7,5 @@ class CarlaDelineator(Delineator):
     pass
 
 
-if __name__ == '__main__':
-    logging.info('carla_delineator.py')
+if __name__ == "__main__":
+    logging.info("carla_delineator.py")

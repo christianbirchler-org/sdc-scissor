@@ -1,15 +1,29 @@
-from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_generator import BaseGenerator
+from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_generator import (
+    BaseGenerator,
+)
 import sdc_scissor.testing_api.test_generators.frenetic.src.utils.frenet as frenet
 import numpy as np
 import logging as log
 
 
 class BaseFrenetGenerator(BaseGenerator):
-    def __init__(self, time_budget=None, executor=None, map_size=None, margin=10, strict_father=False):
+    def __init__(
+        self,
+        time_budget=None,
+        executor=None,
+        map_size=None,
+        margin=10,
+        strict_father=False,
+    ):
         # Margin size w.r.t the map
         self.margin = margin
         self.recent_count = 0
-        super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father)
+        super().__init__(
+            time_budget=time_budget,
+            executor=executor,
+            map_size=map_size,
+            strict_father=strict_father,
+        )
 
     def kappas_to_road_points(self, kappas, frenet_step=10, theta0=1.57):
         """
@@ -30,9 +44,19 @@ class BaseFrenetGenerator(BaseGenerator):
         road_points = self.reframe_road(xs, ys)
         return road_points
 
-    def execute_frenet_test(self, kappas, method='random', frenet_step=10, theta0=1.57,  parent_info={}, extra_info={}):
-        extra_info['kappas'] = kappas
-        road_points = self.kappas_to_road_points(kappas, frenet_step=frenet_step, theta0=theta0)
+    def execute_frenet_test(
+        self,
+        kappas,
+        method="random",
+        frenet_step=10,
+        theta0=1.57,
+        parent_info={},
+        extra_info={},
+    ):
+        extra_info["kappas"] = kappas
+        road_points = self.kappas_to_road_points(
+            kappas, frenet_step=frenet_step, theta0=theta0
+        )
         return road_points
         # if road_points:
         #     self.recent_count += 1
@@ -51,8 +75,9 @@ class BaseFrenetGenerator(BaseGenerator):
         min_xs = min(xs)
         min_ys = min(ys)
         road_width = self.margin  # TODO: How to get the exact road width?
-        if (max(xs) - min_xs + road_width > self.map_size - self.margin) \
-                or (max(ys) - min_ys + road_width > self.map_size - self.margin):
+        if (max(xs) - min_xs + road_width > self.map_size - self.margin) or (
+            max(ys) - min_ys + road_width > self.map_size - self.margin
+        ):
             log.info("Skip: Road won't fit")
             return None
             # TODO: Fail the entire test and start over

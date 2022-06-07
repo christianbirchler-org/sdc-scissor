@@ -12,7 +12,7 @@ class RoadGen:
 
     We using a Markov chain to generate a sequence of road types.
     It allows to create a better initial population
-    
+
     """
 
     def __init__(

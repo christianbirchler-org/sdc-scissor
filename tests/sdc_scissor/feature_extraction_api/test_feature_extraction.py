@@ -3,20 +3,19 @@ import math
 from parameterized import parameterized
 from pytest import approx
 
-from sdc_scissor.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
+from sdc_scissor.feature_extraction_api.equi_distance_strategy import (
+    EquiDistanceStrategy,
+)
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
 from sdc_scissor.testing_api.test import Test
 
 
 class TestFeatureExtraction:
-    @parameterized.expand([
-        [999, 20],
-        [200, 12]
-    ])
+    @parameterized.expand([[999, 20], [200, 12]])
     def test_straight_road_equi_distance_strategy(self, distance, nr_segments):
         road_points = [[x, 0] for x in range(distance + 1)]
-        test = Test(0, road_points, 'NOT_EXECUTED')
+        test = Test(0, road_points, "NOT_EXECUTED")
         segmentation_strategy = EquiDistanceStrategy(nr_segments)
 
         feature_extractor = FeatureExtractor(segmentation_strategy)
@@ -43,8 +42,10 @@ class TestFeatureExtraction:
     @parameterized.expand([(20, 1), (33, 1), (68, 1), (200, 1), (287, 1)])
     def test_straight_road_angle_based_strategy(self, distance, nr_segments):
         road_points = [[x, 0] for x in range(distance + 1)]
-        test = Test(0, road_points, 'NOT_EXECUTED')
-        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        test = Test(0, road_points, "NOT_EXECUTED")
+        segmentation_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
 
         feature_extractor = FeatureExtractor(segmentation_strategy)
 
@@ -87,7 +88,7 @@ class TestFeatureExtraction:
 
         feature_extractor = FeatureExtractor(segmentation_strategy)
 
-        test = Test(0, road_points, 'NOT_EXECUTED')
+        test = Test(0, road_points, "NOT_EXECUTED")
         road_features = feature_extractor.extract_features(test)
         assert road_features.num_l_turns == 0
         assert road_features.num_r_turns == nr_segments
@@ -104,7 +105,9 @@ class TestFeatureExtraction:
 
     def test_90_degree_left_turn_only_angle_based(self):
         nr_segments = 1
-        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        segmentation_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         road_points = []
         radius = 50
         angle = 90
@@ -118,7 +121,7 @@ class TestFeatureExtraction:
 
             road_points.append([x, y])
 
-        test = Test(0, road_points, 'NOT_EXECUTED')
+        test = Test(0, road_points, "NOT_EXECUTED")
         feature_extractor = FeatureExtractor(segmentation_strategy)
 
         road_features = feature_extractor.extract_features(test)
@@ -138,7 +141,9 @@ class TestFeatureExtraction:
 
     def test_90_degree_right_turn_only_angle_based(self):
         nr_segments = 1
-        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        segmentation_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         road_points = []
         radius = 50
         angle = 90
@@ -152,7 +157,7 @@ class TestFeatureExtraction:
 
             road_points.append([x, y])
 
-        test = Test(0, road_points, 'NOT_EXECUTED')
+        test = Test(0, road_points, "NOT_EXECUTED")
         feature_extractor = FeatureExtractor(segmentation_strategy)
 
         road_features = feature_extractor.extract_features(test)
@@ -202,12 +207,14 @@ class TestFeatureExtraction:
 
         segmentation_strategy = EquiDistanceStrategy(nr_segments)
         feature_extractor = FeatureExtractor(segmentation_strategy)
-        test = Test(0, road_points, 'NOT_EXECUTED')
+        test = Test(0, road_points, "NOT_EXECUTED")
 
         road_features = feature_extractor.extract_features(test)
 
         # pythagoras
-        assert road_features.direct_distance == approx(math.sqrt(2 * ((2 * radius) ** 2)), abs=2)
+        assert road_features.direct_distance == approx(
+            math.sqrt(2 * ((2 * radius) ** 2)), abs=2
+        )
 
         # half of a circle
         assert road_features.road_distance == approx(math.pi * radius, abs=2)

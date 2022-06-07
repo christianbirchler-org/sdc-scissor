@@ -4,10 +4,12 @@ import random as rm
 
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.solution import Solution
 
+
 class TestCaseCrossover(Crossover):
-    '''
+    """
     Module to perform the crossover
-    '''
+    """
+
     def __init__(self, cross_rate):
         super().__init__(2, 2)
         self.cross_rate = cross_rate
@@ -36,7 +38,6 @@ class TestCaseCrossover(Crossover):
             if r < self.cross_rate:
                 tc_a = s_a.states
                 tc_b = s_b.states
-
 
                 if len(tc_a) < len(tc_b):
                     crossover_point = rm.randint(1, len(tc_a) - 1)

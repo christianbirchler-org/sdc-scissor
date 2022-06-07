@@ -1,4 +1,6 @@
-from sdc_scissor.feature_extraction_api.segmentation_strategy import SegmentationStrategy
+from sdc_scissor.feature_extraction_api.segmentation_strategy import (
+    SegmentationStrategy,
+)
 
 
 class EquiDistanceStrategy(SegmentationStrategy):
@@ -7,6 +9,7 @@ class EquiDistanceStrategy(SegmentationStrategy):
     the others since there might be a remainder while dividing the road into
     predefined number of segments.
     """
+
     def __init__(self, number_of_segments):
         """
         Initialize the strategy by providing the number of segments that should be generated
@@ -34,7 +37,9 @@ class EquiDistanceStrategy(SegmentationStrategy):
             raise Exception("Not enough road points.")
 
         # TODO: Verify if this calculation is correct. I am not sure!
-        road_points_per_segment = 1 + round(max_number_of_possible_segments/self.__number_of_segments)
+        road_points_per_segment = 1 + round(
+            max_number_of_possible_segments / self.__number_of_segments
+        )
 
         # calculate for each segments its start/end road point indeces
         end = 0
@@ -42,7 +47,7 @@ class EquiDistanceStrategy(SegmentationStrategy):
             start = end
 
             # check if last segment because last segment might have more/less points
-            if i == self.__number_of_segments-1:
+            if i == self.__number_of_segments - 1:
                 end = len(road_points) - 1
             else:
                 end = start + road_points_per_segment - 1
@@ -68,10 +73,14 @@ if __name__ == "__main__":
 
             segments = strategy.extract_segments(road_points)
 
-            self.assertEqual(len(segments), 5, "There must be {} segments.".format(nr_of_segments))
+            self.assertEqual(
+                len(segments), 5, "There must be {} segments.".format(nr_of_segments)
+            )
 
             expected_segments = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)]
-            self.assertEqual(segments, expected_segments, "Segments are not correctly calculated.")
+            self.assertEqual(
+                segments, expected_segments, "Segments are not correctly calculated."
+            )
 
         def test_too_few_road_points_should_raise_exception(self):
             nr_of_segments = 4
@@ -91,7 +100,9 @@ if __name__ == "__main__":
             segments = strategy.extract_segments(road_points)
 
             expected_segments = [(0, 1), (1, 2), (2, 3), (3, 5)]
-            self.assertEqual(segments, expected_segments, "Segments are not correctly calculated.")
+            self.assertEqual(
+                segments, expected_segments, "Segments are not correctly calculated."
+            )
 
         def test_last_segment_has_less_road_points_than_others(self):
             nr_of_segments = 3
@@ -102,6 +113,8 @@ if __name__ == "__main__":
             segments = strategy.extract_segments(road_points)
 
             expected_segments = [(0, 2), (2, 4), (4, 5)]
-            self.assertEqual(segments, expected_segments, "Segments are not correctly calculated.")
+            self.assertEqual(
+                segments, expected_segments, "Segments are not correctly calculated."
+            )
 
     unittest.main()

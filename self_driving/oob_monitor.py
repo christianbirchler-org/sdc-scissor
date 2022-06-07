@@ -7,7 +7,12 @@ from self_driving.vehicle_state_reader import VehicleStateReader
 
 
 class OutOfBoundsMonitor:
-    def __init__(self, road_polygon: RoadPolygon, vehicle_state_reader: VehicleStateReader, tolerance=0.95):
+    def __init__(
+        self,
+        road_polygon: RoadPolygon,
+        vehicle_state_reader: VehicleStateReader,
+        tolerance=0.95,
+    ):
         assert isinstance(vehicle_state_reader, VehicleStateReader)
         assert isinstance(road_polygon, RoadPolygon)
         self.road_polygon = road_polygon
@@ -27,11 +32,19 @@ class OutOfBoundsMonitor:
 
         self.update_oob_counter(is_oob)
 
-        last_max_oob_percentage = self.last_max_oob_percentage if oob_bb else float("nan")
+        last_max_oob_percentage = (
+            self.last_max_oob_percentage if oob_bb else float("nan")
+        )
         oob_distance = self.oob_distance(wrt=wrt)
         oob_percentage = self.oob_percentage(wrt=wrt)
 
-        return is_oob, self.oob_counter, last_max_oob_percentage, oob_distance, oob_percentage
+        return (
+            is_oob,
+            self.oob_counter,
+            last_max_oob_percentage,
+            oob_distance,
+            oob_percentage,
+        )
 
     def update_oob_counter(self, is_oob: bool):
         """Update the OOB counter only when is_oob is True but self.last_is_oob is False."""
@@ -45,14 +58,18 @@ class OutOfBoundsMonitor:
         if not self.last_is_oob and is_oob:
             self.last_max_oob_percentage = self.oob_percentage()
         elif self.last_is_oob and is_oob:
-            self.last_max_oob_percentage = max(self.last_max_oob_percentage, self.oob_percentage())
+            self.last_max_oob_percentage = max(
+                self.last_max_oob_percentage, self.oob_percentage()
+            )
 
     def oob_percentage(self, wrt="right") -> float:
         """Returns the percentage of the bounding box of the car with respect to
         one of the lanes of the road or the road itself (depending on the value of wrt)."""
         car_bbox_polygon = self._get_car_bbox_polygon()
         if wrt == "right":
-            intersection = car_bbox_polygon.intersection(self.road_polygon.right_polygon)
+            intersection = car_bbox_polygon.intersection(
+                self.road_polygon.right_polygon
+            )
         elif wrt == "left":
             intersection = car_bbox_polygon.intersection(self.road_polygon.left_polygon)
         else:
@@ -64,7 +81,7 @@ class OutOfBoundsMonitor:
         percentage outside of the road."""
         return self.oob_percentage(wrt=wrt) > self.tolerance
 
-    def oob_distance(self,  wrt="right") -> float:
+    def oob_distance(self, wrt="right") -> float:
         """Returns the difference between the width of a lane and
         the distance between the car and the center of the lane."""
         car_point = Point(self.vehicle_state_reader.get_state().pos)
@@ -100,20 +117,20 @@ class OutOfBoundsMonitor:
 
         # x coordinates of the bounding box of the car.
         boundary_x = [
-            car_bbox['rear_bottom_left'][0],
-            car_bbox['rear_bottom_right'][0],
-            car_bbox['front_bottom_right'][0],
-            car_bbox['front_bottom_left'][0],
-            car_bbox['rear_bottom_left'][0],
+            car_bbox["rear_bottom_left"][0],
+            car_bbox["rear_bottom_right"][0],
+            car_bbox["front_bottom_right"][0],
+            car_bbox["front_bottom_left"][0],
+            car_bbox["rear_bottom_left"][0],
         ]
 
         # y coordinates of the bounding box of the car.
         boundary_y = [
-            car_bbox['rear_bottom_left'][1],
-            car_bbox['rear_bottom_right'][1],
-            car_bbox['front_bottom_right'][1],
-            car_bbox['front_bottom_left'][1],
-            car_bbox['rear_bottom_left'][1],
+            car_bbox["rear_bottom_left"][1],
+            car_bbox["rear_bottom_right"][1],
+            car_bbox["front_bottom_right"][1],
+            car_bbox["front_bottom_left"][1],
+            car_bbox["rear_bottom_left"][1],
         ]
 
         return Polygon(zip(boundary_x, boundary_y))

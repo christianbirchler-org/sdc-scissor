@@ -9,6 +9,7 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
     This class segments the road based on parameters like risk factor and
     fullroad length.
     """
+
     def __init__(self, risk_factor: str, max_seg_length_to_full_road):
         """
 
@@ -35,7 +36,9 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
         """
         road_length = self.__road_geometry_calculator.get_road_length(road_points)
 
-        self.__max_seg_length_in_meters = road_length * self.__max_seg_length_to_full_road
+        self.__max_seg_length_in_meters = (
+            road_length * self.__max_seg_length_to_full_road
+        )
 
         if self.__seg_length_in_meters > self.__max_seg_length_in_meters:
             raise Exception("Road is too short for the required segment length.")
@@ -46,14 +49,18 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
         current_segment_length = 0
         segment_indexes = []
         for i in range(1, len(road_points)):
-            current_elementary_segment = road_points[i-1:i+1]
-            current_segment_length += self.__road_geometry_calculator.get_road_length(current_elementary_segment)
+            current_elementary_segment = road_points[i - 1 : i + 1]
+            current_segment_length += self.__road_geometry_calculator.get_road_length(
+                current_elementary_segment
+            )
 
             if current_segment_length > self.__max_seg_length_in_meters:
                 raise Exception("Max segment reached.")
 
             # segment reached its required length
-            if (current_segment_length >= self.__seg_length_in_meters) or (i == len(road_points)-1):
+            if (current_segment_length >= self.__seg_length_in_meters) or (
+                i == len(road_points) - 1
+            ):
                 current_segment_length = 0
                 end = i
                 segment_indexes.append((start, end))
@@ -73,7 +80,7 @@ if __name__ == "__main__":
 
             segments = strategy.extract_segments(road_points)
 
-            expected_segments = [(x*10, x*10+10) for x in range(99)]
+            expected_segments = [(x * 10, x * 10 + 10) for x in range(99)]
             expected_segments.append((990, 999))
             self.assertEqual(segments, expected_segments, "Segment indexes are wrong.")
 

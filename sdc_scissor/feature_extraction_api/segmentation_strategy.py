@@ -5,6 +5,7 @@ class SegmentationStrategy(abc.ABC):
     """
     Interface for implementing different segmentation strategies.
     """
+
     @abc.abstractmethod
     def extract_segments(self, road_points):
         """

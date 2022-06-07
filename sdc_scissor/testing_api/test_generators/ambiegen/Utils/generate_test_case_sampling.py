@@ -8,9 +8,10 @@ from sdc_scissor.testing_api.test_generators.ambiegen.Utils.road_gen import Road
 
 class GenerateTestCaseSampling(Sampling):
 
-    '''
+    """
     Module to generate the initial population
-    '''
+    """
+
     def _do(self, problem, n_samples, **kwargs):
         generator = RoadGen(
             cf.model["map_size"],
