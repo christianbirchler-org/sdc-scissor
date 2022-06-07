@@ -7,12 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: psf/black@stable
-  test:
+  ci:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -29,6 +24,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install poetry
         poetry install
+    - name: Check black code style
+      run: |
+        - poetry run black --check .
     - name: Test with pytest
       run: |
         poetry run coverage run -m pytest tests
