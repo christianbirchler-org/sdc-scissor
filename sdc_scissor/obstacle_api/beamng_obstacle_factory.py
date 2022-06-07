@@ -1,4 +1,6 @@
 import logging
+from sdc_scissor.obstacle_api.tree import Tree
+from sdc_scissor.obstacle_api.beamng_tree import BeamngTree
 
 from sdc_scissor.obstacle_api.bump import Bump
 from sdc_scissor.obstacle_api.beamng_bump import BeamngBump
@@ -13,6 +15,9 @@ class BeamngObstacleFactory(ObstacleFactory):
 
     def create_delineator(self) -> Delineator:
         return BeamngDelineator()
+
+    def create_tree(self) -> Tree:
+        return BeamngTree()
 
 
 if __name__ == "__main__":
