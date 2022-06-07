@@ -76,6 +76,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option("--obstacles/--no-obstacles", default=False, type=click.BOOL)
 @click.option("--bump-dist", default=20, type=click.INT)
 @click.option("--delineator-dist", default=5, type=click.INT)
+@click.option("-fov", "--field-of-view", default=120, type=click.INT)
 def label_tests(
     tests: Path,
     home,
@@ -87,13 +88,14 @@ def label_tests(
     obstacles,
     bump_dist,
     delineator_dist,
+    field_of_view,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
     logging.info("label_tests")
     beamng_simulator = SimulatorFactory.get_beamng_simulator(
-        home=home, user=user, rf=rf, max_speed=max_speed
+        home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
     )
 
     test_loader = TestLoader(tests_dir=tests)

@@ -8,7 +8,7 @@ from self_driving.beamng_pose import BeamNGPose
 
 
 class BeamNGCamera:
-    def __init__(self, beamng: BeamNGpy, name: str, camera: Camera = None):
+    def __init__(self, beamng: BeamNGpy, name: str, camera: Camera = None, fov=120):
         self.name = name
         self.pose: BeamNGPose = BeamNGPose()
         self.camera = camera
@@ -16,11 +16,11 @@ class BeamNGCamera:
             self.camera = Camera(
                 (0, 0, 0),
                 (0, 0, 0),
-                120,
+                fov,
                 (1280, 1280),
                 colour=True,
                 depth=True,
-                annotation=True,
+                annotation=False,
             )
         self.beamng = beamng
 

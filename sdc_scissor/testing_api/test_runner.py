@@ -49,6 +49,7 @@ class TestRunner:
         self.bump_dist = kwargs.get("bump_dist", None)
         self.delineator_dist = kwargs.get("delineator_dist", None)
         self.obstacle_factory: ObstacleFactory = kwargs.get("obstacle_factory", None)
+        self.fov: list = kwargs.get("fov", None)
 
     def run_test_suite(self):
         """ """
