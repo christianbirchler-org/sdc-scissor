@@ -4,6 +4,9 @@
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status
     :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
 
+.. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=coverage
+    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+
 .. image:: https://readthedocs.org/projects/sdc-scissor/badge
     :target: https://sdc-scissor.readthedocs.io
 
