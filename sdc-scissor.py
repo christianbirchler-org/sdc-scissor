@@ -73,7 +73,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option("--oob", default=0.3, type=float)
 @click.option("--max-speed", default=50, type=float)
 @click.option("--interrupt/--no-interrupt", default=True, type=click.BOOL)
-@click.option("--obstacles/--no-obstacles", default=False, type=click.BOOL)
+@click.option("--obstacles/--no-obstacles", default=False,type=click.BOOL)
 @click.option("--bump-dist", default=20, type=click.INT)
 @click.option("--delineator-dist", default=5, type=click.INT)
 def label_tests(
