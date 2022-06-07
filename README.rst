@@ -8,42 +8,42 @@
    :target: https://github.com/psf/black
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=ncloc
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=coverage
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=sqale_index
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=reliability_rating
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=duplicated_lines_density
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=vulnerabilities
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=bugs
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=security_rating
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=sqale_rating
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=code_smells
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 SDC-Scissor Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 =================================================================================================
 .. image:: https://sonarcloud.io/images/project_badges/sonarcloud-black.svg
-    :target: https://sonarcloud.io/summary/new_code?id=ChristianBirchler_sdc-scissor
+    :target: https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor
 
 SDC-Scissor is a tool that let you test self-driving cars more efficiently in simulation. It uses a machine-learning
 approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
