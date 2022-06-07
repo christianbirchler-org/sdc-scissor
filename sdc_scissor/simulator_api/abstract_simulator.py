@@ -4,9 +4,7 @@ import logging
 
 class AbstractSimulator(abc.ABC):
     def __init__(self):
-        """
-
-        """
+        """ """
         super().__init__()
 
     @abc.abstractmethod
@@ -63,11 +61,9 @@ class AbstractSimulator(abc.ABC):
 
     @abc.abstractmethod
     def get_car_position(self):
-        """
-
-        """
+        """ """
         pass
 
 
-if __name__ == '__main__':
-    logging.info('* abstract_simulator.py')
+if __name__ == "__main__":
+    logging.info("* abstract_simulator.py")

@@ -4,7 +4,9 @@ from self_driving.bbox import RoadBoundingBox
 
 # from code_pipeline.tests_generation import RoadTest
 # from code_pipeline.tests_generation import RoadTestFactory
-from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
+from sdc_scissor.feature_extraction_api.road_geometry_calculator import (
+    RoadGeometryCalculator,
+)
 
 
 def find_circle(p1, p2, p3):
@@ -21,10 +23,10 @@ def find_circle(p1, p2, p3):
         return np.inf
 
     # Center of circle
-    cx = (bc*(p2[1] - p3[1]) - cd*(p1[1] - p2[1])) / det
+    cx = (bc * (p2[1] - p3[1]) - cd * (p1[1] - p2[1])) / det
     cy = ((p1[0] - p2[0]) * cd - (p2[0] - p3[0]) * bc) / det
 
-    radius = np.sqrt((cx - p1[0])**2 + (cy - p1[1])**2)
+    radius = np.sqrt((cx - p1[0]) ** 2 + (cy - p1[1]) ** 2)
     return radius
 
 
@@ -33,8 +35,8 @@ def min_radius(x, w=5):
     nodes = x
     for i in range(len(nodes) - w):
         p1 = nodes[i]
-        p2 = nodes[i + int((w-1)/2)]
-        p3 = nodes[i + (w-1)]
+        p2 = nodes[i + int((w - 1) / 2)]
+        p3 = nodes[i + (w - 1)]
         radius = find_circle(p1, p2, p3)
         if radius < mr:
             mr = radius
@@ -73,7 +75,7 @@ class TestValidator:
 
     def is_inside_map(self, the_test):
         """
-            Take the extreme points and ensure that their distance is smaller than the map side
+        Take the extreme points and ensure that their distance is smaller than the map side
         """
         xs = [t[0] for t in the_test.interpolated_road_points]
         ys = [t[1] for t in the_test.interpolated_road_points]
@@ -81,15 +83,21 @@ class TestValidator:
         min_x, max_x = min(xs), max(xs)
         min_y, max_y = min(ys), max(ys)
 
-        return min_x > 0 or min_x > self.map_size and \
-            max_x > 0 or max_x > self.map_size and \
-            min_y > 0 or min_y > self.map_size and \
-            max_y > 0 or max_y > self.map_size
+        return (
+            min_x > 0
+            or min_x > self.map_size
+            and max_x > 0
+            or max_x > self.map_size
+            and min_y > 0
+            or min_y > self.map_size
+            and max_y > 0
+            or max_y > self.map_size
+        )
 
     @staticmethod
     def is_right_type(the_test):
         """
-            The type of the_test must be RoadTest
+        The type of the_test must be RoadTest
         """
         # check = isinstance(the_test, RoadTestFactory.RoadTest)
         # return check
@@ -121,13 +129,15 @@ class TestValidator:
         elif rf == 2:
             required_min_segment_length = 20
         else:
-            raise Exception('Min seg length for RF {} not defined'.format(rf))
+            raise Exception("Min seg length for RF {} not defined".format(rf))
 
         return msl >= required_min_segment_length
 
     def is_road_not_long_enough_according_min_segment(self, the_test):
         required_proportion = 0.4  # TODO: avoid magic number
-        road_length = self.road_geometry_calculator.get_road_length(the_test.road_points)
+        road_length = self.road_geometry_calculator.get_road_length(
+            the_test.road_points
+        )
         msl = the_test.min_segment_length
         return road_length * required_proportion >= msl
 

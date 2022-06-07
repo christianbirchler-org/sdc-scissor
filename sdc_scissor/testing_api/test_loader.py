@@ -23,10 +23,10 @@ class TestLoader:
 
         :param tests_paths:
         """
-        logging.debug('* _test_loader_gen')
-        pattern: str = r'.*test.*.json'
+        logging.debug("* _test_loader_gen")
+        pattern: str = r".*test.*.json"
         for root, dirs, files in os.walk(self.tests_dir):
-            if 'unlabeled' in root:
+            if "unlabeled" in root:
                 continue
             for file in files:
                 if re.fullmatch(pattern, file):
@@ -46,8 +46,8 @@ class TestLoader:
         :return:
         """
         if not self.has_next():
-            logging.warning('There are no remaining tests!')
-            raise Exception('There are no remaining tests!')
+            logging.warning("There are no remaining tests!")
+            raise Exception("There are no remaining tests!")
 
         test_path: Path = self.test_paths.pop()
         test: Test = self.__load_test_from_path(test_path)
@@ -61,26 +61,31 @@ class TestLoader:
         :return:
         """
         logging.info(str(test_path))
-        with open(test_path, 'r') as fp:
+        with open(test_path, "r") as fp:
             test_json = json.load(fp)
 
-        road_points = test_json['interpolated_road_points']
-        if 'test_outcome' in test_json.keys():
-            test_outcome = test_json['test_outcome']
+        road_points = test_json["interpolated_road_points"]
+        if "test_outcome" in test_json.keys():
+            test_outcome = test_json["test_outcome"]
         else:
             test_outcome = None
-        if 'simulation_time' in test_json.keys():
-            sim_time = test_json['simulation_time']
+        if "simulation_time" in test_json.keys():
+            sim_time = test_json["simulation_time"]
         else:
             sim_time = None
-        id_pattern = r'(.*test.*)'
-        logging.info('test_path: {}'.format(str(test_path)))
+        id_pattern = r"(.*test.*)"
+        logging.info("test_path: {}".format(str(test_path)))
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
         test_id = match_obj.group(1)
-        logging.info('test_id: {}'.format(test_id))
-        test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
+        logging.info("test_id: {}".format(test_id))
+        test = Test(
+            test_id=test_id,
+            road_points=road_points,
+            test_outcome=test_outcome,
+            test_duration=sim_time,
+        )
         return test
 
 
-if __name__ == '__main__':
-    logging.info('* test_loader.py')
+if __name__ == "__main__":
+    logging.info("* test_loader.py")

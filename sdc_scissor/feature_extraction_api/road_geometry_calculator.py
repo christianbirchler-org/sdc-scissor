@@ -16,8 +16,8 @@ class RoadGeometryCalculator:
             # calculate angle between previous direction and vector from
             # previous point to the current one
 
-            point_before = road_points[i-2]
-            mid_point = road_points[i-1]
+            point_before = road_points[i - 2]
+            mid_point = road_points[i - 1]
             point_after = road_points[i]
 
             prev_direction = self.get_direction(point_before, mid_point)
@@ -57,7 +57,7 @@ class RoadGeometryCalculator:
         """
         a1, a2 = first_point[0], first_point[1]
         b1, b2 = second_point[0], second_point[1]
-        c1, c2 = (b1-a1, b2-a2)
+        c1, c2 = (b1 - a1, b2 - a2)
         distance = math.sqrt(c1**2 + c2**2)
         return distance
 
@@ -70,7 +70,7 @@ class RoadGeometryCalculator:
         :param second_point: (x,y) coordinates of second point
         :return: Return the difference 2D vector (second_point-first_point)
         """
-        return second_point[0]-first_point[0], second_point[1]-first_point[1]
+        return second_point[0] - first_point[0], second_point[1] - first_point[1]
 
     @staticmethod
     def get_road_length(road_points):
@@ -84,15 +84,15 @@ class RoadGeometryCalculator:
 
         road_length = 0
         for i in range(1, nr_of_road_points):
-            a1, a2 = road_points[i-1][0], road_points[i-1][1]
+            a1, a2 = road_points[i - 1][0], road_points[i - 1][1]
             b1, b2 = road_points[i][0], road_points[i][1]
 
-            c1, c2 = (b1-a1, b2-a2)
+            c1, c2 = (b1 - a1, b2 - a2)
 
-            road_length += math.sqrt(c1**2+c2**2)
+            road_length += math.sqrt(c1**2 + c2**2)
 
         return road_length
 
 
 if __name__ == "__main__":
-    logging.info('road_geometry_calculator.py')
+    logging.info("road_geometry_calculator.py")

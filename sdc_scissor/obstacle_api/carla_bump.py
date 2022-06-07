@@ -7,5 +7,5 @@ class CarlaBump(Bump):
     pass
 
 
-if __name__ == '__main__':
-    logging.info('carla_bump.py')
+if __name__ == "__main__":
+    logging.info("carla_bump.py")

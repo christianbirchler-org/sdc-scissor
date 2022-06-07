@@ -24,23 +24,34 @@ class ModelEvaluator:
         """
         self.data_frame = data_frame
         self.label = label
-        self.road_features = ['direct_distance', 'max_angle', 'max_pivot_off', 'mean_angle',
-                              'mean_pivot_off', 'median_angle', 'median_pivot_off', 'min_angle', 'min_pivot_off',
-                              'num_l_turns',
-                              'num_r_turns', 'num_straights', 'road_distance', 'std_angle', 'std_pivot_off',
-                              'total_angle']
+        self.road_features = [
+            "direct_distance",
+            "max_angle",
+            "max_pivot_off",
+            "mean_angle",
+            "mean_pivot_off",
+            "median_angle",
+            "median_pivot_off",
+            "min_angle",
+            "min_pivot_off",
+            "num_l_turns",
+            "num_r_turns",
+            "num_straights",
+            "road_distance",
+            "std_angle",
+            "std_pivot_off",
+            "total_angle",
+        ]
 
         self.__classifiers = {}
 
     def evaluate(self):
-        """
-
-        """
-        logging.info('evaluate')
+        """ """
+        logging.info("evaluate")
 
         dd = self.data_frame.sample(frac=1).reset_index(drop=True)
         N = dd.shape[0]
-        N_train = int(N*0.8)
+        N_train = int(N * 0.8)
         N_test = N - N_train
 
         X = dd[self.road_features].to_numpy()
@@ -50,9 +61,9 @@ class ModelEvaluator:
         X = preprocessing.scale(X)
 
         y = dd[self.label].to_numpy()
-        y[y == 'FAIL'] = 1
-        y[y == 'PASS'] = 0
-        y = np.array(y, dtype='int32')
+        y[y == "FAIL"] = 1
+        y[y == "PASS"] = 0
+        y = np.array(y, dtype="int32")
 
         y_train = y[:N_train]
 
@@ -71,12 +82,12 @@ class ModelEvaluator:
             y_train = np.concatenate((y_train_pass, y_train_fail[:n_pass]))
             X_train = np.concatenate((X_train_pass, X_train_fail[:n_pass, :]), axis=0)
 
-        self.__classifiers['random_forest'] = RandomForestClassifier()
-        self.__classifiers['gradient_boosting'] = GradientBoostingClassifier()
-        self.__classifiers['SVM'] = LinearSVC(max_iter=10000)
-        self.__classifiers['gaussian_naive_bayes'] = GaussianNB()
-        self.__classifiers['logistic_regression'] = LogisticRegression(max_iter=10000)
-        self.__classifiers['decision_tree'] = DecisionTreeClassifier()
+        self.__classifiers["random_forest"] = RandomForestClassifier()
+        self.__classifiers["gradient_boosting"] = GradientBoostingClassifier()
+        self.__classifiers["SVM"] = LinearSVC(max_iter=10000)
+        self.__classifiers["gaussian_naive_bayes"] = GaussianNB()
+        self.__classifiers["logistic_regression"] = LogisticRegression(max_iter=10000)
+        self.__classifiers["decision_tree"] = DecisionTreeClassifier()
 
         for model_name, model in self.__classifiers.items():
             model.fit(X_train, y_train)
@@ -87,22 +98,25 @@ class ModelEvaluator:
             rec = recall_score(y_test, y_pred)
             f1 = f1_score(y_test, y_pred)
 
-            print('MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}'
-                  .format(model_name, acc, rec, prec, f1))
+            print(
+                "MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}".format(
+                    model_name, acc, rec, prec, f1
+                )
+            )
 
     def save_models(self, out_dir: Path):
         """
 
         :param out_dir:
         """
-        logging.info('save_models')
+        logging.info("save_models")
 
         for model_name, model in self.__classifiers.items():
-            filename = model_name + '.joblib'
+            filename = model_name + ".joblib"
             file_path = out_dir / filename
-            logging.info('save model: {}'.format(model_name))
+            logging.info("save model: {}".format(model_name))
             joblib.dump(model, file_path)
 
 
-if __name__ == '__main__':
-    logging.info('model_evaluator.py')
+if __name__ == "__main__":
+    logging.info("model_evaluator.py")

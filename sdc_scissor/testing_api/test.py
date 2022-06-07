@@ -8,7 +8,9 @@ from pathlib import Path
 
 
 class Test:
-    def __init__(self, test_id, road_points: list[list], test_outcome, test_duration=None):
+    def __init__(
+        self, test_id, road_points: list[list], test_outcome, test_duration=None
+    ):
         """
         Class representing a test case.
 
@@ -30,8 +32,8 @@ class Test:
 
         :param file_path: File path to save the test as a json file
         """
-        logging.info('save_as_json')
-        with open(file_path, 'w') as fp:
+        logging.info("save_as_json")
+        with open(file_path, "w") as fp:
             test_dict = vars(self)
             json.dump(test_dict, fp, indent=2)
 
@@ -42,7 +44,7 @@ class Test:
         :param road_points:
         :return:
         """
-        logging.info('* __interpolate')
+        logging.info("* __interpolate")
         road_matrix = np.array(road_points)
         x = road_matrix[:, 0]
         y = road_matrix[:, 1]
@@ -67,5 +69,5 @@ class Test:
         return new_road_points
 
 
-if __name__ == '__main__':
-    logging.info('* test.py')
+if __name__ == "__main__":
+    logging.info("* test.py")

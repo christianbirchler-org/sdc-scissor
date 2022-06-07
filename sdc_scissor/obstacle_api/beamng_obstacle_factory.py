@@ -15,5 +15,5 @@ class BeamngObstacleFactory(ObstacleFactory):
         return BeamngDelineator()
 
 
-if __name__ == '__main__':
-    logging.info('beamng_obstacle_factory.py')
+if __name__ == "__main__":
+    logging.info("beamng_obstacle_factory.py")

@@ -5,9 +5,10 @@ import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
 
 
 class TestCaseMutation(Mutation):
-    '''
+    """
     Module to perform the mutation
-    '''
+    """
+
     def __init__(self, mut_rate):
         super().__init__()
         self.mut_rate = mut_rate

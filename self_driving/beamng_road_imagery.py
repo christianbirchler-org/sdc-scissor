@@ -12,7 +12,7 @@ class BeamNGRoadImagery:
         self._close()
         self._fig, self._ax = plt.subplots(1)
         self.road_points.plot_on_ax(self._ax)
-        self._ax.axis('equal')
+        self._ax.axis("equal")
 
     def save(self, image_path):
         if not self._fig:

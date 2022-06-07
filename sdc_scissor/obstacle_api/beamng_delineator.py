@@ -10,9 +10,15 @@ class BeamngDelineator(Delineator):
         super().__init__(**kwargs)
 
     def get(self):
-        return ProceduralCylinder(name='pyCylinder', pos=(self.x_pos, self.y_pos, self.z_pos), rot=self.rot,
-                                  rot_quat=self.rot_quat, radius=self.radius, height=self.height)
+        return ProceduralCylinder(
+            name="pyCylinder",
+            pos=(self.x_pos, self.y_pos, self.z_pos),
+            rot=self.rot,
+            rot_quat=self.rot_quat,
+            radius=self.radius,
+            height=self.height,
+        )
 
 
-if __name__ == '__main__':
-    logging.info('beamng_delineator.py')
+if __name__ == "__main__":
+    logging.info("beamng_delineator.py")

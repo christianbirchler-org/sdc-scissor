@@ -10,7 +10,7 @@ from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 
 
 def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist) -> list:
-    logging.info('__define_obstacles')
+    logging.info("__define_obstacles")
     obstacles_lst = []
     if obstacle_factory is None:
         return obstacles_lst
@@ -41,21 +41,19 @@ class TestRunner:
 
         :param kwargs:
         """
-        self.test_loader: TestLoader = kwargs.get('test_loader', None)
-        self.ml_component = kwargs.get('machine_learning_api', None)
-        self.simulator: AbstractSimulator = kwargs.get('simulator', None)
-        self.oob: float = kwargs.get('oob', None)
-        self.interrupt: bool = kwargs.get('interrupt', None)
-        self.bump_dist = kwargs.get('bump_dist', None)
-        self.delineator_dist = kwargs.get('delineator_dist', None)
-        self.obstacle_factory: ObstacleFactory = kwargs.get('obstacle_factory', None)
+        self.test_loader: TestLoader = kwargs.get("test_loader", None)
+        self.ml_component = kwargs.get("machine_learning_api", None)
+        self.simulator: AbstractSimulator = kwargs.get("simulator", None)
+        self.oob: float = kwargs.get("oob", None)
+        self.interrupt: bool = kwargs.get("interrupt", None)
+        self.bump_dist = kwargs.get("bump_dist", None)
+        self.delineator_dist = kwargs.get("delineator_dist", None)
+        self.obstacle_factory: ObstacleFactory = kwargs.get("obstacle_factory", None)
         self.fov: list = kwargs.get('fov', None)
 
     def run_test_suite(self):
-        """
-
-        """
-        logging.info('* run_test_suite')
+        """ """
+        logging.info("* run_test_suite")
         self.simulator.open()
         has_execution_failed = False
         test = None
@@ -73,9 +71,9 @@ class TestRunner:
                 time.sleep(5)
             except Exception:
                 # TODO: create a counter to limit the number of trials for a single test
-                logging.warning('Test case execution raised an exception!')
+                logging.warning("Test case execution raised an exception!")
                 has_execution_failed = True
-                test.test_outcome = 'ERROR'
+                test.test_outcome = "ERROR"
 
         self.simulator.close()
 
@@ -85,17 +83,21 @@ class TestRunner:
 
         :param test: Test object that needs to be executed in simulation
         """
-        logging.info('* run')
+        logging.info("* run")
         time.sleep(5)
 
         road_model = RoadModel(test.interpolated_road_points)
-        obstacles = _define_obstacles(road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist)
+        obstacles = _define_obstacles(
+            road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist
+        )
         self.simulator.load_scenario(test, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
+        test_monitor = TestMonitor(
+            self.simulator, test, oob=self.oob, road_model=road_model
+        )
         test_monitor.start_timer()
         self.simulator.start_scenario()
 
@@ -108,5 +110,5 @@ class TestRunner:
         self.simulator.stop_scenario()
 
 
-if __name__ == '__main__':
-    logging.info('* test_runner.py')
+if __name__ == "__main__":
+    logging.info("* test_runner.py")

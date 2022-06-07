@@ -8,20 +8,24 @@ from pathlib import Path
 
 from time import sleep
 from datetime import datetime
+
 # from code_pipeline.tests_generation import RoadTestFactory
 
 
 class BaseGenerator(ABC):
-
-    def __init__(self, time_budget=None, executor=None, map_size=None, strict_father=False):
+    def __init__(
+        self, time_budget=None, executor=None, map_size=None, strict_father=False
+    ):
         self.time_budget = time_budget
         self.executor = executor
         self.map_size = map_size
         self.df = pd.DataFrame()
-        creation_date = datetime.now().strftime('%Y%m%d-%H%M%S')
-        self.file_name = f'experiments/{creation_date}-{self.__class__.__name__}-results.csv'
+        creation_date = datetime.now().strftime("%Y%m%d-%H%M%S")
+        self.file_name = (
+            f"experiments/{creation_date}-{self.__class__.__name__}-results.csv"
+        )
         self.columns_number = 0
-        log.info(f'ERATO experiment output is stored in {self.file_name}')
+        log.info(f"ERATO experiment output is stored in {self.file_name}")
 
         # Adding mutants for future mutation only if its min_oob_distance is better than its parent's min_oob_distance
         # min_oob_distance < parent_min_oob_distance
@@ -34,7 +38,7 @@ class BaseGenerator(ABC):
     def store_dataframe(self):
         log.info("Storing the all the experiment results in a csv.")
         # Storing the results as csv in experiments folders
-        with open(self.file_name, 'w') as outfile:
+        with open(self.file_name, "w") as outfile:
             self.df.to_csv(outfile)
 
     # def execute_test(self, road_points, method='random', extra_info={}, parent_info={}):
@@ -107,6 +111,12 @@ class BaseGenerator(ABC):
         Returns:
             Accumulated oob_distance when the center the mass already crossed one of the lanes (oob_distance < 0).
         """
-        return (sum(
-            map(lambda k: (execution_data[k].oob_distance - 2) * (execution_data[k].timer - execution_data[k - 1].timer)
-            if execution_data[k].oob_distance < 0 else 0, range(1, len(execution_data)))))
+        return sum(
+            map(
+                lambda k: (execution_data[k].oob_distance - 2)
+                * (execution_data[k].timer - execution_data[k - 1].timer)
+                if execution_data[k].oob_distance < 0
+                else 0,
+                range(1, len(execution_data)),
+            )
+        )

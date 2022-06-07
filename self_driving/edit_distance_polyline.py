@@ -42,12 +42,12 @@ _calc_cost = _calc_cost_weighted
 
 def _iterative_levenshtein_dist_angle(s: ListOfAngleLength, t: ListOfAngleLength):
     """
-        iterative_levenshtein(s, t) -> ldist
-        ldist is the Levenshtein distance between the strings
-        s and t.
-        For all i and j, dist[i,j] will contain the Levenshtein
-        distance between the first i characters of s and the
-        first j characters of t
+    iterative_levenshtein(s, t) -> ldist
+    ldist is the Levenshtein distance between the strings
+    s and t.
+    For all i and j, dist[i,j] will contain the Levenshtein
+    distance between the first i characters of s and the
+    first j characters of t
     """
     rows = len(s) + 1
     cols = len(t) + 1
@@ -64,9 +64,11 @@ def _iterative_levenshtein_dist_angle(s: ListOfAngleLength, t: ListOfAngleLength
     for col in range(1, cols):
         for row in range(1, rows):
             cost = _calc_cost(s[row - 1], t[col - 1])
-            dist[row][col] = min(dist[row - 1][col] + 1,  # deletion
-                                 dist[row][col - 1] + 1,  # insertion
-                                 dist[row - 1][col - 1] + cost)  # substitution
+            dist[row][col] = min(
+                dist[row - 1][col] + 1,  # deletion
+                dist[row][col - 1] + 1,  # insertion
+                dist[row - 1][col - 1] + cost,
+            )  # substitution
     # for r in range(rows):
     #     print(dist[r])
 
@@ -80,7 +82,7 @@ def _calc_angle_distance(v0, v1):
 
 
 def _calc_dist_angle(points: ListOfPoints) -> ListOfAngleLength:
-    assert len(points) >= 2, 'at least two points are needed'
+    assert len(points) >= 2, "at least two points are needed"
 
     def vector(idx):
         return np.subtract(points[idx + 1], points[idx])

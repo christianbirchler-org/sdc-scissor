@@ -17,7 +17,7 @@ class SimulatorFactory:
         :return:
         """
         beamng_simulator = BeamNGSimulator(
-            host='localhost',
+            host="localhost",
             port=64256,
             home=home,
             user=user,
@@ -28,5 +28,5 @@ class SimulatorFactory:
         return beamng_simulator
 
 
-if __name__ == '__main__':
-    logging.info('* simulator_factory.py')
+if __name__ == "__main__":
+    logging.info("* simulator_factory.py")
