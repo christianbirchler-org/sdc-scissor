@@ -7,6 +7,9 @@
 .. image:: https://readthedocs.org/projects/sdc-scissor/badge
     :target: https://sdc-scissor.readthedocs.io
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+
 SDC-Scissor Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 =================================================================================================
 .. image:: https://sonarcloud.io/images/project_badges/sonarcloud-white.svg
