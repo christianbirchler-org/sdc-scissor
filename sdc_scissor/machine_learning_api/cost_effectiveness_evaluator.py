@@ -97,27 +97,11 @@ class CostEffectivenessEvaluator:
 
             sdc_scissor_tot_sim_time = np.sum(X_test_time[y_pred])
             print("SDC-SCISSOR")
-            print(
-                "{}:\tnr_tests: {}\ttot_sim_time {}".format(
-                    name, nr_unsafe_predicted, sdc_scissor_tot_sim_time
-                )
-            )
+            print("{}:\tnr_tests: {}\ttot_sim_time {}".format(name, nr_unsafe_predicted, sdc_scissor_tot_sim_time))
             print("RANDOM BASELINE:")
-            print(
-                "nr_tests: {}\ttot_sim_time {}".format(
-                    nr_unsafe_predicted, random_tot_sim_time
-                )
-            )
-            print(
-                "random_baseline_time/sdc_scissor_time = {}".format(
-                    random_tot_sim_time / sdc_scissor_tot_sim_time
-                )
-            )
-            print(
-                "sdc_scissor_time/random_baseline_time = {}\n".format(
-                    sdc_scissor_tot_sim_time / random_tot_sim_time
-                )
-            )
+            print("nr_tests: {}\ttot_sim_time {}".format(nr_unsafe_predicted, random_tot_sim_time))
+            print("random_baseline_time/sdc_scissor_time = {}".format(random_tot_sim_time / sdc_scissor_tot_sim_time))
+            print("sdc_scissor_time/random_baseline_time = {}\n".format(sdc_scissor_tot_sim_time / random_tot_sim_time))
 
 
 if __name__ == "__main__":

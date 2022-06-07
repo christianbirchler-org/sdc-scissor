@@ -87,17 +87,13 @@ class TestRunner:
         time.sleep(5)
 
         road_model = RoadModel(test.interpolated_road_points)
-        obstacles = _define_obstacles(
-            road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist
-        )
+        obstacles = _define_obstacles(road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist)
         self.simulator.load_scenario(test, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(
-            self.simulator, test, oob=self.oob, road_model=road_model
-        )
+        test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
         test_monitor.start_timer()
         self.simulator.start_scenario()
 

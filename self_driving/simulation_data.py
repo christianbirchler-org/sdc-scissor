@@ -31,9 +31,7 @@ SimulationDataRecordProperties = [
     "oob_percentage",
 ]
 
-SimulationDataRecord = namedtuple(
-    "SimulationDataRecord", SimulationDataRecordProperties
-)
+SimulationDataRecord = namedtuple("SimulationDataRecord", SimulationDataRecordProperties)
 SimulationDataRecords = List[SimulationDataRecord]
 
 SimulationParams = namedtuple("SimulationParameters", ["beamng_steps", "delay_msec"])
@@ -91,20 +89,14 @@ class SimulationData:
         self.info: SimulationInfo = None
         self.exception_str = None
 
-        assert (
-            len(self.name) >= 3
-        ), "the simulation name must be a string of at least 3 character"
+        assert len(self.name) >= 3, "the simulation name must be a string of at least 3 character"
 
     @property
     def n(self):
         return len(self.states)
 
     def set(
-        self,
-        params: SimulationParams,
-        road: DecalRoad,
-        states: SimulationDataRecords,
-        info: SimulationInfo = None,
+        self, params: SimulationParams, road: DecalRoad, states: SimulationDataRecords, info: SimulationInfo = None
     ):
         self.params = params
         self.road = road
@@ -137,10 +129,7 @@ class SimulationData:
             sep = "\t"
             f.write(sep.join(SimulationDataRecordProperties) + "\n")
             gen = (r._asdict() for r in self.states)
-            gen2 = (
-                sep.join([str(d[key]) for key in SimulationDataRecordProperties]) + "\n"
-                for d in gen
-            )
+            gen2 = (sep.join([str(d[key]) for key in SimulationDataRecordProperties]) + "\n" for d in gen)
             f.writelines(gen2)
 
         road_imagery = BeamNGRoadImagery.from_sample_nodes(self.road.nodes)

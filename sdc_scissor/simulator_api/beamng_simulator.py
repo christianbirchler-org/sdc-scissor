@@ -16,16 +16,7 @@ class BeamNGSimulator(AbstractSimulator):
     This class implements the interface for the specific BeamNG.tech simulator.
     """
 
-    def __init__(
-        self,
-        host: str,
-        port: int,
-        home: str,
-        user: str,
-        rf: float,
-        max_speed: float,
-        fov: int,
-    ):
+    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float, fov: int):
         """
         API for enabling inter-process communication with the BeamNG simulator.
 
@@ -107,9 +98,7 @@ class BeamNGSimulator(AbstractSimulator):
         """
         logging.info("load_scenario")
         self.scenario = Scenario("tig", "example")
-        road = Road(
-            material="tig_road_rubber_sticky", rid="flat_road", interpolate=True
-        )
+        road = Road(material="tig_road_rubber_sticky", rid="flat_road", interpolate=True)
 
         # Ensure not overriding the test object (copy first the whole list)
         road_nodes = test.interpolated_road_points.copy()
@@ -128,21 +117,15 @@ class BeamNGSimulator(AbstractSimulator):
         electrics = Electrics()
         self.vehicle.attach_sensor("electrics", electrics)
 
-        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(
-            road_nodes
-        )
+        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(road_nodes)
         # TODO: Calculate the start rotation of the car in quaterion
         rot_quat = (0, 0, 1, -0.1)
         rot = (0, 0, alpha / (2 * math.pi))
-        self.scenario.add_vehicle(
-            self.vehicle, pos=(x_start, y_start, z_start), rot_quat=rot_quat
-        )
+        self.scenario.add_vehicle(self.vehicle, pos=(x_start, y_start, z_start), rot_quat=rot_quat)
 
         end_point = road_nodes[-1][:3]
 
-        self.scenario.add_checkpoints(
-            positions=[end_point], scales=[(5, 5, 5)], ids=["end_point"]
-        )
+        self.scenario.add_checkpoints(positions=[end_point], scales=[(5, 5, 5)], ids=["end_point"])
         self.scenario.make(self.beamng)
         self.beamng.load_scenario(self.scenario)
 
@@ -150,9 +133,7 @@ class BeamNGSimulator(AbstractSimulator):
         """ """
         logging.info("update_car")
         self.vehicle.update_vehicle()
-        _ = self.beamng.poll_sensors(
-            self.vehicle
-        )  # otherwise, the values are not updated (bug of beamngpy)
+        _ = self.beamng.poll_sensors(self.vehicle)  # otherwise, the values are not updated (bug of beamngpy)
         self.car_state = self.vehicle.state
 
     def get_car_position(self):
@@ -178,10 +159,7 @@ class BeamNGSimulator(AbstractSimulator):
         logging.info("compute_start_position")
         first_road_point = road_nodes[0]
         second_road_point = road_nodes[1]
-        x_dir, y_dir = (
-            second_road_point[0] - first_road_point[1],
-            second_road_point[1] - first_road_point[1],
-        )
+        x_dir, y_dir = (second_road_point[0] - first_road_point[1], second_road_point[1] - first_road_point[1])
         x_dir_norm, y_dir_norm = (
             x_dir / math.sqrt(x_dir**2 + y_dir**2),
             y_dir / math.sqrt(x_dir**2 + y_dir**2),
@@ -195,14 +173,7 @@ class BeamNGSimulator(AbstractSimulator):
 
         start_position = (start_point.x, start_point.y)
 
-        return (
-            start_position[0],
-            start_position[1],
-            first_road_point[2],
-            x_dir,
-            y_dir,
-            alpha,
-        )
+        return (start_position[0], start_position[1], first_road_point[2], x_dir, y_dir, alpha)
 
 
 if __name__ == "__main__":

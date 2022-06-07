@@ -4,21 +4,11 @@ import logging as log
 
 from pymoo.optimize import minimize
 
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_problem import (
-    TestCaseProblem,
-)
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_mutation import (
-    TestCaseMutation,
-)
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_crossover import (
-    TestCaseCrossover,
-)
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.duplicate_elimination import (
-    DuplicateElimination,
-)
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.generate_test_case_sampling import (
-    GenerateTestCaseSampling,
-)
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_problem import TestCaseProblem
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_mutation import TestCaseMutation
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_crossover import TestCaseCrossover
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.duplicate_elimination import DuplicateElimination
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.generate_test_case_sampling import GenerateTestCaseSampling
 import time
 from pymoo.algorithms.nsga2 import NSGA2
 import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
@@ -56,12 +46,7 @@ class CustomAmbieGenGenerator:
         )
 
         t = int(time.time() * 1000)
-        seed = (
-            ((t & 0xFF000000) >> 24)
-            + ((t & 0x00FF0000) >> 8)
-            + ((t & 0x0000FF00) << 8)
-            + ((t & 0x000000FF) << 24)
-        )
+        seed = ((t & 0xFF000000) >> 24) + ((t & 0x00FF0000) >> 8) + ((t & 0x0000FF00) << 8) + ((t & 0x000000FF) << 24)
 
         res = minimize(
             TestCaseProblem(),

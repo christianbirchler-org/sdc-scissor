@@ -76,9 +76,7 @@ class Map:
 
     def point_in_range_2(self, a):
         """check if point is in the acceptable range"""
-        if ((4) < a[0] and a[0] < (self.max_x - 4)) and (
-            (4) <= a[1] and a[1] < (self.max_y - 4)
-        ):
+        if ((4) < a[0] and a[0] < (self.max_x - 4)) and ((4) <= a[1] and a[1] < (self.max_y - 4)):
             return 1
         else:
             return 0
@@ -323,9 +321,7 @@ class Map:
         new_mid = (new[0] + new[1]) / 2
 
         point = Point(new_mid[0], new_mid[1])
-        polygon = Polygon(
-            [tuple(current[0]), tuple(current[1]), tuple(prev[0]), tuple(prev[1])]
-        )
+        polygon = Polygon([tuple(current[0]), tuple(current[1]), tuple(prev[0]), tuple(prev[1])])
         return polygon.contains(point)
 
     def get_sector(self):

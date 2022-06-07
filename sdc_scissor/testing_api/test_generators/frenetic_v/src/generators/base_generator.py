@@ -13,20 +13,12 @@ from datetime import datetime
 
 
 class BaseGenerator(ABC):
-    def __init__(
-        self,
-        executor=None,
-        map_size=None,
-        strict_father=False,
-        store_additional_data=False,
-    ):
+    def __init__(self, executor=None, map_size=None, strict_father=False, store_additional_data=False):
         self.executor = executor
         self.map_size = map_size
         self.df = pd.DataFrame()
         creation_date = datetime.now().strftime("%Y%m%d-%H%M%S")
-        self.file_name = (
-            f"experiments/{creation_date}-{self.__class__.__name__}-results.csv"
-        )
+        self.file_name = f"experiments/{creation_date}-{self.__class__.__name__}-results.csv"
         self.columns_number = 0
         log.info(f"ERATO experiment output is stored in {self.file_name}")
 
@@ -123,8 +115,7 @@ class BaseGenerator(ABC):
         """
         return sum(
             map(
-                lambda k: (execution_data[k].oob_distance - 2)
-                * (execution_data[k].timer - execution_data[k - 1].timer)
+                lambda k: (execution_data[k].oob_distance - 2) * (execution_data[k].timer - execution_data[k - 1].timer)
                 if execution_data[k].oob_distance < 0
                 else 0,
                 range(1, len(execution_data)),

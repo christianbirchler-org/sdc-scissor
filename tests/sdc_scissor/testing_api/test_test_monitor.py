@@ -11,9 +11,7 @@ class TestTestMonitor:
         pass
 
     def setup_method(self):
-        self.test_monitor = TestMonitor(
-            simulator=None, test=None, oob=None, road_model=None
-        )
+        self.test_monitor = TestMonitor(simulator=None, test=None, oob=None, road_model=None)
         self.test_monitor.start_timer()
 
     def test_is_car_moving_car_stays_on_same_position(self):
@@ -35,9 +33,7 @@ class TestTestMonitor:
         assert expected == actual
 
     def test_check_verify_if_test_is_finished(self, mocker):
-        mock_simulator = mocker.patch(
-            "sdc_scissor.simulator_api.abstract_simulator.AbstractSimulator"
-        )
+        mock_simulator = mocker.patch("sdc_scissor.simulator_api.abstract_simulator.AbstractSimulator")
         mock_simulator.update_car.return_value = None
         mock_simulator.get_car_position.return_value = 0, 0, 0
         self.test_monitor.simulator = mock_simulator

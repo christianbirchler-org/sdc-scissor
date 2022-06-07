@@ -4,9 +4,7 @@ from self_driving.bbox import RoadBoundingBox
 
 # from code_pipeline.tests_generation import RoadTest
 # from code_pipeline.tests_generation import RoadTestFactory
-from sdc_scissor.feature_extraction_api.road_geometry_calculator import (
-    RoadGeometryCalculator,
-)
+from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 
 
 def find_circle(p1, p2, p3):
@@ -135,9 +133,7 @@ class TestValidator:
 
     def is_road_not_long_enough_according_min_segment(self, the_test):
         required_proportion = 0.4  # TODO: avoid magic number
-        road_length = self.road_geometry_calculator.get_road_length(
-            the_test.road_points
-        )
+        road_length = self.road_geometry_calculator.get_road_length(the_test.road_points)
         msl = the_test.min_segment_length
         return road_length * required_proportion >= msl
 

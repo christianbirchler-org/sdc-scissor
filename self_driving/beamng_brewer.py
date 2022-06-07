@@ -13,15 +13,7 @@ class BeamNGCamera:
         self.pose: BeamNGPose = BeamNGPose()
         self.camera = camera
         if not self.camera:
-            self.camera = Camera(
-                (0, 0, 0),
-                (0, 0, 0),
-                fov,
-                (1280, 1280),
-                colour=True,
-                depth=True,
-                annotation=False,
-            )
+            self.camera = Camera((0, 0, 0), (0, 0, 0), fov, (1280, 1280), colour=True, depth=True, annotation=False)
         self.beamng = beamng
 
     def get_rgb_image(self):
@@ -33,9 +25,7 @@ class BeamNGCamera:
 
 
 class BeamNGBrewer:
-    def __init__(
-        self, beamng_home=None, beamng_user=None, road_nodes: List4DTuple = None
-    ):
+    def __init__(self, beamng_home=None, beamng_user=None, road_nodes: List4DTuple = None):
         self.beamng = BeamNGpy("localhost", 64256, home=beamng_home, user=beamng_user)
 
         self.vehicle: Vehicle = None
@@ -43,9 +33,7 @@ class BeamNGBrewer:
         if road_nodes:
             self.setup_road_nodes(road_nodes)
         steps = 5
-        self.params = SimulationParams(
-            beamng_steps=steps, delay_msec=int(steps * 0.05 * 1000)
-        )
+        self.params = SimulationParams(beamng_steps=steps, delay_msec=int(steps * 0.05 * 1000))
         self.vehicle_start_pose = BeamNGPose()
         self.scenario = None
 
@@ -56,9 +44,7 @@ class BeamNGBrewer:
 
     def setup_vehicle(self) -> Vehicle:
         assert self.vehicle is None
-        self.vehicle = Vehicle(
-            "ego_vehicle", model="etk800", licence="TIG", color="Red"
-        )
+        self.vehicle = Vehicle("ego_vehicle", model="etk800", licence="TIG", color="Red")
         return self.vehicle
 
     def setup_scenario_camera(self) -> BeamNGCamera:
@@ -69,11 +55,7 @@ class BeamNGBrewer:
     def bring_up(self):
         self.scenario = Scenario("tig", "tigscenario")
         if self.vehicle:
-            self.scenario.add_vehicle(
-                self.vehicle,
-                pos=self.vehicle_start_pose.pos,
-                rot=self.vehicle_start_pose.rot,
-            )
+            self.scenario.add_vehicle(self.vehicle, pos=self.vehicle_start_pose.pos, rot=self.vehicle_start_pose.rot)
 
         if self.camera:
             self.scenario.add_camera(self.camera.camera, self.camera.name)

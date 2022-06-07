@@ -24,12 +24,7 @@ VehicleState = namedtuple("VehicleState", VehicleStateProperties)
 
 
 class VehicleStateReader:
-    def __init__(
-        self,
-        vehicle: Vehicle,
-        beamng: BeamNGpy,
-        additional_sensors: List[Tuple[str, Sensor]] = None,
-    ):
+    def __init__(self, vehicle: Vehicle, beamng: BeamNGpy, additional_sensors: List[Tuple[str, Sensor]] = None):
         self.vehicle = vehicle
         self.beamng = beamng
         self.state: VehicleState = None

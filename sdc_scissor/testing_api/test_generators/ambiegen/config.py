@@ -10,8 +10,4 @@ model = {
     "max_angle": 85,  # maximal angle of rotation in degrees
 }
 
-files = {
-    "ga_archive": ".\\GA_archive\\",
-    "tc_img": ".\\TC_img\\",
-    "tc_file": ".\\TC_file\\",
-}
+files = {"ga_archive": ".\\GA_archive\\", "tc_img": ".\\TC_img\\", "tc_file": ".\\TC_file\\"}

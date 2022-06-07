@@ -67,9 +67,7 @@ class TestAngleBasedSegmentation:
         start_index_of_second_segment = segment_indexes[1][0]
         expected_mid_point_index = len(road_points) // 2
 
-        assert end_index_of_first_segment == approx(
-            start_index_of_second_segment, abs=5
-        )
+        assert end_index_of_first_segment == approx(start_index_of_second_segment, abs=5)
         assert end_index_of_first_segment == approx(expected_mid_point_index, abs=5)
         assert start_index_of_second_segment == approx(expected_mid_point_index, abs=5)
 
@@ -178,9 +176,7 @@ class TestAngleBasedSegmentation:
             (150, 20),
         ]
 
-        segmentation_strategy = AngleBasedStrategy(
-            angle_threshold=10, decision_distance=10
-        )
+        segmentation_strategy = AngleBasedStrategy(angle_threshold=10, decision_distance=10)
         segmentation_strategy.extract_segments(road_points)
 
         # TODO: Add assertions

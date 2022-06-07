@@ -10,9 +10,7 @@ from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
 from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
 from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
-from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import (
-    CostEffectivenessEvaluator,
-)
+from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
 from sdc_scissor.machine_learning_api.predictor import Predictor
 from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFactory
 
@@ -78,17 +76,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option("--delineator-dist", default=5, type=click.INT)
 @click.option("-fov", "--field-of-view", default=120, type=click.INT)
 def label_tests(
-    tests: Path,
-    home,
-    user,
-    rf,
-    oob,
-    max_speed,
-    interrupt,
-    obstacles,
-    bump_dist,
-    delineator_dist,
-    field_of_view,
+    tests: Path, home, user, rf, oob, max_speed, interrupt, obstacles, bump_dist, delineator_dist, field_of_view
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
@@ -119,9 +107,7 @@ def label_tests(
 
 
 @cli.command()
-@click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True)
-)
+@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
 @click.option("--models-dir", default=_TRAINED_MODELS, type=click.Path())
 def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
@@ -141,17 +127,9 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 
 @cli.command()
 @click.option(
-    "--csv",
-    default=_DESTINATION / "road_features.csv",
-    help="Path to labeled tests",
-    type=click.Path(exists=True),
+    "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True)
 )
-@click.option(
-    "--train-ratio",
-    default=0.7,
-    help="Ratio used for training the models",
-    type=click.FLOAT,
-)
+@click.option("--train-ratio", default=0.7, help="Ratio used for training the models", type=click.FLOAT)
 def evaluate_cost_effectiveness(csv: Path, train_ratio: float) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
@@ -161,20 +139,13 @@ def evaluate_cost_effectiveness(csv: Path, train_ratio: float) -> None:
 
     df = dd.sample(frac=1).reset_index(drop=True)
 
-    cost_effectiveness_evaluator = CostEffectivenessEvaluator(
-        data_frame=df, label="safety", time_attribute="duration"
-    )
+    cost_effectiveness_evaluator = CostEffectivenessEvaluator(data_frame=df, label="safety", time_attribute="duration")
     cost_effectiveness_evaluator.evaluate()
 
 
 @cli.command()
 @click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True))
-@click.option(
-    "-c",
-    "--classifier",
-    default=_TRAINED_MODELS / "decision_tree.joblib",
-    type=click.Path(exists=True),
-)
+@click.option("-c", "--classifier", default=_TRAINED_MODELS / "decision_tree.joblib", type=click.Path(exists=True))
 def predict_tests(tests: Path, classifier: Path) -> None:
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.

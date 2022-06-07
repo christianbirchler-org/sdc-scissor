@@ -16,9 +16,7 @@ class RoadPolygon:
         return RoadPolygon(RoadPoints.from_nodes(nodes))
 
     def __init__(self, road_points: RoadPoints):
-        assert (
-            len(road_points.left) == len(road_points.right) == len(road_points.middle)
-        )
+        assert len(road_points.left) == len(road_points.right) == len(road_points.middle)
         assert len(road_points.left) >= 2
         assert all(len(x) == 4 for x in road_points.middle)
         assert all(len(x) == 2 for x in road_points.left)
@@ -42,18 +40,10 @@ class RoadPolygon:
         Each polygon represents a segment of the road. Two objects adjacent in
         the returned list represent adjacent segments of the road."""
         polygons = []
-        for left, right, left1, right1, in zip(
-            self.road_points.left,
-            self.road_points.right,
-            self.road_points.left[1:],
-            self.road_points.right[1:],
+        for left, right, left1, right1 in zip(
+            self.road_points.left, self.road_points.right, self.road_points.left[1:], self.road_points.right[1:]
         ):
-            assert (
-                len(left) >= 2
-                and len(right) >= 2
-                and len(left1) >= 2
-                and len(right1) >= 2
-            )
+            assert len(left) >= 2 and len(right) >= 2 and len(left1) >= 2 and len(right1) >= 2
             # Ignore the z coordinate.
             polygons.append(Polygon([left[:2], left1[:2], right1[:2], right[:2]]))
         return polygons
@@ -141,17 +131,10 @@ class RoadPolygon:
                 if polygon.contains(other) or other.contains(polygon):
                     logging.debug("No polygon should contain any other polygon.")
                     return False
-                if not self._are_neighbouring_polygons(i, j) and other.intersects(
-                    polygon
-                ):
-                    logging.debug(
-                        "The non-neighbouring polygons %s and %s intersect."
-                        % (polygon, other)
-                    )
+                if not self._are_neighbouring_polygons(i, j) and other.intersects(polygon):
+                    logging.debug("The non-neighbouring polygons %s and %s intersect." % (polygon, other))
                     return False
-                if self._are_neighbouring_polygons(i, j) and not isinstance(
-                    other.intersection(polygon), LineString
-                ):
+                if self._are_neighbouring_polygons(i, j) and not isinstance(other.intersection(polygon), LineString):
                     logging.debug(
                         "The neighbouring polygons %s and %s have an intersection of type %s."
                         % (polygon, other, type(other.intersection(polygon)))
@@ -162,14 +145,10 @@ class RoadPolygon:
 
 
 if __name__ == "__main__":
-    road_polygon = RoadPolygon.from_nodes(
-        [(0, 0, -28, 8), (0, 4, -28, 8), (5, 15, -28, 8), (20, -4, -28, 8)]
-    )
+    road_polygon = RoadPolygon.from_nodes([(0, 0, -28, 8), (0, 4, -28, 8), (5, 15, -28, 8), (20, -4, -28, 8)])
 
     assert not road_polygon.is_valid(), "It should be invalid"
 
-    road_polygon = RoadPolygon.from_nodes(
-        [(0, 0, -28, 8), (3, 2, -28, 8), (10, -1, -28, 8)]
-    )
+    road_polygon = RoadPolygon.from_nodes([(0, 0, -28, 8), (3, 2, -28, 8), (10, -1, -28, 8)])
 
     assert road_polygon.is_valid(), "It should be valid"

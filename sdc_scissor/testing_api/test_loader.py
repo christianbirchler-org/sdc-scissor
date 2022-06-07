@@ -78,12 +78,7 @@ class TestLoader:
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
         test_id = match_obj.group(1)
         logging.info("test_id: {}".format(test_id))
-        test = Test(
-            test_id=test_id,
-            road_points=road_points,
-            test_outcome=test_outcome,
-            test_duration=sim_time,
-        )
+        test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
         return test
 
 

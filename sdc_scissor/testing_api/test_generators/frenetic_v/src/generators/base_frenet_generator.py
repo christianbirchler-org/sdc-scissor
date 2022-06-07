@@ -1,7 +1,5 @@
 import math
-from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.base_generator import (
-    BaseGenerator,
-)
+from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.base_generator import BaseGenerator
 from sdc_scissor.testing_api.test_generators.frenetic_v.src.utils import frenet
 
 from shapely import geometry, affinity
@@ -24,13 +22,9 @@ class BaseFrenetVGenerator(BaseGenerator):
         # Margin size w.r.t the map
         self.segment_length = segment_length
         self.lane_width = lane_width
-        self.margin = (
-            10  # to be safe... there were some out of margin with (lane_width * 2)
-        )
+        self.margin = 10  # to be safe... there were some out of margin with (lane_width * 2)
         self.recent_count = 0
-        self.theta0 = (
-            1.57  # theta0: The initial angle of the line. (1.57 == 90 degrees)
-        )
+        self.theta0 = 1.57  # theta0: The initial angle of the line. (1.57 == 90 degrees)
         super().__init__(
             executor=executor,
             map_size=map_size,
@@ -55,9 +49,7 @@ class BaseFrenetVGenerator(BaseGenerator):
 
         return np.column_stack([xs, ys])
 
-    def execute_frenet_test(
-        self, kappas, method="random", parent_info={}, extra_info={}
-    ):
+    def execute_frenet_test(self, kappas, method="random", parent_info={}, extra_info={}):
         extra_info["kappas"] = kappas
         road_points = self.kappas_to_road_points(kappas)
 
@@ -104,12 +96,8 @@ class BaseFrenetVGenerator(BaseGenerator):
         reoriented_convex_hull = reoriented_center.convex_hull
         reoriented_convex_hull_coords = np.array(reoriented_convex_hull.exterior.coords)
 
-        xoff = self.margin - min(
-            reoriented_convex_hull_coords[:, 0]
-        )  # where's the left side?
-        yoff = self.margin - min(
-            reoriented_convex_hull_coords[:, 1]
-        )  # where's the bottom?
+        xoff = self.margin - min(reoriented_convex_hull_coords[:, 0])  # where's the left side?
+        yoff = self.margin - min(reoriented_convex_hull_coords[:, 1])  # where's the bottom?
         new_center_line = affinity.translate(reoriented_center, xoff=xoff, yoff=yoff)
         return new_center_line
 

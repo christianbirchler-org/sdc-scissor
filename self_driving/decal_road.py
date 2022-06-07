@@ -6,9 +6,7 @@ from typing import Tuple, List
 class DecalRoad:
     DEFAULT_MATERIAL = "tig_road_rubber_sticky"
 
-    def __init__(
-        self, name, material=DEFAULT_MATERIAL, persistentId=None, drivability=1
-    ):
+    def __init__(self, name, material=DEFAULT_MATERIAL, persistentId=None, drivability=1):
         self.name = name
         self.material = material
         self.persistentId = persistentId if persistentId else str(uuid.uuid4())
@@ -17,12 +15,8 @@ class DecalRoad:
 
     def add_4d_points(self, nodes: List[Tuple[float, float, float, float]]):
         assert len(nodes) > 0, "nodes should be a non empty list"
-        assert all(
-            len(item) == 4 for item in nodes
-        ), "nodes list should contain tuple of 4 elements"
-        assert all(
-            all(isinstance(val, float) for val in item) for item in nodes
-        ), "points list can contain only float"
+        assert all(len(item) == 4 for item in nodes), "nodes list should contain tuple of 4 elements"
+        assert all(all(isinstance(val, float) for val in item) for item in nodes), "points list can contain only float"
         self.nodes += [list(item) for item in nodes]
         return self
 

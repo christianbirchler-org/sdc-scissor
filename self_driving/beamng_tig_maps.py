@@ -49,9 +49,7 @@ class MapFolder:
             shutil.rmtree(self.path)
 
     def generated(self):
-        return BeamNGMainFolder(
-            os.path.join(self.path, "main", "MissionGroup", "generated")
-        )
+        return BeamNGMainFolder(os.path.join(self.path, "main", "MissionGroup", "generated"))
 
 
 class LevelsFolder:
@@ -71,9 +69,7 @@ class Maps:
     source_map: MapFolder
 
     def __init__(self):
-        self.beamng_levels = LevelsFolder(
-            str(Path.home() / "Documents" / "BeamNG.research" / "levels")
-        )
+        self.beamng_levels = LevelsFolder(str(Path.home() / "Documents" / "BeamNG.research" / "levels"))
         self.source_levels = LevelsFolder(os.path.join(os.getcwd(), "levels_template"))
         self.source_map = self.source_levels.get_map("tig")
         self.beamng_map = self.beamng_levels.get_map("tig")

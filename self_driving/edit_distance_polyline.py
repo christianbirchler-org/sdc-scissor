@@ -65,9 +65,7 @@ def _iterative_levenshtein_dist_angle(s: ListOfAngleLength, t: ListOfAngleLength
         for row in range(1, rows):
             cost = _calc_cost(s[row - 1], t[col - 1])
             dist[row][col] = min(
-                dist[row - 1][col] + 1,  # deletion
-                dist[row][col - 1] + 1,  # insertion
-                dist[row - 1][col - 1] + cost,
+                dist[row - 1][col] + 1, dist[row][col - 1] + 1, dist[row - 1][col - 1] + cost  # deletion  # insertion
             )  # substitution
     # for r in range(rows):
     #     print(dist[r])

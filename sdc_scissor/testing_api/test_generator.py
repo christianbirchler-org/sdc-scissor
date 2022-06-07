@@ -3,9 +3,7 @@ import logging
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import (
-    CustomAmbieGenGenerator,
-)
+from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
 from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import (
     CustomFrenetGenerator,
 )
@@ -42,9 +40,7 @@ class TestGenerator:
         elif self.tool.lower() == "ambiegen":
             self.random_generator = CustomAmbieGenGenerator()
         else:
-            raise Exception(
-                " Invalid tool name. Supported tools [frenetic, freneticv, ambiegen]"
-            )
+            raise Exception(" Invalid tool name. Supported tools [frenetic, freneticv, ambiegen]")
 
     def generate(self):
         """
@@ -52,24 +48,14 @@ class TestGenerator:
         """
         logging.debug("* generate")
         generated_tests_as_list_of_road_points = self.random_generator.start()
-        generated_tests_as_list_of_road_points = self.__extract_valid_roads(
-            generated_tests_as_list_of_road_points
-        )
+        generated_tests_as_list_of_road_points = self.__extract_valid_roads(generated_tests_as_list_of_road_points)
 
-        generated_tests_as_list_of_road_points = self.__add_sine_bumps(
-            generated_tests_as_list_of_road_points
-        )
+        generated_tests_as_list_of_road_points = self.__add_sine_bumps(generated_tests_as_list_of_road_points)
 
         for road_points in generated_tests_as_list_of_road_points:
-            test = Test(
-                test_id=next(self.__id_generator),
-                road_points=road_points,
-                test_outcome="NOT_EXECUTED",
-            )
+            test = Test(test_id=next(self.__id_generator), road_points=road_points, test_outcome="NOT_EXECUTED")
             self.generated_tests.append(test)
-        logging.info(
-            "** {} tests generated".format(len(generated_tests_as_list_of_road_points))
-        )
+        logging.info("** {} tests generated".format(len(generated_tests_as_list_of_road_points)))
         logging.info("** test generator has {} tests".format(len(self.generated_tests)))
 
     def __add_sine_bumps(self, generated_tests_as_list_of_road_points):

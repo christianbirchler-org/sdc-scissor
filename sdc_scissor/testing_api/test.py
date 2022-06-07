@@ -8,9 +8,7 @@ from pathlib import Path
 
 
 class Test:
-    def __init__(
-        self, test_id, road_points: list[list], test_outcome, test_duration=None
-    ):
+    def __init__(self, test_id, road_points: list[list], test_outcome, test_duration=None):
         """
         Class representing a test case.
 

@@ -6,17 +6,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from sdc_scissor.feature_extraction_api.feature_extraction import (
-    FeatureExtractor,
-    RoadFeatures,
-)
+from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor, RoadFeatures
 from sdc_scissor.testing_api.test_loader import TestLoader
 
 
 class Predictor:
-    def __init__(
-        self, test_loader: TestLoader, joblib_classifier: Path, label="safety"
-    ):
+    def __init__(self, test_loader: TestLoader, joblib_classifier: Path, label="safety"):
         """
 
         :param test_loader:

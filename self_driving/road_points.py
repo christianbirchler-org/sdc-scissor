@@ -26,9 +26,7 @@ class RoadPoints:
 
         assert n >= 2, "At least, two nodes are needed"
 
-        assert all(
-            len(point) >= 4 for point in middle_nodes
-        ), "A node is a tuple of 4 elements (x,y,z,road_width)"
+        assert all(len(point) >= 4 for point in middle_nodes), "A node is a tuple of 4 elements (x,y,z,road_width)"
 
         self.n = n
         self.middle += list(middle_nodes)
@@ -44,9 +42,7 @@ class RoadPoints:
             self.right[i] = right
 
         # the last middle point
-        self.right[-1], self.left[-1] = self.calc_point_edges(
-            self.middle[-1], self.middle[-2]
-        )
+        self.right[-1], self.left[-1] = self.calc_point_edges(self.middle[-1], self.middle[-2])
 
     @classmethod
     def calc_point_edges(cls, p1, p2) -> Tuple[Tuple, Tuple]:
@@ -61,12 +57,8 @@ class RoadPoints:
         right = origin + np.array([v[1], -v[0]])
         return tuple(left), tuple(right)
 
-    def vehicle_start_pose(
-        self, meters_from_road_start=2.5, road_point_index=0
-    ) -> BeamNGPose:
-        assert (
-            self.n > road_point_index
-        ), f"road length is {self.n} it does not have index {road_point_index}"
+    def vehicle_start_pose(self, meters_from_road_start=2.5, road_point_index=0) -> BeamNGPose:
+        assert self.n > road_point_index, f"road length is {self.n} it does not have index {road_point_index}"
         p1 = self.middle[road_point_index]
         p1r = self.right[road_point_index]
         p2 = self.middle[road_point_index + 1]
@@ -79,9 +71,7 @@ class RoadPoints:
         return res
 
     def new_imagery(self):
-        from .beamng_road_imagery import (
-            BeamNGRoadImagery,
-        )  # pylint: disable=import-outside-toplevel
+        from .beamng_road_imagery import BeamNGRoadImagery  # pylint: disable=import-outside-toplevel
 
         return BeamNGRoadImagery(self)
 
@@ -100,31 +90,15 @@ class RoadPoints:
 if __name__ == "__main__":
 
     road_edges_by_beamng = [
-        {
-            "right": [0, -4, -27.98419189453125],
-            "left": [0, 4, -27.98419189453125],
-            "middle": [0, 0, 0],
-        },
-        {
-            "right": [20, -4, -27.98419189453125],
-            "left": [20, 4, -27.98419189453125],
-            "middle": [20, 0, 0],
-        },
-        {
-            "right": [40, -4, -27.98419189453125],
-            "left": [40, 4, -27.98419189453125],
-            "middle": [40, 0, 0],
-        },
+        {"right": [0, -4, -27.98419189453125], "left": [0, 4, -27.98419189453125], "middle": [0, 0, 0]},
+        {"right": [20, -4, -27.98419189453125], "left": [20, 4, -27.98419189453125], "middle": [20, 0, 0]},
+        {"right": [40, -4, -27.98419189453125], "left": [40, 4, -27.98419189453125], "middle": [40, 0, 0]},
         {
             "right": [62.828426361083984, -2.828427314758301, -27.98419189453125],
             "left": [57.171573638916016, 2.828427314758301, -27.98419189453125],
             "middle": [60, 0, 0],
         },
-        {
-            "right": [84, 20, -27.98419189453125],
-            "left": [76, 20, -27.98419189453125],
-            "middle": [80, 20, 0],
-        },
+        {"right": [84, 20, -27.98419189453125], "left": [76, 20, -27.98419189453125], "middle": [80, 20, 0]},
         {
             "right": [82.82843017578125, 42.828426361083984, -27.98419189453125],
             "left": [77.17156982421875, 37.171573638916016, -27.98419189453125],
