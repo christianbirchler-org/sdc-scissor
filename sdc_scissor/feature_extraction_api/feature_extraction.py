@@ -132,7 +132,7 @@ class FeatureExtractor:
         road_features = RoadFeatures()
         road_features.test_duration = test.test_duration
 
-        raw_feature_data = {"angles": [], "pivots": []}
+        raw_feature_data = {"angles": [], "pivots": [], 'diversities': []}
 
         for segment in segments:
             if segment.type == SegmentType.l_turn:
@@ -146,6 +146,9 @@ class FeatureExtractor:
             # these lists allows a simpler calculation of the statistics
             raw_feature_data["angles"].append(segment.angle)
             raw_feature_data["pivots"].append(segment.radius)
+            raw_feature_data['diversities'].append(segment.segment_diversity)
+
+        road_features.road_diversity = sum(raw_feature_data['diversities'])
 
         road_features.mean_angle = statistics.mean(raw_feature_data["angles"])
         road_features.median_angle = statistics.median(raw_feature_data["angles"])
@@ -248,9 +251,20 @@ class FeatureExtractor:
 
         return radius
 
-    def __get_segment_diversity(self, test: Test, road_segment) -> float:
+    def __get_segment_diversity(self, test: Test, road_segment: RoadSegment) -> float:
+        """
+        Compute the diversity of the road segment compared to a straight trajectory.
+
+        :param test: A test object
+        :param road_segment: A road segment object
+        :return: The measure of diversity
+        """
         # TODO
-        return 0
+        road_points = test.road_points
+        start_index, end_index = road_segment.start_index, road_segment.end_index
+        segment_road_points = road_points[start_index : end_index + 1]
+
+        return -1
 
     def __get_road_segment_with_features(self, test: Test, indexes) -> RoadSegment:
         """

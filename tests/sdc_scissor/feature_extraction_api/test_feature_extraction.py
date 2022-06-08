@@ -232,4 +232,4 @@ class TestFeatureExtraction:
 
         expected = 0
         actual = road_features.road_diversity
-        assert expected == actual
+        assert actual == expected
