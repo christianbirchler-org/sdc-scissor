@@ -34,6 +34,7 @@ class RoadFeatures:
         self.start_time = 0
         self.end_time = 0
         self.test_duration = 0
+        self.road_diversity = 0
         self.safety = None
 
     def to_dict(self):
@@ -113,7 +114,7 @@ class FeatureExtractor:
         """
         segment_indexes_list = self.__segmentation_strategy.extract_segments(test.road_points)
         for indexes in segment_indexes_list:
-            segment = self.__get_road_segment_with_features(test, indexes)
+            segment: RoadSegment = self.__get_road_segment_with_features(test, indexes)
             self.__segments.append(segment)
 
         self.__road_features = self.__get_full_road_features_from(test, self.__segments)
@@ -246,7 +247,7 @@ class FeatureExtractor:
 
         return radius
 
-    def __get_road_segment_with_features(self, test: Test, indexes):
+    def __get_road_segment_with_features(self, test: Test, indexes) -> RoadSegment:
         """
         Compute segment features and create a segment object accordingly.
 
