@@ -37,6 +37,7 @@ class RoadFeatures:
         self.end_time = 0
         self.test_duration = 0
         self.mean_road_diversity = 0
+        self.full_road_diversity = 0
         self.safety = None
 
     def to_dict(self):
@@ -62,7 +63,8 @@ class RoadSegment:
         self.type = None
         self.angle = None
         self.radius = None
-        self.segment_diversity = None
+        self.segment_mean_diversity = None
+        self.segment_total_diversity = None
 
 
 class SegmentType:
@@ -148,9 +150,10 @@ class FeatureExtractor:
             # these lists allows a simpler calculation of the statistics
             raw_feature_data["angles"].append(segment.angle)
             raw_feature_data["pivots"].append(segment.radius)
-            raw_feature_data["diversities"].append(segment.segment_diversity)
+            raw_feature_data["diversities"].append(segment.segment_mean_diversity)
 
         road_features.mean_road_diversity = float(np.mean(raw_feature_data["diversities"]))
+        road_features.full_road_diversity = float(np.sum(raw_feature_data["diversities"]))
 
         road_features.mean_angle = statistics.mean(raw_feature_data["angles"])
         road_features.median_angle = statistics.median(raw_feature_data["angles"])
@@ -252,7 +255,7 @@ class FeatureExtractor:
 
         return radius
 
-    def __get_segment_diversity(self, test: Test, road_segment: RoadSegment) -> float:
+    def __get_segment_diversity(self, test: Test, road_segment: RoadSegment) -> tuple:
         """
         Compute the diversity of the road segment compared to a straight trajectory.
 
@@ -266,8 +269,9 @@ class FeatureExtractor:
         direct_segment_line: LineString = LineString([segment_road_points[0], segment_road_points[-1]])
         shapely_points: list = [Point(x, y) for x, y in segment_road_points]
         point_to_line_distances = [direct_segment_line.distance(point) for point in shapely_points]
-        segment_diversity = float(np.mean(point_to_line_distances))
-        return segment_diversity
+        segment_total_diversity = float(np.sum(point_to_line_distances))
+        segment_mean_diversity = float(np.mean(point_to_line_distances))
+        return segment_total_diversity, segment_mean_diversity
 
     def __get_road_segment_with_features(self, test: Test, indexes) -> RoadSegment:
         """
@@ -290,7 +294,9 @@ class FeatureExtractor:
         # calculate radius
         road_segment.radius = self.__get_segment_radius(test, road_segment)
 
-        road_segment.segment_diversity = self.__get_segment_diversity(test, road_segment)
+        road_segment.segment_total_diversity, road_segment.segment_mean_diversity = self.__get_segment_diversity(
+            test, road_segment
+        )
 
         return road_segment
 
