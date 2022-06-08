@@ -60,6 +60,7 @@ class RoadSegment:
         self.type = None
         self.angle = None
         self.radius = None
+        self.segment_diversity = None
 
 
 class SegmentType:
@@ -247,6 +248,10 @@ class FeatureExtractor:
 
         return radius
 
+    def __get_segment_diversity(self, test: Test, road_segment) -> float:
+        # TODO
+        return 0
+
     def __get_road_segment_with_features(self, test: Test, indexes) -> RoadSegment:
         """
         Compute segment features and create a segment object accordingly.
@@ -267,6 +272,8 @@ class FeatureExtractor:
 
         # calculate radius
         road_segment.radius = self.__get_segment_radius(test, road_segment)
+
+        road_segment.segment_diversity = self.__get_segment_diversity(test, road_segment)
 
         return road_segment
 
