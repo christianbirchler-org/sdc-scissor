@@ -202,7 +202,6 @@ class FeatureExtractor:
             return SegmentType.l_turn
         if angles_sum <= angle_threshold:
             return SegmentType.r_turn
-        return None
 
     def __get_segment_angle(self, test: Test, road_segment):
         """
