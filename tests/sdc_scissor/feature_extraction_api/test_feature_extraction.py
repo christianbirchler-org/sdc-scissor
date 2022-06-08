@@ -220,3 +220,16 @@ class TestFeatureExtraction:
         assert road_features.mean_pivot_off == approx(radius, abs=2)
         assert road_features.max_pivot_off == approx(radius, abs=2)
         assert road_features.min_pivot_off == approx(radius, abs=2)
+
+    def test_no_diversity(self, mocker):
+        angle_based_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        feature_extractor = FeatureExtractor(segmentation_strategy=angle_based_strategy)
+
+        mock_test = mocker.patch("sdc_scissor.testing_api.test.Test")
+        mock_test.road_points = [[x, 0] for x in range(100)]
+
+        road_features = feature_extractor.extract_features(mock_test)
+
+        expected = 0
+        actual = road_features.road_diversity
+        assert expected == actual
