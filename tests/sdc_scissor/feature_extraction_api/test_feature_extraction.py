@@ -231,5 +231,19 @@ class TestFeatureExtraction:
         road_features = feature_extractor.extract_features(mock_test)
 
         expected = 0
-        actual = road_features.road_diversity
+        actual = road_features.mean_road_diversity
         assert actual == expected
+
+    def test_with_small_diversity(self, mocker):
+        angle_based_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        feature_extractor = FeatureExtractor(segmentation_strategy=angle_based_strategy)
+
+        mock_test = mocker.patch("sdc_scissor.testing_api.test.Test")
+        mock_test.road_points = [[x, 0] for x in range(100)]
+        mock_test.road_points.append([101, 1])
+
+        road_features = feature_extractor.extract_features(mock_test)
+
+        expected = 0
+        actual = road_features.mean_road_diversity
+        assert actual != expected

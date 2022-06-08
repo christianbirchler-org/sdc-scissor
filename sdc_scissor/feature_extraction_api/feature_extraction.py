@@ -3,8 +3,10 @@ import math
 import statistics
 
 import pandas as pd
+import numpy as np
 
 from pathlib import Path
+from shapely.geometry import Point, LineString
 
 from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 from sdc_scissor.testing_api.test import Test
@@ -34,7 +36,7 @@ class RoadFeatures:
         self.start_time = 0
         self.end_time = 0
         self.test_duration = 0
-        self.road_diversity = 0
+        self.mean_road_diversity = 0
         self.safety = None
 
     def to_dict(self):
@@ -132,7 +134,7 @@ class FeatureExtractor:
         road_features = RoadFeatures()
         road_features.test_duration = test.test_duration
 
-        raw_feature_data = {"angles": [], "pivots": [], 'diversities': []}
+        raw_feature_data = {"angles": [], "pivots": [], "diversities": []}
 
         for segment in segments:
             if segment.type == SegmentType.l_turn:
@@ -146,9 +148,9 @@ class FeatureExtractor:
             # these lists allows a simpler calculation of the statistics
             raw_feature_data["angles"].append(segment.angle)
             raw_feature_data["pivots"].append(segment.radius)
-            raw_feature_data['diversities'].append(segment.segment_diversity)
+            raw_feature_data["diversities"].append(segment.segment_diversity)
 
-        road_features.road_diversity = sum(raw_feature_data['diversities'])
+        road_features.mean_road_diversity = float(np.mean(raw_feature_data["diversities"]))
 
         road_features.mean_angle = statistics.mean(raw_feature_data["angles"])
         road_features.median_angle = statistics.median(raw_feature_data["angles"])
@@ -258,12 +260,14 @@ class FeatureExtractor:
         :param road_segment: A road segment object
         :return: The measure of diversity
         """
-        # TODO
         road_points = test.road_points
         start_index, end_index = road_segment.start_index, road_segment.end_index
         segment_road_points = road_points[start_index : end_index + 1]
-
-        return -1
+        direct_segment_line: LineString = LineString([segment_road_points[0], segment_road_points[-1]])
+        shapely_points: list = [Point(x, y) for x, y in segment_road_points]
+        point_to_line_distances = [direct_segment_line.distance(point) for point in shapely_points]
+        segment_diversity = float(np.mean(point_to_line_distances))
+        return segment_diversity
 
     def __get_road_segment_with_features(self, test: Test, indexes) -> RoadSegment:
         """
