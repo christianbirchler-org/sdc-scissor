@@ -9,9 +9,7 @@ from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 
 
-def _define_obstacles(
-    road_model, obstacle_factory, bump_dist, delineator_dist, tree_dist
-) -> list:
+def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, tree_dist) -> list:
     logging.info("__define_obstacles")
     obstacles_lst = []
     if obstacle_factory is None:
@@ -101,20 +99,14 @@ class TestRunner:
 
         road_model = RoadModel(test.interpolated_road_points)
         obstacles = _define_obstacles(
-            road_model,
-            self.obstacle_factory,
-            self.bump_dist,
-            self.delineator_dist,
-            self.tree_dist,
+            road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist, self.tree_dist
         )
         self.simulator.load_scenario(test, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(
-            self.simulator, test, oob=self.oob, road_model=road_model
-        )
+        test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
         test_monitor.start_timer()
         self.simulator.start_scenario()
 
