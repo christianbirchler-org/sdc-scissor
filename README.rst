@@ -54,9 +54,12 @@ genetic search algorithm. If you are interested in prioritizing test cases, then
 `README.md <https://github.com/ChristianBirchler/sdc-scissor/blob/main/sdc_scissor/sdc_prioritizer/testPrioritization/README.md>`_ for this.
 If you use the prioritization technique then also cite the papers from the reference section!
 
+Discord
+-------
+Join the community on `Discord <https://discord.com/>`_ to get support of developers and users. Just click on the following link: https://discord.gg/AaYnBS6s7E
 
-Documentation
--------------
+Support
+-------
 .. image:: https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/readthedocs.png
     :target: https://sdc-scissor.readthedocs.io/en/latest/
 
