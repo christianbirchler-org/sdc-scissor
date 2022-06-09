@@ -58,8 +58,8 @@ Support
 -------
 Join the community on `Discord <https://discord.com/>`_ to get support of developers and users. Just click on the following link: https://discord.gg/AaYnBS6s7E
 
-Support
--------
+Documentation
+-------------
 .. image:: https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/readthedocs.png
     :target: https://sdc-scissor.readthedocs.io/en/latest/
 
