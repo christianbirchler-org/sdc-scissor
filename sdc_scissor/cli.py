@@ -109,8 +109,8 @@ def label_tests(
     obstacles,
     bump_dist,
     delineator_dist,
-    field_of_view,
     tree_dist,
+    field_of_view,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
