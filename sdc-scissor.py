@@ -10,6 +10,7 @@ from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_generator import TestGenerator
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
+from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
 from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
 from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
@@ -67,6 +68,8 @@ def extract_features(tests: Path, segmentation: str) -> None:
     logging.info("extract_features")
 
     test_loader = TestLoader(tests)
+    if segmentation == 'angle-based':
+        segmentation = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
     feature_extractor = FeatureExtractor(segmentation_strategy=segmentation)
     road_features_lst = []
     while test_loader.has_next():
