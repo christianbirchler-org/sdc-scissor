@@ -11,4 +11,5 @@ Content
    installation
    usage
    data
+   software_guidebook/about
    api
