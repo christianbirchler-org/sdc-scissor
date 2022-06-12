@@ -56,7 +56,10 @@ If you use the prioritization technique then also cite the papers from the refer
 
 Support
 -------
-Join the community on `Discord <https://discord.com/>`_ to get support of developers and users. Just click on the following link: https://discord.gg/AaYnBS6s7E
+Join the community on `Slack <https://slack.com/>`_ or `Discord <https://discord.com/>`_ to get support of developers and users. Just click on one of the following links:
+
+* https://join.slack.com/t/sdc-scissor/shared_invite/zt-1aikrj1uu-Dz0a9BE1AQ4GQp4A3Bm5og
+* https://discord.gg/AaYnBS6s7E
 
 Documentation
 -------------
