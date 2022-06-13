@@ -12,4 +12,5 @@ Content
    usage
    data
    software_guidebook/about
+   decisions/index
    api
