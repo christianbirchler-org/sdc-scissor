@@ -11,6 +11,6 @@ Content
    installation
    usage
    data
-   software_guidebook/about
+   software_guidebook/index
    decisions/index
    api

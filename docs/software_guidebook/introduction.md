@@ -1,5 +1,4 @@
-Introduction
-============
+# Introduction
 This software guidebook provides an overview of the SDC-Scissor tool. It includes a summary of the following:
 
 * The requirements, constraints and principles behind SDC-Scissor.
