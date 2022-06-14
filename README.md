@@ -72,7 +72,7 @@ Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Vi
 Software Engineering and Methodology (TOSEM) (2022). DOI: to appear
 
 ```{code-block} bibtex
-@INPROCEEDINGS{Birchler2022Cost,
+@inproceedings{Birchler2022Cost,
   author={Birchler, Christian and Ganz, Nicolas and Khatiri, Sajad and Gambi, Alessio, and Panichella, Sebastiano},
   booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER)},
   title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor},
