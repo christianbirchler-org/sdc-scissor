@@ -7,7 +7,7 @@
 
 ## Context and Problem Statement
 SDC-Scissor v1.0 is heavily based on the complex
-[SBST2021 tool competition platform](https://github.com/se2p/tool-competition-av). To add another simulator or other
+[SBST tool competition platform](https://github.com/se2p/tool-competition-av). To add another simulator or other
 test generators is difficult due to high coupling and high technical debt.
 
 <!-- This is an optional element. Feel free to remove. -->
