@@ -15,8 +15,14 @@
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=code_smells)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 
 # SDC-Scissor Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
-[![](https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/github_logo_icon.png)](https://github.com/ChristianBirchler/sdc-scissor)
-[![](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
+<div style="text-align: center;">
+<a href="https://github.com/ChristianBirchler/sdc-scissor">
+<img src="https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/github_logo_icon.png">
+</a>
+<a href="https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor">
+<img src="https://sonarcloud.io/images/project_badges/sonarcloud-black.svg">
+</a>
+</div>
 
 SDC-Scissor is a tool that let you test self-driving cars more efficiently in simulation. It uses a machine-learning
 approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
