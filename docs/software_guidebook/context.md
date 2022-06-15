@@ -17,5 +17,11 @@ SDC-Scissor has two types of users:
 2. Developers of SDC software
 
 ## External Systems
-1. BeamNG.tech simulator
-2. Various dependencies from [PyPI](https://pypi.org/)
+* BeamNG.tech simulator
+* Python
+* Various dependencies from [PyPI](https://pypi.org/)
+  * beamngpy
+  * click
+  * Shapely
+  * scikit-learn
+  * pymoo
