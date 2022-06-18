@@ -1,3 +1,4 @@
+# SDC-Scissor
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![](https://github.com/ChristianBirchler/sdc-scissor/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ChristianBirchler/sdc-scissor/actions)
 [![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
@@ -14,7 +15,6 @@
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=code_smells)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 
-# SDC-Scissor
 ## A Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 <div style="text-align: center;">
 <a href="https://github.com/ChristianBirchler/sdc-scissor">
