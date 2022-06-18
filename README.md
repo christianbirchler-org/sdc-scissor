@@ -83,15 +83,16 @@ Software Engineering and Methodology (TOSEM) (2022). DOI: to appear
   booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER)},
   title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor},
   year={2022},
+  doi={to appear}
 }
 
 @article{Birchler2022Single,
-  author = {Birchler, Christian and Khatiri, Sajad and Derakhshanfar, Pouria and Panichella, Sebastiano and Panichella, Annibale},
-  title = {Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments},
-  year = {2022},
-  publisher = {Association for Computing Machinery},
-  journal = {ACM Transactions on Software Engineering and Methodology (TOSEM)},
-  doi = {to appear}
+  author={Birchler, Christian and Khatiri, Sajad and Derakhshanfar, Pouria and Panichella, Sebastiano and Panichella, Annibale},
+  title={Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments},
+  year={2022},
+  publisher={Association for Computing Machinery},
+  journal={ACM Transactions on Software Engineering and Methodology (TOSEM)},
+  doi={to appear}
 }
 ```
 
