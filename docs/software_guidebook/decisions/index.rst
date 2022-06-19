@@ -1,4 +1,4 @@
-Any Decision Records
+Decision Log
 ====================
 This directory contains decision records for SDC-Scissor.
 
