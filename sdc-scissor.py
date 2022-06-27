@@ -1,5 +1,7 @@
 import logging
+import sys
 import click
+import yaml
 
 from pathlib import Path
 
@@ -21,10 +23,20 @@ _TRAINED_MODELS = _ROOT_DIR / "trained_models"
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.option('-c', '--config', type=click.Path(exists=True), help='Configuration file')
+@click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file")
 def cli(ctx: click.Context, config: Path) -> None:
-    if not ctx.invoked_subcommand:
-        logging.info('run with configuration file')
+    if ctx.invoked_subcommand:
+        return None
+    logging.info("run with configuration file")
+    with open(config) as fp:
+        config_dict: dict = yaml.safe_load(fp)
+        print(type(config_dict))
+        command = config_dict["command"]
+        simulator_args: dict = config_dict['simulator']
+        this_module = sys.modules[__name__]
+        print(this_module)
+        command = getattr(this_module, command.replace('-', '_'))
+        ctx.invoke(command, **simulator_args)
 
 
 @cli.command()

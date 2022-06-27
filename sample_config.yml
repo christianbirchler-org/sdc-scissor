@@ -1,5 +1,13 @@
-command: label-test
+command: 'label-tests'
 simulator:
-  home: "C:\Users\birc\Documents\BeamNG.tech.v0.24.0.2\BeamNG.drive-0.24.0.2.13392"
-  user: "C:\Users\birc\Documents\BeamNG.drive"
-  tests: "sample_tests"
+  home: 'C:\Users\birc\Documents\BeamNG.tech.v0.24.0.2\BeamNG.drive-0.24.0.2.13392'
+  user: 'C:\Users\birc\Documents\BeamNG.drive'
+  tests: 'sample_tests'
+  rf: 1.5
+  oob: 0.1
+  max_speed: 50
+  interrupt: true
+  obstacles: false
+  bump_dist: 20
+  delineator_dist: 5
+  field_of_view: 120
