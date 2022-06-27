@@ -1,10 +1,38 @@
 # Operation and Support
 This section provides information about the operational and support aspects of SDC-Scissor.
 
+
+## Usage
+For SDC-Scissor v2.0 you can use the tests in the `sample_tests` directory.
+
+The tool can be used with the following two commands:
+
+* Docker: `docker run --volume "$(pwd)/destination:/var/project/destination" --rm sdc-scissor [COMMAND] [OPTIONS]` (this will write all files written to `/var/project/destination` to the local folder `destination`)
+* Poetry: `poetry run python sdc-scissor.py [COMMAND] [OPTIONS]`
+
+There are multiple commands to use.
+For simplifying the documentation only the command and their options are described.
+
+* Generation of tests:
+    * `generate-tests`
+* Extract the features into a CSV file:
+    * `extract-features`
+* Automated labeling of Tests:
+    * `label-tests`
+    * *Note:* This only works locally with BeamNG.research installed
+* Model evaluation:
+    * `evaluate-models`
+* Evaluate the cost effectiveness of the models:
+    * `evaluate_cost_effectiveness`
+* Test outcome prediction:
+    * `predict-tests`
+
+The possible parameters are always documented with `--help`.
+
 ## Community
-We want to set up a community of researchers, developers, and users of SDCs. To enhance the research on this topics, we
-set up a Slack and a Discord server as communication channels to discuss about everything related on SDCs and
-SDC-Scissor. To join the groups just click on the following invitation links:
+We want to set up a community of researchers, developers, and users of SDCs. To enhance the research on these topics, we
+set up a Slack and a Discord server as communication channels to discuss everything related on SDCs and SDC-Scissor. To
+join the groups just click on the following invitation links:
 
 * [https://join.slack.com/t/sdc-scissor/shared_invite/zt-1aikrj1uu-Dz0a9BE1AQ4GQp4A3Bm5og](https://join.slack.com/t/sdc-scissor/shared_invite/zt-1aikrj1uu-Dz0a9BE1AQ4GQp4A3Bm5og)
 * [https://discord.gg/AaYnBS6s7E](https://discord.gg/AaYnBS6s7E)
