@@ -32,10 +32,10 @@ def cli(ctx: click.Context, config: Path) -> None:
         config_dict: dict = yaml.safe_load(fp)
         print(type(config_dict))
         command = config_dict["command"]
-        simulator_args: dict = config_dict['simulator']
+        simulator_args: dict = config_dict["simulator"]
         this_module = sys.modules[__name__]
         print(this_module)
-        command = getattr(this_module, command.replace('-', '_'))
+        command = getattr(this_module, command.replace("-", "_"))
         ctx.invoke(command, **simulator_args)
 
 
