@@ -19,9 +19,12 @@ _DESTINATION = _ROOT_DIR / "destination"
 _TRAINED_MODELS = _ROOT_DIR / "trained_models"
 
 
-@click.group()
-def cli() -> None:
-    pass
+@click.group(invoke_without_command=True)
+@click.pass_context
+@click.option('-c', '--config', type=click.Path(exists=True), help='Configuration file')
+def cli(ctx: click.Context, config: Path) -> None:
+    if not ctx.invoked_subcommand:
+        logging.info('run with configuration file')
 
 
 @cli.command()
