@@ -1,0 +1,359 @@
+{
+  "id" : 1,
+  "name" : "Name",
+  "description" : "Description",
+  "revision" : 0,
+  "lastModifiedDate" : "2022-06-27T14:55:05Z",
+  "lastModifiedAgent" : "structurizr-web/2753/diagram",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlIHsKICAgIG1vZGVsIHsKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIgogICAgICAgIHNkY1NjaXNzb3IgPSBzb2Z0d2FyZVN5c3RlbSAiU0RDLVNjaXNzb3IiIHsKICAgICAgICAgICAgcHl0aG9uID0gY29udGFpbmVyICJQeXRob24iIHsKICAgICAgICAgICAgICAgIGNsaSA9IGNvbXBvbmVudCAiQ0xJIgogICAgICAgICAgICAgICAgc2ltdWxhdG9yQVBJID0gY29tcG9uZW50ICJTaW11bGF0b3IgQVBJIgogICAgICAgICAgICAgICAgdGVzdGluZ0FQSSA9IGNvbXBvbmVudCAiVGVzdGluZyBBUEkiCiAgICAgICAgICAgICAgICBvYnN0YWNsZUFQSSA9IGNvbXBvbmVudCAiT2JzdGFjbGUgQVBJIgogICAgICAgICAgICAgICAgbWxBUEkgPSBjb21wb25lbnQgIk1hY2hpbmUgTGVhcm5pbmcgQVBJIgogICAgICAgICAgICAgICAgZmVhdHVyZUV4dHJhY3Rpb25BUEkgPSBjb21wb25lbnQgIkZlYXR1cmUgRXh0cmFjdGlvbiBBUEkiCgogICAgICAgICAgICAgICAgc2tsZWFybiA9IGNvbXBvbmVudCAic2tsZWFybiIKICAgICAgICAgICAgICAgIGJlYW1uZ3B5ID0gY29tcG9uZW50ICJiZWFtbmdweSIKICAgICAgICAgICAgICAgIGNhcmxhID0gY29tcG9uZW50ICJjYXJsYSIKICAgICAgICAgICAgfQogICAgICAgICAgICBiZWFtbmdTaW11bGF0b3IgPSBjb250YWluZXIgIkJlYW1ORyBTaW11bGF0b3IiCiAgICAgICAgICAgIGNhcmxhU2ltdWxhdG9yID0gY29udGFpbmVyICJDQVJMQSBTaW11bGF0b3IiCiAgICAgICAgfQoKCiAgICAgICAgdXNlciAtPiBjbGkgInVzZXMiCiAgICAgICAgY2xpIC0+IHRlc3RpbmdBUEkgInVzZXMiCiAgICAgICAgY2xpIC0+IG1sQVBJICJ1c2VzIgogICAgICAgIGNsaSAtPiBmZWF0dXJlRXh0cmFjdGlvbkFQSSAidXNlcyIKICAgICAgICB0ZXN0aW5nQVBJIC0+IHNpbXVsYXRvckFQSSAidXNlcyIKICAgICAgICB0ZXN0aW5nQVBJIC0+IG9ic3RhY2xlQVBJICJ1c2VzIgogICAgICAgIG1sQVBJIC0+IHNrbGVhcm4gInVzZXMiCiAgICAgICAgdXNlciAtPiBzZGNTY2lzc29yICJ1c2VzIgogICAgICAgIHB5dGhvbiAtPiBiZWFtbmdTaW11bGF0b3IgIm5lZWRzIgogICAgICAgIHB5dGhvbiAtPiBjYXJsYVNpbXVsYXRvciAibmVlZHMiCiAgICAgICAgc2ltdWxhdG9yQVBJIC0+IGJlYW1uZ3B5ICJ1c2VzIgogICAgICAgIHNpbXVsYXRvckFQSSAtPiBjYXJsYSAidXNlcyIKICAgICAgICBiZWFtbmdweSAtPiBiZWFtbmdTaW11bGF0b3IgImNvbnRyb2xzIgogICAgICAgIGNhcmxhIC0+IGNhcmxhU2ltdWxhdG9yICJjb250cm9scyIKICAgIH0KCiAgICB2aWV3cyB7CiAgICAgICAgc3lzdGVtQ29udGV4dCBzZGNTY2lzc29yICJEaWFncmFtMSIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b0xheW91dAogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHNkY1NjaXNzb3IgIkRpYWdyYW0yIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvTGF5b3V0CiAgICAgICAgfQoKICAgICAgICBjb21wb25lbnQgcHl0aG9uICJEaWFncmFtMyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b0xheW91dAogICAgICAgIH0KCiAgICAgICAgdGhlbWUgZGVmYXVsdAogICAgfQp9Cg=="
+  },
+  "configuration" : { },
+  "model" : {
+    "people" : [ {
+      "id" : "1",
+      "tags" : "Element,Person",
+      "name" : "User",
+      "relationships" : [ {
+        "id" : "16",
+        "sourceId" : "1",
+        "destinationId" : "3",
+        "description" : "uses",
+        "linkedRelationshipId" : "15"
+      }, {
+        "id" : "15",
+        "tags" : "Relationship",
+        "sourceId" : "1",
+        "destinationId" : "4",
+        "description" : "uses"
+      }, {
+        "id" : "17",
+        "sourceId" : "1",
+        "destinationId" : "2",
+        "description" : "uses",
+        "linkedRelationshipId" : "15"
+      } ],
+      "location" : "Unspecified"
+    } ],
+    "softwareSystems" : [ {
+      "id" : "2",
+      "tags" : "Element,Software System",
+      "name" : "SDC-Scissor",
+      "location" : "Unspecified",
+      "containers" : [ {
+        "id" : "3",
+        "tags" : "Element,Container",
+        "name" : "Python",
+        "relationships" : [ {
+          "id" : "25",
+          "tags" : "Relationship",
+          "sourceId" : "3",
+          "destinationId" : "14",
+          "description" : "needs"
+        }, {
+          "id" : "24",
+          "tags" : "Relationship",
+          "sourceId" : "3",
+          "destinationId" : "13",
+          "description" : "needs"
+        } ],
+        "components" : [ {
+          "id" : "5",
+          "tags" : "Element,Component",
+          "name" : "Simulator API",
+          "relationships" : [ {
+            "id" : "26",
+            "tags" : "Relationship",
+            "sourceId" : "5",
+            "destinationId" : "11",
+            "description" : "uses"
+          }, {
+            "id" : "27",
+            "tags" : "Relationship",
+            "sourceId" : "5",
+            "destinationId" : "12",
+            "description" : "uses"
+          } ],
+          "size" : 0
+        }, {
+          "id" : "6",
+          "tags" : "Element,Component",
+          "name" : "Testing API",
+          "relationships" : [ {
+            "id" : "22",
+            "tags" : "Relationship",
+            "sourceId" : "6",
+            "destinationId" : "7",
+            "description" : "uses"
+          }, {
+            "id" : "21",
+            "tags" : "Relationship",
+            "sourceId" : "6",
+            "destinationId" : "5",
+            "description" : "uses"
+          } ],
+          "size" : 0
+        }, {
+          "id" : "12",
+          "tags" : "Element,Component",
+          "name" : "carla",
+          "relationships" : [ {
+            "id" : "29",
+            "tags" : "Relationship",
+            "sourceId" : "12",
+            "destinationId" : "14",
+            "description" : "controls"
+          } ],
+          "size" : 0
+        }, {
+          "id" : "9",
+          "tags" : "Element,Component",
+          "name" : "Feature Extraction API",
+          "size" : 0
+        }, {
+          "id" : "11",
+          "tags" : "Element,Component",
+          "name" : "beamngpy",
+          "relationships" : [ {
+            "id" : "28",
+            "tags" : "Relationship",
+            "sourceId" : "11",
+            "destinationId" : "13",
+            "description" : "controls"
+          } ],
+          "size" : 0
+        }, {
+          "id" : "7",
+          "tags" : "Element,Component",
+          "name" : "Obstacle API",
+          "size" : 0
+        }, {
+          "id" : "8",
+          "tags" : "Element,Component",
+          "name" : "Machine Learning API",
+          "relationships" : [ {
+            "id" : "23",
+            "tags" : "Relationship",
+            "sourceId" : "8",
+            "destinationId" : "10",
+            "description" : "uses"
+          } ],
+          "size" : 0
+        }, {
+          "id" : "10",
+          "tags" : "Element,Component",
+          "name" : "sklearn",
+          "size" : 0
+        }, {
+          "id" : "4",
+          "tags" : "Element,Component",
+          "name" : "CLI",
+          "relationships" : [ {
+            "id" : "20",
+            "tags" : "Relationship",
+            "sourceId" : "4",
+            "destinationId" : "9",
+            "description" : "uses"
+          }, {
+            "id" : "19",
+            "tags" : "Relationship",
+            "sourceId" : "4",
+            "destinationId" : "8",
+            "description" : "uses"
+          }, {
+            "id" : "18",
+            "tags" : "Relationship",
+            "sourceId" : "4",
+            "destinationId" : "6",
+            "description" : "uses"
+          } ],
+          "size" : 0
+        } ]
+      }, {
+        "id" : "14",
+        "tags" : "Element,Container",
+        "name" : "CARLA Simulator"
+      }, {
+        "id" : "13",
+        "tags" : "Element,Container",
+        "name" : "BeamNG Simulator"
+      } ],
+      "documentation" : { }
+    } ]
+  },
+  "documentation" : { },
+  "views" : {
+    "systemContextViews" : [ {
+      "softwareSystemId" : "2",
+      "key" : "Diagram1",
+      "order" : 1,
+      "paperSize" : "A6_Portrait",
+      "dimensions" : {
+        "width" : 866,
+        "height" : 1416
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "TopBottom",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "enterpriseBoundaryVisible" : true,
+      "elements" : [ {
+        "id" : "1",
+        "x" : 233,
+        "y" : 208
+      }, {
+        "id" : "2",
+        "x" : 208,
+        "y" : 908
+      } ],
+      "relationships" : [ {
+        "id" : "17"
+      } ]
+    } ],
+    "containerViews" : [ {
+      "softwareSystemId" : "2",
+      "key" : "Diagram2",
+      "order" : 2,
+      "paperSize" : "A4_Portrait",
+      "dimensions" : {
+        "width" : 1858,
+        "height" : 2120
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "TopBottom",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "externalSoftwareSystemBoundariesVisible" : true,
+      "elements" : [ {
+        "id" : "1",
+        "x" : 729,
+        "y" : 208
+      }, {
+        "id" : "13",
+        "x" : 329,
+        "y" : 1508
+      }, {
+        "id" : "3",
+        "x" : 704,
+        "y" : 908
+      }, {
+        "id" : "14",
+        "x" : 1079,
+        "y" : 1508
+      } ],
+      "relationships" : [ {
+        "id" : "16"
+      }, {
+        "id" : "25"
+      }, {
+        "id" : "24"
+      } ]
+    } ],
+    "componentViews" : [ {
+      "key" : "Diagram3",
+      "order" : 3,
+      "paperSize" : "A3_Portrait",
+      "dimensions" : {
+        "width" : 2608,
+        "height" : 3816
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "TopBottom",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "containerId" : "3",
+      "externalContainerBoundariesVisible" : true,
+      "elements" : [ {
+        "id" : "11",
+        "x" : 328,
+        "y" : 2707
+      }, {
+        "id" : "12",
+        "x" : 1078,
+        "y" : 2707
+      }, {
+        "id" : "13",
+        "x" : 328,
+        "y" : 3307
+      }, {
+        "id" : "14",
+        "x" : 1078,
+        "y" : 3307
+      }, {
+        "id" : "1",
+        "x" : 1103,
+        "y" : 207
+      }, {
+        "id" : "4",
+        "x" : 1078,
+        "y" : 907
+      }, {
+        "id" : "5",
+        "x" : 328,
+        "y" : 2107
+      }, {
+        "id" : "6",
+        "x" : 328,
+        "y" : 1507
+      }, {
+        "id" : "7",
+        "x" : 1078,
+        "y" : 2107
+      }, {
+        "id" : "8",
+        "x" : 1078,
+        "y" : 1507
+      }, {
+        "id" : "9",
+        "x" : 1828,
+        "y" : 1507
+      }, {
+        "id" : "10",
+        "x" : 1828,
+        "y" : 2107
+      } ],
+      "relationships" : [ {
+        "id" : "29"
+      }, {
+        "id" : "18"
+      }, {
+        "id" : "28"
+      }, {
+        "id" : "27"
+      }, {
+        "id" : "26"
+      }, {
+        "id" : "15"
+      }, {
+        "id" : "23"
+      }, {
+        "id" : "22"
+      }, {
+        "id" : "21"
+      }, {
+        "id" : "20"
+      }, {
+        "id" : "19"
+      } ]
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "styles" : { },
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ],
+      "terminology" : { },
+      "lastSavedView" : "Diagram3"
+    }
+  }
+}
