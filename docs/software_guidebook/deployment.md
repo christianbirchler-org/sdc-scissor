@@ -4,10 +4,25 @@ This section provides information about the mapping between the
 and the
 [infrastructure architecture](https://sdc-scissor.readthedocs.io/en/latest/software_guidebook/infrastructure_architecture.html).
 
-## Software
+## Simulator
+To use the full potential of SDC-Scissor you should follow the installation guidelines of the desired simulator provided
+on the according website of the simulator's provider.
 
-## Building SDC-Scissor
+## Installing SDC-Scissor
+The tool can either be run locally using [Poetry](https://python-poetry.org/docs/) (**RECOMMENDED**) or with
+[Docker](https://docs.docker.com/get-docker/).
 
-## Deploying SDC-Scissor
+## Requirements
+* BeamNG
+    * When running the simulations a working installation of [BeamNG.tech](https://beamng.tech) is required.
+    * Additionally, this simulation cannot be run in a Docker container but must run locally.
+* `Python 3.9`
+    * Note: `SDC-Scissor` is tested with this version of python only
+* [Poetry](https://python-poetry.org/docs/)
+* [Docker](https://docs.docker.com/get-docker/)
 
-## Configuration
+## Installation commands
+To install the ``SDC-Scissor``, use one of the following approaches:
+
+* Docker: `docker build --tag sdc-scissor .`
+* Poetry: `poetry install`

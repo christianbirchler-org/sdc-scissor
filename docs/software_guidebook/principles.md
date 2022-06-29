@@ -4,4 +4,4 @@
 
 ## Best Practices
 
-## Automated Testing
+## Continuous Integration
