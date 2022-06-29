@@ -42,7 +42,7 @@ users. Just click on one of the following links:
 * [https://discord.gg/AaYnBS6s7E](https://discord.gg/AaYnBS6s7E)
 
 ## Documentation
-[![](https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/readthedocs.png)](https://sdc-scissor.readthedocs.io/en/latest/)
+[![](https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/images/readthedocs.png)](https://sdc-scissor.readthedocs.io/en/latest/)
 
 ## License
 ```{code-block} text
