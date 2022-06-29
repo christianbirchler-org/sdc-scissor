@@ -18,7 +18,7 @@
 ## A Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 <div style="text-align: center;">
 <a href="https://github.com/ChristianBirchler/sdc-scissor">
-<img src="https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/github_logo_icon.png">
+<img src="https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/images/github_logo_icon.png">
 </a>
 <a href="https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor">
 <img src="https://sonarcloud.io/images/project_badges/sonarcloud-black.svg">
