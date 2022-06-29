@@ -3,12 +3,15 @@ SDC-Scissor is a tool that let you test self-driving cars more efficiently in si
 approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
 are diverse and try to challenge the car with corner cases.
 
-![](../sdc-scissor-architecture.jpg)
+![](../images/sdc-scissor-architecture.jpg)
 
 The purpose of this tool is to:
 
 1. Provide a platform for testing self-driving cars (SDCs) within different simulators
 2. Give access to different regression testing methodologies, e.g., test selection, prioritization and minimization.
+3. Provide easy to use APIs for SDC testers
+
+![](../images/sdc-scissor-APIs.jpg)
 
 ## Users
 SDC-Scissor has two types of users:

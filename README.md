@@ -2,7 +2,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![](https://github.com/ChristianBirchler/sdc-scissor/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ChristianBirchler/sdc-scissor/actions)
 [![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
-[![](https://img.shields.io/badge/code%20style-black-000000.svg)](ttps://github.com/psf/black)
+[![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://black.readthedocs.io/)
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=alert_status)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=ncloc)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=coverage)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)

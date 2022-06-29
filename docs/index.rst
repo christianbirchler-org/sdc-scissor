@@ -4,13 +4,9 @@
 Content
 -------
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   architecture
-   components
-   demo
-   installation
-   usage
-   data
-   software_guidebook/index
-   api
+    quick_start
+    software_guidebook/index
+    api/index
+    contributing

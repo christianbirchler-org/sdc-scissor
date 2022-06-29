@@ -1,6 +1,6 @@
 API
 ===
-Some preliminary words about the API.
+.. image:: ../images/sdc-scissor-APIs.jpg
 
 .. toctree::
 
