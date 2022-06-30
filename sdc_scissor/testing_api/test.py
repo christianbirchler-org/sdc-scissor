@@ -23,7 +23,7 @@ class Test:
         self.test_duration = test_duration
         self.road_points = road_points
         self.interpolated_road_points = self.__interpolate(road_points)
-        self.simulation_data = None
+        self.simulation_data = []
 
     def save_as_json(self, file_path: Path):
         """

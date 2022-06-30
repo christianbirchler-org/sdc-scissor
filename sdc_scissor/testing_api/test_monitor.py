@@ -43,7 +43,6 @@ class TestMonitor:
         self.road = None
         self.start_time = None
         self.end_time = None
-        self.data = []
         self.road_model = road_model
         self.oob = oob
         self.has_test_failed = None
@@ -60,7 +59,7 @@ class TestMonitor:
         x_pos, y_pos, z_pos = self.simulator.get_car_position()
         current_time = time.time() - self.start_time
         logging.info("time: {}\tx: {}\ty: {}\tz: {}".format(current_time, x_pos, y_pos, z_pos))
-        self.data.append((current_time, x_pos, y_pos, z_pos))
+        self.test.simulation_data.append((current_time, x_pos, y_pos, z_pos))
 
         if (
             self.__is_car_at_end_of_road(x_pos, y_pos)
@@ -72,7 +71,6 @@ class TestMonitor:
             self.end_time = time.time()
             self.test.test_outcome = self.current_test_outcome
             self.test.test_duration = self.end_time - self.start_time
-            self.test.simulation_data = self.data
 
     def is_car_moving(self) -> bool:
         """
@@ -81,14 +79,14 @@ class TestMonitor:
         time_delta = 3
         decision_distance = 1
 
-        current_time, current_x_pos, current_y_pos, _ = self.data[-1]
-        start_time, _, _, _ = self.data[0]
+        current_time, current_x_pos, current_y_pos, _ = self.test.simulation_data[-1]
+        start_time, _, _, _ = self.test.simulation_data[0]
 
         # We need at least of `time_delta` seconds of simulation data.
         if current_time - start_time < time_delta:
             return True
 
-        _, last_x_pos, last_y_pos, _ = _get_t_previous_data(self.data, time_delta)
+        _, last_x_pos, last_y_pos, _ = _get_t_previous_data(self.test.simulation_data, time_delta)
 
         is_car_moving = not self.__are_points_close(
             (current_x_pos, current_y_pos), (last_x_pos, last_y_pos), decision_distance
