@@ -267,8 +267,6 @@ class FeatureExtractor:
         start_index, end_index = road_segment.start_index, road_segment.end_index
         segment_road_points = road_points[start_index : end_index + 1]
         start_point, end_point = tuple(segment_road_points[0][:2]), tuple(segment_road_points[-1][:2])
-        print(start_point)
-        print(end_point)
         direct_segment_line: LineString = LineString([start_point, end_point])
         shapely_points: list = [Point(rp[0], rp[1]) for rp in segment_road_points]
         point_to_line_distances = [direct_segment_line.distance(point) for point in shapely_points]
@@ -302,7 +300,3 @@ class FeatureExtractor:
         )
 
         return road_segment
-
-
-if __name__ == "__main__":
-    logging.info("feature_extraction.py")
