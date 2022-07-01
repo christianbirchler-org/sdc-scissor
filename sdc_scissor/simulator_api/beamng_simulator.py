@@ -8,7 +8,6 @@ from shapely.geometry import LineString
 
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.test import Test
-from self_driving.beamng_brewer import BeamNGCamera
 
 
 class BeamNGSimulator(AbstractSimulator):

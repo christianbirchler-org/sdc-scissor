@@ -1,17 +1,27 @@
 [tool.poetry]
-name = "sdc-scissor"
-version = "2.0.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+name = "SDC-Scissor"
+version = "3.0.0-alpha"
+description = "A cost-effective test selection for self-driving cars in virtual environments"
+authors = ["Christian Birchler <birchler.chr@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://github.com/ChristianBirchler/sdc-scissor"
+documentation = "https://sdc-scissor.readthedocs.io/"
+packages = [
+    {include = "sdc_scissor"}
+]
+
+[tool.poetry.scripts]
+sdc-scissor = "sdc_scissor.cli:cli"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "=3.9"
 click = "^8.0.4"
-beamngpy = "^1.22"
+beamngpy = "=1.22"
 pandas = "^1.4.1"
 Shapely = "^1.8.1"
 scikit-learn = "^1.0.2"
-pymoo = "0.4.2.2"
+pymoo = "=0.4.2.2"
 
 [tool.poetry.dev-dependencies]
 parameterized = "^0.8.1"
