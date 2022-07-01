@@ -1,5 +1,4 @@
 # {short title of solved problem and solution}
-(*OPTIONAL:*)
 * status: {proposed | rejected | accepted | deprecated | … | superseded by [ADR-0000](0000-use-markdown-any-decision-records.md)}
 * date: {YYYY-MM-DD when the decision was last updated}
 * deciders: {list everyone involved in the decision}
