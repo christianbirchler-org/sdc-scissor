@@ -15,7 +15,7 @@ packages = [
 sdc-scissor = "sdc_scissor.cli:cli"
 
 [tool.poetry.dependencies]
-python = "=3.9"
+python = "^3.9"
 click = "^8.0.4"
 beamngpy = "=1.22"
 pandas = "^1.4.1"
