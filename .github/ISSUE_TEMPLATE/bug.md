@@ -25,7 +25,7 @@ assignees: ChristianBirchler
 # Screen recording or screenshot
 *Link to a video or some explanatory screenshots*
 
-# System information (OS, CPU, RAM, etc.)
+# System information
 * OS:
 * CPU:
 * GPU:
