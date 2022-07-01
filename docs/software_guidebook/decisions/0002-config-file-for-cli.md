@@ -1,4 +1,4 @@
-# Config file for CLI
+# Config File for CLI
 * status: accepted
 * date: 2022-07-01
 * deciders: Christian Birchler
