@@ -19,4 +19,4 @@ RUN poetry install
 
 COPY . ./
 
-ENTRYPOINT ["poetry", "run", "python", "sdc-scissor.py"]
+ENTRYPOINT ["poetry", "run", "sdc-scissor"]
