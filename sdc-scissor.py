@@ -66,7 +66,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
     Extract road features from given test scenarios.
     """
     logging.info("extract_features")
-
+    tests = Path(tests)
     test_loader = TestLoader(tests)
     if segmentation == "angle-based":
         segmentation = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
