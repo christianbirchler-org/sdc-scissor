@@ -16,51 +16,69 @@ from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_sc
 
 
 class ModelEvaluator:
-    def __init__(self, data_frame: pd.DataFrame, label: str):
+    def __init__(
+        self,
+        data_frame: pd.DataFrame,
+        label: str,
+        features=(
+                "full_road_diversity",
+                "mean_road_diversity",
+                "direct_distance",
+                "max_angle",
+                "max_pivot_off",
+                "mean_angle",
+                "mean_pivot_off",
+                "median_angle",
+                "median_pivot_off",
+                "min_angle",
+                "min_pivot_off",
+                "num_l_turns",
+                "num_r_turns",
+                "num_straights",
+                "road_distance",
+                "std_angle",
+                "std_pivot_off",
+                "total_angle",
+        ),
+    ):
         """
 
         :param data_frame:
         :param label:
+        :param features:
         """
         self.data_frame = data_frame
         self.label = label
-        self.road_features = [
-            "direct_distance",
-            "max_angle",
-            "max_pivot_off",
-            "mean_angle",
-            "mean_pivot_off",
-            "median_angle",
-            "median_pivot_off",
-            "min_angle",
-            "min_pivot_off",
-            "num_l_turns",
-            "num_r_turns",
-            "num_straights",
-            "road_distance",
-            "std_angle",
-            "std_pivot_off",
-            "total_angle",
-        ]
+        self.road_features = list(features)
 
         self.__classifiers = {}
 
     def evaluate(self):
-        """ """
+        """
+
+        :return:
+        """
         logging.info("evaluate")
 
         dd = self.data_frame.sample(frac=1).reset_index(drop=True)
+
+        attributes_to_use = self.road_features.copy()
+        attributes_to_use.append(self.label)
+        dd = dd[attributes_to_use]
+        dd = dd.dropna()
+
         N = dd.shape[0]
         N_train = int(N * 0.8)
         N_test = N - N_train
 
-        X = dd[self.road_features].to_numpy()
+        X = dd[attributes_to_use[:-1]].to_numpy()
         X_train = X[0:N_train, :]
         X_test = X[N_train:, :]
+
         X = preprocessing.normalize(X)
         X = preprocessing.scale(X)
 
-        y = dd[self.label].to_numpy()
+        y = dd[attributes_to_use[-1]].to_numpy()
         y[y == "FAIL"] = 1
         y[y == "PASS"] = 0
         y = np.array(y, dtype="int32")
@@ -116,7 +134,3 @@ class ModelEvaluator:
             file_path = out_dir / filename
             logging.info("save model: {}".format(model_name))
             joblib.dump(model, file_path)
-
-
-if __name__ == "__main__":
-    logging.info("model_evaluator.py")

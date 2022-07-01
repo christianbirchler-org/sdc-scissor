@@ -62,17 +62,12 @@ class TestLoader:
         """
         logging.info(str(test_path))
         with open(test_path, "r") as fp:
-            test_json = json.load(fp)
+            test_json: dict = json.load(fp)
 
-        road_points = test_json["interpolated_road_points"]
-        if "test_outcome" in test_json.keys():
-            test_outcome = test_json["test_outcome"]
-        else:
-            test_outcome = None
-        if "simulation_time" in test_json.keys():
-            sim_time = test_json["simulation_time"]
-        else:
-            sim_time = None
+        road_points = test_json.get("interpolated_points", None)
+        test_outcome = test_json.get("test_outcome", None)
+        sim_time = test_json.get("simulation_time", None)
+
         id_pattern = r"(.*test.*)"
         logging.info("test_path: {}".format(str(test_path)))
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
