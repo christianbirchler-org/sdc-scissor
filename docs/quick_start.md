@@ -11,7 +11,7 @@ poetry install
 3. Install simulator
 4. Run the tool
 ````shell
-poetry run python sdc-scissor -c sample_config.yml
+poetry run sdc-scissor -c sample_config.yml
 ````
 
 The [Software Guidebook](software_guidebook/index.rst) provides more explanations about the
