@@ -31,11 +31,9 @@ def cli(ctx: click.Context, config: Path) -> None:
     logging.info("run with configuration file")
     with open(config) as fp:
         config_dict: dict = yaml.safe_load(fp)
-        print(type(config_dict))
         command = config_dict["command"]
         options: dict = config_dict["options"]
         this_module = sys.modules[__name__]
-        print(this_module)
         command = getattr(this_module, command.replace("-", "_"))
         ctx.invoke(command, **options)
 
@@ -100,6 +98,8 @@ def label_tests(
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
     logging.info("label_tests")
+    tests = Path(tests)
+    logging.debug('Test directory: {}'.format(tests))
     beamng_simulator = SimulatorFactory.get_beamng_simulator(
         home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
     )
@@ -175,5 +175,4 @@ def predict_tests(tests: Path, classifier: Path) -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     cli()

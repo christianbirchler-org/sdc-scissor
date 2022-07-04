@@ -64,7 +64,7 @@ class TestLoader:
         with open(test_path, "r") as fp:
             test_json: dict = json.load(fp)
 
-        road_points = test_json.get("interpolated_points", None)
+        road_points = test_json.get("interpolated_road_points", None)
         test_outcome = test_json.get("test_outcome", None)
         sim_time = test_json.get("simulation_time", None)
 
