@@ -99,7 +99,7 @@ def label_tests(
     """
     logging.info("label_tests")
     tests = Path(tests)
-    logging.debug('Test directory: {}'.format(tests))
+    logging.debug("Test directory: {}".format(tests))
     beamng_simulator = SimulatorFactory.get_beamng_simulator(
         home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
     )
