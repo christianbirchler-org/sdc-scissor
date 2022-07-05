@@ -27,9 +27,9 @@ class TestBeamngTree:
             rot_quat=0,
             scale=(0.25, 0.25, 0.25),
             shape="/levels/west_coast_usa/art/shapes/trees/trees_conifer/BBZ_redwood1.dae",
-        )
+        ).pos
 
-        actual = self.beamng_tree.get()
+        actual = self.beamng_tree.get().pos
         assert expected == actual
 
 
