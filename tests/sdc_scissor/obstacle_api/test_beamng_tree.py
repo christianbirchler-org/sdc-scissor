@@ -20,7 +20,15 @@ class TestBeamngTree:
         self.beamng_tree.y_pos = 100
         self.beamng_tree.z_pos = 0
 
-        expected = mocker.patch("StaticObject")
+        expected = StaticObject(
+            name="test",
+            pos=(100, 100, 0),
+            rot=0,
+            rot_quat=0,
+            scale=(0.25, 0.25, 0.25),
+            shape="/levels/west_coast_usa/art/shapes/trees/trees_conifer/BBZ_redwood1.dae",
+        )
+
         actual = self.beamng_tree.get()
         assert expected == actual
 
