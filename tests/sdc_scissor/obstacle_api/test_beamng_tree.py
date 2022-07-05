@@ -14,12 +14,13 @@ class TestBeamngTree:
     def setup_method(self):
         self.beamng_tree = BeamngTree()
 
-    def test_get_new_beamng_tree(self):
+    def test_get_new_beamng_tree(self, mocker):
 
         self.beamng_tree.x_pos = 100
         self.beamng_tree.y_pos = 100
         self.beamng_tree.z_pos = 0
-        expected = StaticObject()
+
+        expected = mocker.patch("StaticObject")
         actual = self.beamng_tree.get()
         assert expected == actual
 
