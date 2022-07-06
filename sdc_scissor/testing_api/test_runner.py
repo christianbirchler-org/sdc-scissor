@@ -16,21 +16,23 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist) 
         return obstacles_lst
     length = int(road_model.ideal_trajectory.length)
 
-    for current_distance in range(bump_dist, length, bump_dist):
-        point = road_model.ideal_trajectory.interpolate(-current_distance)
-        bump = obstacle_factory.create_bump()
-        bump.x_pos = point.x
-        bump.y_pos = point.y
-        bump.z_pos = -28.0
-        obstacles_lst.append(bump)
+    if bump_dist:
+        for current_distance in range(bump_dist, length, bump_dist):
+            point = road_model.ideal_trajectory.interpolate(-current_distance)
+            bump = obstacle_factory.create_bump()
+            bump.x_pos = point.x
+            bump.y_pos = point.y
+            bump.z_pos = -28.0
+            obstacles_lst.append(bump)
 
-    for current_distance in range(delineator_dist, length, delineator_dist):
-        point = road_model.center_line.interpolate(-current_distance)
-        delineator = obstacle_factory.create_delineator()
-        delineator.x_pos = point.x
-        delineator.y_pos = point.y
-        delineator.z_pos = -28.0
-        obstacles_lst.append(delineator)
+    if delineator_dist:
+        for current_distance in range(delineator_dist, length, delineator_dist):
+            point = road_model.center_line.interpolate(-current_distance)
+            delineator = obstacle_factory.create_delineator()
+            delineator.x_pos = point.x
+            delineator.y_pos = point.y
+            delineator.z_pos = -28.0
+            obstacles_lst.append(delineator)
 
     return obstacles_lst
 

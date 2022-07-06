@@ -266,9 +266,12 @@ class FeatureExtractor:
         road_points = test.road_points
         start_index, end_index = road_segment.start_index, road_segment.end_index
         segment_road_points = road_points[start_index : end_index + 1]
-        start_point, end_point = tuple(segment_road_points[0][:2]), tuple(segment_road_points[-1][:2])
+        start_point, end_point = Point(segment_road_points[0][:2]), Point(segment_road_points[-1][:2])
         direct_segment_line: LineString = LineString([start_point, end_point])
+
         shapely_points: list = [Point(rp[0], rp[1]) for rp in segment_road_points]
+        segment_line: LineString = LineString(shapely_points)
+
         point_to_line_distances = [direct_segment_line.distance(point) for point in shapely_points]
         segment_total_diversity = float(np.sum(point_to_line_distances))
         segment_mean_diversity = float(np.mean(point_to_line_distances))
