@@ -76,7 +76,7 @@ class TestMonitor:
         """
         Checks if the car is currently moving.
         """
-        time_delta = 3
+        time_delta = 10
         decision_distance = 1
 
         current_time, current_x_pos, current_y_pos, _ = self.test.simulation_data[-1]

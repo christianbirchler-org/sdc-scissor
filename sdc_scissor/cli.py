@@ -25,7 +25,13 @@ _TRAINED_MODELS = _ROOT_DIR / "trained_models"
 @click.group(invoke_without_command=True)
 @click.pass_context
 @click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file")
-def cli(ctx: click.Context, config: Path) -> None:
+@click.option('--debug/--no-debug', default=False)
+def cli(ctx: click.Context, config: Path, debug) -> None:
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
     if ctx.invoked_subcommand:
         return None
     logging.info("run with configuration file")
