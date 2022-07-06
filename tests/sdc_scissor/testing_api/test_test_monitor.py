@@ -16,7 +16,7 @@ class TestTestMonitor:
 
     def test_is_car_moving_car_stays_on_same_position(self, mocker):
         self.test_monitor.test = mocker.patch("sdc_scissor.testing_api.test.Test")
-        self.test_monitor.test.simulation_data = [(0, 0, 0, 0), (5, 0, 0, 0)]
+        self.test_monitor.test.simulation_data = [(0, 0, 0, 0), (11, 0, 0, 0)]
         expected = False
         actual = self.test_monitor.is_car_moving()
         assert expected == actual
