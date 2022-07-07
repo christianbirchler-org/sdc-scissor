@@ -9,8 +9,8 @@ To use the full potential of SDC-Scissor you should follow the installation guid
 on the according website of the simulator's provider.
 
 ## Installing SDC-Scissor
-The tool can either be run locally using [Poetry](https://python-poetry.org/docs/) (**RECOMMENDED**) or with
-[Docker](https://docs.docker.com/get-docker/).
+The tool can be run locally using Python and Pip to install SDC-Scissor `pip install sdc-scissor`. Another way to run the tool is to clone the repository and install the tool with [Poetry](https://python-poetry.org/docs/) or with
+[Docker](https://docs.docker.com/get-docker/). If you want to run the tool with Docker then you can not use the `label-tests` command since the BeamNG simulator is Windows based and therefore not compatible with Docker.
 
 ## Requirements
 * BeamNG
@@ -32,5 +32,7 @@ user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\l
 To install the ``SDC-Scissor``, use one of the following approaches:
 
 * Pip: `pip install sdc-scissor`
+
+Or after cloning the SDC-Scissor repository:
 * Docker: `docker build --tag sdc-scissor .`
 * Poetry: `poetry install`
