@@ -30,5 +30,6 @@ user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\l
 ## Installation commands
 To install the ``SDC-Scissor``, use one of the following approaches:
 
+* Pip: `pip install sdc-scissor`
 * Docker: `docker build --tag sdc-scissor .`
 * Poetry: `poetry install`
