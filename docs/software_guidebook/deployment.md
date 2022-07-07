@@ -18,6 +18,7 @@ The tool can either be run locally using [Poetry](https://python-poetry.org/docs
     * Additionally, this simulation cannot be run in a Docker container but must run locally.
 * `Python 3.9`
     * Note: `SDC-Scissor` is tested with this version of python only
+* [Pip](https://pypi.org/project/sdc-scissor/)
 * [Poetry](https://python-poetry.org/docs/)
 * [Docker](https://docs.docker.com/get-docker/)
 
