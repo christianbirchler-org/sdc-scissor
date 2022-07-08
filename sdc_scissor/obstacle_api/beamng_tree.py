@@ -19,8 +19,8 @@ class BeamngTree(Tree):
             pos=(self.x_pos, self.y_pos, self.z_pos),
             rot=self.rot,
             rot_quat=self.rot_quat,
-            scale=(0.25, 0.25, 0.25),
-            shape="/levels/west_coast_usa/art/shapes/trees/trees_conifer/BBZ_redwood1.dae",
+            scale=(0.5, 0.5, 0.5),
+            shape="/levels/east_coast_usa/art/shapes/trees/trees_aspen/tree_aspen_large_a.dae"
         )
 
 

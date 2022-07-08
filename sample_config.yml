@@ -8,6 +8,7 @@ options:
   max_speed: 50
   interrupt: true
   obstacles: false
-  bump_dist: 20
-  delineator_dist: 5
+  bump_dist: null
+  delineator_dist: null
+  tree_dist: null
   field_of_view: 120

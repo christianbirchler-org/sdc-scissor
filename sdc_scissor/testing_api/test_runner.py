@@ -34,13 +34,14 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, 
             delineator.z_pos = -28.0
             obstacles_lst.append(delineator)
 
-    for current_distance in range(tree_dist, length, tree_dist):
-        point = road_model.center_line.interpolate(-current_distance)
-        tree = obstacle_factory.create_tree()
-        tree.x_pos = point.x + 10  # Adjust tree position
-        tree.y_pos = point.y
-        tree.z_pos = -28.0
-        obstacles_lst.append(tree)
+    if tree_dist:
+        for current_distance in range(tree_dist, length, tree_dist):
+            point = road_model.center_line.interpolate(-current_distance)
+            tree = obstacle_factory.create_tree()
+            tree.x_pos = point.x + 10  # Adjust tree position
+            tree.y_pos = point.y
+            tree.z_pos = -28.0
+            obstacles_lst.append(tree)
 
     return obstacles_lst
 
