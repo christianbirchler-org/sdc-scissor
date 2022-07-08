@@ -7,6 +7,7 @@ For SDC-Scissor v2.0 you can use the tests in the `sample_tests` directory.
 
 The tool can be used with the following two commands:
 
+* PyPI: `sdc-scissor [COMMAND] [OPTIONS]`
 * Docker: `docker run --volume "$(pwd)/destination:/var/project/destination" --rm sdc-scissor [COMMAND] [OPTIONS]` (this will write all files written to `/var/project/destination` to the local folder `destination`)
 * Poetry: `poetry run python sdc-scissor.py [COMMAND] [OPTIONS]`
 
