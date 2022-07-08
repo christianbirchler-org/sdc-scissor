@@ -1,4 +1,16 @@
 # Quick Start
+## Requirements
+* BeamNG.tech
+* Python 3.9
+
+You can install SDC-Scissor from PyPI or manually by downloading it from GitHub and install it with Poetry.
+## PyPI
+````shell
+pip install sdc-scissor
+sdc-scissor -c your_config.yaml
+````
+
+## Manual installation
 1. Clone the repository
 ````shell
 git clone https://github.com/ChristianBirchler/sdc-scissor.git
