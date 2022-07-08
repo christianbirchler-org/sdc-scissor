@@ -9,7 +9,7 @@ from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 
 
-def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist) -> list:
+def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, tree_dist) -> list:
     logging.info("__define_obstacles")
     obstacles_lst = []
     if obstacle_factory is None:
@@ -34,6 +34,15 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist) 
             delineator.z_pos = -28.0
             obstacles_lst.append(delineator)
 
+    if tree_dist:
+        for current_distance in range(tree_dist, length, tree_dist):
+            point = road_model.center_line.interpolate(-current_distance)
+            tree = obstacle_factory.create_tree()
+            tree.x_pos = point.x + 10  # Adjust tree position
+            tree.y_pos = point.y
+            tree.z_pos = -28.0
+            obstacles_lst.append(tree)
+
     return obstacles_lst
 
 
@@ -50,6 +59,7 @@ class TestRunner:
         self.interrupt: bool = kwargs.get("interrupt", None)
         self.bump_dist = kwargs.get("bump_dist", None)
         self.delineator_dist = kwargs.get("delineator_dist", None)
+        self.tree_dist = kwargs.get("tree_dist", None)
         self.obstacle_factory: ObstacleFactory = kwargs.get("obstacle_factory", None)
         self.fov: list = kwargs.get("fov", None)
 
@@ -89,7 +99,9 @@ class TestRunner:
         time.sleep(5)
 
         road_model = RoadModel(test.interpolated_road_points)
-        obstacles = _define_obstacles(road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist)
+        obstacles = _define_obstacles(
+            road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist, self.tree_dist
+        )
         self.simulator.load_scenario(test, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
