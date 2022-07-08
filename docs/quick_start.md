@@ -1,5 +1,6 @@
 # Quick Start
 ## Requirements
+* Windows 10
 * BeamNG.tech
 * Python 3.9
 
