@@ -10,5 +10,3 @@ This section provides an overview of SDC-Scissor's software architecture accordi
 
 ## Components
 ![](../c4model/structurizr-1-Diagram3.png)
-
-## Code
