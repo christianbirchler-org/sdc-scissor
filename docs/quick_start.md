@@ -7,7 +7,7 @@ You can install SDC-Scissor from PyPI or manually by downloading it from GitHub 
 ## PyPI
 ````shell
 pip install sdc-scissor
-sdc-scissor -c your_config.yaml
+sdc-scissor -c your_config.yml
 ````
 
 ## Manual installation
