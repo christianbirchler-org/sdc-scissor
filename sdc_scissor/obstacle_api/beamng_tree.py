@@ -20,7 +20,7 @@ class BeamngTree(Tree):
             rot=self.rot,
             rot_quat=self.rot_quat,
             scale=(0.5, 0.5, 0.5),
-            shape="/levels/east_coast_usa/art/shapes/trees/trees_aspen/tree_aspen_large_a.dae"
+            shape="/levels/east_coast_usa/art/shapes/trees/trees_aspen/tree_aspen_large_a.dae",
         )
 
 
