@@ -1,15 +1,29 @@
 # Contributing
-When contributing to this repository, please first discuss the change you wish to make via issue,
-or Slack/Discord channels.
+## Feature Request
+When contributing to this repository, please first discuss the change you wish to make in our Slack
+or Discord channels. If the feature request is approved then a new issue is oppened to keep track
+of the development of the featue. The issue should follow the provided `Feature` issue template.
+In case you want to implement the feature by yourself then you can do it by forking the repository
+and create a pull request to the `main` branch. A pull request is only accepted if it adheres to
+the pull request process and all checks of the CI pipeline have passed.
+
+### Pull Request Process
+1. Fork the SDC-Scissor repository
+2. Implement your feature
+3. Provide test implementations
+   - Unit tests
+   - Integration tests
+   - System tests
+4. Format your code with `poetry run black -C -l 120 .` command
+5. Open a pull request to SDC-Scissor's `main` branch
+6. Follow the instructions of the code reviewer
+
+## Bug Report
+In case you want to report a bug then open directly a new issue with the `Bug` issue template.
+Please fill all the sections in the provided template so that the resolvement of the bug can be
+done as efficient as possible.
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
-
-## Pull Request Process
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
-   build.
-2. Update the documentation with details of changes to the interface, this includes new environment 
-   variables, exposed ports, useful file locations and container parameters.
-3. The Pull Request will be merged when you have the approved review of the repository owner.
 
 ## Code of Conduct
 ### Our Pledge
