@@ -7,10 +7,10 @@ In case you want to implement the feature by yourself then you can do it by fork
 and create a pull request to the `main` branch. A pull request is only accepted if it adheres to
 the pull request process and all checks of the CI pipeline have passed.
 
-In case you are a direct contributor with access to this repository please not that we follow a
+In case you are a direct contributor with access to this repository please note that we follow a
 [Scaled Trunk-Based Development](https://trunkbaseddevelopment.com/#scaled-trunk-based-development)
 branching strategy. Rather having dedicated release branches we tag the releases directly on the
-trunk (`main` branch). By tagging a release a dedicated CD piipeline is triggered that publishes
+trunk (`main` branch). By tagging a release a dedicated CD pipeline is triggered that publishes
 the release automatically on PyPI.
 
 ### Pull Request Process
