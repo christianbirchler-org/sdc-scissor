@@ -36,5 +36,5 @@ use the platform on [GitHub Discussions](https://github.com/ChristianBirchler/sd
 communication channel to discuss everything related on SDCs and SDC-Scissor. Feel free to join the discussions if you
 want to discuss new potential features that can be implemented or research ideas. Everyone is welcome!
 
-For more detailed information about contributing to SDC-Scissor, please refer to
-[CONTRIBUTING.md](../../CONTRIBUTING.md).
+For more detailed information about contributing to SDC-Scissor, please refer to the[Contributing](../contributing.rst)
+page.
