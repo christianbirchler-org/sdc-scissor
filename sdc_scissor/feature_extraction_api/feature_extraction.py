@@ -296,8 +296,6 @@ class FeatureExtractor:
         # calculate radius
         road_segment.radius = self.__get_segment_radius(test, road_segment)
 
-        road_segment.segment_diversity = self.__get_segment_diversity(
-            test, road_segment
-        )
+        road_segment.segment_diversity = self.__get_segment_diversity(test, road_segment)
 
         return road_segment

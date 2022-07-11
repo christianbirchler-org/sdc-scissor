@@ -17,13 +17,13 @@ from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_sc
 
 def _print_mean_cv_results(mean_cv_results):
     nr_hyphens = 88
-    print(nr_hyphens * '-')
+    print(nr_hyphens * "-")
     for key, value in mean_cv_results.items():
-        output = '{:^22}| tacc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |'.format(key, value['test_accuracy'],
-                                                                         value['test_precision'], value['test_recall'],
-                                                                         value['test_f1'])
+        output = "{:^22}| tacc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |".format(
+            key, value["test_accuracy"], value["test_precision"], value["test_recall"], value["test_f1"]
+        )
         print(output)
-        print(nr_hyphens*'-')
+        print(nr_hyphens * "-")
 
 
 class ModelEvaluator:
@@ -81,11 +81,11 @@ class ModelEvaluator:
 
         attributes_to_use = self.road_features.copy()
         attributes_to_use.append(self.label)
-        logging.info('Use attributes: {}'.format(attributes_to_use))
+        logging.info("Use attributes: {}".format(attributes_to_use))
         dd = dd[attributes_to_use]
         dd = dd.dropna()
 
-        logging.info('rows: {}'.format(dd.shape[0]))
+        logging.info("rows: {}".format(dd.shape[0]))
 
         X = dd[attributes_to_use[:-1]].to_numpy()
         X = preprocessing.normalize(X)
@@ -106,7 +106,7 @@ class ModelEvaluator:
         cv_results = {}
         for key, clf in self.__classifiers.items():
             cv = StratifiedKFold(shuffle=True)
-            cv_results[key] = cross_validate(clf, X, y, cv=cv, scoring=('accuracy', 'f1', 'recall', 'precision'))
+            cv_results[key] = cross_validate(clf, X, y, cv=cv, scoring=("accuracy", "f1", "recall", "precision"))
 
         mean_cv_results = {}
         for key, value in cv_results.items():
