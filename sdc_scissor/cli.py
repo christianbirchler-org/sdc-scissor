@@ -17,7 +17,7 @@ from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEf
 from sdc_scissor.machine_learning_api.predictor import Predictor
 from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFactory
 
-_ROOT_DIR = Path(__file__).parent
+_ROOT_DIR = Path(__file__).parent.parent
 _DESTINATION = _ROOT_DIR / "destination"
 _TRAINED_MODELS = _ROOT_DIR / "trained_models"
 
