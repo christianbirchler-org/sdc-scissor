@@ -9,6 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import LinearSVC
+from sklearn import preprocessing
 
 
 class CostEffectivenessEvaluator:
@@ -24,6 +25,8 @@ class CostEffectivenessEvaluator:
         self.time_attribute = time_attribute
         self.X_model_attributes = [
             "direct_distance",
+            "full_road_diversity",
+            "mean_road_diversity",
             "max_angle",
             "max_pivot_off",
             "mean_angle",
@@ -51,8 +54,8 @@ class CostEffectivenessEvaluator:
         # print(X)
         # print(X[:, -1])
         # TODO: provide preprocessing options to the user???
-        # X = preprocessing.normalize(X)
-        # X = preprocessing.scale(X)
+        X = preprocessing.normalize(X)
+        X = preprocessing.scale(X)
         y = self.data_frame[self.label].to_numpy()
         y[y == "FAIL"] = 1
         y[y == "PASS"] = 0
@@ -70,7 +73,6 @@ class CostEffectivenessEvaluator:
         classifiers = {
             "random_forest": RandomForestClassifier(),
             "gradient_boosting": GradientBoostingClassifier(),
-            # 'multinomial_naive_bayes': MultinomialNB(),
             "SVM": LinearSVC(),
             "gaussian_naive_bayes": GaussianNB(),
             "logistic_regression": LogisticRegression(max_iter=10000),

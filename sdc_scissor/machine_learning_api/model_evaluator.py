@@ -7,12 +7,23 @@ import numpy as np
 from pathlib import Path
 from sklearn import preprocessing
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate, train_test_split
+from sklearn.model_selection import KFold, cross_validate, train_test_split, StratifiedKFold
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
+
+
+def _print_mean_cv_results(mean_cv_results):
+    nr_hyphens = 88
+    print(nr_hyphens * '-')
+    for key, value in mean_cv_results.items():
+        output = '{:^22}| tacc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |'.format(key, value['test_accuracy'],
+                                                                         value['test_precision'], value['test_recall'],
+                                                                         value['test_f1'])
+        print(output)
+        print(nr_hyphens*'-')
 
 
 class ModelEvaluator:
@@ -55,8 +66,14 @@ class ModelEvaluator:
 
     def evaluate(self):
         """
+        Performing 10-fold cross validation and assess the following metrics:
+        - Accuracy
+        - Precision
+        - Recall
+        - F1
+        The results will be printed to STDOUT.
 
-        :return:
+        :return: None
         """
         logging.info("evaluate")
 
@@ -64,63 +81,40 @@ class ModelEvaluator:
 
         attributes_to_use = self.road_features.copy()
         attributes_to_use.append(self.label)
+        logging.info('Use attributes: {}'.format(attributes_to_use))
         dd = dd[attributes_to_use]
         dd = dd.dropna()
 
-        N = dd.shape[0]
-        N_train = int(N * 0.8)
-        N_test = N - N_train
+        logging.info('rows: {}'.format(dd.shape[0]))
 
         X = dd[attributes_to_use[:-1]].to_numpy()
-        X_train = X[0:N_train, :]
-        X_test = X[N_train:, :]
-
         X = preprocessing.normalize(X)
         X = preprocessing.scale(X)
 
         y = dd[attributes_to_use[-1]].to_numpy()
-        y[y == "FAIL"] = 1
-        y[y == "PASS"] = 0
+        y[y == "FAIL"] = 0
+        y[y == "PASS"] = 1
         y = np.array(y, dtype="int32")
-
-        y_train = y[:N_train]
-
-        X_train_pass = X_train[y_train == 0, :]
-        X_train_fail = X_train[y_train == 1, :]
-        y_train_pass = y_train[y_train == 0]
-        y_train_fail = y_train[y_train == 1]
-        y_test = y[N_train:]
-
-        n_fail = len(y_train_fail)
-        n_pass = len(y_train_pass)
-        if n_fail < n_pass:
-            y_train = np.concatenate((y_train_fail, y_train_pass[:n_fail]))
-            X_train = np.concatenate((X_train_fail, X_train_pass[:n_fail, :]), axis=0)
-        else:
-            y_train = np.concatenate((y_train_pass, y_train_fail[:n_pass]))
-            X_train = np.concatenate((X_train_pass, X_train_fail[:n_pass, :]), axis=0)
 
         self.__classifiers["random_forest"] = RandomForestClassifier()
         self.__classifiers["gradient_boosting"] = GradientBoostingClassifier()
-        self.__classifiers["SVM"] = LinearSVC(max_iter=10000)
+        self.__classifiers["SVM"] = LinearSVC(max_iter=100000)
         self.__classifiers["gaussian_naive_bayes"] = GaussianNB()
         self.__classifiers["logistic_regression"] = LogisticRegression(max_iter=10000)
         self.__classifiers["decision_tree"] = DecisionTreeClassifier()
 
-        for model_name, model in self.__classifiers.items():
-            model.fit(X_train, y_train)
-            y_pred = model.predict(X_test)
+        cv_results = {}
+        for key, clf in self.__classifiers.items():
+            cv = StratifiedKFold(shuffle=True)
+            cv_results[key] = cross_validate(clf, X, y, cv=cv, scoring=('accuracy', 'f1', 'recall', 'precision'))
 
-            acc = accuracy_score(y_test, y_pred)
-            prec = precision_score(y_test, y_pred)
-            rec = recall_score(y_test, y_pred)
-            f1 = f1_score(y_test, y_pred)
+        mean_cv_results = {}
+        for key, value in cv_results.items():
+            mean_cv_results[key] = {}
+            for score, values in value.items():
+                mean_cv_results[key][score] = np.mean(values)
 
-            print(
-                "MODEL: {:<25} ACCURACY: {:<20} RECALL: {:<20} PRECISION: {:<20} F1: {}".format(
-                    model_name, acc, rec, prec, f1
-                )
-            )
+        _print_mean_cv_results(mean_cv_results)
 
     def save_models(self, out_dir: Path):
         """
