@@ -36,11 +36,9 @@ genetic search algorithm. If you are interested in prioritizing test cases, then
 for this. If you use the prioritization technique then also cite the papers from the reference section!
 
 ## Support
-Join the community on [Slack](https://slack.com/) or [Discord](https://discord.com/) to get support of developers and
-users. Just click on one of the following links:
-
-* [https://join.slack.com/t/sdc-scissor/shared_invite/zt-1aikrj1uu-Dz0a9BE1AQ4GQp4A3Bm5og](https://join.slack.com/t/sdc-scissor/shared_invite/zt-1aikrj1uu-Dz0a9BE1AQ4GQp4A3Bm5og)
-* [https://discord.gg/AaYnBS6s7E](https://discord.gg/AaYnBS6s7E)
+We use [GitHub Discussions](https://github.com/ChristianBirchler/sdc-scissor/discussions) as a community platform. You
+can ask questions and get support there from the community. Furthermore, new features and releases will be discussed and
+announced there.
 
 ## Documentation
 [![](https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/images/readthedocs.png)](https://sdc-scissor.readthedocs.io/en/latest/)

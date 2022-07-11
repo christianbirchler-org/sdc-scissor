@@ -1,8 +1,9 @@
 # Contributing
 ## Feature Request
-When contributing to this repository, please first discuss the change you wish to make in our Slack
-or Discord channels. If the feature request is approved then a new issue is oppened to keep track
-of the development of the featue. The issue should follow the provided `Feature` issue template.
+When contributing to this repository, please first discuss the change you wish to make on our
+[GitHub Discussions](https://github.com/ChristianBirchler/sdc-scissor/discussions).
+If the feature request is approved then a new issue is opened to keep track
+of the development of the feature. The issue should follow the provided `Feature` issue template.
 In case you want to implement the feature by yourself then you can do it by forking the repository
 and create a pull request to the `main` branch. A pull request is only accepted if it adheres to
 the pull request process and all checks of the CI pipeline have passed.

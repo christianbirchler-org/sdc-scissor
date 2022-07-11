@@ -32,8 +32,9 @@ The possible parameters are always documented with `--help`.
 
 ## Community
 We want to set up a community of researchers, developers, and users of SDCs. To enhance the research on these topics, we
-set up a Slack and a Discord server as communication channels to discuss everything related on SDCs and SDC-Scissor. To
-join the groups just click on the following invitation links:
+use the platform on [GitHub Discussions](https://github.com/ChristianBirchler/sdc-scissor/discussions) as the main
+communication channel to discuss everything related on SDCs and SDC-Scissor. Feel free to join the discussions if you
+want to discuss new potential features that can be implemented or research ideas. Everyone is welcome!
 
-* [https://join.slack.com/t/sdc-scissor/shared_invite/zt-1aikrj1uu-Dz0a9BE1AQ4GQp4A3Bm5og](https://join.slack.com/t/sdc-scissor/shared_invite/zt-1aikrj1uu-Dz0a9BE1AQ4GQp4A3Bm5og)
-* [https://discord.gg/AaYnBS6s7E](https://discord.gg/AaYnBS6s7E)
+For more detailed information about contributing to SDC-Scissor, please refer to
+[CONTRIBUTING.md](../../CONTRIBUTING.md).
