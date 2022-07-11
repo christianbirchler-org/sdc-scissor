@@ -107,6 +107,7 @@ class ModelEvaluator:
         for key, clf in self.__classifiers.items():
             cv = StratifiedKFold(shuffle=True)
             cv_results[key] = cross_validate(clf, X, y, cv=cv, scoring=("accuracy", "f1", "recall", "precision"))
+            clf.fit(X, y)
 
         mean_cv_results = {}
         for key, value in cv_results.items():

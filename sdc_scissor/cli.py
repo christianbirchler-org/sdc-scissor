@@ -1,6 +1,7 @@
 import logging
 import sys
 import click
+import joblib
 import yaml
 
 from pathlib import Path
@@ -166,17 +167,17 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 @click.option(
     "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True)
 )
-@click.option("--train-ratio", default=0.7, help="Ratio used for training the models", type=click.FLOAT)
-def evaluate_cost_effectiveness(csv: Path, train_ratio: float) -> None:
+@click.option("-c", "--classifier", default=_TRAINED_MODELS / "decision_tree.joblib", type=click.Path(exists=True))
+def evaluate_cost_effectiveness(csv: Path, classifier: Path) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
     """
     logging.info("evaluate_cost_effectiveness")
-    dd = CSVLoader.load_dataframe_from_csv(csv)
-
-    df = dd.sample(frac=1).reset_index(drop=True)
-
-    cost_effectiveness_evaluator = CostEffectivenessEvaluator(data_frame=df, label="safety", time_attribute="duration")
+    df = CSVLoader.load_dataframe_from_csv(csv)
+    clf = joblib.load(classifier)
+    cost_effectiveness_evaluator = CostEffectivenessEvaluator(
+        classifier=clf, data_frame=df, label="safety", time_attribute="duration"
+    )
     cost_effectiveness_evaluator.evaluate()
 
 

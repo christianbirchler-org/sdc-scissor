@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate, train_test_split
+from sklearn.model_selection import KFold, cross_validate, train_test_split, StratifiedKFold
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -12,14 +12,34 @@ from sklearn.svm import LinearSVC
 from sklearn import preprocessing
 
 
+def _cost_effectiveness_scorer(estimator, X, y):
+    estimator.fit(X, y)
+    y_pred = estimator.predict(X)
+    nr_safe_predicted = np.sum(y_pred)
+    nr_unsafe_predicted = len(y_pred) - nr_safe_predicted
+
+    rand_sim_times = []
+    random_unsafe_predicted = np.random.permutation(
+        np.append(np.ones(nr_unsafe_predicted, dtype="int32"), np.zeros(nr_safe_predicted), dtype="int32")
+    )
+    rand_sim_times.append(np.sum(X[random_unsafe_predicted]))
+
+    random_tot_sim_time = np.mean(rand_sim_times)
+
+    sdc_scissor_tot_sim_time = np.sum(X[y_pred])
+    pass
+
+
 class CostEffectivenessEvaluator:
-    def __init__(self, data_frame: pd.DataFrame, label: str, time_attribute: str):
+    def __init__(self, classifier, data_frame: pd.DataFrame, label: str, time_attribute: str):
         """
 
+        :param classifier:
         :param data_frame:
         :param label:
         :param time_attribute:
         """
+        self.classifier = classifier
         self.data_frame = data_frame
         self.label = label
         self.time_attribute = time_attribute
@@ -46,64 +66,40 @@ class CostEffectivenessEvaluator:
 
     def evaluate(self):
         """ """
-        logging.info("evaluate")
-        X_attributes = self.X_model_attributes + [self.time_attribute]
+        attributes_to_use = self.X_model_attributes.copy()
+        attributes_to_use.append(self.label)
+        logging.info("Use attributes: {}".format(attributes_to_use))
+        dd = self.data_frame[attributes_to_use]
 
-        # train models CV
-        X = self.data_frame[X_attributes].to_numpy()
-        # print(X)
-        # print(X[:, -1])
-        # TODO: provide preprocessing options to the user???
+        logging.info("rows: {}".format(dd.shape[0]))
+
+        X = dd[attributes_to_use[:-1]].to_numpy()
         X = preprocessing.normalize(X)
         X = preprocessing.scale(X)
-        y = self.data_frame[self.label].to_numpy()
-        y[y == "FAIL"] = 1
-        y[y == "PASS"] = 0
-        y = np.array(y, dtype="int32")
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7)
+        logging.debug(self.data_frame)
+        sim_times = self.data_frame[self.time_attribute].to_numpy()
+        logging.debug("sim_times: {}".format(sim_times))
 
-        X_test_time = X_test[:, -1]
+        y_pred_safe = self.classifier.predict(X)
+        logging.debug("y_pred_safe: {}".format(y_pred_safe))
+        nr_safe_predicted = np.sum(y_pred_safe)
 
-        X_train = X_train[:, :-1]
-        X_test = X_test[:, :-1]
+        nr_unsafe_predicted = np.sum((y_pred_safe == 0))
 
-        classifiers = {}
+        random_unsafe_predicted = np.random.permutation(
+            np.append(np.ones(nr_unsafe_predicted, dtype="int32"), np.zeros(nr_safe_predicted, dtype="int32"))
+        )
 
-        classifiers = {
-            "random_forest": RandomForestClassifier(),
-            "gradient_boosting": GradientBoostingClassifier(),
-            "SVM": LinearSVC(),
-            "gaussian_naive_bayes": GaussianNB(),
-            "logistic_regression": LogisticRegression(max_iter=10000),
-            "decision_tree": DecisionTreeClassifier(),
-        }
+        random_baseline_times = sim_times[random_unsafe_predicted]
+        sdc_scissor_times = np.sum(sim_times[y_pred_safe == 0])
+        logging.debug("baseline times: {}".format(random_baseline_times))
+        logging.debug("SDC-Scissor times: {}".format(sdc_scissor_times))
 
-        for name, estimator in classifiers.items():
-            estimator.fit(X_train, y_train)
-            y_pred = estimator.predict(X_test)
-            nr_unsafe_predicted = np.sum(y_pred)
+        tot_random = np.sum(random_baseline_times)
+        tot_sdc_scissor = np.sum(sdc_scissor_times)
 
-            rand_sim_times = []
-            nr_trials = 10
-            for i in range(nr_trials):
-                random_unsafe_predicted = np.random.permutation(
-                    np.append(
-                        np.ones(nr_unsafe_predicted, dtype="int32"),
-                        np.zeros(len(y_pred - nr_unsafe_predicted), dtype="int32"),
-                    )
-                )
-                rand_sim_times.append(np.sum(X_test_time[random_unsafe_predicted]))
-
-            random_tot_sim_time = np.mean(rand_sim_times)
-
-            sdc_scissor_tot_sim_time = np.sum(X_test_time[y_pred])
-            print("SDC-SCISSOR")
-            print("{}:\tnr_tests: {}\ttot_sim_time {}".format(name, nr_unsafe_predicted, sdc_scissor_tot_sim_time))
-            print("RANDOM BASELINE:")
-            print("nr_tests: {}\ttot_sim_time {}".format(nr_unsafe_predicted, random_tot_sim_time))
-            print("random_baseline_time/sdc_scissor_time = {}".format(random_tot_sim_time / sdc_scissor_tot_sim_time))
-            print("sdc_scissor_time/random_baseline_time = {}\n".format(sdc_scissor_tot_sim_time / random_tot_sim_time))
+        print("SDC-Scissor cost-effectiveness: {}".format(tot_sdc_scissor / tot_random))
 
 
 if __name__ == "__main__":
