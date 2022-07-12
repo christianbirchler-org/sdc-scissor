@@ -92,7 +92,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
         test, _ = test_loader.next()
         road_features = feature_extractor.extract_features(test)
         road_features.safety = test.test_outcome
-        road_features_lst.append((test.test_id, road_features, test.test_duration))
+        road_features_lst.append((test.test_id, road_features))
 
     FeatureExtractor.save_to_csv(road_features_lst, tests)
 

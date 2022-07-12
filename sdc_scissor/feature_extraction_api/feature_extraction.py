@@ -33,8 +33,6 @@ class RoadFeatures:
         self.std_pivot_off = 0
         self.max_pivot_off = 0
         self.min_pivot_off = 0
-        self.start_time = 0
-        self.end_time = 0
         self.test_duration = 0
         self.mean_road_diversity = 0
         self.full_road_diversity = 0
@@ -92,10 +90,9 @@ class FeatureExtractor:
         """
         logging.info("save_to_csv")
         dd = pd.DataFrame()
-        for test_id, rf, duration in road_features:
+        for test_id, rf in road_features:
             rf_dict = rf.to_dict()
             rf_dict["test_id"] = test_id
-            rf_dict["duration"] = duration
             logging.info(rf_dict)
             rf_dd = pd.DataFrame(rf_dict)
             logging.info(rf_dd)
