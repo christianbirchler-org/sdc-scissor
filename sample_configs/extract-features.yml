@@ -1,0 +1,4 @@
+command: 'extract-features'
+options:
+  tests: 'sample_tests'
+  segmentation: 'angle-based'
