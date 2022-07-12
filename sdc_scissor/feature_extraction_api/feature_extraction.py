@@ -262,7 +262,6 @@ class FeatureExtractor:
         start_index, end_index = road_segment.start_index, road_segment.end_index
         segment_road_points = road_points[start_index : end_index + 1]
         start_point, end_point = Point(segment_road_points[0][:2]), Point(segment_road_points[-1][:2])
-        direct_segment_line: LineString = LineString([start_point, end_point])
 
         polygon_points: list[Point] = [Point(rp[0], rp[1]) for rp in segment_road_points]
         polygon_points.extend([end_point, start_point])
