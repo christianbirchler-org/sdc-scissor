@@ -1,12 +1,23 @@
 import math
-
+import pytest
+import shutil
 from parameterized import parameterized
 from pytest import approx
+from pathlib import Path
 
 from sdc_scissor.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
-from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
+from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor, RoadFeatures
 from sdc_scissor.testing_api.test import Test
+
+
+@pytest.fixture
+def tmp_dir():
+    file_dir_str = 'tmp-dir'
+    file_dir = Path(file_dir_str)
+    file_dir.mkdir(parents=True)
+    yield file_dir
+    shutil.rmtree(file_dir)
 
 
 class TestFeatureExtraction:
@@ -274,3 +285,9 @@ class TestFeatureExtraction:
         expected = 0
         actual = road_features.full_road_diversity
         assert actual != expected
+
+    def test_save_to_csv(self, tmp_dir):
+        road_features = RoadFeatures()
+        id_string = 'id'
+        file_dir = tmp_dir
+        FeatureExtractor.save_to_csv(road_features=[(id_string, road_features)], out_dir=file_dir)
