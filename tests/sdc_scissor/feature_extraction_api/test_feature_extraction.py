@@ -13,7 +13,7 @@ from sdc_scissor.testing_api.test import Test
 
 @pytest.fixture
 def tmp_dir():
-    file_dir_str = 'tmp-dir'
+    file_dir_str = "tmp-dir"
     file_dir = Path(file_dir_str)
     file_dir.mkdir(parents=True)
     yield file_dir
@@ -288,6 +288,6 @@ class TestFeatureExtraction:
 
     def test_save_to_csv(self, tmp_dir):
         road_features = RoadFeatures()
-        id_string = 'id'
+        id_string = "id"
         file_dir = tmp_dir
         FeatureExtractor.save_to_csv(road_features=[(id_string, road_features)], out_dir=file_dir)
