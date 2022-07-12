@@ -92,7 +92,3 @@ class RoadGeometryCalculator:
             road_length += math.sqrt(c1**2 + c2**2)
 
         return road_length
-
-
-if __name__ == "__main__":
-    logging.info("road_geometry_calculator.py")

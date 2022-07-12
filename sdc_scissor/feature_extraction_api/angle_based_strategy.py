@@ -98,7 +98,3 @@ class AngleBasedStrategy(SegmentationStrategy):
         if current_angle <= previous_angle + angle_threshold and current_angle >= previous_angle - angle_threshold:
             return False
         return True
-
-
-if __name__ == "__main__":
-    logging.info("angle_based_strategy.py")
