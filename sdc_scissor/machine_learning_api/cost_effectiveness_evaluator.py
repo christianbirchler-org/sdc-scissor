@@ -99,7 +99,7 @@ class CostEffectivenessEvaluator:
         tot_random = np.sum(random_baseline_times)
         tot_sdc_scissor = np.sum(sdc_scissor_times)
 
-        print("SDC-Scissor cost-effectiveness: {}".format(tot_sdc_scissor / tot_random))
+        print("SDC-Scissor cost-effectiveness (Time of SDC-Scissor/Time of Baseline): {}".format(tot_sdc_scissor / tot_random))
 
 
 if __name__ == "__main__":
