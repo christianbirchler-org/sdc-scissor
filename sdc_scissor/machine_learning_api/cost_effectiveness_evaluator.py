@@ -65,7 +65,9 @@ class CostEffectivenessEvaluator:
         ]
 
     def evaluate(self):
-        """ """
+        """
+        Evaluate the cost-effectiveness of SDC-Scissor.
+        """
         attributes_to_use = self.X_model_attributes.copy()
         attributes_to_use.append(self.label)
         logging.info("Use attributes: {}".format(attributes_to_use))
@@ -79,6 +81,8 @@ class CostEffectivenessEvaluator:
 
         logging.debug(self.data_frame)
         sim_times = self.data_frame[self.time_attribute].to_numpy()
+        if np.isnan(sim_times.min()) and np.isnan(sim_times.max()):
+            raise Exception('Not all tests have a simulation time entry!')
         logging.debug("sim_times: {}".format(sim_times))
 
         y_pred_safe = self.classifier.predict(X)
@@ -99,11 +103,8 @@ class CostEffectivenessEvaluator:
         tot_random = np.sum(random_baseline_times)
         tot_sdc_scissor = np.sum(sdc_scissor_times)
 
-        print(
-            "SDC-Scissor cost-effectiveness (Time of SDC-Scissor/Time of Baseline): {}".format(
-                tot_sdc_scissor / tot_random
-            )
-        )
+        cost_effectiveness = tot_sdc_scissor / tot_random
+        return cost_effectiveness
 
 
 if __name__ == "__main__":
