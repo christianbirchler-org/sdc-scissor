@@ -192,7 +192,7 @@ def evaluate_cost_effectiveness(csv: Path, classifier: Path) -> None:
         classifier=clf, data_frame=df, label="safety", time_attribute="duration"
     )
     cost_effectiveness = cost_effectiveness_evaluator.evaluate()
-    print('Cost-effectiveness: {}'.format(cost_effectiveness))
+    print("Cost-effectiveness: {}".format(cost_effectiveness))
 
 
 @cli.command()

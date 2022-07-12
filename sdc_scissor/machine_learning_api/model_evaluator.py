@@ -15,8 +15,6 @@ from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
 
 
-
-
 class ModelEvaluator:
     def __init__(
         self,
@@ -107,7 +105,6 @@ class ModelEvaluator:
                 mean_cv_results[key][score] = np.mean(values)
 
         return mean_cv_results
-
 
     def save_models(self, out_dir: Path):
         """

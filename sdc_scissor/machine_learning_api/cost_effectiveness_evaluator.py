@@ -82,7 +82,7 @@ class CostEffectivenessEvaluator:
         logging.debug(self.data_frame)
         sim_times = self.data_frame[self.time_attribute].to_numpy()
         if np.isnan(sim_times.min()) and np.isnan(sim_times.max()):
-            raise Exception('Not all tests have a simulation time entry!')
+            raise Exception("Not all tests have a simulation time entry!")
         logging.debug("sim_times: {}".format(sim_times))
 
         y_pred_safe = self.classifier.predict(X)

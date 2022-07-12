@@ -43,18 +43,14 @@ class TestCostEffectivenessEvaluator:
     def test_evaluator_if_no_time_data_is_provided_should_raise_exception(self, mocker):
         mock_clf = mocker.patch("sklearn.base.ClassifierMixin")
         df = pd.DataFrame(self.data_dict)
-        cev = CostEffectivenessEvaluator(
-            classifier=mock_clf, data_frame=df, label="safety", time_attribute="duration"
-        )
+        cev = CostEffectivenessEvaluator(classifier=mock_clf, data_frame=df, label="safety", time_attribute="duration")
         with pytest.raises(Exception):
             actual = cev.evaluate()
 
     def test_evaluator_if_time_data_is_provided_should_not_raise_exception(self, mocker):
         mock_clf = mocker.patch("sklearn.base.ClassifierMixin")
         data_dict = self.data_dict.copy()
-        data_dict['duration'] = [130, 137, 135, 204]
+        data_dict["duration"] = [130, 137, 135, 204]
         df = pd.DataFrame(data_dict)
-        cev = CostEffectivenessEvaluator(
-            classifier=mock_clf, data_frame=df, label="safety", time_attribute="duration"
-        )
+        cev = CostEffectivenessEvaluator(classifier=mock_clf, data_frame=df, label="safety", time_attribute="duration")
         actual = cev.evaluate()
