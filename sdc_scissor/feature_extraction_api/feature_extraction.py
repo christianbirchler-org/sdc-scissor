@@ -79,8 +79,6 @@ class FeatureExtractor:
 
         :param segmentation_strategy: A road segmentation strategy
         """
-        self.__road_features = RoadFeatures()
-        self.__segments = []
         self.__road_geometry_calculator = RoadGeometryCalculator()
         self.__segmentation_strategy = segmentation_strategy
 
@@ -116,13 +114,14 @@ class FeatureExtractor:
         :param test: A test object
         :return: A road feature object
         """
+        segments: list = []
         segment_indexes_list = self.__segmentation_strategy.extract_segments(test.road_points)
         for indexes in segment_indexes_list:
             segment: RoadSegment = self.__get_road_segment_with_features(test, indexes)
-            self.__segments.append(segment)
+            segments.append(segment)
 
-        self.__road_features = self.__get_full_road_features_from(test, self.__segments)
-        return self.__road_features
+        road_features: RoadFeatures = self.__get_full_road_features_from(test, segments)
+        return road_features
 
     def __get_full_road_features_from(self, test: Test, segments: list[RoadSegment]):
         """
