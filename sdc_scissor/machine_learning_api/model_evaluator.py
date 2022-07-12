@@ -15,15 +15,6 @@ from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
 
 
-def _print_mean_cv_results(mean_cv_results):
-    nr_hyphens = 88
-    print(nr_hyphens * "-")
-    for key, value in mean_cv_results.items():
-        output = "{:^22}| tacc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |".format(
-            key, value["test_accuracy"], value["test_precision"], value["test_recall"], value["test_f1"]
-        )
-        print(output)
-        print(nr_hyphens * "-")
 
 
 class ModelEvaluator:
@@ -115,7 +106,8 @@ class ModelEvaluator:
             for score, values in value.items():
                 mean_cv_results[key][score] = np.mean(values)
 
-        _print_mean_cv_results(mean_cv_results)
+        return mean_cv_results
+
 
     def save_models(self, out_dir: Path):
         """

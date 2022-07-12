@@ -23,6 +23,17 @@ _DESTINATION = _ROOT_DIR / "destination"
 _TRAINED_MODELS = _ROOT_DIR / "trained_models"
 
 
+def _print_mean_cv_results(mean_cv_results):
+    nr_hyphens = 88
+    print(nr_hyphens * "-")
+    for key, value in mean_cv_results.items():
+        output = "{:^22}| tacc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |".format(
+            key, value["test_accuracy"], value["test_precision"], value["test_recall"], value["test_f1"]
+        )
+        print(output)
+        print(nr_hyphens * "-")
+
+
 @click.group(invoke_without_command=True)
 @click.pass_context
 @click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file")
@@ -159,8 +170,10 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
     dd = CSVLoader.load_dataframe_from_csv(csv)
 
     model_evaluator = ModelEvaluator(data_frame=dd, label="safety")
-    model_evaluator.evaluate()
+    mean_cv_results = model_evaluator.evaluate()
     model_evaluator.save_models(out_dir=models_dir)
+
+    _print_mean_cv_results(mean_cv_results)
 
 
 @cli.command()
