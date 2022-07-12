@@ -63,7 +63,3 @@ class AbstractSimulator(abc.ABC):
     def get_car_position(self):
         """ """
         pass
-
-
-if __name__ == "__main__":
-    logging.info("* abstract_simulator.py")
