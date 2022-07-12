@@ -164,6 +164,7 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
     logging.info("evaluate_models")
 
+    models_dir = Path(models_dir)
     if not models_dir.exists():
         models_dir.mkdir()
 
