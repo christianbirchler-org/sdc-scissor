@@ -15,7 +15,7 @@ class BeamNGSimulator(AbstractSimulator):
     This class implements the interface for the specific BeamNG.tech simulator.
     """
 
-    def __init__(self, host: str, port: int, home: str, user: str, rf: float, max_speed: float, fov: int):
+    def __init__(self, beamng: BeamNGpy, rf: float, max_speed: float, fov: int):
         """
         API for enabling inter-process communication with the BeamNG simulator.
 
@@ -28,11 +28,7 @@ class BeamNGSimulator(AbstractSimulator):
         :param fov: The field of view  for a Camera e.g., 120
         """
         super().__init__()
-        self.host = host
-        self.port = port
-        self.home = home
-        self.user = user
-        self.beamng = BeamNGpy(host, port, home=home, user=user)
+        self.beamng = beamng
         self.vehicle = None
         self.car_state = None
         self.scenario = None
