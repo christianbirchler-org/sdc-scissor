@@ -61,29 +61,3 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
                 start = i  # set start index for the next segment
 
         return segment_indexes
-
-
-if __name__ == "__main__":
-    import unittest
-
-    class ParameterizedUniformStrategyTest(unittest.TestCase):
-        def test_straight_only(self):
-            strategy = ParameterizedUniformStrategy("2", 0.05)
-
-            road_points = [(x, 0) for x in range(1000)]
-
-            segments = strategy.extract_segments(road_points)
-
-            expected_segments = [(x * 10, x * 10 + 10) for x in range(99)]
-            expected_segments.append((990, 999))
-            self.assertEqual(segments, expected_segments, "Segment indexes are wrong.")
-
-        def test_road_is_too_short(self):
-            strategy = ParameterizedUniformStrategy("2", 0.0005)
-
-            road_points = [(x, 0) for x in range(1000)]
-
-            with self.assertRaises(Exception):
-                strategy.extract_segments(road_points)
-
-    unittest.main()
