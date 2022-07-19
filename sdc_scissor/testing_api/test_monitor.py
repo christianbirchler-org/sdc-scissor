@@ -167,7 +167,3 @@ class TestMonitor:
         """
         dist = distance.euclidean(a, b)
         return dist < threshold
-
-
-if __name__ == "__main__":
-    logging.info("test_monitor.py")
