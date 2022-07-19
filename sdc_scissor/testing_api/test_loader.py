@@ -26,7 +26,7 @@ class TestLoader:
         logging.debug("* _test_loader_gen")
         pattern: str = r".*test.*.json"
         for root, dirs, files in os.walk(self.tests_dir):
-            if "unlabeled" in root:
+            if "unlabeled" in str(root):
                 continue
             for file in files:
                 if re.fullmatch(pattern, file):
@@ -75,7 +75,3 @@ class TestLoader:
         logging.info("test_id: {}".format(test_id))
         test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
         return test
-
-
-if __name__ == "__main__":
-    logging.info("* test_loader.py")
