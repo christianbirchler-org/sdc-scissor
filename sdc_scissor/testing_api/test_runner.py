@@ -1,6 +1,8 @@
 import time
 import logging
 
+from beamngpy import Scenario
+
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
@@ -102,7 +104,8 @@ class TestRunner:
         obstacles = _define_obstacles(
             road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist, self.tree_dist
         )
-        self.simulator.load_scenario(test, obstacles=obstacles)
+        scenario = Scenario('tig', 'example')
+        self.simulator.load_scenario(test, scenario, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)

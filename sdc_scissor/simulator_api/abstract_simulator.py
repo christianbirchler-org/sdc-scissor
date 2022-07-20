@@ -43,11 +43,12 @@ class AbstractSimulator(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def load_scenario(self, test, obstacles: list):
+    def load_scenario(self, test, scenario, obstacles: list):
         """
         Prepare the simulator for a specific test scenario.
 
         :param test: An object defining the test scenario, i.e. vehicle setup, road, etc.
+        :param scenario: Scenario object.
         :param obstacles: A list with obstacles to place in the virtual environment.
         """
         pass

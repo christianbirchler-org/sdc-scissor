@@ -85,14 +85,15 @@ class BeamNGSimulator(AbstractSimulator):
         """
         return kmh / 3.6
 
-    def load_scenario(self, test: Test, obstacles: list):
+    def load_scenario(self, test: Test, scenario: Scenario, obstacles: list):
         """
 
         :param test:
+        :param scenario:
         :param obstacles:
         """
         logging.info("load_scenario")
-        self.scenario = Scenario("tig", "example")
+        self.scenario = scenario
         road = Road(material="tig_road_rubber_sticky", rid="flat_road", interpolate=True)
 
         # Ensure not overriding the test object (copy first the whole list)
