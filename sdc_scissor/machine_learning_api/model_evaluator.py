@@ -81,8 +81,8 @@ class ModelEvaluator:
         X = preprocessing.scale(X)
 
         y = dd[attributes_to_use[-1]].to_numpy()
-        y[y == "FAIL"] = 0
-        y[y == "PASS"] = 1
+        y[y == "FAIL"] = 1
+        y[y == "PASS"] = 0
         y = np.array(y, dtype="int32")
 
         self.__classifiers["random_forest"] = RandomForestClassifier()
