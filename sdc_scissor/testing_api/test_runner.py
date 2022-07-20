@@ -104,7 +104,7 @@ class TestRunner:
         obstacles = _define_obstacles(
             road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist, self.tree_dist
         )
-        scenario = Scenario('tig', 'example')
+        scenario = Scenario("tig", "example")
         self.simulator.load_scenario(test, scenario, obstacles=obstacles)
 
         # ensure connectivity by blocking the python process for some seconds
