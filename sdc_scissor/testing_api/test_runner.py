@@ -118,7 +118,3 @@ class TestRunner:
         test_monitor.stop_timer()
         test_monitor.dump_data()
         self.simulator.stop_scenario()
-
-
-if __name__ == "__main__":
-    logging.info("* test_runner.py")
