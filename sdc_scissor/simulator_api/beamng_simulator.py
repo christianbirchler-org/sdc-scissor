@@ -172,7 +172,3 @@ class BeamNGSimulator(AbstractSimulator):
         start_position = (start_point.x, start_point.y)
 
         return (start_position[0], start_position[1], first_road_point[2], x_dir, y_dir, alpha)
-
-
-if __name__ == "__main__":
-    logging.info("beamng_simulator.py")
