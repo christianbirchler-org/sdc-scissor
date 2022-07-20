@@ -29,6 +29,10 @@ class BeamNGSimulator(AbstractSimulator):
         """
         super().__init__()
         self.beamng = beamng
+        self.home = beamng.home
+        self.user = beamng.user
+        self.port = beamng.port
+        self.host = beamng.host
         self.vehicle = None
         self.car_state = None
         self.scenario = None
