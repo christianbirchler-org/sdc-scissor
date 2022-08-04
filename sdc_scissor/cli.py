@@ -2,6 +2,8 @@ import logging
 import sys
 import click
 import joblib
+import numpy as np
+import pandas as pd
 import yaml
 
 from pathlib import Path
@@ -95,6 +97,16 @@ def extract_features(tests: Path, segmentation: str) -> None:
         road_features_lst.append((test.test_id, road_features))
 
     FeatureExtractor.save_to_csv(road_features_lst, tests)
+
+
+@cli.command()
+@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
+def feature_statistics(csv) -> None:
+    dd = CSVLoader.load_dataframe_from_csv(csv)
+    nr_pass = np.sum(dd['safety'] == 'PASS')
+    nr_fails = np.sum(dd['safety'] == 'FAIL')
+    nr_tests = nr_pass + nr_fails
+    print('nr_tests: {}, nr_pass: {}, nr_fails: {}'.format(nr_tests, nr_pass, nr_fails))
 
 
 @cli.command()
