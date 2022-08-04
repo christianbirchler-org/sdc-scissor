@@ -27,7 +27,7 @@ def _print_mean_cv_results(mean_cv_results):
     nr_hyphens = 88
     print(nr_hyphens * "-")
     for key, value in mean_cv_results.items():
-        output = "{:^22}| tacc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |".format(
+        output = "{:^22}| acc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |".format(
             key, value["test_accuracy"], value["test_precision"], value["test_recall"], value["test_f1"]
         )
         print(output)
