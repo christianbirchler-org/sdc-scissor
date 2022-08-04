@@ -46,7 +46,7 @@ can ask questions and get support there from the community. Furthermore, new fea
 announced there.
 
 ## Documentation
-For the documentation follow the link: https://sdc-scissor.readthedocs.io/en/latest/
+For the documentation follow the link: [sdc-scissor.readthedocs.io](https://sdc-scissor.readthedocs.io/en/latest/)
 
 [![](https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/images/readthedocs.png)](https://sdc-scissor.readthedocs.io/en/latest/)
 
