@@ -31,7 +31,11 @@ class TestLoader:
             for file in files:
                 if re.fullmatch(pattern, file):
                     full_path = Path(root) / file
-                    tests_paths.append(full_path)
+                    with open(full_path) as fp:
+                        test_json: dict = json.load(fp)
+                        is_valid = test_json.get('is_valid', True)
+                    if is_valid:
+                        tests_paths.append(full_path)
 
     def has_next(self) -> bool:
         """
@@ -65,6 +69,8 @@ class TestLoader:
             test_json: dict = json.load(fp)
 
         road_points = test_json.get("interpolated_road_points", None)
+        if not road_points:
+            road_points = test_json.get('interpolated_points', None)
         test_outcome = test_json.get("test_outcome", None)
         sim_time = test_json.get("test_duration", None)
 
