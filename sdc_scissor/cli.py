@@ -8,6 +8,11 @@ import yaml
 
 from pathlib import Path
 
+from sklearn.svm import LinearSVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_generator import TestGenerator
@@ -188,6 +193,54 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
     model_evaluator.save_models(out_dir=models_dir)
 
     _print_metrics(metrics)
+
+
+@cli.command()
+@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
+@click.option("--clf", type=click.STRING)
+def grid_search(csv: Path, clf: str) -> None:
+    dd = CSVLoader.load_dataframe_from_csv(csv)
+
+    model_evaluator = ModelEvaluator(data_frame=dd, label="safety")
+
+    classifier = None
+    parameters = {}
+    if clf == 'svc':
+        classifier = LinearSVC(max_iter=10000)
+        parameters['penalty'] = ['l1', 'l2']
+        parameters['loss'] = ['hinge', 'squared_hinge']
+        parameters['dual'] = [True, False]
+    elif clf == 'tree':
+        classifier = DecisionTreeClassifier()
+        parameters['criterion'] = ['gini', 'entropy', 'log_loss']
+        parameters['splitter'] = ['best', 'random']
+        parameters['min_samples_leaf'] = [1, 10, 20, 50, 100]
+    elif clf == 'boosting':
+        classifier = GradientBoostingClassifier()
+        parameters['loss'] = ['log_loss', 'deviance', 'exponential']
+        parameters['learning_rate'] = [0.01, 0.1, 0.2, 0.4]
+        parameters['n_estimators'] = [10, 100, 1000]
+        parameters['criterion'] = ['friedman_mse', 'squared_error', 'mse']
+    elif clf == 'rf':
+        classifier = RandomForestClassifier()
+        parameters['n_estimators'] = [5, 10, 100, 1000, 2000]
+        parameters['max_features'] = [1, 10, 100, 500, 1000]
+        parameters['max_depth'] = [1, 5, 10, 20]
+        parameters['min_samples_leaf'] = [1, 10, 20, 50, 100]
+    elif clf == 'bayes':
+        classifier = GaussianNB()
+    elif clf == 'logistic':
+        classifier = LogisticRegression()
+        parameters['penalty'] = ['l1', 'l2', 'elasticnet', 'none']
+        parameters['dual'] = [True, False]
+        parameters['max_iter'] = [10, 100, 1000]
+        parameters['solver'] = ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
+    else:
+        raise Exception('Invalid input for clf!')
+
+    results = model_evaluator.grid_search(classifier, parameters)
+    for res in results:
+        print(res)
 
 
 @cli.command()

@@ -3,17 +3,19 @@ import joblib
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from pathlib import Path
 from sklearn import metrics
+from sklearn.utils.estimator_checks import check_estimator
 from sklearn import preprocessing
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate, train_test_split, StratifiedKFold
+from sklearn.model_selection import KFold, cross_validate, train_test_split, StratifiedKFold, GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import LinearSVC
-from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
+from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 
 class ModelEvaluator:
@@ -104,8 +106,52 @@ class ModelEvaluator:
 
         return mean_cv_results
 
-    def grid_search(self):
-        pass
+    def grid_search(self, estimator, parameters):
+        check_estimator(estimator)
+        clf = GridSearchCV(estimator, parameters, scoring='f1')
+
+        dd = self.data_frame.sample(frac=1).reset_index(drop=True)
+
+        attributes_to_use = self.road_features.copy()
+        attributes_to_use.append(self.label)
+        logging.info("Use attributes: {}".format(attributes_to_use))
+        dd = dd[attributes_to_use]
+        dd = dd.dropna()
+        dd = dd.reset_index(drop=True)
+
+        le = preprocessing.LabelEncoder()
+        le.fit(dd[self.label])
+
+        x = dd[self.road_features]
+        y = dd[self.label]
+        y = le.transform(y)
+
+        clf.fit(x, y)
+        best_estimator = clf.best_estimator_
+
+        skf = StratifiedKFold(n_splits=10)
+
+        y_pred_total = []
+        y_true_total = []
+
+        for train_index, test_index in skf.split(x, y):
+            x_train = x.iloc[train_index, :]
+            x_test = x.iloc[test_index, :]
+            y_train = y[train_index]
+            y_test = y[test_index]
+            y_test = le.inverse_transform(y_test)
+            y_true_total.extend(y_test)
+            best_estimator.fit(x_train, y_train)
+            y_pred = best_estimator.predict(x_test)
+            y_pred = le.inverse_transform(y_pred)
+            y_pred_total.extend(y_pred)
+
+        report = classification_report(y_true_total, y_pred_total)
+        conf_matrix = confusion_matrix(y_true_total, y_pred_total)
+        disp = ConfusionMatrixDisplay.from_predictions(y_true_total, y_pred_total)
+        #disp.plot()
+        plt.show()
+        return report, conf_matrix, clf.best_params_
 
     def model_evaluation_with_balanced_training(self):
         frac = 0.8
