@@ -258,7 +258,7 @@ def evaluate_cost_effectiveness(csv: Path, classifier: Path) -> None:
     cost_effectiveness_evaluator = CostEffectivenessEvaluator(
         classifier=clf, data_frame=df, label="safety", time_attribute="duration"
     )
-    cost_effectiveness = cost_effectiveness_evaluator.evaluate()
+    cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_random_baseline()
     print("Cost-effectiveness: {}".format(cost_effectiveness))
 
 

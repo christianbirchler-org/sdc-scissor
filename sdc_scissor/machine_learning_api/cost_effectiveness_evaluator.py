@@ -64,7 +64,7 @@ class CostEffectivenessEvaluator:
             "total_angle",
         ]
 
-    def evaluate(self):
+    def evaluate_with_random_baseline(self):
         """
         Evaluate the cost-effectiveness of SDC-Scissor.
         """
