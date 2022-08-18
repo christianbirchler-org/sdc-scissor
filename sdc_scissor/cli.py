@@ -188,7 +188,7 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
     dd = CSVLoader.load_dataframe_from_csv(csv)
 
     model_evaluator = ModelEvaluator(data_frame=dd, label="safety")
-    #metrics = model_evaluator.model_evaluation_with_balanced_training()
+    # metrics = model_evaluator.model_evaluation_with_balanced_training()
     metrics = model_evaluator.cv_stratified()
     model_evaluator.save_models(out_dir=models_dir)
 
@@ -231,10 +231,10 @@ def grid_search(csv: Path, clf: str) -> None:
         classifier = GaussianNB()
     elif clf == "logistic":
         classifier = LogisticRegression()
-        parameters['penalty'] = ['l1', 'l2', 'elasticnet', 'none']
-        parameters['dual'] = [True, False]
-        parameters['max_iter'] = [10, 100, 1000]
-        parameters['solver'] = ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
+        parameters["penalty"] = ["l1", "l2", "elasticnet", "none"]
+        parameters["dual"] = [True, False]
+        parameters["max_iter"] = [10, 100, 1000]
+        parameters["solver"] = ["newton-cg", "lbfgs", "liblinear", "sag", "saga"]
     else:
         raise Exception("Invalid input for clf!")
 

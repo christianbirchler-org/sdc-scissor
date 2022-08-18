@@ -160,7 +160,7 @@ class ModelEvaluator:
         report = classification_report(y_true_total, y_pred_total)
         conf_matrix = confusion_matrix(y_true_total, y_pred_total)
         disp = ConfusionMatrixDisplay.from_predictions(y_true_total, y_pred_total)
-        #disp.plot()
+        # disp.plot()
         plt.show()
         return report, conf_matrix, clf.best_params_
 
