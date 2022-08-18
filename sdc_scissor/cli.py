@@ -108,10 +108,10 @@ def extract_features(tests: Path, segmentation: str) -> None:
 @click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
 def feature_statistics(csv) -> None:
     dd = CSVLoader.load_dataframe_from_csv(csv)
-    nr_pass = np.sum(dd['safety'] == 'PASS')
-    nr_fails = np.sum(dd['safety'] == 'FAIL')
+    nr_pass = np.sum(dd["safety"] == "PASS")
+    nr_fails = np.sum(dd["safety"] == "FAIL")
     nr_tests = nr_pass + nr_fails
-    print('nr_tests: {}, nr_pass: {}, nr_fails: {}'.format(nr_tests, nr_pass, nr_fails))
+    print("nr_tests: {}, nr_pass: {}, nr_fails: {}".format(nr_tests, nr_pass, nr_fails))
 
 
 @cli.command()
@@ -205,38 +205,38 @@ def grid_search(csv: Path, clf: str) -> None:
 
     classifier = None
     parameters = {}
-    if clf == 'svc':
+    if clf == "svc":
         classifier = LinearSVC(max_iter=10000)
-        parameters['penalty'] = ['l1', 'l2']
-        parameters['loss'] = ['hinge', 'squared_hinge']
-        parameters['dual'] = [True, False]
-    elif clf == 'tree':
+        parameters["penalty"] = ["l1", "l2"]
+        parameters["loss"] = ["hinge", "squared_hinge"]
+        parameters["dual"] = [True, False]
+    elif clf == "tree":
         classifier = DecisionTreeClassifier()
-        parameters['criterion'] = ['gini', 'entropy', 'log_loss']
-        parameters['splitter'] = ['best', 'random']
-        parameters['min_samples_leaf'] = [1, 10, 20, 50, 100]
-    elif clf == 'boosting':
+        parameters["criterion"] = ["gini", "entropy", "log_loss"]
+        parameters["splitter"] = ["best", "random"]
+        parameters["min_samples_leaf"] = [1, 10, 20, 50, 100]
+    elif clf == "boosting":
         classifier = GradientBoostingClassifier()
-        parameters['loss'] = ['log_loss', 'deviance', 'exponential']
-        parameters['learning_rate'] = [0.01, 0.1, 0.2, 0.4]
-        parameters['n_estimators'] = [10, 100, 1000]
-        parameters['criterion'] = ['friedman_mse', 'squared_error', 'mse']
-    elif clf == 'rf':
+        parameters["loss"] = ["log_loss", "deviance", "exponential"]
+        parameters["learning_rate"] = [0.01, 0.1, 0.2, 0.4]
+        parameters["n_estimators"] = [10, 100, 1000]
+        parameters["criterion"] = ["friedman_mse", "squared_error", "mse"]
+    elif clf == "rf":
         classifier = RandomForestClassifier()
-        parameters['n_estimators'] = [5, 10, 100, 1000, 2000]
-        parameters['max_features'] = [1, 10, 100, 500, 1000]
-        parameters['max_depth'] = [1, 5, 10, 20]
-        parameters['min_samples_leaf'] = [1, 10, 20, 50, 100]
-    elif clf == 'bayes':
+        parameters["n_estimators"] = [5, 10, 100, 1000, 2000]
+        parameters["max_features"] = [1, 10, 100, 500, 1000]
+        parameters["max_depth"] = [1, 5, 10, 20]
+        parameters["min_samples_leaf"] = [1, 10, 20, 50, 100]
+    elif clf == "bayes":
         classifier = GaussianNB()
-    elif clf == 'logistic':
+    elif clf == "logistic":
         classifier = LogisticRegression()
         parameters['penalty'] = ['l1', 'l2', 'elasticnet', 'none']
         parameters['dual'] = [True, False]
         parameters['max_iter'] = [10, 100, 1000]
         parameters['solver'] = ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
     else:
-        raise Exception('Invalid input for clf!')
+        raise Exception("Invalid input for clf!")
 
     results = model_evaluator.grid_search(classifier, parameters)
     for res in results:

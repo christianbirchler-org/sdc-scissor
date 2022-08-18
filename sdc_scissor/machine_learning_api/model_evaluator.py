@@ -15,7 +15,15 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import LinearSVC
-from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import (
+    accuracy_score,
+    recall_score,
+    f1_score,
+    precision_score,
+    classification_report,
+    confusion_matrix,
+    ConfusionMatrixDisplay,
+)
 
 
 class ModelEvaluator:
@@ -54,11 +62,14 @@ class ModelEvaluator:
         self.label = label
         self.road_features = list(features)
 
-        self.__classifiers = {"random_forest": RandomForestClassifier(),
-                              "gradient_boosting": GradientBoostingClassifier(), "SVM": LinearSVC(max_iter=100000),
-                              "gaussian_naive_bayes": GaussianNB(),
-                              "logistic_regression": LogisticRegression(max_iter=10000),
-                              "decision_tree": DecisionTreeClassifier()}
+        self.__classifiers = {
+            "random_forest": RandomForestClassifier(),
+            "gradient_boosting": GradientBoostingClassifier(),
+            "SVM": LinearSVC(max_iter=100000),
+            "gaussian_naive_bayes": GaussianNB(),
+            "logistic_regression": LogisticRegression(max_iter=10000),
+            "decision_tree": DecisionTreeClassifier(),
+        }
 
     def cv_stratified(self):
         """
@@ -108,7 +119,7 @@ class ModelEvaluator:
 
     def grid_search(self, estimator, parameters):
         check_estimator(estimator)
-        clf = GridSearchCV(estimator, parameters, scoring='f1')
+        clf = GridSearchCV(estimator, parameters, scoring="f1")
 
         dd = self.data_frame.sample(frac=1).reset_index(drop=True)
 
@@ -210,10 +221,10 @@ class ModelEvaluator:
             y_pred = model.predict(test_data[:, :-1])
             y_true = test_data[:, -1]
             results[model_name] = {}
-            results[model_name]['acc'] = metrics.accuracy_score(y_true, y_pred)
-            results[model_name]['prec'] = metrics.precision_score(y_true, y_pred)
-            results[model_name]['rec'] = metrics.recall_score(y_true, y_pred)
-            results[model_name]['f1'] = metrics.f1_score(y_true, y_pred)
+            results[model_name]["acc"] = metrics.accuracy_score(y_true, y_pred)
+            results[model_name]["prec"] = metrics.precision_score(y_true, y_pred)
+            results[model_name]["rec"] = metrics.recall_score(y_true, y_pred)
+            results[model_name]["f1"] = metrics.f1_score(y_true, y_pred)
 
         return results
 
