@@ -249,7 +249,8 @@ def grid_search(csv: Path, clf: str) -> None:
     "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True)
 )
 @click.option("--random", default=True)
-def evaluate_cost_effectiveness(csv: Path, random) -> None:
+@click.option("-k", "--top-k", default=10)
+def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
     """
@@ -272,9 +273,9 @@ def evaluate_cost_effectiveness(csv: Path, random) -> None:
             classifier=estimator, data_frame=df, label="safety", time_attribute="test_duration"
         )
         if random:
-            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_random_baseline()
+            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
         else:
-            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_longest_roads()
+            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_longest_roads(top_k=top_k)
 
         print("{}: {}".format(model_name, cost_effectiveness))
 
