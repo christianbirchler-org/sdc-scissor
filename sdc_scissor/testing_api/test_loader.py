@@ -73,6 +73,8 @@ class TestLoader:
             road_points = test_json.get("interpolated_points", None)
         test_outcome = test_json.get("test_outcome", None)
         sim_time = test_json.get("test_duration", None)
+        if not sim_time:
+            sim_time = test_json.get("simulation_time", None)
 
         id_pattern = r"(.*test.*)"
         logging.info("test_path: {}".format(str(test_path)))

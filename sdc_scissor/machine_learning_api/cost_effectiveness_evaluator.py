@@ -2,6 +2,7 @@ import logging
 
 import pandas as pd
 import numpy as np
+import sklearn.metrics
 
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import KFold, cross_validate, train_test_split, StratifiedKFold
@@ -9,7 +10,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import LinearSVC
+from sklearn.preprocessing import LabelEncoder
 from sklearn import preprocessing
+from sklearn.metrics import classification_report
 
 
 def _cost_effectiveness_scorer(estimator, X, y):
@@ -64,47 +67,153 @@ class CostEffectivenessEvaluator:
             "total_angle",
         ]
 
-    def evaluate_with_random_baseline(self):
+    def evaluate_with_random_baseline(self, train_split=0.8, top_k=5):
         """
         Evaluate the cost-effectiveness of SDC-Scissor.
         """
-        attributes_to_use = self.X_model_attributes.copy()
-        attributes_to_use.append(self.label)
-        logging.info("Use attributes: {}".format(attributes_to_use))
-        dd = self.data_frame[attributes_to_use]
+        dd = self.data_frame
+        dd = dd.dropna()
 
-        logging.info("rows: {}".format(dd.shape[0]))
+        le = LabelEncoder()
+        dd[self.label] = le.fit_transform(dd[self.label])
 
-        X = dd[attributes_to_use[:-1]].to_numpy()
-        X = preprocessing.normalize(X)
-        X = preprocessing.scale(X)
+        n = dd.shape[0]
+        logging.debug("N={}".format(n))
+        n_train = int(n * train_split)
+        n_test = n - n_train
+        dd_train: pd.DataFrame = dd.iloc[:n_train, :]
+        dd_test: pd.DataFrame = dd.iloc[n_train:, :]
 
-        logging.debug(self.data_frame)
-        sim_times = self.data_frame[self.time_attribute].to_numpy()
-        if np.isnan(sim_times.min()) and np.isnan(sim_times.max()):
-            raise Exception("Not all tests have a simulation time entry!")
-        logging.debug("sim_times: {}".format(sim_times))
+        dd_train_passes = dd_train.iloc[le.inverse_transform(dd_train[self.label]) == "PASS", :]
+        dd_train_fails = dd_train.iloc[le.inverse_transform(dd_train[self.label]) == "FAIL", :]
 
-        y_pred_safe = self.classifier.predict(X)
-        logging.debug("y_pred_safe: {}".format(y_pred_safe))
-        nr_safe_predicted = np.sum(y_pred_safe)
+        n_train_passes = dd_train_passes.shape[0]
+        n_train_fails = dd_train_fails.shape[0]
+        logging.debug("n_train_passes={}, n_train_fails={}".format(n_train_passes, n_train_fails))
+        diff = np.abs(n_train_passes - n_train_fails)
 
-        nr_unsafe_predicted = np.sum((y_pred_safe == 0))
+        # sampling for balancing
+        if n_train_passes > n_train_fails:
+            dd_diff = dd_train_fails.sample(diff)
+            logging.debug("dd_diff: {}".format(dd_diff))
+            dd_train_balanced = pd.concat([dd_train, dd_diff])
+        elif n_train_passes < n_train_fails:
+            dd_diff = dd_train_passes.sample(diff)
+            logging.debug("dd_diff: {}".format(dd_diff))
+            dd_train_balanced = pd.concat([dd_train, dd_diff])
+        else:
+            dd_train_balanced = dd_train
 
-        random_unsafe_predicted = np.random.permutation(
-            np.append(np.ones(nr_unsafe_predicted, dtype="int32"), np.zeros(nr_safe_predicted, dtype="int32"))
+        self.classifier.fit(dd_train_balanced[self.X_model_attributes], dd_train_balanced[self.label])
+        y_pred_encoded = self.classifier.predict(dd_test[self.X_model_attributes])
+
+        y_pred_probs = self.classifier.predict_proba(dd_test[self.X_model_attributes])
+        logging.debug("class probabilities: {}".format(y_pred_probs))
+
+        y_pred = le.inverse_transform(y_pred_encoded)
+        y_true = le.inverse_transform(dd_test[self.label])
+        logging.debug(classification_report(y_true, y_pred))
+        logging.debug("classes: {}".format(self.classifier.classes_))
+
+        fail_encoded = le.transform(["FAIL"])[0]
+        pass_encoded = 1 - fail_encoded
+        logging.debug("fail_encoded={}".format(fail_encoded))
+
+        is_predicted_unsafe = y_pred == "FAIL"
+
+        pd.set_option("mode.chained_assignment", None)
+        dd_y_pred_probs = pd.DataFrame({"PASS": y_pred_probs[:, pass_encoded], "FAIL": y_pred_probs[:, fail_encoded]})
+        dd_test["PASS_prob"] = dd_y_pred_probs["PASS"].copy()
+        dd_test["FAIL_prob"] = dd_y_pred_probs["FAIL"].copy()
+
+        dd_test_unsafe_predicted: pd.DataFrame = dd_test.loc[is_predicted_unsafe, :]
+        dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
+        dd_top_k = dd_test_unsafe_predicted_sorted.iloc[:top_k, :]
+
+        tot_sim_time_by_sdc_scissor = np.sum(dd_top_k[self.time_attribute])
+        logging.debug("total simulation time by SDC-Scissor: {} seconds".format(tot_sim_time_by_sdc_scissor))
+
+        ce_lst = []
+        for i in range(30):
+            dd_rand_sample = dd_test.sample(top_k, ignore_index=True)
+            tot_random_baseline_time = np.sum(dd_rand_sample[self.time_attribute])
+            ce = tot_sim_time_by_sdc_scissor / tot_random_baseline_time
+            ce_lst.append(ce)
+
+        return np.mean(ce_lst)
+
+    def evaluate_with_longest_roads(self, train_split=0.8, top_k=5):
+        dd = self.data_frame
+        dd = dd.dropna()
+
+        le = LabelEncoder()
+        dd[self.label] = le.fit_transform(dd[self.label])
+
+        n = dd.shape[0]
+        logging.debug("N={}".format(n))
+        n_train = int(n * train_split)
+        n_test = n - n_train
+        dd_train: pd.DataFrame = dd.iloc[:n_train, :]
+        dd_test: pd.DataFrame = dd.iloc[n_train:, :]
+
+        dd_train_passes = dd_train.iloc[le.inverse_transform(dd_train[self.label]) == "PASS", :]
+        dd_train_fails = dd_train.iloc[le.inverse_transform(dd_train[self.label]) == "FAIL", :]
+
+        n_train_passes = dd_train_passes.shape[0]
+        n_train_fails = dd_train_fails.shape[0]
+        logging.debug("n_train_passes={}, n_train_fails={}".format(n_train_passes, n_train_fails))
+        diff = np.abs(n_train_passes - n_train_fails)
+
+        # sampling for balancing
+        if n_train_passes > n_train_fails:
+            dd_diff = dd_train_fails.sample(diff)
+            logging.debug("dd_diff: {}".format(dd_diff))
+            dd_train_balanced = pd.concat([dd_train, dd_diff])
+        elif n_train_passes < n_train_fails:
+            dd_diff = dd_train_passes.sample(diff)
+            logging.debug("dd_diff: {}".format(dd_diff))
+            dd_train_balanced = pd.concat([dd_train, dd_diff])
+        else:
+            dd_train_balanced = dd_train
+
+        self.classifier.fit(dd_train_balanced[self.X_model_attributes], dd_train_balanced[self.label])
+        y_pred_encoded = self.classifier.predict(dd_test[self.X_model_attributes])
+        y_pred_probs = self.classifier.predict_proba(dd_test[self.X_model_attributes])
+        y_pred = le.inverse_transform(y_pred_encoded)
+        y_true = le.inverse_transform(dd_test[self.label])
+        logging.debug(classification_report(y_true, y_pred))
+
+        fail_encoded = le.transform(["FAIL"])[0]
+        pass_encoded = 1 - fail_encoded
+        logging.debug("fail_encoded={}".format(fail_encoded))
+
+        is_predicted_unsafe = y_pred == "FAIL"
+
+        pd.set_option("mode.chained_assignment", None)
+        dd_y_pred_probs = pd.DataFrame({"PASS": y_pred_probs[:, pass_encoded], "FAIL": y_pred_probs[:, fail_encoded]})
+        dd_test["PASS_prob"] = dd_y_pred_probs["PASS"].copy()
+        dd_test["FAIL_prob"] = dd_y_pred_probs["FAIL"].copy()
+
+        dd_test_unsafe_predicted: pd.DataFrame = dd_test.loc[is_predicted_unsafe, :]
+        dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
+        dd_top_k = dd_test_unsafe_predicted_sorted.iloc[:top_k, :]
+
+        is_predicted_unsafe = y_pred == "FAIL"
+        nr_unsafe_predicted = np.sum(is_predicted_unsafe)
+        logging.debug("{} tests as unsafe predicted.".format(nr_unsafe_predicted))
+
+        tot_sim_time_by_sdc_scissor = np.sum(dd_top_k[self.time_attribute])
+        logging.debug("total simulation time by SDC-Scissor: {} seconds".format(tot_sim_time_by_sdc_scissor))
+
+        dd_test_sorted_by_length = dd_test.sort_values(by=["road_distance"], ascending=False)
+        logging.debug("sorted by road_distance: {}".format(dd_test_sorted_by_length["road_distance"]))
+
+        tot_road_length_baseline_time = np.sum(
+            dd_test_sorted_by_length.loc[np.arange(n_test) < top_k, self.time_attribute]
         )
+        logging.debug("total road-length-baseline time: {} seconds".format(tot_road_length_baseline_time))
 
-        random_baseline_times = sim_times[random_unsafe_predicted]
-        sdc_scissor_times = np.sum(sim_times[y_pred_safe == 0])
-        logging.debug("baseline times: {}".format(random_baseline_times))
-        logging.debug("SDC-Scissor times: {}".format(sdc_scissor_times))
-
-        tot_random = np.sum(random_baseline_times)
-        tot_sdc_scissor = np.sum(sdc_scissor_times)
-
-        cost_effectiveness = tot_sdc_scissor / tot_random
-        return cost_effectiveness
+        return tot_sim_time_by_sdc_scissor / tot_road_length_baseline_time
 
 
 if __name__ == "__main__":

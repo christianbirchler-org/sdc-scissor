@@ -9,6 +9,7 @@ import yaml
 from pathlib import Path
 
 from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
@@ -88,7 +89,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
     """
     Extract road features from given test scenarios.
     """
-    logging.info("extract_features")
+    logging.debug("extract_features")
     tests = Path(tests)
     test_loader = TestLoader(tests)
     if segmentation == "angle-based":
@@ -144,7 +145,7 @@ def label_tests(
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
-    logging.info("label_tests")
+    logging.debug("label_tests")
     tests = Path(tests)
     logging.debug("Test directory: {}".format(tests))
     beamng_simulator = SimulatorFactory.get_beamng_simulator(
@@ -179,7 +180,7 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
     Evaluate different machine learning models.
     """
-    logging.info("evaluate_models")
+    logging.debug("evaluate_models")
 
     models_dir = Path(models_dir)
     if not models_dir.exists():
@@ -247,19 +248,35 @@ def grid_search(csv: Path, clf: str) -> None:
 @click.option(
     "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True)
 )
-@click.option("-c", "--classifier", default=_TRAINED_MODELS / "decision_tree.joblib", type=click.Path(exists=True))
-def evaluate_cost_effectiveness(csv: Path, classifier: Path) -> None:
+@click.option("--random", default=True)
+def evaluate_cost_effectiveness(csv: Path, random) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
     """
-    logging.info("evaluate_cost_effectiveness")
+    logging.debug("evaluate_cost_effectiveness")
     df = CSVLoader.load_dataframe_from_csv(csv)
-    clf = joblib.load(classifier)
-    cost_effectiveness_evaluator = CostEffectivenessEvaluator(
-        classifier=clf, data_frame=df, label="safety", time_attribute="duration"
-    )
-    cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_random_baseline()
-    print("Cost-effectiveness: {}".format(cost_effectiveness))
+    logging.debug("data: {}".format(df))
+    classifiers_dict = {
+        "random_forest": RandomForestClassifier(),
+        "gradient_boosting": GradientBoostingClassifier(),
+        "SVM": SVC(max_iter=100000, probability=True),
+        "gaussian_naive_bayes": GaussianNB(),
+        "logistic_regression": LogisticRegression(max_iter=10000),
+        "decision_tree": DecisionTreeClassifier(),
+    }
+
+    print("Cost-effectiveness")
+    print("------------------")
+    for model_name, estimator in classifiers_dict.items():
+        cost_effectiveness_evaluator = CostEffectivenessEvaluator(
+            classifier=estimator, data_frame=df, label="safety", time_attribute="test_duration"
+        )
+        if random:
+            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_random_baseline()
+        else:
+            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_longest_roads()
+
+        print("{}: {}".format(model_name, cost_effectiveness))
 
 
 @cli.command()
