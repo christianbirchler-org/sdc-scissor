@@ -111,7 +111,8 @@ class CostEffectivenessEvaluator:
         logging.debug("class probabilities: {}".format(y_pred_probs))
 
         y_pred = le.inverse_transform(y_pred_encoded)
-        y_true = le.inverse_transform(dd_test[self.label])
+        dd_test[self.label] = le.inverse_transform(dd_test[self.label])
+        y_true = dd_test[self.label]
         logging.debug(classification_report(y_true, y_pred))
         logging.debug("classes: {}".format(self.classifier.classes_))
 
@@ -123,24 +124,30 @@ class CostEffectivenessEvaluator:
 
         pd.set_option("mode.chained_assignment", None)
         dd_y_pred_probs = pd.DataFrame({"PASS": y_pred_probs[:, pass_encoded], "FAIL": y_pred_probs[:, fail_encoded]})
-        dd_test["PASS_prob"] = dd_y_pred_probs["PASS"].copy()
-        dd_test["FAIL_prob"] = dd_y_pred_probs["FAIL"].copy()
+        dd_test["PASS_prob"] = dd_y_pred_probs["PASS"].to_numpy().copy()
+        dd_test["FAIL_prob"] = dd_y_pred_probs["FAIL"].to_numpy().copy()
 
         dd_test_unsafe_predicted: pd.DataFrame = dd_test.loc[is_predicted_unsafe, :]
         dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
         dd_top_k = dd_test_unsafe_predicted_sorted.iloc[:top_k, :]
 
         tot_sim_time_by_sdc_scissor = np.sum(dd_top_k[self.time_attribute])
-        logging.debug("total simulation time by SDC-Scissor: {} seconds".format(tot_sim_time_by_sdc_scissor))
+        tot_sim_time_by_sdc_scissor_true_positives = np.sum(dd_top_k.loc[dd_top_k[self.label] == 'FAIL', self.time_attribute])
 
-        ce_lst = []
+        beta = tot_sim_time_by_sdc_scissor_true_positives / tot_sim_time_by_sdc_scissor
+        logging.debug("beta={}".format(beta))
+
+        gamma_lst = []
         for i in range(30):
             dd_rand_sample = dd_test.sample(top_k, ignore_index=True)
             tot_random_baseline_time = np.sum(dd_rand_sample[self.time_attribute])
-            ce = tot_sim_time_by_sdc_scissor / tot_random_baseline_time
-            ce_lst.append(ce)
+            tot_random_baseline_time_true_positives = np.sum(dd_rand_sample.loc[dd_rand_sample[self.label] == 'FAIL', self.time_attribute])
+            gamma_tmp = tot_random_baseline_time_true_positives / tot_random_baseline_time
+            gamma_lst.append(gamma_tmp)
 
-        return np.mean(ce_lst)
+        gamma = np.mean(gamma_lst)
+        logging.debug('gamma={}'.format(gamma))
+        return beta, gamma
 
     def evaluate_with_longest_roads(self, train_split=0.8, top_k=5):
         dd = self.data_frame
@@ -179,8 +186,9 @@ class CostEffectivenessEvaluator:
         self.classifier.fit(dd_train_balanced[self.X_model_attributes], dd_train_balanced[self.label])
         y_pred_encoded = self.classifier.predict(dd_test[self.X_model_attributes])
         y_pred_probs = self.classifier.predict_proba(dd_test[self.X_model_attributes])
+        dd_test[self.label] = le.inverse_transform(dd_test[self.label])
         y_pred = le.inverse_transform(y_pred_encoded)
-        y_true = le.inverse_transform(dd_test[self.label])
+        y_true = dd_test[self.label]
         logging.debug(classification_report(y_true, y_pred))
 
         fail_encoded = le.transform(["FAIL"])[0]
@@ -191,8 +199,8 @@ class CostEffectivenessEvaluator:
 
         pd.set_option("mode.chained_assignment", None)
         dd_y_pred_probs = pd.DataFrame({"PASS": y_pred_probs[:, pass_encoded], "FAIL": y_pred_probs[:, fail_encoded]})
-        dd_test["PASS_prob"] = dd_y_pred_probs["PASS"].copy()
-        dd_test["FAIL_prob"] = dd_y_pred_probs["FAIL"].copy()
+        dd_test["PASS_prob"] = dd_y_pred_probs["PASS"].to_numpy().copy()
+        dd_test["FAIL_prob"] = dd_y_pred_probs["FAIL"].to_numpy().copy()
 
         dd_test_unsafe_predicted: pd.DataFrame = dd_test.loc[is_predicted_unsafe, :]
         dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
@@ -203,17 +211,21 @@ class CostEffectivenessEvaluator:
         logging.debug("{} tests as unsafe predicted.".format(nr_unsafe_predicted))
 
         tot_sim_time_by_sdc_scissor = np.sum(dd_top_k[self.time_attribute])
+        tot_sim_time_by_sdc_scissor_true_positives = np.sum(dd_top_k.loc[dd_top_k[self.label] == 'FAIL', self.time_attribute])
         logging.debug("total simulation time by SDC-Scissor: {} seconds".format(tot_sim_time_by_sdc_scissor))
+        beta = tot_sim_time_by_sdc_scissor_true_positives / tot_sim_time_by_sdc_scissor
 
         dd_test_sorted_by_length = dd_test.sort_values(by=["road_distance"], ascending=False)
         logging.debug("sorted by road_distance: {}".format(dd_test_sorted_by_length["road_distance"]))
 
-        tot_road_length_baseline_time = np.sum(
-            dd_test_sorted_by_length.loc[np.arange(n_test) < top_k, self.time_attribute]
+        dd_road_length_baseline_selection = dd_test_sorted_by_length.loc[np.arange(n_test) < top_k, :]
+        tot_road_length_baseline_time = np.sum(dd_road_length_baseline_selection[self.time_attribute])
+        tot_road_length_baseline_time_true_positives = np.sum(
+            dd_road_length_baseline_selection.loc[dd_road_length_baseline_selection[self.label] == 'FAIL', self.time_attribute]
         )
-        logging.debug("total road-length-baseline time: {} seconds".format(tot_road_length_baseline_time))
 
-        return tot_sim_time_by_sdc_scissor / tot_road_length_baseline_time
+        gamma = tot_road_length_baseline_time_true_positives / tot_road_length_baseline_time
+        return beta, gamma
 
 
 if __name__ == "__main__":

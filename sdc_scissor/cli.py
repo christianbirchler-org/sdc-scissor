@@ -273,11 +273,11 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
             classifier=estimator, data_frame=df, label="safety", time_attribute="test_duration"
         )
         if random:
-            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
+            beta, gamma = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
         else:
-            cost_effectiveness = cost_effectiveness_evaluator.evaluate_with_longest_roads(top_k=top_k)
+            beta, gamma = cost_effectiveness_evaluator.evaluate_with_longest_roads(top_k=top_k)
 
-        print("{}: {}".format(model_name, cost_effectiveness))
+        print("{}: beta={}, gamma={}, alpha=beta/gamma={}".format(model_name, beta, gamma, beta/gamma))
 
 
 @cli.command()
