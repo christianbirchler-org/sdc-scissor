@@ -16,7 +16,7 @@ the release automatically on PyPI.
 
 ### Pull Request Process
 1. Fork the SDC-Scissor repository
-2. Implement your feature
+2. Implement your feature (**NOTE**: Follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) commit message style!)
 3. Provide test implementations
    - Unit tests
    - Integration tests
