@@ -10,3 +10,4 @@ Content
     software_guidebook/index
     api/index
     contributing
+    code_of_conduct
