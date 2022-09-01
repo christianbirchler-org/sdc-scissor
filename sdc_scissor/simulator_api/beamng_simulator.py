@@ -2,12 +2,51 @@ import logging
 import math
 import time
 
+import numpy as np
+from scipy.spatial.transform import Rotation
 from beamngpy import BeamNGpy, Scenario, Road, Vehicle
 from beamngpy.sensors import Electrics
 from shapely.geometry import LineString
 
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.test import Test
+
+
+def _compute_start_position(road_nodes):
+    """
+    Compute start position of the car. The car should be on the right lane in the beginning of the road.
+
+    :param road_nodes: Road nodes specifying the road for a BeamNG scenario
+    :return: The coordinates of the start position of the car as well the euler angle around the z-axis.
+    """
+    logging.debug("compute_start_position")
+    first_road_point = road_nodes[0]
+
+    center_line = LineString(coordinates=[(x[0], x[1]) for x in road_nodes])
+    optimal_trajectory = center_line.parallel_offset(distance=2.5)
+    start_point = optimal_trajectory.interpolate(distance=-2.5)
+    start_position = (start_point.x, start_point.y, first_road_point[2])
+
+    one_meter_from_start_point = optimal_trajectory.interpolate(distance=-3.5)
+
+    dir_vec = -np.array([one_meter_from_start_point.x - start_point.x, one_meter_from_start_point.y - start_point.y])
+    norm_dir_vec = dir_vec / np.linalg.norm(dir_vec)
+
+    base_vec = np.array([0, 1])
+    norm_base_vec = np.array(base_vec) / np.linalg.norm(base_vec)
+
+    angle = math.acos(np.inner(norm_base_vec, norm_dir_vec))
+    y_component = norm_dir_vec[1]
+    if y_component > 0:
+        alpha = angle
+    elif y_component < 0:
+        alpha = 2 * np.pi - angle
+    elif y_component == 0:
+        alpha = np.pi
+    else:
+        raise Exception('y_component could not be assessed!')
+
+    return start_position, alpha
 
 
 class BeamNGSimulator(AbstractSimulator):
@@ -120,11 +159,12 @@ class BeamNGSimulator(AbstractSimulator):
         electrics = Electrics()
         self.vehicle.attach_sensor("electrics", electrics)
 
-        x_start, y_start, z_start, x_dir, y_dir, alpha = self.__compute_start_position(road_nodes)
-        # TODO: Calculate the start rotation of the car in quaterion
-        rot_quat = (0, 0, 1, -0.1)
-        rot = (0, 0, alpha / (2 * math.pi))
-        self.scenario.add_vehicle(self.vehicle, pos=(x_start, y_start, z_start), rot_quat=rot_quat)
+        start_position, alpha = _compute_start_position(road_nodes)
+        self.scenario.add_vehicle(
+            vehicle=self.vehicle,
+            pos=start_position,
+            rot_quat=Rotation.from_euler('zyx', [alpha, 0, 0], degrees=False).as_quat()
+        )
 
         end_point = road_nodes[-1][:3]
 
@@ -150,30 +190,3 @@ class BeamNGSimulator(AbstractSimulator):
         y_pos = self.car_state["pos"][1]
         z_pos = self.car_state["pos"][2]
         return x_pos, y_pos, z_pos
-
-    @staticmethod
-    def __compute_start_position(road_nodes):
-        """
-        Compute start position of the car. The car should be on the right lane in the beginning of the road.
-
-        :param road_nodes: Road nodes specifying the road for a BeamNG scenario
-        :return: The coordinates of the start position of the car.
-        """
-        logging.info("compute_start_position")
-        first_road_point = road_nodes[0]
-        second_road_point = road_nodes[1]
-        x_dir, y_dir = (second_road_point[0] - first_road_point[1], second_road_point[1] - first_road_point[1])
-        x_dir_norm, y_dir_norm = (
-            x_dir / math.sqrt(x_dir**2 + y_dir**2),
-            y_dir / math.sqrt(x_dir**2 + y_dir**2),
-        )
-        alpha = math.asin(y_dir_norm)
-
-        center_line = LineString(coordinates=[(x[0], x[1]) for x in road_nodes])
-        optimal_trajectory = center_line.parallel_offset(distance=2.5)
-        start_point = optimal_trajectory.interpolate(distance=-2.5)
-        logging.info("start_point: {}".format(start_point))
-
-        start_position = (start_point.x, start_point.y)
-
-        return (start_position[0], start_position[1], first_road_point[2], x_dir, y_dir, alpha)
