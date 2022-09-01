@@ -44,7 +44,7 @@ def _compute_start_position(road_nodes):
     elif y_component == 0:
         alpha = np.pi
     else:
-        raise Exception('y_component could not be assessed!')
+        raise Exception("y_component could not be assessed!")
 
     return start_position, alpha
 
@@ -163,7 +163,7 @@ class BeamNGSimulator(AbstractSimulator):
         self.scenario.add_vehicle(
             vehicle=self.vehicle,
             pos=start_position,
-            rot_quat=Rotation.from_euler('zyx', [alpha, 0, 0], degrees=False).as_quat()
+            rot_quat=Rotation.from_euler("zyx", [alpha, 0, 0], degrees=False).as_quat(),
         )
 
         end_point = road_nodes[-1][:3]
