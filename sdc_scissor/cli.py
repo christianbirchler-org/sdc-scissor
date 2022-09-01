@@ -123,13 +123,13 @@ def feature_statistics(csv) -> None:
 @click.option("--oob", default=0.3, type=float)
 @click.option("--max-speed", default=50, type=float)
 @click.option("--interrupt/--no-interrupt", default=True, type=click.BOOL)
-@click.option("--obstacles/--no-obstacles", default=True, type=click.BOOL)
+@click.option("--obstacles/--no-obstacles", default=False, type=click.BOOL)
 @click.option("--bump-dist", default=20, type=click.INT)
 @click.option("--delineator-dist", default=5, type=click.INT)
 @click.option("--tree-dist", default=5, type=click.INT)
 @click.option("-fov", "--field-of-view", default=120, type=click.INT)
 def label_tests(
-    tests: Path,
+    tests,
     home,
     user,
     rf,
