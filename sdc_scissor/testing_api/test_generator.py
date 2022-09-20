@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
+from sdc_scissor.testing_api.test_validator import TestValidator
 from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
 from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import (
     CustomFrenetGenerator,
@@ -20,12 +21,13 @@ def _id_generator():
 
 
 class TestGenerator:
-    def __init__(self, count: int, destination: Path, tool: str):
+    def __init__(self, count: int, destination: Path, tool: str, validator: TestValidator):
         """
         This class is used to generate tests for a virtual environment.
         """
 
         self.count: int = count
+        self.test_validator = validator
         self.__id_generator = _id_generator()
         self.__nr_prefix_digits: int = 5
         self.destination: Path = destination
@@ -54,7 +56,9 @@ class TestGenerator:
 
         for road_points in generated_tests_as_list_of_road_points:
             test = Test(test_id=next(self.__id_generator), road_points=road_points, test_outcome="NOT_EXECUTED")
-            self.generated_tests.append(test)
+            self.test_validator.validate(test)
+            if test.is_valid:
+                self.generated_tests.append(test)
         logging.info("** {} tests generated".format(len(generated_tests_as_list_of_road_points)))
         logging.info("** test generator has {} tests".format(len(self.generated_tests)))
 

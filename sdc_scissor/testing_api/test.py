@@ -18,6 +18,7 @@ class Test:
         :param test_duration: The duration of the test execution
         """
         self.test_id = test_id
+        self.is_valid = None
         self.test_outcome = test_outcome
         self.predicted_test_outcome = None
         self.test_duration = test_duration

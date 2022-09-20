@@ -2,9 +2,9 @@ command: 'label-tests'
 options:
   home: 'C:\Users\birc\Documents\BeamNG.tech.v0.24.0.2\BeamNG.drive-0.24.0.2.13392'
   user: 'C:\Users\birc\Documents\BeamNG.drive'
-  tests: 'sample_tests'
+  tests: 'destination'
   rf: 1.5
-  oob: 0.3
+  oob: 0.5
   max_speed: 50
   interrupt: true
   obstacles: false

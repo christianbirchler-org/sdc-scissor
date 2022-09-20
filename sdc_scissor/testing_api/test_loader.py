@@ -5,16 +5,17 @@ import os
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
+from sdc_scissor.testing_api.test_validator import TestValidator, TestIsNotValidException
 
 
 class TestLoader:
-    def __init__(self, tests_dir: Path):
+    def __init__(self, tests_dir: Path, test_validator: TestValidator):
         """
 
         :param tests_dir:
         """
         self.tests_dir: Path = tests_dir
-
+        self.test_validator: TestValidator = test_validator
         self.test_paths: list[Path] = []
         self.__set_test_paths(self.test_paths)
 
@@ -57,8 +58,7 @@ class TestLoader:
         test: Test = self.__load_test_from_path(test_path)
         return test, test_path
 
-    @staticmethod
-    def __load_test_from_path(test_path: Path):
+    def __load_test_from_path(self, test_path: Path):
         """
 
         :param test_path:
@@ -81,5 +81,8 @@ class TestLoader:
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
         test_id = match_obj.group(1)
         logging.info("test_id: {}".format(test_id))
+
         test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
+        self.test_validator.validate(test)
+
         return test

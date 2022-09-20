@@ -1,7 +1,7 @@
 import time
 import logging
 
-from beamngpy import Scenario
+from beamngpy import Scenario, BNGError
 
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_loader import TestLoader
@@ -9,6 +9,7 @@ from sdc_scissor.testing_api.test_monitor import TestMonitor
 from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
+from sdc_scissor.testing_api.test_validator import TestIsNotValidException
 
 
 def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, tree_dist) -> list:
@@ -83,11 +84,15 @@ class TestRunner:
                 test.save_as_json(file_path=test_filename)
                 has_execution_failed = False
                 time.sleep(5)
-            except Exception:
+            except BNGError:
                 # TODO: create a counter to limit the number of trials for a single test
-                logging.warning("Test case execution raised an exception!")
+                logging.error("Test case execution raised an exception!")
                 has_execution_failed = True
                 test.test_outcome = "ERROR"
+            except TestIsNotValidException:
+                logging.error('test with id: {} is not valid!'.format(test.test_id))
+                test.test_outcome = 'ERROR'
+                has_execution_failed = False  # there was no execution at all!
 
         self.simulator.close()
 
@@ -97,7 +102,9 @@ class TestRunner:
 
         :param test: Test object that needs to be executed in simulation
         """
-        logging.info("* run")
+        logging.debug("* run")
+        if not test.is_valid:
+            raise TestIsNotValidException()
         time.sleep(5)
 
         road_model = RoadModel(test.interpolated_road_points)
