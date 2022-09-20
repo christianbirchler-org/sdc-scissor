@@ -90,8 +90,8 @@ class TestRunner:
                 has_execution_failed = True
                 test.test_outcome = "ERROR"
             except TestIsNotValidException:
-                logging.error('test with id: {} is not valid!'.format(test.test_id))
-                test.test_outcome = 'ERROR'
+                logging.error("test with id: {} is not valid!".format(test.test_id))
+                test.test_outcome = "ERROR"
                 has_execution_failed = False  # there was no execution at all!
 
         self.simulator.close()
