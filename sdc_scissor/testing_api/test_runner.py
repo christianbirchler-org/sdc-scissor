@@ -86,13 +86,19 @@ class TestRunner:
                 time.sleep(5)
             except BNGError:
                 # TODO: create a counter to limit the number of trials for a single test
-                logging.error("Test case execution raised an exception!")
+                logging.error("Test case execution raised a BNGError exception!")
                 has_execution_failed = True
                 test.test_outcome = "ERROR"
             except TestIsNotValidException:
                 logging.error("test with id: {} is not valid!".format(test.test_id))
                 test.test_outcome = "ERROR"
                 has_execution_failed = False  # there was no execution at all!
+            except Exception:
+                # TODO: create a counter to limit the number of trials for a single test
+                logging.error("Test case execution raised an exception!")
+                has_execution_failed = True
+                test.test_outcome = "ERROR"
+
 
         self.simulator.close()
 

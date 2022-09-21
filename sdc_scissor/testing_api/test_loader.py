@@ -5,17 +5,17 @@ import os
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.test_validator import NoIntersectionValidator, TestIsNotValidException
+from sdc_scissor.testing_api.test_validator import TestValidator, TestIsNotValidException
 
 
 class TestLoader:
-    def __init__(self, tests_dir: Path, test_validator: NoIntersectionValidator):
+    def __init__(self, tests_dir: Path, test_validator: TestValidator):
         """
 
         :param tests_dir:
         """
         self.tests_dir: Path = tests_dir
-        self.test_validator: NoIntersectionValidator = test_validator
+        self.test_validator: TestValidator = test_validator
         self.test_paths: list[Path] = []
         self.__set_test_paths(self.test_paths)
 

@@ -1,3 +1,4 @@
+import abc
 from shapely.geometry import LineString, MultiLineString
 from sdc_scissor.testing_api.test import Test
 
@@ -6,7 +7,13 @@ class TestIsNotValidException(Exception):
     pass
 
 
-class NoIntersectionValidator:
+class TestValidator(abc.ABC):
+    @abc.abstractmethod
+    def validate(self, test: Test):
+        pass
+
+
+class NoIntersectionValidator(TestValidator):
     def validate(self, test: Test) -> bool:
         road_points_line_string: LineString = LineString(
             coordinates=[(node[0], node[1]) for node in test.interpolated_road_points]
