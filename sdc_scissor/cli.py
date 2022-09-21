@@ -17,7 +17,7 @@ from sklearn.naive_bayes import GaussianNB
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_generator import TestGenerator
-from sdc_scissor.testing_api.test_validator import TestValidator
+from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
@@ -78,7 +78,7 @@ def generate_tests(count: int, destination: Path, tool: str) -> None:
     if not destination.exists():
         destination.mkdir(parents=True)
 
-    test_validator = TestValidator()
+    test_validator = NoIntersectionValidator()
     test_generator = TestGenerator(count=count, destination=destination, tool=tool, validator=test_validator)
     test_generator.generate()
     test_generator.save_tests()
@@ -143,7 +143,7 @@ def label_tests(
         home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
     )
 
-    test_validator = TestValidator()
+    test_validator = NoIntersectionValidator()
     test_loader = TestLoader(tests_dir=tests, test_validator=test_validator)
 
     if obstacles:

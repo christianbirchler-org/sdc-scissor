@@ -6,7 +6,7 @@ class TestIsNotValidException(Exception):
     pass
 
 
-class TestValidator:
+class NoIntersectionValidator:
     def validate(self, test: Test) -> bool:
         road_points_line_string: LineString = LineString(
             coordinates=[(node[0], node[1]) for node in test.interpolated_road_points]

@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.test_validator import TestValidator
+from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
 from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
 from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import (
     CustomFrenetGenerator,
@@ -21,7 +21,7 @@ def _id_generator():
 
 
 class TestGenerator:
-    def __init__(self, count: int, destination: Path, tool: str, validator: TestValidator):
+    def __init__(self, count: int, destination: Path, tool: str, validator: NoIntersectionValidator):
         """
         This class is used to generate tests for a virtual environment.
         """
