@@ -13,7 +13,18 @@ class TestValidator(abc.ABC):
         pass
 
 
+class CompositeTestValidator(TestValidator):
+    def __init__(self):
+        self.__test_validators = []
+
+    def validate(self, test: Test):
+        pass
+
+
 class NoIntersectionValidator(TestValidator):
+    def __init__(self, test_validator: TestValidator):
+        pass
+
     def validate(self, test: Test) -> bool:
         road_points_line_string: LineString = LineString(
             coordinates=[(node[0], node[1]) for node in test.interpolated_road_points]
@@ -31,3 +42,8 @@ class NoIntersectionValidator(TestValidator):
 
         test.is_valid = True if road_lines.is_simple else False
         return test.is_valid
+
+
+class NoTooSharpTurnsValidator(TestValidator):
+    def validate(self, test: Test):
+        pass
