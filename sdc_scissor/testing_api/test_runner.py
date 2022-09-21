@@ -99,7 +99,6 @@ class TestRunner:
                 has_execution_failed = True
                 test.test_outcome = "ERROR"
 
-
         self.simulator.close()
 
     def run(self, test: Test) -> None:
