@@ -17,7 +17,7 @@ from sklearn.naive_bayes import GaussianNB
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_generator import TestGenerator
-from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
+from sdc_scissor.testing_api.test_validator import NoIntersectionValidator, SimpleTestValidator
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
@@ -78,7 +78,7 @@ def generate_tests(count: int, destination: Path, tool: str) -> None:
     if not destination.exists():
         destination.mkdir(parents=True)
 
-    test_validator = NoIntersectionValidator()
+    test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_generator = TestGenerator(count=count, destination=destination, tool=tool, validator=test_validator)
     test_generator.generate()
     test_generator.save_tests()
@@ -93,7 +93,8 @@ def extract_features(tests: Path, segmentation: str) -> None:
     """
     logging.debug("extract_features")
     tests = Path(tests)
-    test_loader = TestLoader(tests)
+    test_validator = NoIntersectionValidator(SimpleTestValidator())
+    test_loader = TestLoader(tests, test_validator=test_validator)
     if segmentation == "angle-based":
         segmentation = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
     feature_extractor = FeatureExtractor(segmentation_strategy=segmentation)
@@ -143,7 +144,7 @@ def label_tests(
         home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
     )
 
-    test_validator = NoIntersectionValidator()
+    test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_loader = TestLoader(tests_dir=tests, test_validator=test_validator)
 
     if obstacles:
@@ -279,7 +280,8 @@ def predict_tests(tests: Path, classifier: Path) -> None:
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.
     """
-    test_loader = TestLoader(tests_dir=tests)
+    test_validator = NoIntersectionValidator(SimpleTestValidator())
+    test_loader = TestLoader(tests_dir=tests, test_validator=test_validator)
 
     predictor = Predictor(test_loader=test_loader, joblib_classifier=classifier)
     predictor.predict()
