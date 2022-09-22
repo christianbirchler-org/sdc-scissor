@@ -9,23 +9,33 @@ class TestIsNotValidException(Exception):
 
 class TestValidator(abc.ABC):
     @abc.abstractmethod
-    def validate(self, test: Test):
+    def validate(self, test: Test) -> bool:
         pass
 
 
-class CompositeTestValidator(TestValidator):
-    def __init__(self):
-        self.__test_validators = []
-
-    def validate(self, test: Test):
-        pass
+class SimpleTestValidator(TestValidator):
+    def validate(self, test: Test) -> bool:
+        test.is_valid = True
+        return True
 
 
-class NoIntersectionValidator(TestValidator):
-    def __init__(self, test_validator: TestValidator):
-        pass
+class TestValidatorDecorator(TestValidator):
+    def __init__(self, wrappee: TestValidator):
+        self.wrappee: TestValidator = wrappee
 
     def validate(self, test: Test) -> bool:
+        return self.wrappee.validate(test)
+
+
+class NoIntersectionValidator(TestValidatorDecorator):
+    def __init__(self, wrappee: TestValidator):
+        super().__init__(wrappee)
+
+    def validate(self, test: Test) -> bool:
+        self.wrappee.validate(test)
+        if not test.is_valid:
+            return False
+
         road_points_line_string: LineString = LineString(
             coordinates=[(node[0], node[1]) for node in test.interpolated_road_points]
         )
@@ -42,8 +52,3 @@ class NoIntersectionValidator(TestValidator):
 
         test.is_valid = True if road_lines.is_simple else False
         return test.is_valid
-
-
-class NoTooSharpTurnsValidator(TestValidator):
-    def validate(self, test: Test):
-        pass
