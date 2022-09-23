@@ -1,4 +1,4 @@
-from sdc_scissor.testing_api.test_validator import SimpleTestValidator, NoIntersectionValidator, Test
+from sdc_scissor.testing_api.test_validator import SimpleTestValidator, NoIntersectionValidator, NoTooSharpTurnsValidator, Test
 
 
 class TestTestValidator:
@@ -25,5 +25,29 @@ class TestTestValidator:
         )
         tv = NoIntersectionValidator(SimpleTestValidator())
         expected = False
+        actual = tv.validate(test)
+        assert actual == expected
+
+    def test_no_sharp_turns_decorator_on_invalid_test(self):
+        test = Test(
+            0,
+            road_points=[[10, 10], [100, 10], [145, 10], [148, 10], [150, 10], [150, 11], [150, 12], [150, 13]],
+            test_outcome=None,
+            test_duration=None,
+        )
+        tv = NoTooSharpTurnsValidator(SimpleTestValidator())
+        expected = False
+        actual = tv.validate(test)
+        assert actual == expected
+
+    def test_no_sharp_turns_decorator_on_valid_test(self):
+        test = Test(
+            0,
+            road_points=[[10, 10], [100, 10], [145, 10], [148, 10], [150, 10]],
+            test_outcome=None,
+            test_duration=None,
+        )
+        tv = NoTooSharpTurnsValidator(SimpleTestValidator())
+        expected = True
         actual = tv.validate(test)
         assert actual == expected

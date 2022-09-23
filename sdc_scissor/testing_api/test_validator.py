@@ -1,6 +1,7 @@
 import abc
 from shapely.geometry import LineString, MultiLineString
 from sdc_scissor.testing_api.test import Test
+from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 
 
 class TestIsNotValidException(Exception):
@@ -52,3 +53,27 @@ class NoIntersectionValidator(TestValidatorDecorator):
 
         test.is_valid = True if road_lines.is_simple else False
         return test.is_valid
+
+
+class NoTooSharpTurnsValidator(TestValidatorDecorator):
+    def __init__(self, wrappee, angle_threshold=1.0):
+        super().__init__(wrappee)
+        self.__road_geometry_calculator = RoadGeometryCalculator()
+        self.angle_threshold = angle_threshold
+
+    def validate(self, test: Test) -> bool:
+        self.wrappee.validate(test)
+
+        p0 = test.interpolated_road_points[0][0], test.interpolated_road_points[0][1]
+        p1 = test.interpolated_road_points[1][0], test.interpolated_road_points[1][1]
+        previous_direction = self.__road_geometry_calculator.get_direction(p0, p1)
+        previous_point = p1
+
+        for current_point in test.interpolated_road_points[2:]:
+            current_direction = self.__road_geometry_calculator.get_direction(previous_point, current_point)
+            angle = self.__road_geometry_calculator.get_angle(previous_direction, current_direction)
+            if angle > self.angle_threshold:
+                return False
+            previous_point, previous_direction = current_point, current_direction
+
+        return True
