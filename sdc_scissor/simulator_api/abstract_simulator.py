@@ -64,3 +64,7 @@ class AbstractSimulator(abc.ABC):
     def get_car_position(self):
         """ """
         pass
+
+    @abc.abstractmethod
+    def get_sensor_data(self):
+        pass

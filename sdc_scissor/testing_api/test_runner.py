@@ -84,17 +84,20 @@ class TestRunner:
                 test.save_as_json(file_path=test_filename)
                 has_execution_failed = False
                 time.sleep(5)
-            except BNGError:
+            except BNGError as err:
                 # TODO: create a counter to limit the number of trials for a single test
+                logging.error(err)
                 logging.error("Test case execution raised a BNGError exception!")
                 has_execution_failed = True
                 test.test_outcome = "ERROR"
-            except TestIsNotValidException:
+            except TestIsNotValidException as err:
+                logging.error(err)
                 logging.error("test with id: {} is not valid!".format(test.test_id))
                 test.test_outcome = "ERROR"
                 has_execution_failed = False  # there was no execution at all!
-            except Exception:
+            except Exception as err:
                 # TODO: create a counter to limit the number of trials for a single test
+                logging.error(err)
                 logging.error("Test case execution raised an exception!")
                 has_execution_failed = True
                 test.test_outcome = "ERROR"

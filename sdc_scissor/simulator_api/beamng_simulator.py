@@ -73,7 +73,6 @@ class BeamNGSimulator(AbstractSimulator):
         self.port = beamng.port
         self.host = beamng.host
         self.vehicle = None
-        self.car_state = None
         self.scenario = None
         self.rf = rf
         self.max_speed = max_speed
@@ -174,10 +173,9 @@ class BeamNGSimulator(AbstractSimulator):
 
     def update_car(self):
         """ """
-        logging.info("update_car")
+        logging.debug("* update_car")
         self.vehicle.update_vehicle()
         _ = self.beamng.poll_sensors(self.vehicle)  # otherwise, the values are not updated (bug of beamngpy)
-        self.car_state = self.vehicle.state
 
     def get_car_position(self):
         """
@@ -185,8 +183,15 @@ class BeamNGSimulator(AbstractSimulator):
 
         :return: x,y,z coordinates of the car
         """
-        logging.info("get_car_position")
-        x_pos = self.car_state["pos"][0]
-        y_pos = self.car_state["pos"][1]
-        z_pos = self.car_state["pos"][2]
+        logging.debug("* get_car_position")
+        x_pos = self.vehicle.state["pos"][0]
+        y_pos = self.vehicle.state["pos"][1]
+        z_pos = self.vehicle.state["pos"][2]
         return x_pos, y_pos, z_pos
+
+    def get_sensor_data(self):
+        """
+        Return states/data of all sensors
+        """
+        logging.debug("* get_sensor_data")
+        return self.vehicle.sensors["electrics"]

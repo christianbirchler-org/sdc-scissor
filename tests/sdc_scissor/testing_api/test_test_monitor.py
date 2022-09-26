@@ -16,21 +16,27 @@ class TestTestMonitor:
 
     def test_is_car_moving_car_stays_on_same_position(self, mocker):
         self.test_monitor.test = mocker.patch("sdc_scissor.testing_api.test.Test")
-        self.test_monitor.test.simulation_data = [(0, 0, 0, 0), (11, 0, 0, 0)]
+        simulation_data_entry_t0 = {"time": 0, "position": (0, 0, 0)}
+        simulation_data_entry_t1 = {"time": 11, "position": (0, 0, 0)}
+        self.test_monitor.test.simulation_data = [simulation_data_entry_t0, simulation_data_entry_t1]
         expected = False
         actual = self.test_monitor.is_car_moving()
         assert expected == actual
 
     def test_is_car_moving_car_stays_not_on_same_position(self, mocker):
         self.test_monitor.test = mocker.patch("sdc_scissor.testing_api.test.Test")
-        self.test_monitor.test.simulation_data = [(0, 0, 0, 0), (5, 10, 10, 0)]
+        simulation_data_entry_t0 = {"time": 0, "position": (0, 0, 0)}
+        simulation_data_entry_t1 = {"time": 5, "position": (10, 10, 0)}
+        self.test_monitor.test.simulation_data = [simulation_data_entry_t0, simulation_data_entry_t1]
         expected = True
         actual = self.test_monitor.is_car_moving()
         assert expected == actual
 
     def test_is_car_moving_not_enough_sim_data_yet_to_make_decision(self, mocker):
         self.test_monitor.test = mocker.patch("sdc_scissor.testing_api.test.Test")
-        self.test_monitor.test.simulation_data = [(0, 0, 0, 0), (0.1, 0, 0, 0)]
+        simulation_data_entry_t0 = {"time": 0, "position": (0, 0, 0)}
+        simulation_data_entry_t1 = {"time": 0.1, "position": (0, 0, 0)}
+        self.test_monitor.test.simulation_data = [simulation_data_entry_t0, simulation_data_entry_t1]
         expected = True
         actual = self.test_monitor.is_car_moving()
         assert expected == actual

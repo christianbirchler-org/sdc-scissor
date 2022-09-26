@@ -1,3 +1,4 @@
+import copy
 import logging
 import time
 
@@ -14,12 +15,14 @@ def _get_t_previous_data(data, time_delta) -> tuple:
     Return data of t-delta
     """
     logging.info("_get_t_previous_data")
-    t1, _, _, _ = data[-1]
+    t1 = data[-1]["time"]
     reversed_data_iterator = reversed(data)
-    for t, x_pos, y_pos, z_pos in reversed_data_iterator:
+    for data_entry in reversed_data_iterator:
+        t = data_entry["time"]
+        x_pos, y_pos, z_pos = data_entry["position"]
         if t1 - t > time_delta:
             return t, x_pos, y_pos, z_pos
-    logging.info("Not enough data. An exception will be thrown.")
+    logging.error("Not enough data. An exception will be thrown.")
     raise Exception("Not enough data")
 
 
@@ -54,12 +57,20 @@ class TestMonitor:
 
         :param interrupt_on_failure: Boolean flag if the test should be interrupted when the car drives off the lane.
         """
-        logging.info("check")
+        logging.debug("* check")
         self.simulator.update_car()
         x_pos, y_pos, z_pos = self.simulator.get_car_position()
+        sensor_data = vars(self.simulator.get_sensor_data())
+        logging.debug(sensor_data)
         current_time = time.time() - self.start_time
-        logging.info("time: {}\tx: {}\ty: {}\tz: {}".format(current_time, x_pos, y_pos, z_pos))
-        self.test.simulation_data.append((current_time, x_pos, y_pos, z_pos))
+        logging.debug("time: {}\tx: {}\ty: {}\tz: {}".format(current_time, x_pos, y_pos, z_pos))
+        # TODO: Cannot append a dictionary to the sim_data list. Why?!
+        current_simulation_data: dict = {
+            "time": current_time,
+            "position": (x_pos, y_pos, z_pos),
+            "sensors": sensor_data,
+        }
+        self.test.simulation_data.append(copy.deepcopy(current_simulation_data))
 
         if (
             self.__is_car_at_end_of_road(x_pos, y_pos)
@@ -76,16 +87,20 @@ class TestMonitor:
         """
         Checks if the car is currently moving.
         """
+        logging.debug("* is_car_moving")
         time_delta = 10
         decision_distance = 1
 
-        current_time, current_x_pos, current_y_pos, _ = self.test.simulation_data[-1]
-        start_time, _, _, _ = self.test.simulation_data[0]
+        current_simulation_data = self.test.simulation_data[-1]
+        current_time = current_simulation_data["time"]
+        current_x_pos, current_y_pos, _ = current_simulation_data["position"]
+        start_time = self.test.simulation_data[0]["time"]
 
         # We need at least of `time_delta` seconds of simulation data.
         if current_time - start_time < time_delta:
             return True
 
+        # TODO: Cannot unpack
         _, last_x_pos, last_y_pos, _ = _get_t_previous_data(self.test.simulation_data, time_delta)
 
         is_car_moving = not self.__are_points_close(
@@ -102,19 +117,19 @@ class TestMonitor:
         """
         Start the timer for the test execution.
         """
-        logging.info("start_timer")
+        logging.debug("start_timer")
         self.start_time = time.time()
 
     def stop_timer(self):
         """
         Stop the timer for the test execution.
         """
-        logging.info("stop_timer")
+        logging.debug("stop_timer")
         self.end_time = time.time()
 
     def dump_data(self):
         """ """
-        logging.info("dump_data")
+        logging.debug("dump_data")
         # TODO
 
     def __is_car_out_of_lane(self, x_pos: float, y_pos: float) -> bool:
@@ -124,7 +139,7 @@ class TestMonitor:
         :param y_pos:
         :return:
         """
-        logging.info("__is_car_out_of_lane")
+        logging.debug("__is_car_out_of_lane")
 
         # Shapely box geometry
         car_model = box(x_pos - 1, y_pos - 1, x_pos + 1, y_pos + 1)
@@ -146,7 +161,7 @@ class TestMonitor:
         :param y_pos:
         :return:
         """
-        logging.info("__car_at_end_of_road")
+        logging.debug("__car_at_end_of_road")
         road_end_point = self.test.interpolated_road_points[-1]
         x_end, y_end = road_end_point[0], road_end_point[1]
         is_car_at_the_end_of_the_road: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 7)
@@ -165,5 +180,6 @@ class TestMonitor:
         :param threshold:
         :return:
         """
+        logging.debug("* __are_points_close")
         dist = distance.euclidean(a, b)
         return dist < threshold
