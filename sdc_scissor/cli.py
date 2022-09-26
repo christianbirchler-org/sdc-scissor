@@ -16,7 +16,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_runner import TestRunner
-from sdc_scissor.testing_api.test_generator import TestGenerator
+from sdc_scissor.testing_api.test_generator import TestGenerator, KeepValidTestsOnlyBehavior, KeepAllTestsBehavior
 from sdc_scissor.testing_api.test_validator import NoIntersectionValidator, SimpleTestValidator
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
@@ -67,19 +67,27 @@ def cli(ctx: click.Context, config: Path, debug) -> None:
 
 @cli.command()
 @click.option("-c", "--count", type=int, default=10)
+@click.option("-k", "--keep", type=bool, default=False)
 @click.option("-d", "--destination", default=_DESTINATION, type=click.Path())
 @click.option("-t", "--tool", default="frenetic", type=click.STRING)
-def generate_tests(count: int, destination: Path, tool: str) -> None:
+def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
     """
-    logging.info("generate_tests")
+    logging.debug("* generate_tests")
     destination = Path(destination)
     if not destination.exists():
         destination.mkdir(parents=True)
 
+    test_keeping_behavior = KeepAllTestsBehavior() if keep else KeepValidTestsOnlyBehavior()
     test_validator = NoIntersectionValidator(SimpleTestValidator())
-    test_generator = TestGenerator(count=count, destination=destination, tool=tool, validator=test_validator)
+    test_generator = TestGenerator(
+        count=count,
+        destination=destination,
+        tool=tool,
+        validator=test_validator,
+        test_keeping_behavior=test_keeping_behavior,
+    )
     test_generator.generate()
     test_generator.save_tests()
 

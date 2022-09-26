@@ -1,3 +1,4 @@
+import abc
 import json
 import logging
 from pathlib import Path
@@ -20,12 +21,37 @@ def _id_generator():
         cnt += 1
 
 
+class TestKeepingBehavior(abc.ABC):
+    @abc.abstractmethod
+    def keep(self, test: Test, collection: list):
+        pass
+
+
+class KeepAllTestsBehavior(TestKeepingBehavior):
+    def keep(self, test: Test, collection: list):
+        collection.append(test)
+
+
+class KeepValidTestsOnlyBehavior(TestKeepingBehavior):
+    def keep(self, test: Test, collection: list):
+        if test.is_valid:
+            collection.append(test)
+
+
 class TestGenerator:
-    def __init__(self, count: int, destination: Path, tool: str, validator: NoIntersectionValidator):
+    def __init__(
+        self,
+        count: int,
+        destination: Path,
+        tool: str,
+        validator: NoIntersectionValidator,
+        test_keeping_behavior: TestKeepingBehavior,
+    ):
         """
         This class is used to generate tests for a virtual environment.
         """
 
+        self.keeping_behavior = test_keeping_behavior
         self.count: int = count
         self.test_validator = validator
         self.__id_generator = _id_generator()
@@ -34,6 +60,7 @@ class TestGenerator:
         self.generated_tests: list[Test] = []
         self.tool: str = tool
         kwargs: dict = {"map_size": 200, "time_budget": 100, "count": count}
+        # TODO: Pass generator as dependency through the constructor (Dependency Injection)!
         # Types of test generator
         if self.tool.lower() == "frenetic":
             self.random_generator = CustomFrenetGenerator(**kwargs)
@@ -57,10 +84,9 @@ class TestGenerator:
         for road_points in generated_tests_as_list_of_road_points:
             test = Test(test_id=next(self.__id_generator), road_points=road_points, test_outcome="NOT_EXECUTED")
             self.test_validator.validate(test)
-            if test.is_valid:
-                self.generated_tests.append(test)
-        logging.info("** {} tests generated".format(len(generated_tests_as_list_of_road_points)))
-        logging.info("** test generator has {} tests".format(len(self.generated_tests)))
+            self.keeping_behavior.keep(test, self.generated_tests)
+        logging.info("In total, {} tests were generated.".format(len(generated_tests_as_list_of_road_points)))
+        logging.info("The test generator has {} tests in his collection".format(len(self.generated_tests)))
 
     def __add_sine_bumps(self, generated_tests_as_list_of_road_points):
         for road_as_points in generated_tests_as_list_of_road_points:
