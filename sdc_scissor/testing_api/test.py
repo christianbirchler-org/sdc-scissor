@@ -31,10 +31,12 @@ class Test:
 
         :param file_path: File path to save the test as a json file
         """
-        logging.info("save_as_json")
+        logging.debug("* save_as_json")
+        logging.info("Save test as a JSON file")
+        nr_whitespaces_for_indentation_in_json_file = 2
         with open(file_path, "w") as fp:
             test_dict = vars(self)
-            json.dump(test_dict, fp, indent=2)
+            json.dump(test_dict, fp, indent=nr_whitespaces_for_indentation_in_json_file)
 
     @staticmethod
     def __interpolate(road_points: list[list]):
