@@ -24,9 +24,9 @@ class TestTestLoader:
     def test_non_empty_test_folder_should_have_next_test(self, mocker, fs):
         fs.makedir(r"./tests")
         fs.makedir(r"./tests/unlabeled")
-        fs.create_file(r"./tests/test.json")
-        fs.create_file(r"./tests/no-match.json")
-        fs.create_file(r"./tests/unlabeled/test.json")
+        fs.create_file(r"./tests/test.json", contents=r'{"key": 0}')
+        fs.create_file(r"./tests/no-match.json", contents=r'{"key": 0}')
+        fs.create_file(r"./tests/unlabeled/test.json", contents=r'{"key": 0}')
         non_empty_test_dir_mock = pathlib.Path("./tests")
         tv = NoIntersectionValidator(SimpleTestValidator())
         test_loader = TestLoader(tests_dir=non_empty_test_dir_mock, test_validator=tv)
