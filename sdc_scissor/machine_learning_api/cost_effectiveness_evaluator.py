@@ -132,12 +132,14 @@ class CostEffectivenessEvaluator:
         dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
         dd_top_k = dd_test_unsafe_predicted_sorted.iloc[:top_k, :]
 
-        nr_true_positives = np.sum(dd_top_k[self.label] == 'FAIL')
-        nr_negatives = np.sum(dd_top_k[self.label] == 'PASS')
+        nr_true_positives = np.sum(dd_top_k[self.label] == "FAIL")
+        nr_negatives = np.sum(dd_top_k[self.label] == "PASS")
         ce = nr_true_positives / nr_negatives
 
         tot_sim_time_by_sdc_scissor = np.sum(dd_top_k[self.time_attribute])
-        tot_sim_time_by_sdc_scissor_true_positives = np.sum(dd_top_k.loc[dd_top_k[self.label] == 'FAIL', self.time_attribute])
+        tot_sim_time_by_sdc_scissor_true_positives = np.sum(
+            dd_top_k.loc[dd_top_k[self.label] == "FAIL", self.time_attribute]
+        )
 
         beta = tot_sim_time_by_sdc_scissor_true_positives / tot_sim_time_by_sdc_scissor
         logging.debug("beta={}".format(beta))
@@ -146,16 +148,18 @@ class CostEffectivenessEvaluator:
         ce_baseline_lst = []
         for i in range(30):
             dd_rand_sample = dd_test.sample(top_k, ignore_index=True)
-            nr_true_positives_baseline = np.sum(dd_rand_sample[self.label] == 'FAIL')
-            nr_negatives_baseline = np.sum(dd_rand_sample[self.label] == 'PASS')
+            nr_true_positives_baseline = np.sum(dd_rand_sample[self.label] == "FAIL")
+            nr_negatives_baseline = np.sum(dd_rand_sample[self.label] == "PASS")
             ce_baseline_lst.append(nr_true_positives_baseline / nr_negatives_baseline)
             tot_random_baseline_time = np.sum(dd_rand_sample[self.time_attribute])
-            tot_random_baseline_time_true_positives = np.sum(dd_rand_sample.loc[dd_rand_sample[self.label] == 'FAIL', self.time_attribute])
+            tot_random_baseline_time_true_positives = np.sum(
+                dd_rand_sample.loc[dd_rand_sample[self.label] == "FAIL", self.time_attribute]
+            )
             gamma_tmp = tot_random_baseline_time_true_positives / tot_random_baseline_time
             gamma_lst.append(gamma_tmp)
 
         gamma = np.mean(gamma_lst)
-        logging.debug('gamma={}'.format(gamma))
+        logging.debug("gamma={}".format(gamma))
         ce_baseline = np.mean(ce_baseline_lst)
         return ce, beta, ce_baseline, gamma
 
@@ -217,8 +221,8 @@ class CostEffectivenessEvaluator:
         dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
         dd_top_k = dd_test_unsafe_predicted_sorted.iloc[:top_k, :]
 
-        nr_true_positives = np.sum(dd_top_k[self.label] == 'FAIL')
-        nr_negatives = np.sum(dd_top_k[self.label] == 'PASS')
+        nr_true_positives = np.sum(dd_top_k[self.label] == "FAIL")
+        nr_negatives = np.sum(dd_top_k[self.label] == "PASS")
         ce_sdc_scissor = nr_true_positives / nr_negatives
 
         is_predicted_unsafe = y_pred == "FAIL"
@@ -226,7 +230,9 @@ class CostEffectivenessEvaluator:
         logging.debug("{} tests as unsafe predicted.".format(nr_unsafe_predicted))
 
         tot_sim_time_by_sdc_scissor = np.sum(dd_top_k[self.time_attribute])
-        tot_sim_time_by_sdc_scissor_true_positives = np.sum(dd_top_k.loc[dd_top_k[self.label] == 'FAIL', self.time_attribute])
+        tot_sim_time_by_sdc_scissor_true_positives = np.sum(
+            dd_top_k.loc[dd_top_k[self.label] == "FAIL", self.time_attribute]
+        )
         logging.debug("total simulation time by SDC-Scissor: {} seconds".format(tot_sim_time_by_sdc_scissor))
         beta = tot_sim_time_by_sdc_scissor_true_positives / tot_sim_time_by_sdc_scissor
 
@@ -234,20 +240,22 @@ class CostEffectivenessEvaluator:
         logging.debug("sorted by road_distance: {}".format(dd_test_sorted_by_length["road_distance"]))
 
         dd_road_length_baseline_selection = dd_test_sorted_by_length.loc[np.arange(n_test) < top_k, :]
-        nr_true_positives_rl_baseline = np.sum(dd_road_length_baseline_selection[self.label] == 'FAIL')
-        nr_negatives_rl_baseline = np.sum(dd_road_length_baseline_selection[self.label] == 'PASS')
+        nr_true_positives_rl_baseline = np.sum(dd_road_length_baseline_selection[self.label] == "FAIL")
+        nr_negatives_rl_baseline = np.sum(dd_road_length_baseline_selection[self.label] == "PASS")
         ce_rl_baseline = nr_true_positives_rl_baseline / nr_negatives_rl_baseline
 
         tot_road_length_baseline_time = np.sum(dd_road_length_baseline_selection[self.time_attribute])
         tot_road_length_baseline_time_true_positives = np.sum(
-            dd_road_length_baseline_selection.loc[dd_road_length_baseline_selection[self.label] == 'FAIL', self.time_attribute]
+            dd_road_length_baseline_selection.loc[
+                dd_road_length_baseline_selection[self.label] == "FAIL", self.time_attribute
+            ]
         )
 
         ce_random_baseline_lst = []
         for i in range(30):
             dd_rand_sample = dd_test.sample(top_k, ignore_index=True)
-            nr_true_positives_baseline = np.sum(dd_rand_sample[self.label] == 'FAIL')
-            nr_negatives_baseline = np.sum(dd_rand_sample[self.label] == 'PASS')
+            nr_true_positives_baseline = np.sum(dd_rand_sample[self.label] == "FAIL")
+            nr_negatives_baseline = np.sum(dd_rand_sample[self.label] == "PASS")
             ce_random_baseline_lst.append(nr_true_positives_baseline / nr_negatives_baseline)
 
         ce_random_baseline = np.mean(ce_random_baseline_lst)

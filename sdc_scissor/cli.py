@@ -274,11 +274,23 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
             classifier=estimator, data_frame=df, label="safety", time_attribute="test_duration"
         )
         if random:
-            ce_sdc_scissor, ce_random_baseline, ce_rl_baseline = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
+            (
+                ce_sdc_scissor,
+                ce_random_baseline,
+                ce_rl_baseline,
+            ) = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
         else:
-            ce_sdc_scissor, ce_random_baseline, ce_rl_baseline = cost_effectiveness_evaluator.evaluate_with_longest_roads(top_k=top_k)
+            (
+                ce_sdc_scissor,
+                ce_random_baseline,
+                ce_rl_baseline,
+            ) = cost_effectiveness_evaluator.evaluate_with_longest_roads(top_k=top_k)
 
-        print("{:>20}: ce_sdc_scissor={:.4f}, ce_random_baseline={:.4f}, ce_rl_baseline={:.4f}".format(model_name, ce_sdc_scissor, ce_random_baseline, ce_rl_baseline))
+        print(
+            "{:>20}: ce_sdc_scissor={:.4f}, ce_random_baseline={:.4f}, ce_rl_baseline={:.4f}".format(
+                model_name, ce_sdc_scissor, ce_random_baseline, ce_rl_baseline
+            )
+        )
 
 
 @cli.command()
