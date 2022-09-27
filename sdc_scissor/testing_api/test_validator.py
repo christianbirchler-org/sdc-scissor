@@ -28,6 +28,16 @@ class TestValidatorDecorator(TestValidator):
         return self.wrappee.validate(test)
 
 
+class MakeTestInvalidValidator(TestValidatorDecorator):
+    def __init__(self, wrappee: TestValidator):
+        super().__init__(wrappee)
+
+    def validate(self, test: Test) -> bool:
+        self.wrappee.validate(test)
+        test.is_valid = False
+        return False
+
+
 class NoIntersectionValidator(TestValidatorDecorator):
     def __init__(self, wrappee: TestValidator):
         super().__init__(wrappee)
