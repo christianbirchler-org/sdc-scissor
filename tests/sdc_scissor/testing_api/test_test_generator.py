@@ -7,9 +7,9 @@ from sdc_scissor.testing_api.test_validator import SimpleTestValidator, MakeTest
 
 class TestTestGenerator:
     def test_id_generation_of_generate_tests_on_keeping_all_tests(self, mocker, fs):
-        destination = './destination'
+        destination = "./destination"
         number_of_tests_to_generate = 10
-        tool = 'frenetic'
+        tool = "frenetic"
         destination = Path(destination)
         if not destination.exists():
             destination.mkdir(parents=True)
@@ -35,9 +35,9 @@ class TestTestGenerator:
 
     def test_id_generation_of_generate_tests_on_keeping_valid_tests_only(self, fs):
         random.seed(9)  # With this seed (seed=9 ==> 3 invalid tests) we get three invalid test generated.
-        destination = './destination'
+        destination = "./destination"
         number_of_tests_to_generate = 100
-        tool = 'frenetic'
+        tool = "frenetic"
         destination = Path(destination)
         if not destination.exists():
             destination.mkdir(parents=True)
