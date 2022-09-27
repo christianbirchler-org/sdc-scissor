@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
+from sdc_scissor.testing_api.test_validator import TestValidator
 from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
 from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import (
     CustomFrenetGenerator,
@@ -26,16 +26,26 @@ class TestKeepingBehavior(abc.ABC):
     def keep(self, test: Test, collection: list):
         pass
 
+    @abc.abstractmethod
+    def generate_id(self, test: Test, generator) -> int:
+        pass
+
 
 class KeepAllTestsBehavior(TestKeepingBehavior):
     def keep(self, test: Test, collection: list):
         collection.append(test)
+
+    def generate_id(self, test: Test, generator) -> int:
+        return next(generator)
 
 
 class KeepValidTestsOnlyBehavior(TestKeepingBehavior):
     def keep(self, test: Test, collection: list):
         if test.is_valid:
             collection.append(test)
+
+    def generate_id(self, test: Test, generator) -> int:
+        return next(generator) if test.is_valid else None
 
 
 class TestGenerator:
@@ -44,7 +54,7 @@ class TestGenerator:
         count: int,
         destination: Path,
         tool: str,
-        validator: NoIntersectionValidator,
+        validator: TestValidator,
         test_keeping_behavior: TestKeepingBehavior,
     ):
         """
@@ -82,8 +92,11 @@ class TestGenerator:
         generated_tests_as_list_of_road_points = self.__add_sine_bumps(generated_tests_as_list_of_road_points)
 
         for road_points in generated_tests_as_list_of_road_points:
-            test = Test(test_id=next(self.__id_generator), road_points=road_points, test_outcome="NOT_EXECUTED")
+            if road_points is None:
+                continue
+            test = Test(test_id=None, road_points=road_points, test_outcome="NOT_EXECUTED")
             self.test_validator.validate(test)
+            test.test_id = self.keeping_behavior.generate_id(test, self.__id_generator)
             self.keeping_behavior.keep(test, self.generated_tests)
         logging.info("In total, {} tests were generated.".format(len(generated_tests_as_list_of_road_points)))
         logging.info("The test generator has {} tests in his collection".format(len(self.generated_tests)))
