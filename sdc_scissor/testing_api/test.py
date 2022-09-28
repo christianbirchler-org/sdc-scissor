@@ -45,7 +45,7 @@ class Test:
         :param road_points:
         :return:
         """
-        logging.info("* __interpolate")
+        logging.debug("* __interpolate")
         road_matrix = np.array(road_points)
         x = road_matrix[:, 0]
         y = road_matrix[:, 1]

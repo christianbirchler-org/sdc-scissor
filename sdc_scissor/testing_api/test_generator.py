@@ -120,7 +120,7 @@ class TestGenerator:
         """
         Save the tests as json files in a separate directory.
         """
-        logging.info("* save_tests")
+        logging.debug("* save_tests")
 
         file_post_fix: str = "_test.json"
         for i, test in enumerate(self.generated_tests):

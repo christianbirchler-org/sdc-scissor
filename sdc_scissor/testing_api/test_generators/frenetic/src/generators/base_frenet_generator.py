@@ -54,7 +54,7 @@ class BaseFrenetGenerator(BaseGenerator):
         if (max(xs) - min_xs + road_width > self.map_size - self.margin) or (
             max(ys) - min_ys + road_width > self.map_size - self.margin
         ):
-            log.info("Skip: Road won't fit")
+            log.debug("Skip: Road won't fit")
             return None
             # TODO: Fail the entire test and start over
         xs = list(map(lambda x: x - min_xs + road_width, xs))

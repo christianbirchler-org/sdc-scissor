@@ -21,7 +21,7 @@ class BaseGenerator(ABC):
         creation_date = datetime.now().strftime("%Y%m%d-%H%M%S")
         self.file_name = f"experiments/{creation_date}-{self.__class__.__name__}-results.csv"
         self.columns_number = 0
-        log.info(f"ERATO experiment output is stored in {self.file_name}")
+        log.debug(f"ERATO experiment output is stored in {self.file_name}")
 
         # Adding mutants for future mutation only if its min_oob_distance is better than its parent's min_oob_distance
         # min_oob_distance < parent_min_oob_distance
@@ -32,7 +32,7 @@ class BaseGenerator(ABC):
         pass
 
     def store_dataframe(self):
-        log.info("Storing the all the experiment results in a csv.")
+        log.debug("Storing the all the experiment results in a csv.")
         # Storing the results as csv in experiments folders
         with open(self.file_name, "w") as outfile:
             self.df.to_csv(outfile)

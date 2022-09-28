@@ -64,7 +64,7 @@ class TestLoader:
         :param test_path:
         :return:
         """
-        logging.info(str(test_path))
+        logging.debug(str(test_path))
         with open(test_path, "r") as fp:
             test_json: dict = json.load(fp)
 
@@ -77,10 +77,10 @@ class TestLoader:
             sim_time = test_json.get("simulation_time", None)
 
         id_pattern = r"(.*test.*)"
-        logging.info("test_path: {}".format(str(test_path)))
+        logging.debug("test_path: {}".format(str(test_path)))
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
         test_id = match_obj.group(1)
-        logging.info("test_id: {}".format(test_id))
+        logging.debug("test_id: {}".format(test_id))
 
         test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
         self.test_validator.validate(test)

@@ -88,17 +88,17 @@ class FeatureExtractor:
         :param road_features: List of road features
         :param out_dir: Path to store the csv file
         """
-        logging.info("save_to_csv")
+        logging.debug("save_to_csv")
         dd = pd.DataFrame()
         for test_id, rf in road_features:
             rf_dict = rf.to_dict()
             rf_dict["test_id"] = test_id
-            logging.info(rf_dict)
+            logging.debug(rf_dict)
             rf_dd = pd.DataFrame(rf_dict)
-            logging.info(rf_dd)
+            logging.debug(rf_dd)
             dd = pd.concat([dd, rf_dd], ignore_index=True)
 
-        logging.info(dd)
+        logging.debug(dd)
         out_path = out_dir / "road_features.csv"
         dd.to_csv(out_path)
 

@@ -57,7 +57,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father)
 
     def start(self):
-        log.info("Test generation frenetic.")
+        log.debug("Test generation frenetic.")
         return self.generate_initial_population()
         # self.generate_mutants()
         # sleep(10)
@@ -69,7 +69,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         while cnt < self.count:
             # print(cnt)
             cnt += 1
-            log.info("Random generation. Remaining time %s", 10)
+            log.debug("Random generation. Remaining time %s", 10)
             kappas = self.generate_random_test()
             road_points = self.execute_frenet_test(kappas, frenet_step=self.frenet_step)
             road_points_collection.append(road_points)
@@ -82,7 +82,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         while self.executor.get_remaining_time() > 0:
             if 0.0 in set(self.df["visited"]) or 1.0 in set(self.df["visited"]):
                 # TODO: The values are become float if there is a nan due to ERROR.
-                log.info("Converting visited column to boolean...")
+                log.debug("Converting visited column to boolean...")
                 self.df["visited"] = self.df["visited"].map(lambda x: True if x == 1.0 else False)
             parent = (
                 self.df[
@@ -98,11 +98,11 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
                 self.mutate_test(parent)
             else:
                 # If there is no good parent try random generation
-                log.info("There is no good candidate for mutation.")
+                log.debug("There is no good candidate for mutation.")
                 kappas = self.generate_random_test()
                 self.execute_frenet_test(kappas, frenet_step=self.frenet_step)
             if 0 < self.crossover_frequency <= self.recent_count:
-                log.info("Entering crossover phase.")
+                log.debug("Entering crossover phase.")
                 self.crossover()
                 self.recent_count = 0
 
@@ -149,8 +149,8 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         # TODO: Obtain the kappa values given the cartesians.
         road_points = parent.road.item()
         # Execute reversed original test
-        log.info("Mutation function: {:s}".format("reverse road"))
-        log.info(
+        log.debug("Mutation function: {:s}".format("reverse road"))
+        log.debug(
             "Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance".format(
                 parent.outcome.item(), parent.accum_neg_oob.item(), parent.min_oob_distance.item()
             )
@@ -234,9 +234,9 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
             i = 0
             while self.executor.get_remaining_time() > 0 and i < len(kappa_mutations):
                 name, function = kappa_mutations[i]
-                log.info("Generating mutants. Remaining time %s", self.executor.get_remaining_time())
-                log.info("Mutation function: {:s}".format(name))
-                log.info(
+                log.debug("Generating mutants. Remaining time %s", self.executor.get_remaining_time())
+                log.debug("Mutation function: {:s}".format(name))
+                log.debug(
                     "Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance".format(
                         parent.outcome.item(), parent.accum_neg_oob.item(), parent.min_oob_distance.item()
                     )
