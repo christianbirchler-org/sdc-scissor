@@ -28,6 +28,7 @@ class Test:
 
     def save_as_json(self, file_path: Path):
         """
+        Save the test as a JSON file.
 
         :param file_path: File path to save the test as a json file
         """

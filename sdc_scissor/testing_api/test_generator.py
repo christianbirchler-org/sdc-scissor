@@ -98,8 +98,12 @@ class TestGenerator:
             self.test_validator.validate(test)
             test.test_id = self.keeping_behavior.generate_id(test, self.__id_generator)
             self.keeping_behavior.keep(test, self.generated_tests)
-        logging.info("In total, {} tests were generated.".format(len(generated_tests_as_list_of_road_points)))
-        logging.info("The test generator has {} tests in his collection".format(len(self.generated_tests)))
+        logging.info(
+            "In total, {} tests (valid and invalid roads) were generated.".format(
+                len(generated_tests_as_list_of_road_points)
+            )
+        )
+        logging.info("The test generator has {} tests in its collection".format(len(self.generated_tests)))
 
     def __add_sine_bumps(self, generated_tests_as_list_of_road_points):
         for road_as_points in generated_tests_as_list_of_road_points:

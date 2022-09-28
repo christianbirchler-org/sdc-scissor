@@ -45,8 +45,13 @@ def _print_metrics(metrics):
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.option("-c", "--config", type=click.Path(exists=True), help="Configuration file")
-@click.option("--debug/--no-debug", default=False)
+@click.option(
+    "-c",
+    "--config",
+    type=click.Path(exists=True),
+    help="Path to a configuration file that contains the CLI commands in YAML format",
+)
+@click.option("--debug/--no-debug", default=False, help="Boolean flag for additional logging")
 def cli(ctx: click.Context, config: Path, debug) -> None:
     if debug:
         logging.basicConfig(level=logging.DEBUG)
@@ -66,9 +71,15 @@ def cli(ctx: click.Context, config: Path, debug) -> None:
 
 
 @cli.command()
-@click.option("-c", "--count", type=int, default=10)
-@click.option("-k", "--keep", type=bool, default=False)
-@click.option("-d", "--destination", default=_DESTINATION, type=click.Path())
+@click.option(
+    "-c", "--count", type=int, default=10, help="Number of tests the generator should produce (invalid roads inclusive)"
+)
+@click.option(
+    "-k", "--keep/--no-keep", type=bool, default=False, help="Keep the invalid roads produced by the test generator"
+)
+@click.option(
+    "-d", "--destination", default=_DESTINATION, type=click.Path(), help="Output directory to store the generated tests"
+)
 @click.option("-t", "--tool", default="frenetic", type=click.STRING)
 def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None:
     """
@@ -93,7 +104,9 @@ def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None
 
 
 @cli.command()
-@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True))
+@click.option(
+    "-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help="Path to directory containing the tests"
+)
 @click.option("-s", "--segmentation", default="angle-based", type=click.STRING)
 def extract_features(tests: Path, segmentation: str) -> None:
     """
@@ -117,8 +130,13 @@ def extract_features(tests: Path, segmentation: str) -> None:
 
 
 @cli.command()
-@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
+@click.option(
+    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to road_features.csv"
+)
 def feature_statistics(csv) -> None:
+    """
+    Get basic statistics of road_features.csv
+    """
     dd = CSVLoader.load_dataframe_from_csv(csv)
     nr_pass = np.sum(dd["safety"] == "PASS")
     nr_fails = np.sum(dd["safety"] == "FAIL")
@@ -175,11 +193,13 @@ def label_tests(
 
 
 @cli.command()
-@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
-@click.option("--models-dir", default=_TRAINED_MODELS, type=click.Path())
+@click.option(
+    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to road_features.csv"
+)
+@click.option("--models-dir", default=_TRAINED_MODELS, type=click.Path(), help="Directory to store the trained models")
 def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
-    Evaluate different machine learning models.
+    Evaluate different machine learning models with a stratified cross validation approach.
     """
     logging.debug("evaluate_models")
 
