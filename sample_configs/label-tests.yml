@@ -4,7 +4,7 @@ options:
   user: 'C:\Users\birc\Documents\BeamNG.drive'
   tests: 'destination'
   rf: 1.5
-  oob: 0.5
+  oob: 0.3
   max_speed: 50
   interrupt: true
   obstacles: false
