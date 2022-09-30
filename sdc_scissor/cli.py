@@ -294,10 +294,9 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
             classifier=estimator, data_frame=df, label="safety", time_attribute="test_duration"
         )
         if random:
-            (
-                ce_sdc_scissor,
-                ce_random_baseline,
-            ) = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
+            (ce_sdc_scissor, ce_random_baseline) = cost_effectiveness_evaluator.evaluate_with_random_baseline(
+                top_k=top_k
+            )
         else:
             (
                 # TODO: Adapt to the random baseline
