@@ -134,12 +134,14 @@ class CostEffectivenessEvaluator:
 
         nr_true_positives = np.sum(dd_top_k[self.label] == "FAIL")
         nr_negatives = np.sum(dd_top_k[self.label] == "PASS")
-        ce = nr_true_positives / nr_negatives
+        # ce = nr_true_positives / nr_negatives
 
         tot_sim_time_by_sdc_scissor = np.sum(dd_top_k[self.time_attribute])
         tot_sim_time_by_sdc_scissor_true_positives = np.sum(
             dd_top_k.loc[dd_top_k[self.label] == "FAIL", self.time_attribute]
         )
+
+        ce_sdc_scissor = nr_true_positives / tot_sim_time_by_sdc_scissor
 
         beta = tot_sim_time_by_sdc_scissor_true_positives / tot_sim_time_by_sdc_scissor
         logging.debug("beta={}".format(beta))
@@ -149,19 +151,19 @@ class CostEffectivenessEvaluator:
         for i in range(30):
             dd_rand_sample = dd_test.sample(top_k, ignore_index=True)
             nr_true_positives_baseline = np.sum(dd_rand_sample[self.label] == "FAIL")
-            nr_negatives_baseline = np.sum(dd_rand_sample[self.label] == "PASS")
-            ce_baseline_lst.append(nr_true_positives_baseline / nr_negatives_baseline)
+            # nr_negatives_baseline = np.sum(dd_rand_sample[self.label] == "PASS")
             tot_random_baseline_time = np.sum(dd_rand_sample[self.time_attribute])
-            tot_random_baseline_time_true_positives = np.sum(
-                dd_rand_sample.loc[dd_rand_sample[self.label] == "FAIL", self.time_attribute]
-            )
-            gamma_tmp = tot_random_baseline_time_true_positives / tot_random_baseline_time
-            gamma_lst.append(gamma_tmp)
+            ce_baseline_lst.append(nr_true_positives_baseline / tot_random_baseline_time)
+            # tot_random_baseline_time_true_positives = np.sum(
+            #     dd_rand_sample.loc[dd_rand_sample[self.label] == "FAIL", self.time_attribute]
+            # )
+            # gamma_tmp = tot_random_baseline_time_true_positives / tot_random_baseline_time
+            # gamma_lst.append(gamma_tmp)
 
-        gamma = np.mean(gamma_lst)
-        logging.debug("gamma={}".format(gamma))
+        # gamma = np.mean(gamma_lst)
+        # logging.debug("gamma={}".format(gamma))
         ce_baseline = np.mean(ce_baseline_lst)
-        return ce, beta, ce_baseline, gamma
+        return ce_sdc_scissor, ce_baseline  # beta, ce_baseline, gamma
 
     def evaluate_with_longest_roads(self, train_split=0.8, top_k=5):
         dd = self.data_frame
