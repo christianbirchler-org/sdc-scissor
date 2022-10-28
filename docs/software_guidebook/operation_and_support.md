@@ -9,7 +9,7 @@ The tool can be used with the following two commands:
 
 * PyPI: `sdc-scissor [COMMAND] [OPTIONS]`
 * Docker: `docker run --volume "$(pwd)/destination:/var/project/destination" --rm sdc-scissor [COMMAND] [OPTIONS]` (this will write all files written to `/var/project/destination` to the local folder `destination`)
-* Poetry: `poetry run python sdc-scissor.py [COMMAND] [OPTIONS]`
+* Poetry: `poetry run sdc-scissor [COMMAND] [OPTIONS]`
 
 There are multiple commands to use.
 For simplifying the documentation only the command and their options are described.
