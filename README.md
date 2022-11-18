@@ -90,7 +90,7 @@ Software Engineering and Methodology (TOSEM) (2022). DOI: to appear
   booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER)},
   title={Cost-effective Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor},
   year={2022},
-  doi={to appear}
+  doi={10.1109/SANER53432.2022.00030}
 }
 
 @article{Birchler2022Single,
@@ -99,7 +99,7 @@ Software Engineering and Methodology (TOSEM) (2022). DOI: to appear
   year={2022},
   publisher={Association for Computing Machinery},
   journal={ACM Transactions on Software Engineering and Methodology (TOSEM)},
-  doi={to appear}
+  doi={10.1145/3533818}
 }
 ```
 
