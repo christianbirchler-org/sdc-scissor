@@ -129,6 +129,9 @@ class CostEffectivenessEvaluator:
 
         dd_test_unsafe_predicted: pd.DataFrame = dd_test.loc[is_predicted_unsafe, :]
         dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
+        if top_k > dd_test_unsafe_predicted_sorted.shape[0]:
+            logging.warning("Number of predicted failing tests is smaller than 'top_k'. Lower the 'top_k' parameter!")
+            raise Exception("Number of predicted failing tests is smaller than 'top_k'. Lower the 'top_k' parameter!")
         dd_top_k = dd_test_unsafe_predicted_sorted.iloc[:top_k, :]
 
         nr_true_positives = np.sum(dd_top_k[self.label] == "FAIL")
@@ -209,6 +212,9 @@ class CostEffectivenessEvaluator:
 
         dd_test_unsafe_predicted: pd.DataFrame = dd_test.loc[is_predicted_unsafe, :]
         dd_test_unsafe_predicted_sorted = dd_test_unsafe_predicted.sort_values(by=["FAIL_prob"], ascending=False)
+        if top_k > dd_test_unsafe_predicted_sorted.shape[0]:
+            logging.warning("Number of predicted failing tests is smaller than 'top_k'. Lower the 'top_k' parameter!")
+            raise Exception("Number of predicted failing tests is smaller than 'top_k'. Lower the 'top_k' parameter!")
         dd_top_k = dd_test_unsafe_predicted_sorted.iloc[:top_k, :]
 
         nr_true_positives = np.sum(dd_top_k[self.label] == "FAIL")
