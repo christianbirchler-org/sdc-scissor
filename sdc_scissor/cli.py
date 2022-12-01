@@ -157,8 +157,21 @@ def feature_statistics(csv) -> None:
 @click.option("--delineator-dist", default=5, type=click.INT)
 @click.option("--tree-dist", default=5, type=click.INT)
 @click.option("-fov", "--field-of-view", default=120, type=click.INT)
+@click.option("--custom-ai", default=False, type=click.BOOL)
 def label_tests(
-    tests, home, user, rf, oob, max_speed, interrupt, obstacles, bump_dist, delineator_dist, tree_dist, field_of_view
+    tests,
+    home,
+    user,
+    rf,
+    oob,
+    max_speed,
+    interrupt,
+    obstacles,
+    bump_dist,
+    delineator_dist,
+    tree_dist,
+    field_of_view,
+    custom_ai,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
@@ -167,7 +180,7 @@ def label_tests(
     tests = Path(tests)
     logging.debug("Test directory: {}".format(tests))
     beamng_simulator = SimulatorFactory.get_beamng_simulator(
-        home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
+        home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view, custom_ai=custom_ai
     )
 
     test_validator = NoIntersectionValidator(SimpleTestValidator())

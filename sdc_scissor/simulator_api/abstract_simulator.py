@@ -68,3 +68,11 @@ class AbstractSimulator(abc.ABC):
     @abc.abstractmethod
     def get_sensor_data(self):
         pass
+
+    @abc.abstractmethod
+    def step(self):
+        """
+        Will be called continuously throughout the simulation.
+        Can be used to perform custom self-driving AI inference and steer the car.
+        """
+        pass

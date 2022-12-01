@@ -88,7 +88,7 @@ class TestMonitor:
         Checks if the car is currently moving.
         """
         logging.debug("* is_car_moving")
-        time_delta = 10
+        time_delta = 20
         decision_distance = 1
 
         current_simulation_data = self.test.simulation_data[-1]

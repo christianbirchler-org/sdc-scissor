@@ -5,10 +5,11 @@ import time
 import numpy as np
 from scipy.spatial.transform import Rotation
 from beamngpy import BeamNGpy, Scenario, Road, Vehicle
-from beamngpy.sensors import Electrics
+from beamngpy.sensors import Electrics, Camera
 from shapely.geometry import LineString
 
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.simulator_api.self_driving_models.dave2 import Dave2Model
 from sdc_scissor.testing_api.test import Test
 
 
@@ -54,7 +55,7 @@ class BeamNGSimulator(AbstractSimulator):
     This class implements the interface for the specific BeamNG.tech simulator.
     """
 
-    def __init__(self, beamng: BeamNGpy, rf: float, max_speed: float, fov: int):
+    def __init__(self, beamng: BeamNGpy, rf: float, max_speed: float, fov: int, custom_ai: bool):
         """
         API for enabling inter-process communication with the BeamNG simulator.
 
@@ -77,6 +78,12 @@ class BeamNGSimulator(AbstractSimulator):
         self.rf = rf
         self.max_speed = max_speed
         self.fov = fov
+        self.custom_ai = custom_ai
+        self.camera = None
+        if self.custom_ai:
+            self.model = Dave2Model()
+        else:
+            self.model = None
 
     def open(self):
         """
@@ -111,12 +118,16 @@ class BeamNGSimulator(AbstractSimulator):
         """ """
         logging.info("start_scenario")
         self.beamng.start_scenario()
-        self.vehicle.ai_set_mode("span")
-        self.vehicle.ai_drive_in_lane(lane=True)
-        self.vehicle.ai_set_aggression(self.rf)
         self.vehicle.set_color(rgba=(0, 0, 1, 0.5))
-        self.vehicle.ai_set_speed(self.__kmh_to_ms(self.max_speed))
-        self.vehicle.ai_set_waypoint("end_point")
+
+        if not self.custom_ai:
+            self.vehicle.ai_set_mode("span")
+            self.vehicle.ai_drive_in_lane(lane=True)
+            self.vehicle.ai_set_aggression(self.rf)
+            self.vehicle.ai_set_speed(self.__kmh_to_ms(self.max_speed))
+            self.vehicle.ai_set_waypoint("end_point")
+        else:
+            self.vehicle.ai_set_mode("disabled")
 
     @staticmethod
     def __kmh_to_ms(kmh):
@@ -167,6 +178,17 @@ class BeamNGSimulator(AbstractSimulator):
 
         end_point = road_nodes[-1][:3]
 
+        if self.custom_ai:
+            # Set up camera for custom AI
+            position = (-0.3, 1.5, 1)
+            direction = (0, 1, -0.1)
+            self.camera = Camera(
+                pos=position, direction=direction, fov=70, near_far=(0.01, 1000), resolution=(320, 160), colour=True
+            )
+            self.camera.attach(self.vehicle, "cam1")
+            self.camera.connect(self.beamng, self.vehicle)
+            self.vehicle.attach_sensor("camera", self.camera)
+
         self.scenario.add_checkpoints(positions=[end_point], scales=[(5, 5, 5)], ids=["end_point"])
         self.scenario.make(self.beamng)
         self.beamng.load_scenario(self.scenario)
@@ -195,3 +217,12 @@ class BeamNGSimulator(AbstractSimulator):
         """
         logging.debug("* get_sensor_data")
         return self.vehicle.sensors["electrics"]
+
+    def step(self):
+        if not self.custom_ai:
+            return
+
+        image = self.beamng.poll_sensors(self.vehicle)["camera"]["colour"].convert("RGB")
+        prediction = self.model.predict(image)
+        logging.info(f"prediction: {prediction}")
+        self.vehicle.control(throttle=0.08, steering=prediction, brake=0)

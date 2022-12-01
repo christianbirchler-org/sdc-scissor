@@ -15,7 +15,7 @@ packages = [
 sdc-scissor = "sdc_scissor.cli:cli"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.11"
 click = "^8.0.4"
 beamngpy = "=1.22"
 pandas = "^1.4.1"
@@ -23,6 +23,8 @@ Shapely = "^1.8.1"
 scikit-learn = "^1.0.2"
 pymoo = "=0.4.2.2"
 PyYAML = "^6.0"
+tensorflow = "2.10.0"
+opencv-python = "=4.6.0.66"
 
 [tool.poetry.dev-dependencies]
 parameterized = "^0.8.1"

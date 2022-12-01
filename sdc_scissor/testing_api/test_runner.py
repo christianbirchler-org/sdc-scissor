@@ -131,6 +131,7 @@ class TestRunner:
 
         while not test_monitor.is_test_finished:
             test_monitor.check(self.interrupt)
+            self.simulator.step()
             time.sleep(0.1)
 
         test_monitor.stop_timer()
