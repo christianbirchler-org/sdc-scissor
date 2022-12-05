@@ -96,14 +96,11 @@ Software Engineering and Methodology (TOSEM) (2022). DOI: to appear
 @article{Birchler2022Cost2,
   author    = {Christian Birchler and Nicolas Ganz and Sajad Khatiri and Alessio Gambi and Sebastiano Panichella},
   title     = {Cost-effective Simulation-based Test Selection in Self-driving Cars Software},
-  journal   = {CoRR},
-  volume    = {abs/2211.11409},
+  journal   = {Science of Computer Programming (SCP)},
   year      = {2022},
-  url       = {https://doi.org/10.48550/arXiv.2211.11409},
-  doi       = {10.48550/arXiv.2211.11409},
+  doi       = {to appear},
   eprinttype = {arXiv},
   eprint    = {2211.11409},
-  timestamp = {Thu, 24 Nov 2022 15:52:33 +0100}
 }
 
 @article{Birchler2022Single,
