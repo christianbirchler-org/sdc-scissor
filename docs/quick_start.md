@@ -1,7 +1,7 @@
 # Quick Start
 ## Requirements
 * Windows 10
-* BeamNG.tech
+* BeamNG.tech v0.24.0.2
 * Python 3.9
 
 You can install SDC-Scissor from PyPI or manually by downloading it from GitHub and install it with Poetry.
