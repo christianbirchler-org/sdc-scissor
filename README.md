@@ -21,6 +21,18 @@
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=code_smells)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 
+```{text}
+ ____    ____    ____              ____                                                
+/\  _`\ /\  _`\ /\  _`\           /\  _`\           __                                 
+\ \,\L\_\ \ \/\ \ \ \/\_\         \ \,\L\_\    ___ /\_\    ____    ____    ___   _ __  
+ \/_\__ \\ \ \ \ \ \ \/_/_  _______\/_\__ \   /'___\/\ \  /',__\  /',__\  / __`\/\`'__\
+   /\ \L\ \ \ \_\ \ \ \L\ \/\______\ /\ \L\ \/\ \__/\ \ \/\__, `\/\__, `\/\ \L\ \ \ \/ 
+   \ `\____\ \____/\ \____/\/______/ \ `\____\ \____\\ \_\/\____/\/\____/\ \____/\ \_\ 
+    \/_____/\/___/  \/___/            \/_____/\/____/ \/_/\/___/  \/___/  \/___/  \/_/ 
+                                                                                       
+                                                                                       
+```
+
 ## A Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 <div style="text-align: center;">
 <a href="https://github.com/ChristianBirchler/sdc-scissor">
