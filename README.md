@@ -21,7 +21,7 @@
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=code_smells)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 
-```{text}
+```
  ____    ____    ____              ____                                                
 /\  _`\ /\  _`\ /\  _`\           /\  _`\           __                                 
 \ \,\L\_\ \ \/\ \ \ \/\_\         \ \,\L\_\    ___ /\_\    ____    ____    ___   _ __  
