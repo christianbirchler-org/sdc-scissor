@@ -41,4 +41,4 @@ In the repository is a directory `sample_tests` with some simple sample test cas
 development purposes.
 
 The data used for the demo and evaluation of SDC-Scissor v1.0 we made available on Zenodo:
-[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.5903161.svg)](https://doi.org/10.5281/zenodo.5903161)
+[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.5903161.svg)](https://doi.org/10.5281/zenodo.5903161) (**NOTE:** The used simulator was BeamNG.research which is deprecated and not compatible anymore with SDC-Scissor.)
