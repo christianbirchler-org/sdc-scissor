@@ -21,7 +21,7 @@ git clone https://github.com/ChristianBirchler/sdc-scissor.git
 cd sdc-scissor
 poetry install
 ````
-3. Install simulator
+3. Install simulator ([Description](software_guidebook/deployment.md))
 4. Run the tool
 ````shell
 poetry run sdc-scissor -c sample_configs/label-tests.yml
