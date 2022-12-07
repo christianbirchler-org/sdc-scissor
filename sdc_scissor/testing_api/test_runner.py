@@ -26,6 +26,8 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, 
             bump.x_pos = point.x
             bump.y_pos = point.y
             bump.z_pos = -28.0
+            # TODO: compute orientation
+            # bump.rot_quat = ...rot_quat=Rotation.from_euler("zyx", [alpha, 0, 0], degrees=False).as_quat()
             obstacles_lst.append(bump)
 
     if delineator_dist:
