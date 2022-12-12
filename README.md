@@ -88,14 +88,6 @@ The software we developed is distributed under GNU GPL license. See the
 ## References
 If you use this tool in your research, please cite the following papers:
 
-* Christian Birchler, Nicolas Ganz, Sajad Khatiri, Alessio Gambi, and Sebastiano Panichella. 2022. Cost-effective
-Simulationbased Test Selection in Self-driving Cars Software with SDC-Scissor. In 2022 IEEE 29th International
-Conference on Software Analysis, Evolution and Reengineering (SANER), IEEE.
-
-* Christian Birchler, Sajad Khatiri, Pouria Derakhshanfar, Sebastiano Panichella, and Annibale Panichella. 2022.
-Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments. ACM Transactions on
-Software Engineering and Methodology (TOSEM) (2022). DOI: to appear
-
 ```{code-block} bibtex
 @inproceedings{Birchler2022Cost1,
   author={Birchler, Christian and Ganz, Nicolas and Khatiri, Sajad and Gambi, Alessio, and Panichella, Sebastiano},
