@@ -112,7 +112,17 @@ Software Engineering and Methodology (TOSEM) (2022). DOI: to appear
   year      = {2022},
   doi       = {to appear},
   eprinttype = {arXiv},
-  eprint    = {2211.11409},
+  eprint    = {2211.11409}
+}
+
+@article{Birchler2022Machine,
+  author    = {Christian Birchler and Sajad Khatiri and Bill Bosshard and Alessio Gambi and Sebastiano Panichella},
+  title     = {Machine Learning-based Test Selection for Simulation-based Testing of Self-driving Cars Software},
+  journal   = {Empirical Software Engineering (EMSE)},
+  year      = {2022},
+  doi       = {to appear},
+  eprinttype = {arXiv},
+  eprint    = {2212.04769}
 }
 
 @article{Birchler2022Single,
