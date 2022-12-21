@@ -15,7 +15,7 @@ packages = [
 sdc-scissor = "sdc_scissor.cli:cli"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.10,<3.11"
 click = "^8.0.4"
 beamngpy = "=1.22"
 pandas = "^1.4.1"
@@ -35,6 +35,9 @@ black = "^22.3.0"
 myst-parser = "^0.18.0"
 notebook = "^6.4.12"
 pyfakefs = "^4.6.2"
+
+[tool.poetry.group.dev.dependencies]
+pynguin = "^0.27.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
