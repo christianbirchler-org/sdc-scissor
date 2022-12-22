@@ -39,7 +39,7 @@ user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\l
 poetry run sdc-scissor -c sample_configs/label-tests.yml
 ````
 
-The [Software Guidebook](software_guidebook/index.rst) provides more explanations about the
+The [Software Guidebook](software_guidebook/introduction.md) provides more explanations about the
 [installation](software_guidebook/deployment.md) and [usage](software_guidebook/operation_and_support.md) of
 SDC-Scissor.
 
