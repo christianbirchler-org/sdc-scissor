@@ -4,6 +4,10 @@
 * BeamNG.tech v0.24.0.2
 * Python 3.9
 
+````{note}
+SDC-Scissor work currently only with BeamNG.tech v0.24.0.2!
+````
+
 You can install SDC-Scissor from PyPI or manually by downloading it from GitHub and install it with Poetry.
 ## PyPI
 ````shell
@@ -12,17 +16,25 @@ sdc-scissor -c your_config.yml
 ````
 
 ## Manual installation
-1. Clone the repository
+Clone the repository:
 ````shell
 git clone https://github.com/ChristianBirchler/sdc-scissor.git
 ````
-2. Install dependencies
+
+Install the dependencies:
 ````shell
 cd sdc-scissor
 poetry install
 ````
-3. Install simulator ([Description](software_guidebook/deployment.md))
-4. Run the tool
+
+## Install BeamNG.tech
+For using SDC-Scissor with the BeamNG.tech simulator you can obtain an academic license from BeamNG from their
+[website](https://register.beamng.tech/). After installing BeamNG.tech you need to replace the `tig` level it in the
+user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\levels`) wth the one from this repository
+(`levels_template/tig`).
+
+
+## Run the tool
 ````shell
 poetry run sdc-scissor -c sample_configs/label-tests.yml
 ````
@@ -41,4 +53,7 @@ In the repository is a directory `sample_tests` with some simple sample test cas
 development purposes.
 
 The data used for the demo and evaluation of SDC-Scissor v1.0 we made available on Zenodo:
-[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.5903161.svg)](https://doi.org/10.5281/zenodo.5903161) (**NOTE:** The used simulator was BeamNG.research which is deprecated and not compatible anymore with SDC-Scissor.)
+[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.5903161.svg)](https://doi.org/10.5281/zenodo.5903161)
+````{note}
+The used simulator was BeamNG.research which is deprecated and not compatible anymore with SDC-Scissor.
+````

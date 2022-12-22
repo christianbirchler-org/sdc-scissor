@@ -88,7 +88,11 @@ The software we developed is distributed under GNU GPL license. See the
 ## References
 If you use this tool in your research, please cite the following papers:
 
-```{code-block} bibtex
+- **Christian Birchler**, Nicolas Ganz, Sajad Khatiri, Alessio Gambi, and Sebastiano Panichella, "Cost-effective Simulation-based Test Selection in Self-driving Cars Software with SDC-Scissor," *In 2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER)*, pp. 164-168, doi: 10.1109/SANER53432.2022.00030.
+  - [IEEE Xplore](https://doi.org/10.1109/SANER53432.2022.00030)
+  - [Preprint](https://doi.org/10.21256/zhaw-24017)
+  - [GitHub](https://github.com/ChristianBirchler/sdc-scissor)
+````{code-block} bibtex
 @inproceedings{Birchler2022Cost1,
   author={Birchler, Christian and Ganz, Nicolas and Khatiri, Sajad and Gambi, Alessio, and Panichella, Sebastiano},
   booktitle={2022 IEEE 29th International Conference on Software Analysis, Evolution and Reengineering (SANER)},
@@ -96,7 +100,10 @@ If you use this tool in your research, please cite the following papers:
   year={2022},
   doi={10.1109/SANER53432.2022.00030}
 }
-
+````
+- **Christian Birchler**, Nicolas Ganz, Sajad Khatiri, Alessio Gambi, and Sebastiano Panichella, "Cost-effective Simulation-based Test Selection in Self-driving Cars Software," *Science of Computer Programming (SCP)*, doi: to appear, 2022.
+  - [Accepted manuscript version](https://doi.org/10.48550/arXiv.2211.11409)
+````{code-block} bibtex
 @article{Birchler2022Cost2,
   author    = {Christian Birchler and Nicolas Ganz and Sajad Khatiri and Alessio Gambi and Sebastiano Panichella},
   title     = {Cost-effective Simulation-based Test Selection in Self-driving Cars Software},
@@ -106,7 +113,10 @@ If you use this tool in your research, please cite the following papers:
   eprinttype = {arXiv},
   eprint    = {2211.11409}
 }
-
+````
+- **Christian Birchler**, Sajad Khatiri, Bill Bosshard, Alessio Gambi, and Sebastiano Panichella, "Machine Learning-based Test Selection for Simulation-based Testing of Self-driving Cars Software," *Empirical Software Engineering (EMSE)*, doi: to appear, 2022.
+  - [Preprint](https://doi.org/10.48550/arXiv.2212.04769)
+````{code-block} bibtex
 @article{Birchler2022Machine,
   author    = {Christian Birchler and Sajad Khatiri and Bill Bosshard and Alessio Gambi and Sebastiano Panichella},
   title     = {Machine Learning-based Test Selection for Simulation-based Testing of Self-driving Cars Software},
@@ -116,7 +126,11 @@ If you use this tool in your research, please cite the following papers:
   eprinttype = {arXiv},
   eprint    = {2212.04769}
 }
-
+````
+- **Christian Birchler**, Sajad Khatiri, Pouria Derakhshanfar, Sebastiano Panichella, and Annibale Panichella, "Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments," *ACM Transactions on Software Engineering and Methodology (TOSEM)*, doi: 10.1145/3533818, 2022.
+  - [ACM Digital Library](https://doi.org/10.1145/3533818)
+  - [Preprint](https://doi.org/10.48550/arXiv.2107.09614)
+```{code-block} bibtex
 @article{Birchler2022Single,
   author={Birchler, Christian and Khatiri, Sajad and Derakhshanfar, Pouria and Panichella, Sebastiano and Panichella, Annibale},
   title={Single and Multi-objective Test Cases Prioritization for Self-driving Cars in Virtual Environments},
