@@ -44,6 +44,9 @@ The [Software Guidebook](software_guidebook/index.rst) provides more explanation
 SDC-Scissor.
 
 ## Demo
+````{info}
+The following demo was made for SDC-Scissor v1.0. A demo video for the recent version is coming soon.
+````
 [![](https://img.youtube.com/vi/Cn8p648KnfQ/maxresdefault.jpg)](https://youtu.be/Cn8p648KnfQ)
 
 [YouTube Link](https://youtu.be/Cn8p648KnfQ)
