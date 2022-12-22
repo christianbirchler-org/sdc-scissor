@@ -27,7 +27,7 @@ class TestTestGenerator:
 
         expected = number_of_tests_to_generate
         actual = len(test_generator.generated_tests)
-        assert expected == actual
+        assert actual == expected
         for index, test in enumerate(test_generator.generated_tests):
             expected = index
             actual = test.test_id
