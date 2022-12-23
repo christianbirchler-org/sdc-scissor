@@ -40,11 +40,16 @@ def compute_euler_z_rotation(dir_vec):
     base_vec = np.array([0, 1])
     norm_base_vec = np.array(base_vec) / np.linalg.norm(base_vec)
     angle = math.acos(np.inner(norm_base_vec, norm_dir_vec))
+    x_component = norm_dir_vec[0]
     y_component = norm_dir_vec[1]
     if y_component > 0:
         alpha = angle
+        if x_component > 0:
+            alpha = np.pi+angle
     elif y_component < 0:
         alpha = 2 * np.pi - angle
+        if x_component > 0:
+            alpha = angle
     elif y_component == 0:
         alpha = np.pi
     else:

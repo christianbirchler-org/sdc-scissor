@@ -31,10 +31,9 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, 
             bump.y_pos = point.y
             bump.z_pos = -28.0
             # TODO: compute orientation
-            point_t1 = road_model.ideal_trajectory.interpolate(-current_distance - 1)
-            dir_vec = -np.array([point_t1.x - point.x, point_t1.y - point.y])
+            point_t1 = road_model.ideal_trajectory.interpolate(-current_distance + 1)
+            dir_vec = np.array([point_t1.x - point.x, point_t1.y - point.y])
             z_euler_rotation = compute_euler_z_rotation(dir_vec)
-            # bump.rot_quat = Rotation.from_euler("zyx", [z_euler_rotation, 0, 0], degrees=False).as_quat()
             bump.rot_quat = tuple(Rotation.from_euler("zyx", [z_euler_rotation, 0, 0], degrees=False).as_quat())
             obstacles_lst.append(bump)
 
