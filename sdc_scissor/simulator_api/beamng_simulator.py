@@ -45,7 +45,7 @@ def compute_euler_z_rotation(dir_vec):
     if y_component > 0:
         alpha = angle
         if x_component > 0:
-            alpha = np.pi+angle
+            alpha = np.pi + angle
     elif y_component < 0:
         alpha = 2 * np.pi - angle
         if x_component > 0:
