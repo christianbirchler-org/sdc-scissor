@@ -27,7 +27,7 @@ class Bump(abc.ABC):
         self.upper_length = upper_length
         self.upper_width = upper_width
         self.rot = rot
-        self.rot_quat = rot_quat
+        self.rot_quat: tuple = rot_quat
         self.obstacle_type = obstacle_type
 
     @abc.abstractmethod

@@ -1,7 +1,10 @@
 import time
 import logging
 
+import numpy as np
+
 from beamngpy import Scenario, BNGError
+from scipy.spatial.transform import Rotation
 
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_loader import TestLoader
@@ -10,6 +13,7 @@ from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 from sdc_scissor.testing_api.test_validator import TestIsNotValidException
+from sdc_scissor.simulator_api.beamng_simulator import compute_euler_z_rotation
 
 
 def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, tree_dist) -> list:
@@ -27,7 +31,11 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, 
             bump.y_pos = point.y
             bump.z_pos = -28.0
             # TODO: compute orientation
-            # bump.rot_quat = ...rot_quat=Rotation.from_euler("zyx", [alpha, 0, 0], degrees=False).as_quat()
+            point_t1 = road_model.ideal_trajectory.interpolate(-current_distance - 1)
+            dir_vec = -np.array([point_t1.x - point.x, point_t1.y - point.y])
+            z_euler_rotation = compute_euler_z_rotation(dir_vec)
+            # bump.rot_quat = Rotation.from_euler("zyx", [z_euler_rotation, 0, 0], degrees=False).as_quat()
+            bump.rot_quat = tuple(Rotation.from_euler("zyx", [z_euler_rotation, 0, 0], degrees=False).as_quat())
             obstacles_lst.append(bump)
 
     if delineator_dist:
