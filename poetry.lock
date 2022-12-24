@@ -765,14 +765,14 @@ files = [
 
 [[package]]
 name = "exceptiongroup"
-version = "1.0.4"
+version = "1.1.0"
 description = "Backport of PEP 654 (exception groups)"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "exceptiongroup-1.0.4-py3-none-any.whl", hash = "sha256:542adf9dea4055530d6e1279602fa5cb11dab2395fa650b8674eaec35fc4a828"},
-    {file = "exceptiongroup-1.0.4.tar.gz", hash = "sha256:bd14967b79cd9bdb54d97323216f8fdf533e278df937aa2a90089e7d6e06e5ec"},
+    {file = "exceptiongroup-1.1.0-py3-none-any.whl", hash = "sha256:327cbda3da756e2de031a3107b81ab7b3770a602c4d16ca618298c526f4bec1e"},
+    {file = "exceptiongroup-1.1.0.tar.gz", hash = "sha256:bcb67d800a4497e1b404c2dd44fca47d3b7a5e5433dbab67f96c1a685cdfdf23"},
 ]
 
 [package.extras]
@@ -1130,14 +1130,14 @@ test = ["codecov", "coverage", "ipykernel (>=6.12)", "ipython", "mypy", "pre-com
 
 [[package]]
 name = "jupyter-core"
-version = "5.1.0"
+version = "5.1.1"
 description = "Jupyter core package. A base package on which Jupyter projects rely."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_core-5.1.0-py3-none-any.whl", hash = "sha256:f5740d99606958544396914b08e67b668f45e7eff99ab47a7f4bcead419c02f4"},
-    {file = "jupyter_core-5.1.0.tar.gz", hash = "sha256:a5ae7c09c55c0b26f692ec69323ba2b62e8d7295354d20f6cd57b749de4a05bf"},
+    {file = "jupyter_core-5.1.1-py3-none-any.whl", hash = "sha256:f1038179d0f179b0e92c8fa2289c012b29dafdc9484b41821079f1a496f5a0f2"},
+    {file = "jupyter_core-5.1.1.tar.gz", hash = "sha256:f342d29eb6edb06f8dffa69adea987b3a9ee2b6702338a8cb6911516ea0b432d"},
 ]
 
 [package.dependencies]
@@ -1173,14 +1173,14 @@ test = ["click", "coverage", "pre-commit", "pytest (>=6.1.0)", "pytest-asyncio (
 
 [[package]]
 name = "jupyter-server"
-version = "2.0.3"
+version = "2.0.5"
 description = "The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_server-2.0.3-py3-none-any.whl", hash = "sha256:6f40ae6a8b6c734f99d67f034059cab8807444c838feaacb8d19feecfd49be2c"},
-    {file = "jupyter_server-2.0.3.tar.gz", hash = "sha256:5c33a66a33f4bd85924d1c5b0e5bdbe1595c70791c1614cbedbaabab75dd27ba"},
+    {file = "jupyter_server-2.0.5-py3-none-any.whl", hash = "sha256:18a952c0b75c18f801e91221798fd3e91aef09562896f03877db39db332f7cd2"},
+    {file = "jupyter_server-2.0.5.tar.gz", hash = "sha256:0d9e63d40412334dfa348cef8bfe8415b973752d12ca3afd64f0ea478e52aa4a"},
 ]
 
 [package.dependencies]
