@@ -7,11 +7,11 @@ Content
     :maxdepth: 2
     :caption: User Documentation
 
-    quick_start
-    test_generation
-    test_execution
-    feature_extraction
-    machine_learning
+    user_documentation/quick_start
+    user_documentation/test_generation
+    user_documentation/test_execution
+    user_documentation/feature_extraction
+    user_documentation/machine_learning
     api/index
 
 .. toctree::
