@@ -4,7 +4,7 @@
 Content
 -------
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: User Documentation
 
     user_documentation/quick_start
@@ -15,7 +15,7 @@ Content
     api/index
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Software Guidebook
 
     software_guidebook/introduction
