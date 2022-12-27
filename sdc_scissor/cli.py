@@ -84,6 +84,11 @@ def cli(ctx: click.Context, config: Path, debug) -> None:
 def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
+
+    :param count: The number of tests to generate and persist in the destination directory
+    :param keep: Keep the invalid road specifications or omit them
+    :param destination: Directory where the test specifications should be stored
+    :param tool: Name of the test generator to be used
     """
     logging.debug("* generate_tests")
     destination = Path(destination)
@@ -111,6 +116,9 @@ def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None
 def extract_features(tests: Path, segmentation: str) -> None:
     """
     Extract road features from given test scenarios.
+
+    :param tests: Path to the directory containing the tests
+    :param segmentation: Name of the road segmentation strategy
     """
     logging.debug("extract_features")
     tests = Path(tests)
@@ -136,6 +144,8 @@ def extract_features(tests: Path, segmentation: str) -> None:
 def feature_statistics(csv) -> None:
     """
     Get basic statistics of road_features.csv
+
+    :param csv: Path to the CSV file containing the extracted road features
     """
     dd = CSVLoader.load_dataframe_from_csv(csv)
     nr_pass = np.sum(dd["safety"] == "PASS")
@@ -162,6 +172,19 @@ def label_tests(
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
+
+    :param tests: Path to the directory containing the test specifications
+    :param home: The home directory of the BeamNG.tech simulator containing the executable
+    :param user: The user directory of BeamNG.tech containing the tech.key file and levels files
+    :param rf: Risk factor of the AI driving the car
+    :param oob: The out-of-bound parameter specifying how much a car is allowed to drive off the lane
+    :param max_speed: The maximum speed the AI is allowed to drive
+    :param interrupt: Indicator if the test executions should stop when the car violates the OOB criteria
+    :param obstacles: Indicator if there should be obstacles in the virtual environment
+    :param bump_dist: The distance between the speed bumps ('obstacles' needs to be true)
+    :param delineator_dist: The distance between the delineators ('obstacles' needs to be true)
+    :param tree_dist: The distance between the trees ('obstacles' needs to be true)
+    :param field_of_view: The field of view angle
     """
     logging.debug("label_tests")
     tests = Path(tests)
@@ -200,6 +223,9 @@ def label_tests(
 def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
     Evaluate different machine learning models with a stratified cross validation approach.
+
+    :param csv: Path to the CSV file containing the extracted road features of the tests
+    :param models_dir: Directory where the trained and evaluated classifier models should be stored
     """
     logging.debug("evaluate_models")
 
@@ -274,6 +300,10 @@ def grid_search(csv: Path, clf: str) -> None:
 def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
+
+    :param csv:
+    :param random:
+    :param top_k:
     """
     logging.debug("evaluate_cost_effectiveness")
     df = CSVLoader.load_dataframe_from_csv(csv)
@@ -309,6 +339,9 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
 def predict_tests(tests: Path, classifier: Path) -> None:
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.
+
+    :param tests: Directory containing tests which were not executed yet
+    :param classifier: Path to the trained classifier model
     """
     test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_loader = TestLoader(tests_dir=tests, test_validator=test_validator)
