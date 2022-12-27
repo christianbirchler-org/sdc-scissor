@@ -39,6 +39,7 @@ autodoc_default_options = {
     "members": True,
 }
 
+github_url = 'https://github.com/ChristianBirchler/sdc-scissor'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -55,6 +56,12 @@ exclude_patterns = ["software_guidebook/decisions/adr-template.md"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+
+html_theme_options = {
+    'analytics_id': 'G-EF6L7M0P5T',
+    'titles_only': True,
+    'sticky_navigation': False
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
