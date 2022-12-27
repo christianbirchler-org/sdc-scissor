@@ -1,8 +1,23 @@
 SDC-Scissor CLI
 ===============
-.. py:function:: sdc-scissor.generate_tests
-.. py:function:: sdc-scissor.extract_features
-.. py:function:: sdc-scissor.label_tests
-.. py:function:: sdc-scissor.evaluate_models
-.. py:function:: sdc-scissor.evaluate_cost_effectiveness
-.. py:function:: sdc-scissor.predict_tests
+
+.. autofunction:: sdc_scissor.cli.generate_tests
+    :noindex:
+
+.. autofunction:: sdc_scissor.cli.label_tests
+    :noindex:
+
+.. autofunction:: sdc_scissor.cli.extract_features
+    :noindex:
+
+.. autofunction:: sdc_scissor.cli.feature_statistics
+    :noindex:
+
+.. autofunction:: sdc_scissor.cli.evaluate_models
+    :noindex:
+
+.. autofunction:: sdc_scissor.cli.predict_tests
+    :noindex:
+
+.. autofunction:: sdc_scissor.cli.evaluate_cost_effectiveness
+    :noindex:
