@@ -35,6 +35,39 @@ user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\l
 
 
 ## Run the tool
+```{mermaid}
+sequenceDiagram
+  actor User
+  participant SDC-Scissor
+  participant BeamNG.tech
+  User ->> SDC-Scissor: Generate tests
+  activate SDC-Scissor
+  SDC-Scissor -->> User: Tests stored
+  deactivate SDC-Scissor
+  User ->> SDC-Scissor: Label tests
+  activate BeamNG.tech
+  loop for test in test suite
+    SDC-Scissor ->> SDC-Scissor: Run test
+    SDC-Scissor ->> BeamNG.tech: Run test in simulator
+   end
+  deactivate BeamNG.tech
+  SDC-Scissor -->> User: Tests with outcome stored
+  User ->> SDC-Scissor: Extract features
+  SDC-Scissor -->> User: CSV file with features stored
+  User ->> SDC-Scissor: Evaluate models
+  SDC-Scissor -->> User: Trained models stored
+  User ->> SDC-Scissor: Predict test outcome
+  SDC-Scissor -->> User: Predicted test outcomes stored
+  User ->> SDC-Scissor: Run only selected tests
+  activate BeamNG.tech
+  loop for test in selected tests
+    SDC-Scissor ->> SDC-Scissor: Run test
+    SDC-Scissor ->> BeamNG.tech: Run test in simulator
+   end
+  deactivate BeamNG.tech
+  SDC-Scissor -->> User: Test outcomes stored
+```
+
 ````shell
 poetry run sdc-scissor -c sample_configs/label-tests.yml
 ````
@@ -60,3 +93,5 @@ The data used for the demo and evaluation of SDC-Scissor v1.0 we made available 
 ````{note}
 The used simulator was BeamNG.research which is deprecated and not compatible anymore with SDC-Scissor.
 ````
+
+
