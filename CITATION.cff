@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Birchler"
+  given-names: "Christian"
+  orcid: "https://orcid.org/0000-0003-3987-0276"
+- family-names: "Ganz"
+  given-names: "Nicolas"
+  orcid: "https://orcid.org/0000-0002-4165-0275"
+- family-names: "Khatiri"
+  given-names: "Sajad"
+  orcid: "https://orcid.org/0000-0003-0354-9747"
+- family-names: "Gambi"
+  given-names: "Alessio"
+  orcid: "https://orcid.org/0000-0002-0132-6497"
+- family-names: "Panichella"
+  given-names: "Sebastiano"
+  orcid: "https://orcid.org/0000-0003-4120-626X"
+title: "SDC-Scissor"
+version: 2.1.1
+doi: 10.5281/zenodo.7335660
+date-released: 2022-11-18
+url: "https://github.com/ChristianBirchler/sdc-scissor"
