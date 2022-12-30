@@ -1,4 +1,15 @@
 # SDC-Scissor
+```{code-block} text
+ ____    ____    ____              ____                                                
+/\  _`\ /\  _`\ /\  _`\           /\  _`\           __                                 
+\ \,\L\_\ \ \/\ \ \ \/\_\         \ \,\L\_\    ___ /\_\    ____    ____    ___   _ __  
+ \/_\__ \\ \ \ \ \ \ \/_/_  _______\/_\__ \   /'___\/\ \  /',__\  /',__\  / __`\/\`'__\
+   /\ \L\ \ \ \_\ \ \ \L\ \/\______\ /\ \L\ \/\ \__/\ \ \/\__, `\/\__, `\/\ \L\ \ \ \/ 
+   \ `\____\ \____/\ \____/\/______/ \ `\____\ \____\\ \_\/\____/\/\____/\ \____/\ \_\ 
+    \/_____/\/___/  \/___/            \/_____/\/____/ \/_/\/___/  \/___/  \/___/  \/_/ 
+                                                                                       
+                                                                                       
+```
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 [![GitHub issues](https://img.shields.io/github/issues/ChristianBirchler/sdc-scissor)](https://github.com/ChristianBirchler/sdc-scissor/issues)
@@ -21,21 +32,6 @@
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 [![](https://sonarcloud.io/api/project_badges/measure?project=ChristianBirchler_sdc-scissor&metric=code_smells)](https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor)
 [![DOI](https://zenodo.org/badge/363107094.svg)](https://zenodo.org/badge/latestdoi/363107094)
-
-
-```{code-block} text
- ____    ____    ____              ____                                                
-/\  _`\ /\  _`\ /\  _`\           /\  _`\           __                                 
-\ \,\L\_\ \ \/\ \ \ \/\_\         \ \,\L\_\    ___ /\_\    ____    ____    ___   _ __  
- \/_\__ \\ \ \ \ \ \ \/_/_  _______\/_\__ \   /'___\/\ \  /',__\  /',__\  / __`\/\`'__\
-   /\ \L\ \ \ \_\ \ \ \L\ \/\______\ /\ \L\ \/\ \__/\ \ \/\__, `\/\__, `\/\ \L\ \ \ \/ 
-   \ `\____\ \____/\ \____/\/______/ \ `\____\ \____\\ \_\/\____/\/\____/\ \____/\ \_\ 
-    \/_____/\/___/  \/___/            \/_____/\/____/ \/_/\/___/  \/___/  \/___/  \/_/ 
-                                                                                       
-                                                                                       
-```
-
-## A Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 <div style="text-align: center;">
 <a href="https://github.com/ChristianBirchler/sdc-scissor">
 <img src="https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/images/github_logo_icon.png">
@@ -45,6 +41,7 @@
 </a>
 </div>
 
+## A Tool for Cost-effective Simulation-based Test Selection in Self-driving Cars Software
 SDC-Scissor is a tool that let you test self-driving cars more efficiently in simulation. It uses a machine-learning
 approach to select only relevant test scenarios so that the testing process is faster. Furthermore, the selected tests
 are diverse and try to challenge the car with corner cases.
