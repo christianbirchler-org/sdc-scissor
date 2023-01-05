@@ -30,18 +30,20 @@ def _compute_start_position(road_nodes):
     one_meter_from_start_point = optimal_trajectory.interpolate(distance=-3.5)
 
     dir_vec = -np.array([one_meter_from_start_point.x - start_point.x, one_meter_from_start_point.y - start_point.y])
-    alpha = compute_euler_z_rotation(dir_vec)
+    quaternion_rotation = compute_quaternion_rotation(dir_vec)
+    #print('start position={}, direction={}'.format(start_position, dir_vec))
 
-    return start_position, alpha
+    return start_position, quaternion_rotation
 
 
-def compute_euler_z_rotation(dir_vec):
+def compute_quaternion_rotation(dir_vec):
     norm_dir_vec = dir_vec / np.linalg.norm(dir_vec)
     base_vec = np.array([0, 1])
-    norm_base_vec = np.array(base_vec) / np.linalg.norm(base_vec)
+    norm_base_vec = base_vec / np.linalg.norm(base_vec)
     angle = math.acos(np.inner(norm_base_vec, norm_dir_vec))
     x_component = norm_dir_vec[0]
     y_component = norm_dir_vec[1]
+
     if y_component > 0:
         alpha = angle
         if x_component > 0:
@@ -54,7 +56,10 @@ def compute_euler_z_rotation(dir_vec):
         alpha = np.pi
     else:
         raise Exception("y_component could not be assessed!")
-    return alpha
+
+    quaternion_rotation = Rotation.from_euler("zyx", [alpha, 0, 0], degrees=False).as_quat()
+    #print('alpha={}'.format(alpha))
+    return quaternion_rotation
 
 
 class BeamNGSimulator(AbstractSimulator):
@@ -166,11 +171,11 @@ class BeamNGSimulator(AbstractSimulator):
         electrics = Electrics()
         self.vehicle.attach_sensor("electrics", electrics)
 
-        start_position, alpha = _compute_start_position(road_nodes)
+        start_position, quaternion_rotation = _compute_start_position(road_nodes)
         self.scenario.add_vehicle(
             vehicle=self.vehicle,
             pos=start_position,
-            rot_quat=Rotation.from_euler("zyx", [alpha, 0, 0], degrees=False).as_quat(),
+            rot_quat=quaternion_rotation,
         )
 
         end_point = road_nodes[-1][:3]
