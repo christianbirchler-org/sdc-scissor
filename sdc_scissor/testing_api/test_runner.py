@@ -7,6 +7,7 @@ from beamngpy import Scenario, BNGError
 from scipy.spatial.transform import Rotation
 
 from sdc_scissor.testing_api.test import Test
+from sdc_scissor.testing_api.test_plotter import TestPlotter
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
 from sdc_scissor.testing_api.road_model import RoadModel
@@ -75,6 +76,7 @@ class TestRunner:
         self.tree_dist = kwargs.get("tree_dist", None)
         self.obstacle_factory: ObstacleFactory = kwargs.get("obstacle_factory", None)
         self.fov: list = kwargs.get("fov", None)
+        self.test_plotter: TestPlotter = TestPlotter()
 
     def run_test_suite(self):
         """ """
@@ -126,6 +128,9 @@ class TestRunner:
         time.sleep(5)
 
         road_model = RoadModel(test.interpolated_road_points)
+
+        self.test_plotter.plot(road_model)
+
         obstacles = _define_obstacles(
             road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist, self.tree_dist
         )
