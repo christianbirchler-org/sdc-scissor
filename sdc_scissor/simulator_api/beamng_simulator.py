@@ -31,7 +31,7 @@ def _compute_start_position(road_nodes):
 
     dir_vec = -np.array([one_meter_from_start_point.x - start_point.x, one_meter_from_start_point.y - start_point.y])
     quaternion_rotation = compute_quaternion_rotation(dir_vec)
-    #print('start position={}, direction={}'.format(start_position, dir_vec))
+    # print('start position={}, direction={}'.format(start_position, dir_vec))
 
     return start_position, quaternion_rotation
 
@@ -58,7 +58,7 @@ def compute_quaternion_rotation(dir_vec):
         raise Exception("y_component could not be assessed!")
 
     quaternion_rotation = Rotation.from_euler("zyx", [alpha, 0, 0], degrees=False).as_quat()
-    #print('alpha={}'.format(alpha))
+    # print('alpha={}'.format(alpha))
     return quaternion_rotation
 
 
@@ -172,11 +172,7 @@ class BeamNGSimulator(AbstractSimulator):
         self.vehicle.attach_sensor("electrics", electrics)
 
         start_position, quaternion_rotation = _compute_start_position(road_nodes)
-        self.scenario.add_vehicle(
-            vehicle=self.vehicle,
-            pos=start_position,
-            rot_quat=quaternion_rotation,
-        )
+        self.scenario.add_vehicle(vehicle=self.vehicle, pos=start_position, rot_quat=quaternion_rotation)
 
         end_point = road_nodes[-1][:3]
 

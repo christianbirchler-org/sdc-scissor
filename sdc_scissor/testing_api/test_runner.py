@@ -35,8 +35,8 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, 
             point_t1 = road_model.ideal_trajectory.interpolate(-current_distance + 1)
             dir_vec = np.array([point_t1.x - point.x, point_t1.y - point.y])
             z_euler_rotation = compute_quaternion_rotation(dir_vec)
-            #bump.rot_quat = tuple(Rotation.from_euler("zyx", [z_euler_rotation, 0, 0], degrees=False).as_quat())
-            #bump.rot_quat = z_euler_rotation
+            # bump.rot_quat = tuple(Rotation.from_euler("zyx", [z_euler_rotation, 0, 0], degrees=False).as_quat())
+            # bump.rot_quat = z_euler_rotation
             obstacles_lst.append(bump)
 
     if delineator_dist:
