@@ -6,7 +6,7 @@ options:
   rf: 1.5
   oob: 0.3
   max_speed: 50
-  interrupt: true
+  interrupt: false
   obstacles: true
   bump_dist: 20
   delineator_dist: null
