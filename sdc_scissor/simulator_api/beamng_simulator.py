@@ -12,7 +12,25 @@ from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.test import Test
 
 
-def _compute_start_position(road_nodes):
+def _compute_vehicle_start_rotation(direction_vector):
+    """
+    Compute start rotation of the car. The car should head straight on the right lane in the beginning of the road.
+
+    :param direction_vector: Initial direction of the car as vector (x, y)
+    :return: Quaternion rotation.
+    """
+    logging.debug("compute_start_rotation")
+
+    ey = [0, -1]
+    dot_product = np.inner(ey, direction_vector)
+    determinant = ey[0] * direction_vector[1] - direction_vector[0] * ey[1]
+    theta = -math.atan2(determinant, dot_product)
+    rotation = Rotation.from_rotvec(theta * np.array([0, 0, 1]))
+    quaternion_rotation = tuple(rotation.as_quat())
+    return quaternion_rotation
+
+
+def _compute_vehicle_start_point(road_nodes):
     """
     Compute start position of the car. The car should be on the right lane in the beginning of the road.
 
@@ -26,40 +44,7 @@ def _compute_start_position(road_nodes):
     optimal_trajectory = center_line.parallel_offset(distance=2.5)
     start_point = optimal_trajectory.interpolate(distance=-2.5)
     start_position = (start_point.x, start_point.y, first_road_point[2])
-
-    one_meter_from_start_point = optimal_trajectory.interpolate(distance=-3.5)
-
-    dir_vec = -np.array([one_meter_from_start_point.x - start_point.x, one_meter_from_start_point.y - start_point.y])
-    quaternion_rotation = compute_quaternion_rotation(dir_vec)
-    # print('start position={}, direction={}'.format(start_position, dir_vec))
-
-    return start_position, quaternion_rotation
-
-
-def compute_quaternion_rotation(dir_vec):
-    norm_dir_vec = dir_vec / np.linalg.norm(dir_vec)
-    base_vec = np.array([0, 1])
-    norm_base_vec = base_vec / np.linalg.norm(base_vec)
-    angle = math.acos(np.inner(norm_base_vec, norm_dir_vec))
-    x_component = norm_dir_vec[0]
-    y_component = norm_dir_vec[1]
-
-    if y_component > 0:
-        alpha = angle
-        if x_component > 0:
-            alpha = np.pi + angle
-    elif y_component < 0:
-        alpha = 2 * np.pi - angle
-        if x_component > 0:
-            alpha = angle
-    elif y_component == 0:
-        alpha = np.pi
-    else:
-        raise Exception("y_component could not be assessed!")
-
-    quaternion_rotation = Rotation.from_euler("zyx", [alpha, 0, 0], degrees=False).as_quat()
-    # print('alpha={}'.format(alpha))
-    return quaternion_rotation
+    return start_position
 
 
 class BeamNGSimulator(AbstractSimulator):
@@ -171,7 +156,9 @@ class BeamNGSimulator(AbstractSimulator):
         electrics = Electrics()
         self.vehicle.attach_sensor("electrics", electrics)
 
-        start_position, quaternion_rotation = _compute_start_position(road_nodes)
+        start_position = _compute_vehicle_start_point(road_nodes)
+        start_direction = np.array(road_nodes[1][:2]) - np.array(road_nodes[0][:2])
+        quaternion_rotation = _compute_vehicle_start_rotation(start_direction)
         self.scenario.add_vehicle(vehicle=self.vehicle, pos=start_position, rot_quat=quaternion_rotation)
 
         end_point = road_nodes[-1][:3]
