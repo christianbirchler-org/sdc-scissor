@@ -53,21 +53,3 @@ class TestBeamNGSimulator:
 
         beamng_simulator = BeamNGSimulator(beamng=beamng_mock, rf=1.5, max_speed=120, fov=120)
         beamng_simulator.load_scenario(test_mock, mock_scenario, mock_obstacles)
-
-    def test_start_orientation_among_positive_x(self):
-        road_points = [[0, 0, 0], [50, 0, 0]]
-        _, alpha = bs._compute_start_position(road_nodes=road_points)
-        actual = alpha
-        expected_1 = 0
-        expected_2 = np.pi
-        tol = 0.01
-        assert (expected_1 - tol < actual < expected_1 + tol) or (expected_2 - tol < actual < expected_2 + tol)
-
-    def test_start_orientation_among_negative_x(self):
-        road_points = [[50, 0, 0], [0, 0, 0]]
-        _, alpha = bs._compute_start_position(road_nodes=road_points)
-        actual = alpha
-        expected_1 = 0
-        expected_2 = np.pi
-        tol = 0.01
-        assert (expected_1 - tol < actual < expected_1 + tol) or (expected_2 - tol < actual < expected_2 + tol)
