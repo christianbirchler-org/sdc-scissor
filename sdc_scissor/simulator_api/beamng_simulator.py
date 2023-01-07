@@ -1,6 +1,7 @@
 import logging
 import math
 import time
+import icontract
 
 import numpy as np
 from scipy.spatial.transform import Rotation
@@ -52,6 +53,7 @@ class BeamNGSimulator(AbstractSimulator):
     This class implements the interface for the specific BeamNG.tech simulator.
     """
 
+    @icontract.require(lambda rf: 0 < rf <= 2)
     def __init__(self, beamng: BeamNGpy, rf: float, max_speed: float, fov: int):
         """
         API for enabling inter-process communication with the BeamNG simulator.

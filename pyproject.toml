@@ -23,6 +23,7 @@ Shapely = "^1.8.1"
 scikit-learn = "^1.0.2"
 pymoo = "=0.4.2.2"
 PyYAML = "^6.0"
+icontract = "^2.6.2"
 
 [tool.poetry.group.dev.dependencies]
 parameterized = "^0.8.1"

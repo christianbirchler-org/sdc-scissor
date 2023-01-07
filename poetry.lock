@@ -145,14 +145,14 @@ pydot = "*"
 
 [[package]]
 name = "astroid"
-version = "2.12.13"
+version = "2.12.14"
 description = "An abstract syntax tree for Python with inference support."
 category = "dev"
 optional = false
 python-versions = ">=3.7.2"
 files = [
-    {file = "astroid-2.12.13-py3-none-any.whl", hash = "sha256:10e0ad5f7b79c435179d0d0f0df69998c4eef4597534aae44910db060baeb907"},
-    {file = "astroid-2.12.13.tar.gz", hash = "sha256:1493fe8bd3dfd73dc35bd53c9d5b6e49ead98497c47b2307662556a5692d29d7"},
+    {file = "astroid-2.12.14-py3-none-any.whl", hash = "sha256:a1fbaad9d3e5f2eeb8e3a1d1d6008a081b1aac33ef86ff7742ae0714d92e9cf2"},
+    {file = "astroid-2.12.14.tar.gz", hash = "sha256:b573ed96112061150eade70851c277a92fba544812b781836ab16fedbbddb497"},
 ]
 
 [package.dependencies]
@@ -163,7 +163,7 @@ wrapt = {version = ">=1.11,<2", markers = "python_version < \"3.11\""}
 name = "asttokens"
 version = "2.2.1"
 description = "Annotate AST trees with source code positions"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -858,6 +858,25 @@ files = [
 ]
 
 [[package]]
+name = "icontract"
+version = "2.6.2"
+description = "Provide design-by-contract with informative violation messages."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "icontract-2.6.2-py3-none-any.whl", hash = "sha256:1a441dad41c9a0615c6ae96464190eddccd2de8153254059ff18ffd7b3b84800"},
+    {file = "icontract-2.6.2.tar.gz", hash = "sha256:b87d2b33eb5d7f2c9a5af4770d6d106560c9688c79a821e5fe1bbd41188f5dcc"},
+]
+
+[package.dependencies]
+asttokens = ">=2,<3"
+typing-extensions = "*"
+
+[package.extras]
+dev = ["astor (==0.8.1)", "asyncstdlib (==3.9.1)", "coverage (>=4.5.1,<5)", "deal (==4.23.3)", "docutils (>=0.14,<1)", "dpcontracts (==0.6.0)", "mypy (==0.971)", "numpy (>=1,<2)", "py-cpuinfo (>=5.0.0,<6)", "pydocstyle (>=6.1.1,<7)", "pygments (>=2.2.0,<3)", "pylint (==2.13.9)", "tabulate (>=0.8.7,<1)", "tox (>=3.0.0)", "typeguard (>=2,<3)", "yapf (==0.20.2)"]
+
+[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -883,14 +902,14 @@ files = [
 
 [[package]]
 name = "iniconfig"
-version = "1.1.1"
-description = "iniconfig: brain-dead simple config-ini parsing"
+version = "2.0.0"
+description = "brain-dead simple config-ini parsing"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
-    {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
+    {file = "iniconfig-2.0.0-py3-none-any.whl", hash = "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"},
+    {file = "iniconfig-2.0.0.tar.gz", hash = "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3"},
 ]
 
 [[package]]
@@ -3288,7 +3307,7 @@ test = ["argcomplete (>=2.0)", "pre-commit", "pytest", "pytest-mock"]
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3474,4 +3493,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "8d7058632405db7fb388bcf69adac8b509c725998be943252930bb4cc64cb8aa"
+content-hash = "2fa1c1758642f54aa4166ffc1a5d42ec97ff23083c49f34081ec1cffd87f1eba"
