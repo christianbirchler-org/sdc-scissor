@@ -1,0 +1,153 @@
+import can
+import cantools
+import json
+import yaml
+from pathlib import Path
+import logging
+
+
+def get_can_frame_list(can_db):
+    """
+    Returns a list of all sample frames in the given can database
+
+    :param can_db: The CAN database
+    :return: A list of all sample frames in the given can database
+    """
+    can_frame_list = []
+    # result = {'example_message': '', 'frame_id': 0x0, 'signal_list': []}
+
+    for i in can_db.messages:
+        # For each message in the database store it's information in a dictionary and add it to the list
+
+        signal_list = []
+
+        # Get the id of the frame
+        frame_id = i.frame_id
+
+        # Get all signals for this frame and store them in the signal_list
+        signal = i.signals
+        for j in signal:
+            signal_list.append(j.name)
+
+        # Store the information in the dictionary and add it to the frame_list
+        res = {
+            'example_message': i,
+            'frame_id': frame_id,
+            'signal_list': signal_list
+        }
+        can_frame_list.append(res)
+
+        # result['example_message'], result['frame_id'], result['signal_list'] = i, frame_id, signal_list
+        # can_frame_list.append(result.copy())
+
+    return can_frame_list
+
+
+class CanBusOutput:
+    """
+    CanBusOutput Objects are used to offer a flexible output for th CAN messages.
+    """
+    def __init__(self):
+        print("Init Can Bus Output")
+
+        self.output_logger = logging.getLogger('CAN_OUT_LOG')
+        fh = logging.FileHandler('can_out.log')
+        fh.setLevel(logging.DEBUG)
+        self.output_logger.addHandler(fh)
+
+    def output_can_msg(self, msg):
+        """
+        This method is used to output the can message. It is called by the CanBusHandler.
+        The current output source is a python logger.
+
+        :param msg: The CAN message that should be sent to the output.
+        :return:
+        """
+        self.output_logger.info(msg)
+
+
+class CanBusHandler:
+    """
+    CanBusHandler Objects can be used to receive data from a simulation and generate CAN messages from it.
+    """
+
+    def __init__(self, config: Path):
+        print("Init CanBusHandler")
+        try:
+            # Load the config file
+            with open(config) as fp:
+                config_dict: dict = yaml.safe_load(fp)
+
+            # Load the CAN database
+            db_path = config_dict['dbc']
+            dbc_map_path = config_dict['dbc_map']
+            db = cantools.database.load_file(db_path)
+
+            # Gather the sample frames from the dbc
+            self.frame_list = get_can_frame_list(db)
+            self.output = CanBusOutput()
+
+            # Load the dbc map used to map the simulation signals to the dbc signals
+            f = open(dbc_map_path)
+            self.dbc_map = json.load(f)
+
+        except FileNotFoundError as err:
+            logging.error(err)
+
+    def handle_sensor_data(self, data):
+        """
+        This method should be called by a TestRunner with the current data from the simulation.
+        It will then generate CAN messages from the data and send them to the CanBusOutput.
+
+        :param data: A dictionary containing the current data from the simulation.
+        :return: 
+        """""
+
+        for frame in self.frame_list:
+            # For each frame in the CAN db we transform the values using the dbc_map and then generate the message
+
+            example_msg = frame['example_message']
+            frame_id = frame['frame_id']
+            frame_sig_list = frame['signal_list']
+
+            # Transform the simulation values to assure they are within the dbc range and named correctly
+            frame_values = self.get_frame_values(frame_sig_list, data)
+
+            # Generate the CAN message
+            frame_data = example_msg.encode(frame_values)
+            msg = can.Message(arbitration_id=frame_id, data=frame_data)
+
+            # Send the message to the CanBusOutput
+            self.output.output_can_msg(msg)
+
+    def get_frame_values(self, frame_signal_list, data):
+        """
+        This method transforms the simulation values to assure they are within the dbc range and named correctly.
+
+        :param frame_signal_list: A list of the signals in the frame
+        :param data: A dictionary containing the current data from the simulation.
+        :return: A dictionary containing the values for the frame named correctly and within the dbc range.
+        """
+        values = {}
+        for signal in frame_signal_list:
+            # For each signal in the frame we transform the value using the dbc_map
+
+            # Gather the dbc signal range and default value
+            default = self.dbc_map[signal]['default']
+            s_min = self.dbc_map[signal]['min']
+            s_max = self.dbc_map[signal]['max']
+
+            if self.dbc_map[signal]['sim_signal_name'] in data:
+                # Check if the value exists in the simulation data
+                v = data[self.dbc_map[signal]['sim_signal_name']]
+                if s_min <= v <= s_max:
+                    # Check if the value is within the defined range
+                    values[signal] = v
+                else:
+                    # If the value is not within the defined range we use the default value
+                    values[signal] = default
+            else:
+                # If the value does not exist in the simulation data we use the default value
+                values[signal] = default
+
+        return values

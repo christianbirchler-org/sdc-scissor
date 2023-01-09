@@ -24,6 +24,7 @@ scikit-learn = "^1.0.2"
 pymoo = "=0.4.2.2"
 PyYAML = "^6.0"
 icontract = "^2.6.2"
+cantools = "^38.0.1"
 
 [tool.poetry.group.dev.dependencies]
 parameterized = "^0.8.1"
