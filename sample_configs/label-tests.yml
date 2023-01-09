@@ -7,7 +7,7 @@ options:
   oob: 0.3
   max_speed: 50
   interrupt: false
-  obstacles: true
+  obstacles: false
   bump_dist: 20
   delineator_dist: null
   tree_dist: null
