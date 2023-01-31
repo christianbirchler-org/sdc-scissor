@@ -1,0 +1,2 @@
+dbc: ".\\can_bus_handler\\sample_candb\\beamng_pipeline_sample.dbc"
+dbc_map: '.\\can_bus_handler\\dbc_maps\\dbc_map_carla.json'
