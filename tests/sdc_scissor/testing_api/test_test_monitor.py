@@ -51,7 +51,7 @@ class TestTestMonitor:
         mock_test.interpolated_road_points = [[0, 0, 0], [1, 1, 0]]
         self.test_monitor.test = mock_test
 
-        self.test_monitor.check(interrupt_on_failure=True)
+        self.test_monitor.process_car_state(interrupt_on_failure=True)
         expected = True
         actual = self.test_monitor.is_test_finished
         assert expected == actual

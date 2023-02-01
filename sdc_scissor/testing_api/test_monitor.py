@@ -54,7 +54,7 @@ class TestMonitor:
         self.current_test_outcome = "UNDEFINED"
         self.cbh = CanBusHandler(WindowsPath("c:/Users/birc/sdc-scissor/sample_conf/conf_sdc.yml"))
 
-    def check(self, interrupt_on_failure):
+    def process_car_state(self, interrupt_on_failure):
         """
         Checks the current state of the vehicle and test execution.
 
