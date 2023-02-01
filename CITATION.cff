@@ -1,23 +1,47 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+title: SDC-Scissor
+message: >-
+  A Tool for Cost-effective Simulation-based Test Selection
+  in Self-driving Cars Software
+type: software
 authors:
-- family-names: "Birchler"
-  given-names: "Christian"
-  orcid: "https://orcid.org/0000-0003-3987-0276"
-- family-names: "Ganz"
-  given-names: "Nicolas"
-  orcid: "https://orcid.org/0000-0002-4165-0275"
-- family-names: "Khatiri"
-  given-names: "Sajad"
-  orcid: "https://orcid.org/0000-0003-0354-9747"
-- family-names: "Gambi"
-  given-names: "Alessio"
-  orcid: "https://orcid.org/0000-0002-0132-6497"
-- family-names: "Panichella"
-  given-names: "Sebastiano"
-  orcid: "https://orcid.org/0000-0003-4120-626X"
-title: "SDC-Scissor"
-version: 2.1.1
-doi: 10.5281/zenodo.7335660
-date-released: 2022-11-18
-url: "https://github.com/ChristianBirchler/sdc-scissor"
+  - given-names: Christian
+    family-names: Birchler
+    email: birc@zhaw.ch
+    affiliation: Zurich University of Applied Sciences
+    orcid: 'https://orcid.org/0000-0003-3987-0276'
+  - given-names: Nicolas
+    family-names: Ganz
+    email: gann@zhaw.ch
+    affiliation: Zurich University of Applied Sciences
+    orcid: 'https://orcid.org/0000-0002-4165-0275'
+  - given-names: Sajad
+    family-names: Khatiri
+    email: mazr@zhaw.ch
+    affiliation: Zurich University of Applied Sciences
+    orcid: 'https://orcid.org/0000-0003-0354-9747'
+  - given-names: Alessio
+    family-names: Gambi
+    email: alessio.gambi@fh-krems.ac.at
+    orcid: 'https://orcid.org/0000-0002-0132-6497'
+    affiliation: University of Passau
+  - given-names: Sebastiano
+    family-names: Panichella
+    email: panc@zhaw.ch
+    affiliation: Zurich University of Applied Sciences
+    orcid: 'https://orcid.org/0000-0003-4120-626X'
+identifiers:
+  - type: doi
+    value: 10.1016/j.scico.2023.102926
+    description: >-
+      Original Software Publication at the Science of
+      Computer Programming journal
+  - type: doi
+    value: 10.1109/SANER53432.2022.00030
+    description: Tool Demo Paper at SANER 2022
+repository-code: 'https://github.com/ChristianBirchler/sdc-scissor'
+url: 'https://sdc-scissor.readthedocs.io/'
+license: GPL-3.0
