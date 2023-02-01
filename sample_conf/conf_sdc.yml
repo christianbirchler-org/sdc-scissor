@@ -1,2 +1,2 @@
-dbc: "C:\\Users\\cyril\\Documents\\BeamNG\\sdc-scissor\\sdc-scissor-2.1.0\\can_bus_handler\\sample_candb\\beamng_pipeline_sample.dbc"
-dbc_map: 'C:\\Users\\cyril\\Documents\\BeamNG\\sdc-scissor\\sdc-scissor-2.1.0\\can_bus_handler\\dbc_maps\\dbc_map_beamng.json'
+dbc: 'C:\Users\birc\sdc-scissor\sample_candb\beamng_pipeline_sample.dbc'
+dbc_map: 'C:\Users\birc\sdc-scissor\dbc_maps\dbc_map_beamng.json'

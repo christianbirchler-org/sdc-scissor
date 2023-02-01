@@ -72,7 +72,7 @@ class CanBusHandler:
     """
 
     def __init__(self, config: Path):
-        print("Init CanBusHandler")
+        logging.info("Init CanBusHandler")
         try:
             # Load the config file
             with open(config) as fp:
@@ -81,7 +81,7 @@ class CanBusHandler:
             # Load the CAN database
             db_path = config_dict['dbc']
             dbc_map_path = config_dict['dbc_map']
-            db = cantools.database.load_file(db_path)
+            db = cantools.db.load_file(Path(db_path))
 
             # Gather the sample frames from the dbc
             self.frame_list = get_can_frame_list(db)

@@ -4,10 +4,12 @@ import time
 
 from scipy.spatial import distance
 from shapely.geometry import box
+from pathlib import WindowsPath
 
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler
 
 
 def _get_t_previous_data(data, time_delta) -> tuple:
@@ -50,6 +52,7 @@ class TestMonitor:
         self.oob = oob
         self.has_test_failed = None
         self.current_test_outcome = "UNDEFINED"
+        self.cbh = CanBusHandler(WindowsPath("c:/Users/birc/sdc-scissor/sample_conf/conf_sdc.yml"))
 
     def check(self, interrupt_on_failure):
         """
@@ -71,6 +74,8 @@ class TestMonitor:
             "sensors": sensor_data,
         }
         self.test.simulation_data.append(copy.deepcopy(current_simulation_data))
+
+        self.cbh.handle_sensor_data(sensor_data['_data'])
 
         if (
             self.__is_car_at_end_of_road(x_pos, y_pos)
