@@ -82,7 +82,7 @@ class TestRunner:
         self.tree_dist = kwargs.get("tree_dist", None)
         self.obstacle_factory: ObstacleFactory = kwargs.get("obstacle_factory", None)
         self.fov: list = kwargs.get("fov", None)
-        self.test_plotter: TestPlotter = kwargs.get('test_plotter', NullTestPlotter())
+        self.test_plotter: TestPlotter = kwargs.get("test_plotter", NullTestPlotter())
 
     def run_test_suite(self):
         """ """
