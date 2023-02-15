@@ -148,6 +148,6 @@ If you use this tool in your research, please cite the following papers:
 * Sajad Khatiri
     * Zurich University of Applied Science (ZHAW), Switzerland - mazr@zhaw.ch
 * Dr. Alessio Gambi
-    * Passau University, Germany - alessio.gambi@uni-passau.de
+    * IMC University Of Applied Sciences Krems, Austria - alessio.gambi@fh-krems.ac.at
 * Dr. Sebastiano Panichella
     * Zurich University of Applied Science (ZHAW), Switzerland - panc@zhaw.ch
