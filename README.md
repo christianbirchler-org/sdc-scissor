@@ -142,12 +142,12 @@ If you use this tool in your research, please cite the following papers:
 
 ## Contacts
 * Christian Birchler
-    * Zurich University of Applied Science (ZHAW), Switzerland - birc@zhaw.ch
+    * Zurich University of Applied Sciences (ZHAW), Switzerland - birc@zhaw.ch
 * Nicolas Ganz
-    * Zurich University of Applied Science (ZHAW), Switzerland - gann@zhaw.ch
+    * Zurich University of Applied Sciences (ZHAW), Switzerland - gann@zhaw.ch
 * Sajad Khatiri
-    * Zurich University of Applied Science (ZHAW), Switzerland - mazr@zhaw.ch
+    * Zurich University of Applied Sciences (ZHAW), Switzerland - mazr@zhaw.ch
 * Dr. Alessio Gambi
     * IMC University Of Applied Sciences Krems, Austria - alessio.gambi@fh-krems.ac.at
 * Dr. Sebastiano Panichella
-    * Zurich University of Applied Science (ZHAW), Switzerland - panc@zhaw.ch
+    * Zurich University of Applied Sciences (ZHAW), Switzerland - panc@zhaw.ch
