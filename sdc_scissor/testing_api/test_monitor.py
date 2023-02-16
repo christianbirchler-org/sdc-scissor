@@ -5,9 +5,9 @@ import time
 from scipy.spatial import distance
 from shapely.geometry import box
 
-from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.testing_api.road_model import RoadModel
+from sdc_scissor.testing_api.test import Test
 
 
 def _get_t_previous_data(data, time_delta) -> tuple:

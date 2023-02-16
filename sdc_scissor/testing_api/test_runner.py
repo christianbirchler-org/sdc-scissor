@@ -1,19 +1,20 @@
+import logging
 import math
 import time
-import logging
 
 import numpy as np
-
-from beamngpy import Scenario, BNGError
+from beamngpy import BNGError
+from beamngpy import Scenario
 from scipy.spatial.transform import Rotation
 
+from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
+from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
+from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.test_plotter import TestPlotter, NullTestPlotter
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
-from sdc_scissor.testing_api.road_model import RoadModel
-from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
-from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
+from sdc_scissor.testing_api.test_plotter import NullTestPlotter
+from sdc_scissor.testing_api.test_plotter import TestPlotter
 from sdc_scissor.testing_api.test_validator import TestIsNotValidException
 
 

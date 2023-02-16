@@ -1,5 +1,5 @@
-import logging
 import abc
+import logging
 
 
 class Bump(abc.ABC):

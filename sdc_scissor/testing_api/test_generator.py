@@ -4,7 +4,6 @@ import logging
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.test_validator import TestValidator
 from sdc_scissor.testing_api.test_generators.ambiegen.ambiegen_generator import CustomAmbieGenGenerator
 from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_frenet_generator import (
     CustomFrenetGenerator,
@@ -12,6 +11,7 @@ from sdc_scissor.testing_api.test_generators.frenetic.src.generators.random_fren
 from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.random_frenet_generator import (
     CustomFrenetVGenerator,
 )
+from sdc_scissor.testing_api.test_validator import TestValidator
 
 
 def _id_generator():

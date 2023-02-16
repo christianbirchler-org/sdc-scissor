@@ -1,4 +1,5 @@
 import logging
+
 from sdc_scissor.obstacle_api.tree import Tree
 
 

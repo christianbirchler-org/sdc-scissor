@@ -1,17 +1,16 @@
 # from code_pipeline.tests_generation import RoadTestFactory
-from time import sleep
 import logging as log
+import time
 
+from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.optimize import minimize
 
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_problem import TestCaseProblem
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_mutation import TestCaseMutation
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_crossover import TestCaseCrossover
+import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.duplicate_elimination import DuplicateElimination
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.generate_test_case_sampling import GenerateTestCaseSampling
-import time
-from pymoo.algorithms.nsga2 import NSGA2
-import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_crossover import TestCaseCrossover
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_mutation import TestCaseMutation
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.test_case_problem import TestCaseProblem
 
 
 class CustomAmbieGenGenerator:

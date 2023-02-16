@@ -1,7 +1,9 @@
-from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_generator import BaseGenerator
-import sdc_scissor.testing_api.test_generators.frenetic.src.utils.frenet as frenet
-import numpy as np
 import logging as log
+
+import numpy as np
+
+import sdc_scissor.testing_api.test_generators.frenetic.src.utils.frenet as frenet
+from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_generator import BaseGenerator
 
 
 class BaseFrenetGenerator(BaseGenerator):

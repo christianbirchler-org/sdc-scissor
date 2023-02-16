@@ -1,11 +1,11 @@
-import logging
-import re
 import json
+import logging
 import os
+import re
 from pathlib import Path
 
 from sdc_scissor.testing_api.test import Test
-from sdc_scissor.testing_api.test_validator import TestValidator, TestIsNotValidException
+from sdc_scissor.testing_api.test_validator import TestValidator
 
 
 class TestLoader:

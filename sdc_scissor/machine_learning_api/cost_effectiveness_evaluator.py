@@ -1,36 +1,9 @@
 import logging
 
-import pandas as pd
 import numpy as np
-import sklearn.metrics
-
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate, train_test_split, StratifiedKFold
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import LinearSVC
-from sklearn.preprocessing import LabelEncoder
-from sklearn import preprocessing
+import pandas as pd
 from sklearn.metrics import classification_report
-
-
-def _cost_effectiveness_scorer(estimator, X, y):
-    estimator.fit(X, y)
-    y_pred = estimator.predict(X)
-    nr_safe_predicted = np.sum(y_pred)
-    nr_unsafe_predicted = len(y_pred) - nr_safe_predicted
-
-    rand_sim_times = []
-    random_unsafe_predicted = np.random.permutation(
-        np.append(np.ones(nr_unsafe_predicted, dtype="int32"), np.zeros(nr_safe_predicted), dtype="int32")
-    )
-    rand_sim_times.append(np.sum(X[random_unsafe_predicted]))
-
-    random_tot_sim_time = np.mean(rand_sim_times)
-
-    sdc_scissor_tot_sim_time = np.sum(X[y_pred])
-    pass
+from sklearn.preprocessing import LabelEncoder
 
 
 class CostEffectivenessEvaluator:
@@ -238,7 +211,3 @@ class CostEffectivenessEvaluator:
         ce_rl_baseline = nr_true_positives_rl_baseline / tot_road_length_baseline_time
 
         return ce_sdc_scissor, ce_rl_baseline
-
-
-if __name__ == "__main__":
-    logging.info("cost_effectiveness_evaluator.py")

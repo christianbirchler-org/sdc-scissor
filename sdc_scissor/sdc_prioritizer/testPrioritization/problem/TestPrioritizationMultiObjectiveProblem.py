@@ -1,5 +1,6 @@
-from pymoo.core.problem import Problem
 import multiprocessing as mp
+
+from pymoo.core.problem import Problem
 
 
 def ff_eval(x):

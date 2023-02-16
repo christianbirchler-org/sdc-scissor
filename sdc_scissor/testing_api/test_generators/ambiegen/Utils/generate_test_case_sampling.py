@@ -1,9 +1,9 @@
 import numpy as np
 from pymoo.model.sampling import Sampling
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.solution import Solution
 
 import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.road_gen import RoadGen
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.solution import Solution
 
 
 class GenerateTestCaseSampling(Sampling):

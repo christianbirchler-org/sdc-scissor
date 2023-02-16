@@ -1,8 +1,11 @@
 import random
 from pathlib import Path
 
-from sdc_scissor.testing_api.test_generator import TestGenerator, KeepAllTestsBehavior, KeepValidTestsOnlyBehavior
-from sdc_scissor.testing_api.test_validator import SimpleTestValidator, MakeTestInvalidValidator
+from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior
+from sdc_scissor.testing_api.test_generator import KeepValidTestsOnlyBehavior
+from sdc_scissor.testing_api.test_generator import TestGenerator
+from sdc_scissor.testing_api.test_validator import MakeTestInvalidValidator
+from sdc_scissor.testing_api.test_validator import SimpleTestValidator
 
 
 class TestTestGenerator:

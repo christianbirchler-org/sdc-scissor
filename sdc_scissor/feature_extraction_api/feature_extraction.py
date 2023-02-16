@@ -1,12 +1,12 @@
 import logging
 import math
 import statistics
-
-import pandas as pd
-import numpy as np
-
 from pathlib import Path
-from shapely.geometry import Point, LineString, Polygon
+
+import numpy as np
+import pandas as pd
+from shapely.geometry import Point
+from shapely.geometry import Polygon
 
 from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 from sdc_scissor.testing_api.test import Test
