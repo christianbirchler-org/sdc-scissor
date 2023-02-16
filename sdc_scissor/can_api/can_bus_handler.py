@@ -30,11 +30,7 @@ def get_can_frame_list(can_db):
             signal_list.append(j.name)
 
         # Store the information in the dictionary and add it to the frame_list
-        res = {
-            'example_message': i,
-            'frame_id': frame_id,
-            'signal_list': signal_list
-        }
+        res = {"example_message": i, "frame_id": frame_id, "signal_list": signal_list}
         can_frame_list.append(res)
 
         # result['example_message'], result['frame_id'], result['signal_list'] = i, frame_id, signal_list
@@ -47,11 +43,12 @@ class CanBusOutput:
     """
     CanBusOutput Objects are used to offer a flexible output for th CAN messages.
     """
+
     def __init__(self):
         print("Init Can Bus Output")
 
-        self.output_logger = logging.getLogger('CAN_OUT_LOG')
-        fh = logging.FileHandler('can_out.log')
+        self.output_logger = logging.getLogger("CAN_OUT_LOG")
+        fh = logging.FileHandler("can_out.log")
         fh.setLevel(logging.DEBUG)
         self.output_logger.addHandler(fh)
 
@@ -79,8 +76,8 @@ class CanBusHandler:
                 config_dict: dict = yaml.safe_load(fp)
 
             # Load the CAN database
-            db_path = config_dict['dbc']
-            dbc_map_path = config_dict['dbc_map']
+            db_path = config_dict["dbc"]
+            dbc_map_path = config_dict["dbc_map"]
             db = cantools.db.load_file(Path(db_path))
 
             # Gather the sample frames from the dbc
@@ -101,14 +98,14 @@ class CanBusHandler:
 
         :param data: A dictionary containing the current data from the simulation.
         :return: 
-        """""
+        """ ""
 
         for frame in self.frame_list:
             # For each frame in the CAN db we transform the values using the dbc_map and then generate the message
 
-            example_msg = frame['example_message']
-            frame_id = frame['frame_id']
-            frame_sig_list = frame['signal_list']
+            example_msg = frame["example_message"]
+            frame_id = frame["frame_id"]
+            frame_sig_list = frame["signal_list"]
 
             # Transform the simulation values to assure they are within the dbc range and named correctly
             frame_values = self.get_frame_values(frame_sig_list, data)
@@ -133,13 +130,13 @@ class CanBusHandler:
             # For each signal in the frame we transform the value using the dbc_map
 
             # Gather the dbc signal range and default value
-            default = self.dbc_map[signal]['default']
-            s_min = self.dbc_map[signal]['min']
-            s_max = self.dbc_map[signal]['max']
+            default = self.dbc_map[signal]["default"]
+            s_min = self.dbc_map[signal]["min"]
+            s_max = self.dbc_map[signal]["max"]
 
-            if self.dbc_map[signal]['sim_signal_name'] in data:
+            if self.dbc_map[signal]["sim_signal_name"] in data:
                 # Check if the value exists in the simulation data
-                v = data[self.dbc_map[signal]['sim_signal_name']]
+                v = data[self.dbc_map[signal]["sim_signal_name"]]
                 if s_min <= v <= s_max:
                     # Check if the value is within the defined range
                     values[signal] = v
