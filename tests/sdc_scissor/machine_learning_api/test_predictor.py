@@ -14,7 +14,7 @@ class TestPredictor:
         self.test_data_csv_path = Path(os.path.dirname(__file__)) / "test_road_features.csv"
 
     def test_prediction_with_train_data(self, fs):
-        fs_test_dir = Path('/sample_tests')
+        fs_test_dir = Path("/sample_tests")
         fs.add_real_directory(source_path=self.test_dir, read_only=False, target_path=fs_test_dir)
         fs.add_real_file(source_path=self.test_data_csv_path, target_path=fs_test_dir / "test_road_features.csv")
 
@@ -22,9 +22,9 @@ class TestPredictor:
         dd = CSVLoader.load_dataframe_from_csv(data_path)
 
         test_loader = TestLoader(tests_dir=fs_test_dir, test_validator=SimpleTestValidator())
-        model_evaluator = ModelEvaluator(data_frame=dd, label='safety')
-        fs.makedirs('models')
+        model_evaluator = ModelEvaluator(data_frame=dd, label="safety")
+        fs.makedirs("models")
         model_evaluator.model_evaluation_with_balanced_training()
-        model_evaluator.save_models(Path('models'))
-        test_predictor = Predictor(test_loader=test_loader, joblib_classifier=Path('models/decision_tree.joblib'))
+        model_evaluator.save_models(Path("models"))
+        test_predictor = Predictor(test_loader=test_loader, joblib_classifier=Path("models/decision_tree.joblib"))
         test_predictor.predict()

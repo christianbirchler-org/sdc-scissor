@@ -11,12 +11,14 @@ import os.path as path
 import sys
 
 import numpy as np
+
 # pymoo libs
 from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.factory import get_sampling
 from pymoo.optimize import minimize
 from pymoo.util.display import MultiObjectiveDisplay
 from pymoo.visualization.scatter import Scatter
+
 # sklearn
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
