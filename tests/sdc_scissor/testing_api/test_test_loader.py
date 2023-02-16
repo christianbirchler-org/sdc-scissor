@@ -3,7 +3,8 @@ import pathlib
 import pytest
 
 from sdc_scissor.testing_api.test_loader import TestLoader
-from sdc_scissor.testing_api.test_validator import SimpleTestValidator, NoIntersectionValidator
+from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
+from sdc_scissor.testing_api.test_validator import SimpleTestValidator
 
 
 class TestTestLoader:

@@ -1,29 +1,24 @@
 import logging
-import joblib
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
 from pathlib import Path
+
+import joblib
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from sklearn import metrics
-from sklearn.utils.estimator_checks import check_estimator
 from sklearn import preprocessing
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_validate, train_test_split, StratifiedKFold, GridSearchCV
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_validate
 from sklearn.naive_bayes import GaussianNB
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import LinearSVC
-from sklearn.metrics import (
-    accuracy_score,
-    recall_score,
-    f1_score,
-    precision_score,
-    classification_report,
-    confusion_matrix,
-    ConfusionMatrixDisplay,
-)
+from sklearn.tree import DecisionTreeClassifier
 
 
 class ModelEvaluator:
@@ -118,7 +113,6 @@ class ModelEvaluator:
         return mean_cv_results
 
     def grid_search(self, estimator, parameters):
-        check_estimator(estimator)
         clf = GridSearchCV(estimator, parameters, scoring="f1")
 
         dd = self.data_frame.sample(frac=1).reset_index(drop=True)

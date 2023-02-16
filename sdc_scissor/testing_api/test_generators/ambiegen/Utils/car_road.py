@@ -1,12 +1,12 @@
 #
-import random as rm
-import numpy as np
 import math as m
+import random as rm
+import time
+
+import matplotlib.pyplot as plt
+import numpy as np
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
-import matplotlib.pyplot as plt
-
-import time
 
 
 class Map:

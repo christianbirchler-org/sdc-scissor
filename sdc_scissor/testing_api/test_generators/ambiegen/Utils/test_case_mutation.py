@@ -1,6 +1,8 @@
+import copy
+
 import numpy as np
 from pymoo.model.mutation import Mutation
-import copy
+
 import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
 
 

@@ -1,12 +1,12 @@
 import logging
-from sdc_scissor.obstacle_api.carla_tree import CarlaTree
-from sdc_scissor.obstacle_api.tree import Tree
 
 from sdc_scissor.obstacle_api.bump import Bump
 from sdc_scissor.obstacle_api.carla_bump import CarlaBump
-from sdc_scissor.obstacle_api.delineator import Delineator
 from sdc_scissor.obstacle_api.carla_delineator import CarlaDelineator
+from sdc_scissor.obstacle_api.carla_tree import CarlaTree
+from sdc_scissor.obstacle_api.delineator import Delineator
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
+from sdc_scissor.obstacle_api.tree import Tree
 
 
 class CarlaObstacleFactory(ObstacleFactory):

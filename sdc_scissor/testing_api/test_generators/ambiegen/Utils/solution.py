@@ -1,6 +1,7 @@
-from sdc_scissor.testing_api.test_generators.ambiegen.Utils.vehicle import Car
 import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.car_road import Map
+from sdc_scissor.testing_api.test_generators.ambiegen.Utils.vehicle import Car
+
 
 # from code_pipeline.beamng_executor import BeamngExecutor
 # from code_pipeline.tests_generation import RoadTestFactory

@@ -1,13 +1,13 @@
 import logging
-import joblib
-
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
 
-from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor, RoadFeatures
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
+from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
+from sdc_scissor.feature_extraction_api.feature_extraction import RoadFeatures
 from sdc_scissor.testing_api.test_loader import TestLoader
 
 
@@ -65,7 +65,3 @@ class Predictor:
                 raise Exception("Prediction failed!")
             logging.info("predicted outcome: {}".format(test.predicted_test_outcome))
             test.save_as_json(file_path=test_path)
-
-
-if __name__ == "__main__":
-    logging.info("* predictor.py")

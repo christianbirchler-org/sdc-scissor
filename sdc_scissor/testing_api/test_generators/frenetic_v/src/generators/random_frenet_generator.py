@@ -1,7 +1,7 @@
-import numpy as np
 import logging as log
 import random
-from time import sleep
+
+import numpy as np
 
 from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.base_frenet_generator import BaseFrenetVGenerator
 

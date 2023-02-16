@@ -1,6 +1,7 @@
+import random as rm
+
 import numpy as np
 from pymoo.model.crossover import Crossover
-import random as rm
 
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.solution import Solution
 

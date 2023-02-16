@@ -1,9 +1,20 @@
+import abc
+
 import matplotlib.pyplot as plt
 
 from sdc_scissor.testing_api.road_model import RoadModel
 
 
-class TestPlotter:
+class TestPlotter(abc.ABC):
+    def plot(self, *args):
+        pass
+
+
+class NullTestPlotter(TestPlotter):
+    pass
+
+
+class TestPlotter(TestPlotter):
     def __init__(self):
         pass
 

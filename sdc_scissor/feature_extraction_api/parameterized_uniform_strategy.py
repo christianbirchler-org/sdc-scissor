@@ -1,5 +1,5 @@
-from .segmentation_strategy import SegmentationStrategy
 from .road_geometry_calculator import RoadGeometryCalculator
+from .segmentation_strategy import SegmentationStrategy
 
 seg_lengths_dict = {"1": 50, "1.5": 30, "2": 10}
 

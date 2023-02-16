@@ -1,7 +1,5 @@
-import logging
-
-from sdc_scissor.feature_extraction_api.segmentation_strategy import SegmentationStrategy
 from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
+from sdc_scissor.feature_extraction_api.segmentation_strategy import SegmentationStrategy
 
 
 class AngleBasedStrategy(SegmentationStrategy):

@@ -1,6 +1,3 @@
-import numpy as np
-
-import sdc_scissor.simulator_api.beamng_simulator as bs
 from sdc_scissor.simulator_api.beamng_simulator import BeamNGSimulator
 
 

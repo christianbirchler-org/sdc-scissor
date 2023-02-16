@@ -1,9 +1,9 @@
+import json
+import os
+
 import numpy as np
 
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.car_road import Map
-
-import os
-import json
 
 
 class RoadGen:

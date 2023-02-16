@@ -1,7 +1,8 @@
 import logging
 
-from sdc_scissor.obstacle_api.beamng_tree import BeamngTree
 from beamngpy import StaticObject
+
+from sdc_scissor.obstacle_api.beamng_tree import BeamngTree
 
 
 class TestBeamngTree:

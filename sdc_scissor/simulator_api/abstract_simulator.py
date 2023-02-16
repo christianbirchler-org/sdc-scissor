@@ -1,5 +1,4 @@
 import abc
-import logging
 
 
 class AbstractSimulator(abc.ABC):

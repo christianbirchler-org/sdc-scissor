@@ -5,33 +5,29 @@ Prioritize tests using NSGA-II
 
 
 import csv
-from genericpath import exists
-import sys
-import os.path as path
-import os
-import numpy as np
 import math
+import os
+import os.path as path
+import sys
 
-
-from crossover.PMX import PMXCrossover
-from mutation.HybridMut import HybridMut
-from problem.TestPrioritizationMultiObjectiveProblem import TestPrioritizationMultiObjectiveProblem
+import numpy as np
 
 # pymoo libs
 from pymoo.algorithms.moo.nsga2 import NSGA2
-
 from pymoo.factory import get_sampling
 from pymoo.optimize import minimize
 from pymoo.util.display import MultiObjectiveDisplay
 from pymoo.visualization.scatter import Scatter
 
-# video recorder
-from pyrecorder.recorder import Recorder
-from pyrecorder.writers.video import Video
-
 # sklearn
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
+
+from crossover.PMX import PMXCrossover
+from mutation.HybridMut import HybridMut
+from problem.TestPrioritizationMultiObjectiveProblem import TestPrioritizationMultiObjectiveProblem
+
+# video recorder
 
 
 MINIMUM_USER_INPTUS = 3

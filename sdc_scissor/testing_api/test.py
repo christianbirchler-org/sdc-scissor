@@ -1,10 +1,10 @@
-import logging
 import json
+import logging
+from pathlib import Path
 
 import numpy as np
-
-from scipy.interpolate import splprep, splev
-from pathlib import Path
+from scipy.interpolate import splev
+from scipy.interpolate import splprep
 
 
 class Test:

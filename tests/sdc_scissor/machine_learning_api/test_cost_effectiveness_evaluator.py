@@ -1,9 +1,18 @@
-import pytest
+import os
+from pathlib import Path
 
 import pandas as pd
+import pytest
 from numpy import nan
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
+from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
 
 
 class TestCostEffectivenessEvaluator:
@@ -40,9 +49,48 @@ class TestCostEffectivenessEvaluator:
             "duration": [nan, nan, nan, nan],
         }
 
+        test_road_features_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+        test_road_features_path = test_road_features_dir / "test_road_features.csv"
+        self.dd_extracted_features_from_sample_tests = CSVLoader.load_dataframe_from_csv(test_road_features_path)
+
+        self.classifiers_dict = {
+            "random_forest": RandomForestClassifier(),
+            "gradient_boosting": GradientBoostingClassifier(),
+            "SVM": SVC(max_iter=100000, probability=True),
+            "gaussian_naive_bayes": GaussianNB(),
+            "logistic_regression": LogisticRegression(max_iter=10000),
+            "decision_tree": DecisionTreeClassifier(),
+        }
+
     def test_evaluator_if_no_time_data_is_provided_should_raise_exception(self, mocker):
         mock_clf = mocker.patch("sklearn.base.ClassifierMixin")
         df = pd.DataFrame(self.data_dict)
         cev = CostEffectivenessEvaluator(classifier=mock_clf, data_frame=df, label="safety", time_attribute="duration")
         with pytest.raises(Exception):
             _ = cev.evaluate_with_random_baseline()
+
+    def test_evaluator_with_random_baseline_with_sample_data_if_no_exception_is_thrown(self, fs):
+
+        for classifier_name, classifier in self.classifiers_dict.items():
+            cev = CostEffectivenessEvaluator(
+                classifier=classifier,
+                data_frame=self.dd_extracted_features_from_sample_tests,
+                label="safety",
+                time_attribute="test_duration",
+            )
+            ce_sdc_scissor, ce_baseline = cev.evaluate_with_random_baseline()
+            print("ce_sdc_scissor: {}".format(ce_sdc_scissor))
+            print("ce_baseline: {}".format(ce_baseline))
+
+    def test_evaluator_with_longest_road_baseline_with_sample_data_if_no_exception_is_thrown(self, fs):
+
+        for classifier_name, classifier in self.classifiers_dict.items():
+            cev = CostEffectivenessEvaluator(
+                classifier=classifier,
+                data_frame=self.dd_extracted_features_from_sample_tests,
+                label="safety",
+                time_attribute="test_duration",
+            )
+            ce_sdc_scissor, ce_baseline = cev.evaluate_with_longest_roads()
+            print("ce_sdc_scissor: {}".format(ce_sdc_scissor))
+            print("ce_baseline: {}".format(ce_baseline))
