@@ -1,11 +1,11 @@
 import abc
+import json
+import logging
+from pathlib import Path
 
 import can
 import cantools
-import json
 import yaml
-from pathlib import Path
-import logging
 
 
 def get_can_frame_list(can_db):
