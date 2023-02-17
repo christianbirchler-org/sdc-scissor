@@ -14,27 +14,20 @@ def get_can_frame_list(can_db):
     :return: A list of all sample frames in the given can database
     """
     can_frame_list = []
-    # result = {'example_message': '', 'frame_id': 0x0, 'signal_list': []}
-
-    for i in can_db.messages:
+    for can_msg in can_db.messages:
         # For each message in the database store it's information in a dictionary and add it to the list
-
         signal_list = []
 
         # Get the id of the frame
-        frame_id = i.frame_id
+        frame_id = can_msg.frame_id
 
         # Get all signals for this frame and store them in the signal_list
-        signal = i.signals
-        for j in signal:
-            signal_list.append(j.name)
+        for signal in can_msg.signals:
+            signal_list.append(signal.name)
 
         # Store the information in the dictionary and add it to the frame_list
-        res = {"example_message": i, "frame_id": frame_id, "signal_list": signal_list}
+        res = {"example_message": can_msg, "frame_id": frame_id, "signal_list": signal_list}
         can_frame_list.append(res)
-
-        # result['example_message'], result['frame_id'], result['signal_list'] = i, frame_id, signal_list
-        # can_frame_list.append(result.copy())
 
     return can_frame_list
 
