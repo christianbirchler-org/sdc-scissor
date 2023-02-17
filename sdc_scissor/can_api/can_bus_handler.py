@@ -35,6 +35,12 @@ def get_can_frame_list(can_db):
 
 
 class CANBusOutput(abc.ABC):
+    @abc.abstractmethod
+    def output_can_msg(self, msg):
+        pass
+
+
+class NoCANBusOutput(CANBusOutput):
     def output_can_msg(self, msg):
         pass
 
@@ -68,7 +74,7 @@ class CanBusHandler:
     CanBusHandler Objects can be used to receive data from a simulation and generate CAN messages from it.
     """
 
-    def __init__(self, config: Path, output_handler: CANBusOutput = CANStdOut()):
+    def __init__(self, config: Path, output_handler: CANBusOutput = NoCANBusOutput()):
         logging.info("Init CanBusHandler")
         # Load the config file
         with open(config) as fp:
