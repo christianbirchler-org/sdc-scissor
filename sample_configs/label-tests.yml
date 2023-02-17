@@ -12,3 +12,4 @@ options:
   delineator_dist: null
   tree_dist: null
   field_of_view: 120
+  canbus: true

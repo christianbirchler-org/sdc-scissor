@@ -169,8 +169,21 @@ def feature_statistics(csv) -> None:
 @click.option("--delineator-dist", default=5, type=click.INT)
 @click.option("--tree-dist", default=5, type=click.INT)
 @click.option("-fov", "--field-of-view", default=120, type=click.INT)
+@click.option("--canbus/--no-canbus", default=False, type=click.BOOL)
 def label_tests(
-    tests, home, user, rf, oob, max_speed, interrupt, obstacles, bump_dist, delineator_dist, tree_dist, field_of_view
+    tests,
+    home,
+    user,
+    rf,
+    oob,
+    max_speed,
+    interrupt,
+    obstacles,
+    bump_dist,
+    delineator_dist,
+    tree_dist,
+    field_of_view,
+    canbus,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
@@ -187,6 +200,7 @@ def label_tests(
     :param delineator_dist: The distance between the delineators ('obstacles' needs to be true)
     :param tree_dist: The distance between the trees ('obstacles' needs to be true)
     :param field_of_view: The field of view angle
+    :param canbus: Enable CAN messages
     """
     logging.debug("label_tests")
     tests = Path(tests)
