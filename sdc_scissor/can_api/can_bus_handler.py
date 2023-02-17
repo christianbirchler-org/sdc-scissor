@@ -1,3 +1,5 @@
+import abc
+
 import can
 import cantools
 import json
@@ -32,9 +34,14 @@ def get_can_frame_list(can_db):
     return can_frame_list
 
 
-class CanBusOutput:
+class CANBusOutput(abc.ABC):
+    def output_can_msg(self, msg):
+        pass
+
+
+class CANStdOut(CANBusOutput):
     """
-    CanBusOutput Objects are used to offer a flexible output for th CAN messages.
+    CANStdOut Objects are used to offer a flexible output_handler for th CAN messages.
     """
 
     def __init__(self):
@@ -47,10 +54,10 @@ class CanBusOutput:
 
     def output_can_msg(self, msg):
         """
-        This method is used to output the can message. It is called by the CanBusHandler.
-        The current output source is a python logger.
+        This method is used to output_handler the can message. It is called by the CanBusHandler.
+        The current output_handler source is a python logger.
 
-        :param msg: The CAN message that should be sent to the output.
+        :param msg: The CAN message that should be sent to the output_handler.
         :return:
         """
         self.output_logger.info(msg)
@@ -61,33 +68,29 @@ class CanBusHandler:
     CanBusHandler Objects can be used to receive data from a simulation and generate CAN messages from it.
     """
 
-    def __init__(self, config: Path):
+    def __init__(self, config: Path, output_handler: CANBusOutput = CANStdOut()):
         logging.info("Init CanBusHandler")
-        try:
-            # Load the config file
-            with open(config) as fp:
-                config_dict: dict = yaml.safe_load(fp)
+        # Load the config file
+        with open(config) as fp:
+            config_dict: dict = yaml.safe_load(fp)
 
-            # Load the CAN database
-            db_path = config_dict["dbc"]
-            dbc_map_path = config_dict["dbc_map"]
-            db = cantools.db.load_file(Path(db_path))
+        # Load the CAN database
+        db_path = config_dict["dbc"]
+        dbc_map_path = config_dict["dbc_map"]
+        db = cantools.db.load_file(Path(db_path))
 
-            # Gather the sample frames from the dbc
-            self.frame_list = get_can_frame_list(db)
-            self.output = CanBusOutput()
+        # Gather the sample frames from the dbc
+        self.frame_list = get_can_frame_list(db)
+        self.output_handler = output_handler
 
-            # Load the dbc map used to map the simulation signals to the dbc signals
-            f = open(dbc_map_path)
-            self.dbc_map = json.load(f)
-
-        except FileNotFoundError as err:
-            logging.error(err)
+        # Load the dbc map used to map the simulation signals to the dbc signals
+        f = open(dbc_map_path)
+        self.dbc_map = json.load(f)
 
     def handle_sensor_data(self, data):
         """
         This method should be called by a TestRunner with the current data from the simulation.
-        It will then generate CAN messages from the data and send them to the CanBusOutput.
+        It will then generate CAN messages from the data and send them to the CANStdOut.
 
         :param data: A dictionary containing the current data from the simulation.
         :return: 
@@ -107,8 +110,8 @@ class CanBusHandler:
             frame_data = example_msg.encode(frame_values)
             msg = can.Message(arbitration_id=frame_id, data=frame_data)
 
-            # Send the message to the CanBusOutput
-            self.output.output_can_msg(msg)
+            # Send the message to the CANStdOut
+            self.output_handler.output_can_msg(msg)
 
     def get_frame_values(self, frame_signal_list, data):
         """
