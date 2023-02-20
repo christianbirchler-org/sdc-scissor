@@ -5,6 +5,7 @@ from pathlib import Path
 
 import can
 import cantools
+import click
 import yaml
 
 
@@ -66,7 +67,8 @@ class CANStdOut(CANBusOutput):
         :param msg: The CAN message that should be sent to the output_handler.
         :return:
         """
-        self.output_logger.info(msg)
+        # self.output_logger.info(msg)
+        click.echo(click.style(msg, fg='green'))
 
 
 class CanBusHandler:
