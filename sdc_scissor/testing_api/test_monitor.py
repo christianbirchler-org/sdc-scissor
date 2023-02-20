@@ -6,8 +6,9 @@ from scipy.spatial import distance
 from shapely.geometry import box
 from pathlib import WindowsPath
 
+from sdc_scissor.config import CONFIG
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
-from sdc_scissor.can_api.can_bus_handler import CanBusHandler
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler, NoCANBusOutput, CANStdOut
 from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.testing_api.test import Test
 
@@ -16,7 +17,7 @@ def _get_t_previous_data(data, time_delta) -> tuple:
     """
     Return data of t-delta
     """
-    logging.info("_get_t_previous_data")
+    logging.debug("_get_t_previous_data")
     t1 = data[-1]["time"]
     reversed_data_iterator = reversed(data)
     for data_entry in reversed_data_iterator:
@@ -52,7 +53,10 @@ class TestMonitor:
         self.oob = oob
         self.has_test_failed = None
         self.current_test_outcome = "UNDEFINED"
-        self.cbh = CanBusHandler(WindowsPath("c:/Users/birc/sdc-scissor/sample_conf/conf_sdc.yml"))
+        self.cbh = CanBusHandler(
+            WindowsPath("c:/Users/birc/sdc-scissor/sample_conf/conf_sdc.yml"),
+            output_handler=CANStdOut() if CONFIG.HAS_CAN_BUS else NoCANBusOutput(),
+        )
 
     def process_car_state(self, interrupt_on_failure):
         """

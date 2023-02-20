@@ -1,6 +1,7 @@
 import logging
 import sys
 from pathlib import Path
+from sdc_scissor.config import CONFIG
 
 import click
 import numpy as np
@@ -124,6 +125,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
     """
     logging.debug("extract_features")
     tests = Path(tests)
+
     test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_loader = TestLoader(tests, test_validator=test_validator)
     if segmentation == "angle-based":
@@ -202,11 +204,17 @@ def label_tests(
     :param field_of_view: The field of view angle
     :param canbus: Enable CAN messages
     """
+    CONFIG.config = locals()
+
     logging.debug("label_tests")
     tests = Path(tests)
     logging.debug("Test directory: {}".format(tests))
     beamng_simulator = SimulatorFactory.get_beamng_simulator(
-        home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
+        home=CONFIG.BEAMNG_HOME,
+        user=CONFIG.BEAMNG_USER,
+        rf=CONFIG.RISK_FACTOR,
+        max_speed=CONFIG.MAX_SPEED,
+        fov=CONFIG.FIELD_OF_VIEW,
     )
 
     test_validator = NoIntersectionValidator(SimpleTestValidator())
