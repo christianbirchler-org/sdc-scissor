@@ -79,7 +79,7 @@ class TestMonitor:
         }
         self.test.simulation_data.append(copy.deepcopy(current_simulation_data))
 
-        self.cbh.handle_sensor_data(sensor_data["_data"])
+        self.cbh.transmit_sensor_data_to_can_bus(sensor_data["_data"])
 
         if (
             self.__is_car_at_end_of_road(x_pos, y_pos)

@@ -95,7 +95,7 @@ class CanBusHandler:
         f = open(dbc_map_path)
         self.dbc_map = json.load(f)
 
-    def handle_sensor_data(self, data):
+    def transmit_sensor_data_to_can_bus(self, data):
         """
         This method should be called by a TestRunner with the current data from the simulation.
         It will then generate CAN messages from the data and send them to the CANStdOut.
