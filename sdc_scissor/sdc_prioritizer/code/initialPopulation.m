@@ -13,7 +13,7 @@ if H
             % indexes of the element to permute
             mutationPoint1 = randi(GenomeLength, 1);
             mutationPoint2 = randi(GenomeLength, 1);
-    
+
             % permutaton
             temp = child(mutationPoint1);
             child(mutationPoint1) = child(mutationPoint2);
@@ -24,7 +24,7 @@ if H
     for i=(totalPopulation/2)+1:totalPopulation-1
         population(i,:) = randperm(GenomeLength);
     end
-    
+
 else
     for i=1:totalPopulation-1
         population(i,:) = randperm(GenomeLength);
@@ -34,4 +34,3 @@ end
 [~, indexes] = sort(Cost,  'ascend');
 population(totalPopulation,:) = indexes;
 end
-

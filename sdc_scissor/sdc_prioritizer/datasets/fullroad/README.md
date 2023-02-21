@@ -4,14 +4,14 @@
 We extract two type of full road features, the **general road characteristics** and the **road segment statistics**.
 The general road characteristics are attributes that refer to the road as a whole (i.e., length of the road), or general road segment statistics calculated on on metrics involving all road segments as whole (i.e., minimum, mean, maximum angle, or length)
 
-We first extract the path for the test scenario; with this information, we can obtain metrics and features from all relevant road segments and their details. 
+We first extract the path for the test scenario; with this information, we can obtain metrics and features from all relevant road segments and their details.
 The road segment details are used to compute the road segment statistic features
 
 ## Structure
 
 ### General Road Characteristics
 
-| **Feature**     | **Derived From (AsFault Output)**  | **Description**                                        |**Type**|**Range**  | 
+| **Feature**     | **Derived From (AsFault Output)**  | **Description**                                        |**Type**|**Range**  |
 |-----------------|------------------------------------|--------------------------------------------------------|-------|------------|
 | Direct Distance | Start, Goal                        | Euclidean distance between start and finish            | float | [0-490]    |
 | Road Distance   | Path,Network/Nodes/RLanes          | Total length of the road                               | float | [56-3318]  |
@@ -23,7 +23,7 @@ The road segment details are used to compute the road segment statistic features
 
 ### Road Segment Statistics
 
-| **Feature**          |**Derived From (AsFault Output)**| **Description**                                                          |**Type**| **Range**| 
+| **Feature**          |**Derived From (AsFault Output)**| **Description**                                                          |**Type**| **Range**|
 |----------------------|--------------------------------|---------------------------------------------------------------------------|-------|-----------|
 | Median Angle         | Path,Network/Nodes/Angle       | Median of angle turned in road segment on the test track                  | float | [30-330]  |
 | Std Angle            | Path,Network/Nodes/Angle       | Standard deviation of angled turned in road segment on the test track     | int   | [0-150]   |

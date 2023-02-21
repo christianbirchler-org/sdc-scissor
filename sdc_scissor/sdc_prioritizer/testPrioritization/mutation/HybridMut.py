@@ -31,7 +31,9 @@ class HybridMut(Mutation):
                 min_index = min(mutation_points)
                 max_index = max(mutation_points)
 
-                child[min_index : max_index + 1] = np.array(list(reversed(child[min_index : max_index + 1])))
+                child[min_index : max_index + 1] = np.array(
+                    list(reversed(child[min_index : max_index + 1]))
+                )
 
             else:
 

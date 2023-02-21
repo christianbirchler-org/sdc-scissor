@@ -19,9 +19,9 @@ for i=1:nKids
     cutPoint = randi(length(parent1), 1);
     head = parent1(1, 1:cutPoint);
     indexes = not(ismember(parent2, head));
-    tail = parent2(1, indexes);    
-   
+    tail = parent2(1, indexes);
+
     % make one child
     xoverKids(i,:) = [ head, tail ];
-   
+
 end

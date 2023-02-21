@@ -57,4 +57,3 @@ To get an overview of the descriptive statistics of the extracted road features 
 ```{eval-rst}
 .. autofunction:: sdc_scissor.cli.feature_statistics
 ```
-

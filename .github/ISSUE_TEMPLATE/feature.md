@@ -11,7 +11,7 @@ assignees: ChristianBirchler
 *User Story*
 
 # Acceptance Criteria
-## Scenario 1: 
+## Scenario 1:
 * Given:
 * When:
 * (And:)

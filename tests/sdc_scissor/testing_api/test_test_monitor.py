@@ -11,14 +11,19 @@ class TestTestMonitor:
         pass
 
     def setup_method(self):
-        self.test_monitor = TestMonitor(simulator=None, test=None, oob=None, road_model=None)
+        self.test_monitor = TestMonitor(
+            simulator=None, test=None, oob=None, road_model=None
+        )
         self.test_monitor.start_timer()
 
     def test_is_car_moving_car_stays_on_same_position(self, mocker):
         self.test_monitor.test = mocker.patch("sdc_scissor.testing_api.test.Test")
         simulation_data_entry_t0 = {"time": 0, "position": (0, 0, 0)}
         simulation_data_entry_t1 = {"time": 11, "position": (0, 0, 0)}
-        self.test_monitor.test.simulation_data = [simulation_data_entry_t0, simulation_data_entry_t1]
+        self.test_monitor.test.simulation_data = [
+            simulation_data_entry_t0,
+            simulation_data_entry_t1,
+        ]
         expected = False
         actual = self.test_monitor.is_car_moving()
         assert expected == actual
@@ -27,7 +32,10 @@ class TestTestMonitor:
         self.test_monitor.test = mocker.patch("sdc_scissor.testing_api.test.Test")
         simulation_data_entry_t0 = {"time": 0, "position": (0, 0, 0)}
         simulation_data_entry_t1 = {"time": 5, "position": (10, 10, 0)}
-        self.test_monitor.test.simulation_data = [simulation_data_entry_t0, simulation_data_entry_t1]
+        self.test_monitor.test.simulation_data = [
+            simulation_data_entry_t0,
+            simulation_data_entry_t1,
+        ]
         expected = True
         actual = self.test_monitor.is_car_moving()
         assert expected == actual
@@ -36,13 +44,18 @@ class TestTestMonitor:
         self.test_monitor.test = mocker.patch("sdc_scissor.testing_api.test.Test")
         simulation_data_entry_t0 = {"time": 0, "position": (0, 0, 0)}
         simulation_data_entry_t1 = {"time": 0.1, "position": (0, 0, 0)}
-        self.test_monitor.test.simulation_data = [simulation_data_entry_t0, simulation_data_entry_t1]
+        self.test_monitor.test.simulation_data = [
+            simulation_data_entry_t0,
+            simulation_data_entry_t1,
+        ]
         expected = True
         actual = self.test_monitor.is_car_moving()
         assert expected == actual
 
     def test_check_verify_if_test_is_finished(self, mocker):
-        mock_simulator = mocker.patch("sdc_scissor.simulator_api.abstract_simulator.AbstractSimulator")
+        mock_simulator = mocker.patch(
+            "sdc_scissor.simulator_api.abstract_simulator.AbstractSimulator"
+        )
         mock_simulator.update_car.return_value = None
         mock_simulator.get_car_position.return_value = 0, 0, 0
         self.test_monitor.simulator = mock_simulator

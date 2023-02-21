@@ -55,7 +55,9 @@ class Solution:
         self.road_points = self.road_builder.get_points_from_states(self.states)
 
     def remove_invalid_cases(self):
-        self.states, self.road_points = self.road_builder.remove_invalid_cases(self.road_points, self.states)
+        self.states, self.road_points = self.road_builder.remove_invalid_cases(
+            self.road_points, self.states
+        )
 
     def calc_novelty(self, old, new):
         novelty = 0

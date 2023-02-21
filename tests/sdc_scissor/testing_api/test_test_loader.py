@@ -15,7 +15,9 @@ class TestTestLoader:
         has_next = test_loader.has_next()
         assert not has_next
 
-    def test_empty_test_folder_should_have_no_next_test_and_throw_exception_on_next(self, mocker):
+    def test_empty_test_folder_should_have_no_next_test_and_throw_exception_on_next(
+        self, mocker
+    ):
         empty_test_dir_mock = mocker.patch("pathlib.Path")
         tv = NoIntersectionValidator(SimpleTestValidator())
         test_loader = TestLoader(tests_dir=empty_test_dir_mock, test_validator=tv)

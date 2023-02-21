@@ -20,9 +20,9 @@ H = h_status;
 if ~strcmp("mo-default-GA",configuration)
     [coeff,scores,latent, tsd, variance,mu] = pca(Features);
     if strcmp("mo-10_feature_GA", configuration)
-        Features = scores(:,1:10);  
+        Features = scores(:,1:10);
     else
-        Features = scores(:,1:6);  
+        Features = scores(:,1:6);
     end
 end
 
@@ -37,7 +37,7 @@ BM = name
 Differences = pdist(Features,"seuclidean");
 Differences = squareform(Differences);
 A = Differences;  % this variable is used in the fitness function evaluation
- 
+
 %% Genetic Algoritm (Chromosomes = test permutations)
 options = optimoptions('gamultiobj');
 options = optimoptions(options,'PopulationType', 'custom');
@@ -66,7 +66,7 @@ APFD_c = zeros(size(x,1), 1);
 for i=1:size(x,1)
     % a(1,i) is execution cost for running first i tests
     % b(1,i) is the number of detected faults after running first i tests
-    [a,b] = faultDetection(x(i,:), T, Cost); 
+    [a,b] = faultDetection(x(i,:), T, Cost);
     APFD_c(i, 1) = trapz(a, b) / max(a) / max(b);
     plot(a, b, 'r');
 end
@@ -93,7 +93,7 @@ writematrix(x,strcat(output_dir,"best-permutation.csv"))
 rand_APFD = zeros(1,500);
 %% Random permutations (baseline)
 for i=1:500
-    [a,b] = faultDetection(randperm(m), T, Cost); 
+    [a,b] = faultDetection(randperm(m), T, Cost);
     plot(a, b, 'b');
     rand_APFD(1,i) = trapz(a, b) / max(a) / max(b);
 end
@@ -112,10 +112,9 @@ end
 writematrix(mat,strcat(output_dir,"results.csv"))
 
 title('Fault detection capability')
-xlabel('Execution cost (s)') 
+xlabel('Execution cost (s)')
 ylabel('Number of failures')
 
 hold off
 exportgraphics(gcf,strcat(output_dir,"plot.png"))
 end
-

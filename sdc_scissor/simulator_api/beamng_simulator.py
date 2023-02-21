@@ -139,7 +139,9 @@ class BeamNGSimulator(AbstractSimulator):
         """
         logging.info("load_scenario")
         self.scenario = scenario
-        road = Road(material="tig_road_rubber_sticky", rid="flat_road", interpolate=True)
+        road = Road(
+            material="tig_road_rubber_sticky", rid="flat_road", interpolate=True
+        )
 
         # Ensure not overriding the test object (copy first the whole list)
         road_nodes = test.interpolated_road_points.copy()
@@ -164,11 +166,15 @@ class BeamNGSimulator(AbstractSimulator):
         start_position = _compute_vehicle_start_point(road_nodes)
         start_direction = np.array(road_nodes[1][:2]) - np.array(road_nodes[0][:2])
         quaternion_rotation = _compute_vehicle_start_rotation(start_direction)
-        self.scenario.add_vehicle(vehicle=self.vehicle, pos=start_position, rot_quat=quaternion_rotation)
+        self.scenario.add_vehicle(
+            vehicle=self.vehicle, pos=start_position, rot_quat=quaternion_rotation
+        )
 
         end_point = road_nodes[-1][:3]
 
-        self.scenario.add_checkpoints(positions=[end_point], scales=[(5, 5, 5)], ids=["end_point"])
+        self.scenario.add_checkpoints(
+            positions=[end_point], scales=[(5, 5, 5)], ids=["end_point"]
+        )
         self.scenario.make(self.beamng)
         self.beamng.load_scenario(self.scenario)
 
@@ -176,7 +182,9 @@ class BeamNGSimulator(AbstractSimulator):
         """ """
         logging.debug("* update_car")
         self.vehicle.update_vehicle()
-        _ = self.beamng.poll_sensors(self.vehicle)  # otherwise, the values are not updated (bug of beamngpy)
+        _ = self.beamng.poll_sensors(
+            self.vehicle
+        )  # otherwise, the values are not updated (bug of beamngpy)
 
     def get_car_position(self):
         """

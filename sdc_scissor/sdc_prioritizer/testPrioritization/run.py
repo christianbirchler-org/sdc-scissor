@@ -25,7 +25,9 @@ from sklearn.preprocessing import MinMaxScaler
 
 from crossover.PMX import PMXCrossover
 from mutation.HybridMut import HybridMut
-from problem.TestPrioritizationMultiObjectiveProblem import TestPrioritizationMultiObjectiveProblem
+from problem.TestPrioritizationMultiObjectiveProblem import (
+    TestPrioritizationMultiObjectiveProblem,
+)
 
 # video recorder
 
@@ -133,7 +135,9 @@ def print_help():
     """
     Print help text for wrong user input.
     """
-    print(f"Expected at least {MINIMUM_USER_INPTUS} input arguments and at most {MAXIMUM_USER_INPTUS}.")
+    print(
+        f"Expected at least {MINIMUM_USER_INPTUS} input arguments and at most {MAXIMUM_USER_INPTUS}."
+    )
     print("arg 1 = Features CSV file path")
     print("arg 2 = Configuration name")
     print("arg 3 = Output directory")
@@ -206,7 +210,13 @@ def main(user_input: list = None):
 
     """
     # 1- Validating user inputs
-    (csv_file_path, config_name, output_dir, population_size, budget) = validate_user_input(user_input)
+    (
+        csv_file_path,
+        config_name,
+        output_dir,
+        population_size,
+        budget,
+    ) = validate_user_input(user_input)
     output_dir = os.path.join(output_dir, config_name)
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
@@ -242,7 +252,14 @@ def main(user_input: list = None):
     algorithm = get_algorithm("NSGAII", sampling_var, population_size)
 
     ## Start the search process
-    res = minimize(problem, algorithm, ("n_gen", budget), save_history=False, display=MyDisplay(), verbose=True)
+    res = minimize(
+        problem,
+        algorithm,
+        ("n_gen", budget),
+        save_history=False,
+        display=MyDisplay(),
+        verbose=True,
+    )
 
     ## 7 - print and save the outcome of the search process
     save_plot(output_dir, problem, res)

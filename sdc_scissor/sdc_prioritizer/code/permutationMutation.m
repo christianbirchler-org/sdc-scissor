@@ -16,7 +16,7 @@ mutationChildren = zeros(length(parents),GenomeLength);
             mutationPoint2 = randi(nVar-1, 1);
 
             prob = rand();
-            
+
             % SWAP mutation
             if prob <= 0.33
                 temp = child(mutationPoint1);
@@ -26,7 +26,7 @@ mutationChildren = zeros(length(parents),GenomeLength);
                 % INVERT mutation
                 if prob <= 0.66
                     min_index = min(mutationPoint1, mutationPoint2);
-                    max_index = max(mutationPoint1, mutationPoint2); 
+                    max_index = max(mutationPoint1, mutationPoint2);
                     child(min_index:max_index) = child(max_index:-1:min_index);
                 else
                     % INSERT mutation
@@ -41,5 +41,3 @@ mutationChildren = zeros(length(parents),GenomeLength);
         mutationChildren(i,:) = child;
     end
 end
-
-

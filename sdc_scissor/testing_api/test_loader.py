@@ -82,7 +82,12 @@ class TestLoader:
         test_id = match_obj.group(1)
         logging.debug("test_id: {}".format(test_id))
 
-        test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
+        test = Test(
+            test_id=test_id,
+            road_points=road_points,
+            test_outcome=test_outcome,
+            test_duration=sim_time,
+        )
         self.test_validator.validate(test)
 
         return test

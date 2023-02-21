@@ -30,7 +30,11 @@ def get_can_frame_list(can_db):
             signal_list.append(signal.name)
 
         # Store the information in the dictionary and add it to the frame_list
-        res = {"example_message": can_msg, "frame_id": frame_id, "signal_list": signal_list}
+        res = {
+            "example_message": can_msg,
+            "frame_id": frame_id,
+            "signal_list": signal_list,
+        }
         can_frame_list.append(res)
 
     return can_frame_list
@@ -100,7 +104,7 @@ class CanBusHandler:
         It will then generate CAN messages from the data and send them to the CANStdOut.
 
         :param data: A dictionary containing the current data from the simulation.
-        :return: 
+        :return:
         """ ""
 
         for frame in self.frame_list:

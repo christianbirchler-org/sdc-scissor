@@ -3,7 +3,9 @@ import abc
 from shapely.geometry import LineString
 from shapely.geometry import MultiLineString
 
-from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
+from sdc_scissor.feature_extraction_api.road_geometry_calculator import (
+    RoadGeometryCalculator,
+)
 from sdc_scissor.testing_api.test import Test
 
 
@@ -53,10 +55,17 @@ class NoIntersectionValidator(TestValidatorDecorator):
         road_points_line_string: LineString = LineString(
             coordinates=[(node[0], node[1]) for node in test.interpolated_road_points]
         )
-        left_bound_line_string = road_points_line_string.parallel_offset(distance=5, side="left")
-        right_bound_line_string = road_points_line_string.parallel_offset(distance=5, side="right")
+        left_bound_line_string = road_points_line_string.parallel_offset(
+            distance=5, side="left"
+        )
+        right_bound_line_string = road_points_line_string.parallel_offset(
+            distance=5, side="right"
+        )
 
-        if left_bound_line_string.geom_type != "LineString" or right_bound_line_string.geom_type != "LineString":
+        if (
+            left_bound_line_string.geom_type != "LineString"
+            or right_bound_line_string.geom_type != "LineString"
+        ):
             test.is_valid = False
             return test.is_valid
 
@@ -83,8 +92,12 @@ class NoTooSharpTurnsValidator(TestValidatorDecorator):
         previous_point = p1
 
         for current_point in test.interpolated_road_points[2:]:
-            current_direction = self.__road_geometry_calculator.get_direction(previous_point, current_point)
-            angle = self.__road_geometry_calculator.get_angle(previous_direction, current_direction)
+            current_direction = self.__road_geometry_calculator.get_direction(
+                previous_point, current_point
+            )
+            angle = self.__road_geometry_calculator.get_angle(
+                previous_direction, current_direction
+            )
             if angle > self.angle_threshold:
                 return False
             previous_point, previous_direction = current_point, current_direction

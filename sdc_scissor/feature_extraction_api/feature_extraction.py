@@ -8,7 +8,9 @@ import pandas as pd
 from shapely.geometry import Point
 from shapely.geometry import Polygon
 
-from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
+from sdc_scissor.feature_extraction_api.road_geometry_calculator import (
+    RoadGeometryCalculator,
+)
 from sdc_scissor.testing_api.test import Test
 
 
@@ -44,7 +46,11 @@ class RoadFeatures:
 
         :return: A dictionary with the road features
         """
-        members = [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
+        members = [
+            attr
+            for attr in dir(self)
+            if not callable(getattr(self, attr)) and not attr.startswith("__")
+        ]
         res = {}
         for member in members:
             res[member] = [getattr(self, member)]
@@ -112,7 +118,9 @@ class FeatureExtractor:
         :return: A road feature object
         """
         segments: list = []
-        segment_indexes_list = self.__segmentation_strategy.extract_segments(test.road_points)
+        segment_indexes_list = self.__segmentation_strategy.extract_segments(
+            test.road_points
+        )
         for indexes in segment_indexes_list:
             segment: RoadSegment = self.__get_road_segment_with_features(test, indexes)
             segments.append(segment)
@@ -147,8 +155,12 @@ class FeatureExtractor:
             raw_feature_data["pivots"].append(segment.radius)
             raw_feature_data["diversities"].append(segment.segment_diversity)
 
-        road_features.mean_road_diversity = float(np.mean(raw_feature_data["diversities"]))
-        road_features.full_road_diversity = float(np.sum(raw_feature_data["diversities"]))
+        road_features.mean_road_diversity = float(
+            np.mean(raw_feature_data["diversities"])
+        )
+        road_features.full_road_diversity = float(
+            np.sum(raw_feature_data["diversities"])
+        )
 
         road_features.mean_angle = statistics.mean(raw_feature_data["angles"])
         road_features.median_angle = statistics.median(raw_feature_data["angles"])
@@ -171,10 +183,14 @@ class FeatureExtractor:
         else:
             road_features.std_pivot_off = 0
 
-        road_features.direct_distance = self.__road_geometry_calculator.get_distance_between(
-            test.road_points[0], test.road_points[-1]
+        road_features.direct_distance = (
+            self.__road_geometry_calculator.get_distance_between(
+                test.road_points[0], test.road_points[-1]
+            )
         )
-        road_features.road_distance = self.__road_geometry_calculator.get_road_length(test.road_points)
+        road_features.road_distance = self.__road_geometry_calculator.get_road_length(
+            test.road_points
+        )
 
         return road_features
 
@@ -192,7 +208,9 @@ class FeatureExtractor:
 
         segment_road_points = test.road_points[start_index : end_index + 1]
 
-        angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
+        angles_lst = self.__road_geometry_calculator.extract_turn_angles(
+            segment_road_points
+        )
 
         angles_sum = sum(angles_lst)
 
@@ -215,7 +233,9 @@ class FeatureExtractor:
 
         segment_road_points = test.road_points[start_index : end_index + 1]
 
-        angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
+        angles_lst = self.__road_geometry_calculator.extract_turn_angles(
+            segment_road_points
+        )
 
         angles_sum = sum(angles_lst)
 
@@ -236,8 +256,12 @@ class FeatureExtractor:
 
         segment_road_points = test.road_points[start_index : end_index + 1]
 
-        angles_lst = self.__road_geometry_calculator.extract_turn_angles(segment_road_points)
-        segment_length = self.__road_geometry_calculator.get_road_length(segment_road_points)
+        angles_lst = self.__road_geometry_calculator.extract_turn_angles(
+            segment_road_points
+        )
+        segment_length = self.__road_geometry_calculator.get_road_length(
+            segment_road_points
+        )
 
         angles_sum = sum(angles_lst)
 
@@ -261,9 +285,13 @@ class FeatureExtractor:
         road_points = test.road_points
         start_index, end_index = road_segment.start_index, road_segment.end_index
         segment_road_points = road_points[start_index : end_index + 1]
-        start_point, end_point = Point(segment_road_points[0][:2]), Point(segment_road_points[-1][:2])
+        start_point, end_point = Point(segment_road_points[0][:2]), Point(
+            segment_road_points[-1][:2]
+        )
 
-        polygon_points: list[Point] = [Point(rp[0], rp[1]) for rp in segment_road_points]
+        polygon_points: list[Point] = [
+            Point(rp[0], rp[1]) for rp in segment_road_points
+        ]
         polygon_points.extend([end_point, start_point])
         segment_diversity_polygon: Polygon = Polygon(polygon_points)
 
@@ -283,7 +311,9 @@ class FeatureExtractor:
         road_segment.end_index = indexes[1]
 
         # classify segment type
-        road_segment.type = self.__get_segment_type(test, road_segment, angle_threshold=5)
+        road_segment.type = self.__get_segment_type(
+            test, road_segment, angle_threshold=5
+        )
 
         # update angle
         road_segment.angle = self.__get_segment_angle(test, road_segment)
@@ -291,6 +321,8 @@ class FeatureExtractor:
         # calculate radius
         road_segment.radius = self.__get_segment_radius(test, road_segment)
 
-        road_segment.segment_diversity = self.__get_segment_diversity(test, road_segment)
+        road_segment.segment_diversity = self.__get_segment_diversity(
+            test, road_segment
+        )
 
         return road_segment

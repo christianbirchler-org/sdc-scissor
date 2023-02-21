@@ -45,4 +45,3 @@ Those options are mainly about to configure the virtual environment and not the 
 ```{eval-rst}
 .. autofunction:: sdc_scissor.cli.label_tests
 ```
-

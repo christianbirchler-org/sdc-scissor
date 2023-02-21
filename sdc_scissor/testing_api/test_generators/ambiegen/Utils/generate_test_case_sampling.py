@@ -14,7 +14,11 @@ class GenerateTestCaseSampling(Sampling):
 
     def _do(self, problem, n_samples, **kwargs):
         generator = RoadGen(
-            cf.model["map_size"], cf.model["min_len"], cf.model["max_len"], cf.model["min_angle"], cf.model["max_angle"]
+            cf.model["map_size"],
+            cf.model["min_len"],
+            cf.model["max_len"],
+            cf.model["min_angle"],
+            cf.model["max_angle"],
         )
         X = np.full((n_samples, 1), None, dtype=np.object)
 

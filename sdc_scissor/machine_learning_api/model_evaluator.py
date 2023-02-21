@@ -101,7 +101,9 @@ class ModelEvaluator:
         cv_results = {}
         for key, clf in self.__classifiers.items():
             cv = StratifiedKFold(shuffle=True, n_splits=10)
-            cv_results[key] = cross_validate(clf, X, y, cv=cv, scoring=("accuracy", "f1", "recall", "precision"))
+            cv_results[key] = cross_validate(
+                clf, X, y, cv=cv, scoring=("accuracy", "f1", "recall", "precision")
+            )
             clf.fit(X, y)
 
         mean_cv_results = {}
@@ -201,10 +203,14 @@ class ModelEvaluator:
 
         if nr_passes > nr_fails:
             n_diff = nr_passes - nr_fails
-            train_data_fails = np.concatenate((train_data_fails, train_data_fails[:n_diff, :]), axis=0)
+            train_data_fails = np.concatenate(
+                (train_data_fails, train_data_fails[:n_diff, :]), axis=0
+            )
         else:
             n_diff = nr_fails - nr_passes
-            train_data_passes = np.concatenate((train_data_passes, train_data_passes[:n_diff, :]), axis=0)
+            train_data_passes = np.concatenate(
+                (train_data_passes, train_data_passes[:n_diff, :]), axis=0
+            )
 
         train_data = np.concatenate((train_data_passes, train_data_fails), axis=0)
         np.random.shuffle(train_data)

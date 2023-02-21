@@ -20,7 +20,9 @@ class TestPrioritizationMultiObjectiveProblem(Problem):
 
     def __init__(self, genome_length, distancesp, costsp):
 
-        super().__init__(n_var=genome_length, n_obj=2, n_constr=0, xl=0.0, xu=genome_length)
+        super().__init__(
+            n_var=genome_length, n_obj=2, n_constr=0, xl=0.0, xu=genome_length
+        )
         global costs
         costs = costsp
         global distances

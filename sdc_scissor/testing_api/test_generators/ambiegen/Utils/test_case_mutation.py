@@ -43,25 +43,43 @@ class TestCaseMutation(Mutation):
                     if value == "value":
                         duration_list = []
                         if child["st" + str(num)]["state"] == "straight":
-                            duration_list = np.arange(cf.model["min_len"], cf.model["max_len"], 1)
+                            duration_list = np.arange(
+                                cf.model["min_len"], cf.model["max_len"], 1
+                            )
                         else:
-                            duration_list = np.arange(cf.model["min_angle"], cf.model["max_angle"], 5)
+                            duration_list = np.arange(
+                                cf.model["min_angle"], cf.model["max_angle"], 5
+                            )
 
-                        child["st" + str(num)][value] = int(np.random.choice(duration_list))
+                        child["st" + str(num)][value] = int(
+                            np.random.choice(duration_list)
+                        )
 
                     elif value == "state":
 
                         if child["st" + str(num)][value] == "straight":
-                            child["st" + str(num)][value] = np.random.choice(["left", "right"])
-                            duration_list = np.arange(cf.model["min_angle"], cf.model["max_angle"], 5)
-                            child["st" + str(num)]["value"] = int(np.random.choice(duration_list))
+                            child["st" + str(num)][value] = np.random.choice(
+                                ["left", "right"]
+                            )
+                            duration_list = np.arange(
+                                cf.model["min_angle"], cf.model["max_angle"], 5
+                            )
+                            child["st" + str(num)]["value"] = int(
+                                np.random.choice(duration_list)
+                            )
                         else:
                             child["st" + str(num)][value] = "straight"
-                            duration_list = np.arange(cf.model["min_len"], cf.model["max_len"], 1)
-                            child["st" + str(num)]["value"] = int(np.random.choice(duration_list))
+                            duration_list = np.arange(
+                                cf.model["min_len"], cf.model["max_len"], 1
+                            )
+                            child["st" + str(num)]["value"] = int(
+                                np.random.choice(duration_list)
+                            )
 
                 else:
-                    cand = list(np.random.randint(0, high=len(child), size=int(len(child) / 2)))
+                    cand = list(
+                        np.random.randint(0, high=len(child), size=int(len(child) / 2))
+                    )
                     while cand:
                         c1 = np.random.choice(cand)
                         cand.remove(c1)
@@ -73,10 +91,16 @@ class TestCaseMutation(Mutation):
                             child["st" + str(c2)] = temp
                         else:
                             if child["st" + str(c1)]["state"] == "straight":
-                                duration_list = np.arange(cf.model["min_len"], cf.model["max_len"], 1)
+                                duration_list = np.arange(
+                                    cf.model["min_len"], cf.model["max_len"], 1
+                                )
                             else:
-                                duration_list = np.arange(cf.model["min_angle"], cf.model["max_angle"], 5)
-                            child["st" + str(c1)]["value"] = int(np.random.choice(duration_list))
+                                duration_list = np.arange(
+                                    cf.model["min_angle"], cf.model["max_angle"], 5
+                                )
+                            child["st" + str(c1)]["value"] = int(
+                                np.random.choice(duration_list)
+                            )
 
                 sn.states = child
                 sn.get_points()

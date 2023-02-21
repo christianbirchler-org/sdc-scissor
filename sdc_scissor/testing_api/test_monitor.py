@@ -34,7 +34,13 @@ class TestMonitor:
     The test monitor checks the execution states of the test and logs them.
     """
 
-    def __init__(self, simulator: AbstractSimulator, test: Test, oob: float, road_model: RoadModel):
+    def __init__(
+        self,
+        simulator: AbstractSimulator,
+        test: Test,
+        oob: float,
+        road_model: RoadModel,
+    ):
         """
         The test monitor retrieves data from the simulator and tracks the trajectory of the car.
 
@@ -53,7 +59,9 @@ class TestMonitor:
         self.oob = oob
         self.has_test_failed = None
         self.current_test_outcome = "UNDEFINED"
-        self.cbh = CanBusHandler(output_handler=CANStdOut() if CONFIG.HAS_CAN_BUS else NoCANBusOutput())
+        self.cbh = CanBusHandler(
+            output_handler=CANStdOut() if CONFIG.HAS_CAN_BUS else NoCANBusOutput()
+        )
 
     def process_car_state(self, interrupt_on_failure):
         """
@@ -67,7 +75,9 @@ class TestMonitor:
         sensor_data = vars(self.simulator.get_sensor_data())
         logging.debug(sensor_data)
         current_time = time.time() - self.start_time
-        logging.debug("time: {}\tx: {}\ty: {}\tz: {}".format(current_time, x_pos, y_pos, z_pos))
+        logging.debug(
+            "time: {}\tx: {}\ty: {}\tz: {}".format(current_time, x_pos, y_pos, z_pos)
+        )
         # TODO: Cannot append a dictionary to the sim_data list. Why?!
         current_simulation_data: dict = {
             "time": current_time,
@@ -107,7 +117,9 @@ class TestMonitor:
             return True
 
         # TODO: Cannot unpack
-        _, last_x_pos, last_y_pos, _ = _get_t_previous_data(self.test.simulation_data, time_delta)
+        _, last_x_pos, last_y_pos, _ = _get_t_previous_data(
+            self.test.simulation_data, time_delta
+        )
 
         is_car_moving = not self.__are_points_close(
             (current_x_pos, current_y_pos), (last_x_pos, last_y_pos), decision_distance
@@ -170,7 +182,9 @@ class TestMonitor:
         logging.debug("__car_at_end_of_road")
         road_end_point = self.test.interpolated_road_points[-1]
         x_end, y_end = road_end_point[0], road_end_point[1]
-        is_car_at_the_end_of_the_road: bool = self.__are_points_close((x_pos, y_pos), (x_end, y_end), 7)
+        is_car_at_the_end_of_the_road: bool = self.__are_points_close(
+            (x_pos, y_pos), (x_end, y_end), 7
+        )
         if is_car_at_the_end_of_the_road:
             logging.warning("CAR IS AT THE END OF THE ROAD!")
             if not self.has_test_failed:
@@ -178,7 +192,9 @@ class TestMonitor:
         return is_car_at_the_end_of_the_road
 
     @staticmethod
-    def __are_points_close(a: tuple[float, float], b: tuple[float, float], threshold: float):
+    def __are_points_close(
+        a: tuple[float, float], b: tuple[float, float], threshold: float
+    ):
         """
 
         :param a:

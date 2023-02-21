@@ -7,7 +7,9 @@ from parameterized import parameterized
 from pytest import approx
 
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
-from sdc_scissor.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
+from sdc_scissor.feature_extraction_api.equi_distance_strategy import (
+    EquiDistanceStrategy,
+)
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
 from sdc_scissor.feature_extraction_api.feature_extraction import RoadFeatures
 from sdc_scissor.testing_api.test import Test
@@ -54,7 +56,9 @@ class TestFeatureExtraction:
     def test_straight_road_angle_based_strategy(self, distance, nr_segments):
         road_points = [[x, 0] for x in range(distance + 1)]
         test = Test(0, road_points, "NOT_EXECUTED")
-        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        segmentation_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
 
         feature_extractor = FeatureExtractor(segmentation_strategy)
 
@@ -114,7 +118,9 @@ class TestFeatureExtraction:
 
     def test_90_degree_left_turn_only_angle_based(self):
         nr_segments = 1
-        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        segmentation_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         road_points = []
         radius = 50
         angle = 90
@@ -148,7 +154,9 @@ class TestFeatureExtraction:
 
     def test_90_degree_right_turn_only_angle_based(self):
         nr_segments = 1
-        segmentation_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        segmentation_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         road_points = []
         radius = 50
         angle = 90
@@ -217,7 +225,9 @@ class TestFeatureExtraction:
         road_features = feature_extractor.extract_features(test)
 
         # pythagoras
-        assert road_features.direct_distance == approx(math.sqrt(2 * ((2 * radius) ** 2)), abs=2)
+        assert road_features.direct_distance == approx(
+            math.sqrt(2 * ((2 * radius) ** 2)), abs=2
+        )
 
         # half of a circle
         assert road_features.road_distance == approx(math.pi * radius, abs=2)
@@ -235,7 +245,9 @@ class TestFeatureExtraction:
         assert road_features.min_pivot_off == approx(radius, abs=2)
 
     def test_no_diversity(self, mocker):
-        angle_based_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        angle_based_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         feature_extractor = FeatureExtractor(segmentation_strategy=angle_based_strategy)
 
         mock_test = mocker.patch("sdc_scissor.testing_api.test.Test")
@@ -248,7 +260,9 @@ class TestFeatureExtraction:
         assert actual == expected
 
     def test_with_small_diversity(self, mocker):
-        angle_based_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        angle_based_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         feature_extractor = FeatureExtractor(segmentation_strategy=angle_based_strategy)
 
         mock_test = mocker.patch("sdc_scissor.testing_api.test.Test")
@@ -262,7 +276,9 @@ class TestFeatureExtraction:
         assert actual != expected
 
     def test_with_no_full_road_diversity(self, mocker):
-        angle_based_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        angle_based_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         feature_extractor = FeatureExtractor(segmentation_strategy=angle_based_strategy)
 
         mock_test = mocker.patch("sdc_scissor.testing_api.test.Test")
@@ -275,7 +291,9 @@ class TestFeatureExtraction:
         assert actual == expected
 
     def test_with_small_full_road_diversity(self, mocker):
-        angle_based_strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
+        angle_based_strategy = AngleBasedStrategy(
+            angle_threshold=5, decision_distance=10
+        )
         feature_extractor = FeatureExtractor(segmentation_strategy=angle_based_strategy)
 
         mock_test = mocker.patch("sdc_scissor.testing_api.test.Test")
@@ -292,4 +310,6 @@ class TestFeatureExtraction:
         road_features = RoadFeatures()
         id_string = "id"
         file_dir = tmp_dir
-        FeatureExtractor.save_to_csv(road_features=[(id_string, road_features)], out_dir=file_dir)
+        FeatureExtractor.save_to_csv(
+            road_features=[(id_string, road_features)], out_dir=file_dir
+        )
