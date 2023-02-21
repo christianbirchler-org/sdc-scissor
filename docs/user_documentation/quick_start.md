@@ -24,6 +24,7 @@ git clone https://github.com/ChristianBirchler/sdc-scissor.git
 Install the dependencies:
 ````shell
 cd sdc-scissor
+pip install poetry
 poetry install
 ````
 
@@ -35,6 +36,10 @@ user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\l
 
 
 ## Run the tool
+
+A sample pipeline can be found here: https://doi.org/10.24433/CO.1187310.v2
+
+### Sequence Diagram
 ```{mermaid}
 sequenceDiagram
   actor User
