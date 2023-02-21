@@ -76,7 +76,7 @@ class CanBusHandler:
     CanBusHandler Objects can be used to receive data from a simulation and generate CAN messages from it.
     """
 
-    def __init__(self, config: Path, output_handler: CANBusOutput = NoCANBusOutput()):
+    def __init__(self, config: Path, output_handler: CANBusOutput):
         logging.info("Init CanBusHandler")
         # Load the config file
         with open(config) as fp:
