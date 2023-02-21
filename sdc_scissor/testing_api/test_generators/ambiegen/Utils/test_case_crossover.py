@@ -26,7 +26,6 @@ class TestCaseCrossover(Crossover):
         # for each mating provided
 
         for k in range(n_matings):
-
             r = np.random.random()
 
             s_a, s_b = X[0, k, 0], X[1, k, 0]
@@ -48,7 +47,6 @@ class TestCaseCrossover(Crossover):
                     crossover_point = rm.randint(1, len(tc_a) - 1)
 
                 if s_a.n_states > 2 and s_b.n_states > 2:
-
                     offa = {}
                     offb = {}
 

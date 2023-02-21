@@ -19,17 +19,13 @@ class TestPrioritizationMultiObjectiveProblem(Problem):
     generation_counter = 0
 
     def __init__(self, genome_length, distancesp, costsp):
-
-        super().__init__(
-            n_var=genome_length, n_obj=2, n_constr=0, xl=0.0, xu=genome_length
-        )
+        super().__init__(n_var=genome_length, n_obj=2, n_constr=0, xl=0.0, xu=genome_length)
         global costs
         costs = costsp
         global distances
         distances = distancesp
 
     def _evaluate(self, x, out, *args, **kwargs):
-
         pool1 = mp.Pool(processes=5)
 
         new_rows2 = pool1.map(ff_eval, x)

@@ -3,9 +3,7 @@ import random
 
 import numpy as np
 
-from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.base_frenet_generator import (
-    BaseFrenetVGenerator,
-)
+from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.base_frenet_generator import BaseFrenetVGenerator
 
 
 class CustomFrenetVGenerator(BaseFrenetVGenerator):
@@ -33,7 +31,6 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
         store_additional_data=False,
         count=None,
     ):
-
         self.count = count
         # Time spent on initial random generation
         self.random_gen_budget = random_budget
@@ -59,9 +56,7 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
 
         # Fix Distance
         # Number of generated kappa points depends on the size of the map + random variation
-        self.number_of_points = min(
-            int(map_size // segment_length), self.max_number_of_points
-        )
+        self.number_of_points = min(int(map_size // segment_length), self.max_number_of_points)
 
         super().__init__(
             executor=executor,
@@ -99,9 +94,7 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
             if 0.0 in set(self.df["visited"]) or 1.0 in set(self.df["visited"]):
                 # TODO: The values are becoming float if there is a nan value due to ERROR from the simulator.
                 log.info("Converting visited column to boolean...")
-                self.df["visited"] = self.df["visited"].map(
-                    lambda x: True if x == 1.0 else False
-                )
+                self.df["visited"] = self.df["visited"].map(lambda x: True if x == 1.0 else False)
             parent = (
                 self.df[
                     ((self.df.outcome == "PASS") | (self.df.outcome == "FAIL"))
@@ -133,9 +126,7 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
             test[i] = max(min(test[i], max_bound), min_bound)
         return test
 
-    def execute_frenet_test(
-        self, kappas, method="random", parent_info={}, extra_info={}
-    ):
+    def execute_frenet_test(self, kappas, method="random", parent_info={}, extra_info={}):
         if self.normalize:
             kappas = self.normalize_test(kappas)
         return super().execute_frenet_test(kappas, method, parent_info, extra_info)
@@ -181,25 +172,18 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
         # Only reversing roads that produced a failure already
         log.info(
             "Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance".format(
-                parent.outcome.item(),
-                parent.accum_neg_oob.item(),
-                parent.min_oob_distance.item(),
+                parent.outcome.item(), parent.accum_neg_oob.item(), parent.min_oob_distance.item()
             )
         )
 
         # mutations that we may want to avoid in tests that passed because they are easily reversible
         kappa_mutations = [
             ("reverse kappas", lambda ks: ks[::-1]),
-            (
-                "split and swap kappas",
-                lambda ks: ks[int(len(ks) / 2) :] + ks[: int(len(ks) / 2)],
-            ),
+            ("split and swap kappas", lambda ks: ks[int(len(ks) / 2) :] + ks[: int(len(ks) / 2)]),
             ("flip sign kappas", lambda ks: list(map(lambda x: x * -1.0, ks))),
         ]
 
-        self.perform_kappa_mutations(
-            kappa_mutations, parent, parent_info, extra_info={"visited": True}
-        )
+        self.perform_kappa_mutations(kappa_mutations, parent, parent_info, extra_info={"visited": True})
 
     def crossover(self):
         # TODO: Add parent information
@@ -228,9 +212,7 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
                 while not self.executor.is_over() and len(kids) > 0:
                     kappas = kids.pop()
                     kids_count += 1
-                    self.execute_frenet_test(
-                        kappas, method=name, parent_info={}, extra_info={}
-                    )
+                    self.execute_frenet_test(kappas, method=name, parent_info={}, extra_info={})
 
     @staticmethod
     def chromosome_crossover(parent_1, parent_2):
@@ -270,9 +252,7 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
     def get_remaining_time(self):
         return self.executor.time_budget.get_remaining_real_time()
 
-    def perform_kappa_mutations(
-        self, kappa_mutations, parent, parent_info, extra_info={}
-    ):
+    def perform_kappa_mutations(self, kappa_mutations, parent, parent_info, extra_info={}):
         # Only considering paths with more than 10 kappa points for mutations
         # kappas might be empty if the parent was obtained from reverse road points mutation
         kappas = parent.kappas.item()
@@ -280,23 +260,16 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
             i = 0
             while not self.executor.is_over() and i < len(kappa_mutations):
                 name, function = kappa_mutations[i]
-                log.info(
-                    "Generating mutants. Remaining time %s", self.get_remaining_time()
-                )
+                log.info("Generating mutants. Remaining time %s", self.get_remaining_time())
                 log.info("Mutation function: {:s}".format(name))
                 log.info(
                     "Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance".format(
-                        parent.outcome.item(),
-                        parent.accum_neg_oob.item(),
-                        parent.min_oob_distance.item(),
+                        parent.outcome.item(), parent.accum_neg_oob.item(), parent.min_oob_distance.item()
                     )
                 )
                 m_kappas = function(kappas)
                 outcome, _ = self.execute_frenet_test(
-                    m_kappas,
-                    method=name,
-                    parent_info=parent_info,
-                    extra_info=extra_info,
+                    m_kappas, method=name, parent_info=parent_info, extra_info=extra_info
                 )
 
                 # When there is a mutant of this branch that fails, we stop mutating this branch.
@@ -349,9 +322,7 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
         indexes = random.sample(range(len(kappas) - 1), k)
         modified_kappas = kappas[:]
         for i in indexes:
-            modified_kappas[i] += random.choice(
-                np.linspace(-self.global_bound, self.global_bound)
-            )
+            modified_kappas[i] += random.choice(np.linspace(-self.global_bound, self.global_bound))
         return modified_kappas
 
     def generate_random_test(self):

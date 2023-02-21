@@ -39,22 +39,10 @@ class TestPlotter(TestPlotter):
             y_left_line.append(interpolated_point_left_line.y)
 
         fig, ax = plt.subplots(figsize=(5, 5))
-        ax.plot(
-            x_center_line,
-            y_center_line,
-            color="#ebba34",
-            linewidth=2.0,
-            label="center line",
-        )
-        ax.plot(
-            x_left_line, y_left_line, color="black", linewidth=2.0, label="left line"
-        )
-        ax.plot(
-            x_right_line, y_right_line, color="black", linewidth=2.0, label="right line"
-        )
-        ax.plot(
-            [x_center_line[0]], [y_center_line[0]], "o", color="green", label="start"
-        )
+        ax.plot(x_center_line, y_center_line, color="#ebba34", linewidth=2.0, label="center line")
+        ax.plot(x_left_line, y_left_line, color="black", linewidth=2.0, label="left line")
+        ax.plot(x_right_line, y_right_line, color="black", linewidth=2.0, label="right line")
+        ax.plot([x_center_line[0]], [y_center_line[0]], "o", color="green", label="start")
         ax.plot([x_center_line[-1]], [y_center_line[-1]], "*", color="red", label="end")
         ax.legend()
         ax.set_xlabel("x")

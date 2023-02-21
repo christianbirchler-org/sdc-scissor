@@ -2,12 +2,10 @@ import os
 from pathlib import Path
 
 import pytest
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
 from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
@@ -18,9 +16,7 @@ class TestModelEvaluator:
     def setup_class(self):
         test_road_features_dir = Path(os.path.dirname(os.path.abspath(__file__)))
         test_road_features_path = test_road_features_dir / "test_road_features.csv"
-        self.dd_extracted_features_from_sample_tests = (
-            CSVLoader.load_dataframe_from_csv(test_road_features_path)
-        )
+        self.dd_extracted_features_from_sample_tests = CSVLoader.load_dataframe_from_csv(test_road_features_path)
 
         self.classifiers_dict = {
             "random_forest": RandomForestClassifier(),
@@ -30,9 +26,7 @@ class TestModelEvaluator:
             "logistic_regression": LogisticRegression(max_iter=10000),
             "decision_tree": DecisionTreeClassifier(),
         }
-        self.model_evaluator = ModelEvaluator(
-            data_frame=self.dd_extracted_features_from_sample_tests, label="safety"
-        )
+        self.model_evaluator = ModelEvaluator(data_frame=self.dd_extracted_features_from_sample_tests, label="safety")
 
     def test_cv_stratified(self):
         self.model_evaluator.cv_stratified()

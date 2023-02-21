@@ -3,9 +3,7 @@ import random
 
 import numpy as np
 
-from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_frenet_generator import (
-    BaseFrenetGenerator,
-)
+from sdc_scissor.testing_api.test_generators.frenetic.src.generators.base_frenet_generator import BaseFrenetGenerator
 
 
 class CustomFrenetGenerator(BaseFrenetGenerator):
@@ -49,21 +47,14 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         if map_size < 150:
             # Fix Points
             self.number_of_points = 15
-            self.frenet_step = max(
-                self.min_step_size, map_size // self.number_of_points
-            )
+            self.frenet_step = max(self.min_step_size, map_size // self.number_of_points)
         else:
             # Fix Distance
             # Number of generated kappa points depends on the size of the map + random variation
             self.frenet_step = 10
             self.number_of_points = min(map_size // self.frenet_step, self.max_length)
 
-        super().__init__(
-            time_budget=time_budget,
-            executor=executor,
-            map_size=map_size,
-            strict_father=strict_father,
-        )
+        super().__init__(time_budget=time_budget, executor=executor, map_size=map_size, strict_father=strict_father)
 
     def start(self):
         log.debug("Test generation frenetic.")
@@ -92,9 +83,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
             if 0.0 in set(self.df["visited"]) or 1.0 in set(self.df["visited"]):
                 # TODO: The values are become float if there is a nan due to ERROR.
                 log.debug("Converting visited column to boolean...")
-                self.df["visited"] = self.df["visited"].map(
-                    lambda x: True if x == 1.0 else False
-                )
+                self.df["visited"] = self.df["visited"].map(lambda x: True if x == 1.0 else False)
             parent = (
                 self.df[
                     ((self.df.outcome == "PASS") | (self.df.outcome == "FAIL"))
@@ -163,32 +152,22 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         log.debug("Mutation function: {:s}".format("reverse road"))
         log.debug(
             "Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance".format(
-                parent.outcome.item(),
-                parent.accum_neg_oob.item(),
-                parent.min_oob_distance.item(),
+                parent.outcome.item(), parent.accum_neg_oob.item(), parent.min_oob_distance.item()
             )
         )
         # Do not revisit a reverse road
         self.execute_test(
-            road_points[::-1],
-            method="reversed road",
-            extra_info={"visited": True},
-            parent_info=parent_info,
+            road_points[::-1], method="reversed road", extra_info={"visited": True}, parent_info=parent_info
         )
 
         # mutations that we may want to avoid in tests that passed because they are easily reversible
         kappa_mutations = [
             ("reverse kappas", lambda ks: ks[::-1]),
-            (
-                "split and swap kappas",
-                lambda ks: ks[int(len(ks) / 2) :] + ks[: int(len(ks) / 2)],
-            ),
+            ("split and swap kappas", lambda ks: ks[int(len(ks) / 2) :] + ks[: int(len(ks) / 2)]),
             ("flip sign kappas", lambda ks: list(map(lambda x: x * -1.0, ks))),
         ]
 
-        self.perform_kappa_mutations(
-            kappa_mutations, parent, parent_info, extra_info={"visited": True}
-        )
+        self.perform_kappa_mutations(kappa_mutations, parent, parent_info, extra_info={"visited": True})
 
     def crossover(self):
         # TODO: Add parent information
@@ -204,9 +183,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
 
         if len(candidates) > 4:
             kids_count = 0
-            while self.executor.get_remaining_time() > 0 and kids_count < len(
-                candidates
-            ):
+            while self.executor.get_remaining_time() > 0 and kids_count < len(candidates):
                 his_id, her_id = random.sample(list(candidates.index), 2)
                 father = self.df.iloc[his_id]["kappas"]
                 mother = self.df.iloc[her_id]["kappas"]
@@ -220,11 +197,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
                     kappas = kids.pop()
                     kids_count += 1
                     self.execute_frenet_test(
-                        kappas,
-                        method=name,
-                        frenet_step=self.frenet_step,
-                        parent_info={},
-                        extra_info={},
+                        kappas, method=name, frenet_step=self.frenet_step, parent_info={}, extra_info={}
                     )
 
     @staticmethod
@@ -253,9 +226,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         daughter = her[len(her) // 2 :] + him[: len(him) // 2]
         return [son, daughter]
 
-    def perform_kappa_mutations(
-        self, kappa_mutations, parent, parent_info, extra_info={}
-    ):
+    def perform_kappa_mutations(self, kappa_mutations, parent, parent_info, extra_info={}):
         # Only considering paths with more than 10 kappa points for mutations
         # kappas might be empty if the parent was obtained from reverse road points mutation
         kappas = parent.kappas.item()
@@ -263,25 +234,16 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
             i = 0
             while self.executor.get_remaining_time() > 0 and i < len(kappa_mutations):
                 name, function = kappa_mutations[i]
-                log.debug(
-                    "Generating mutants. Remaining time %s",
-                    self.executor.get_remaining_time(),
-                )
+                log.debug("Generating mutants. Remaining time %s", self.executor.get_remaining_time())
                 log.debug("Mutation function: {:s}".format(name))
                 log.debug(
                     "Parent ({:s}) {:0.3f} accum_neg_oob and {:0.3f} min oob distance".format(
-                        parent.outcome.item(),
-                        parent.accum_neg_oob.item(),
-                        parent.min_oob_distance.item(),
+                        parent.outcome.item(), parent.accum_neg_oob.item(), parent.min_oob_distance.item()
                     )
                 )
                 m_kappas = function(kappas)
                 outcome, _ = self.execute_frenet_test(
-                    m_kappas,
-                    frenet_step=self.frenet_step,
-                    method=name,
-                    parent_info=parent_info,
-                    extra_info=extra_info,
+                    m_kappas, frenet_step=self.frenet_step, method=name, parent_info=parent_info, extra_info=extra_info
                 )
 
                 # When there is a mutant of this branch that fails, we stop mutating this branch.
@@ -294,10 +256,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
     @staticmethod
     def get_next_kappa(last_kappa, kappa_bound=0.05, kappa_delta=0.07):
         return random.choice(
-            np.linspace(
-                max(-kappa_bound, last_kappa - kappa_delta),
-                min(kappa_bound, last_kappa + kappa_delta),
-            )
+            np.linspace(max(-kappa_bound, last_kappa - kappa_delta), min(kappa_bound, last_kappa + kappa_delta))
         )
 
     @staticmethod
@@ -356,9 +315,7 @@ class CustomFrenetGenerator(BaseFrenetGenerator):
         # Producing randomly generated kappas for the given setting.
         kappas = [0.0] * points
         for i in range(len(kappas)):
-            kappas[i] = CustomFrenetGenerator.get_next_kappa(
-                kappas[i - 1], kappa_bound, kappa_delta
-            )
+            kappas[i] = CustomFrenetGenerator.get_next_kappa(kappas[i - 1], kappa_bound, kappa_delta)
 
         return kappas
 

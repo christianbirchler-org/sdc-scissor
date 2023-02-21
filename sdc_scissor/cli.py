@@ -1,36 +1,29 @@
 import logging
 import sys
 from pathlib import Path
-from sdc_scissor.config import CONFIG
 
 import click
 import numpy as np
 import yaml
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
+from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
-from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import (
-    CostEffectivenessEvaluator,
-)
+from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
 from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
 from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
 from sdc_scissor.machine_learning_api.predictor import Predictor
 from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFactory
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
-from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior
-from sdc_scissor.testing_api.test_generator import KeepValidTestsOnlyBehavior
-from sdc_scissor.testing_api.test_generator import TestGenerator
+from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior, KeepValidTestsOnlyBehavior, TestGenerator
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_runner import TestRunner
-from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
-from sdc_scissor.testing_api.test_validator import SimpleTestValidator
+from sdc_scissor.testing_api.test_validator import NoIntersectionValidator, SimpleTestValidator
 
 _ROOT_DIR = Path(__file__).parent.parent
 _DESTINATION = _ROOT_DIR / "destination"
@@ -42,11 +35,7 @@ def _print_metrics(metrics):
     print(nr_hyphens * "-")
     for key, value in metrics.items():
         output = "{:^22}| acc: {:f} | prec: {:f} | rec: {:f} | f1: {:f} |".format(
-            key,
-            value["test_accuracy"],
-            value["test_precision"],
-            value["test_recall"],
-            value["test_f1"],
+            key, value["test_accuracy"], value["test_precision"], value["test_recall"], value["test_f1"]
         )
         print(output)
         print(nr_hyphens * "-")
@@ -60,9 +49,7 @@ def _print_metrics(metrics):
     type=click.Path(exists=True),
     help="Path to a configuration file that contains the CLI commands in YAML format",
 )
-@click.option(
-    "--debug/--no-debug", default=False, help="Boolean flag for additional logging"
-)
+@click.option("--debug/--no-debug", default=False, help="Boolean flag for additional logging")
 def cli(ctx: click.Context, config: Path, debug) -> None:
     if debug:
         logging.basicConfig(level=logging.DEBUG)
@@ -83,33 +70,15 @@ def cli(ctx: click.Context, config: Path, debug) -> None:
 
 @cli.command()
 @click.option(
-    "-c",
-    "--count",
-    type=int,
-    default=10,
-    help="Number of tests the generator should produce (invalid roads inclusive)",
+    "-c", "--count", type=int, default=10, help="Number of tests the generator should produce (invalid roads inclusive)"
 )
 @click.option(
-    "-k",
-    "--keep/--no-keep",
-    type=bool,
-    default=False,
-    help="Keep the invalid roads produced by the test generator",
+    "-k", "--keep/--no-keep", type=bool, default=False, help="Keep the invalid roads produced by the test generator"
 )
 @click.option(
-    "-d",
-    "--destination",
-    default=_DESTINATION,
-    type=click.Path(),
-    help="Output directory to store the generated tests",
+    "-d", "--destination", default=_DESTINATION, type=click.Path(), help="Output directory to store the generated tests"
 )
-@click.option(
-    "-t",
-    "--tool",
-    default="frenetic",
-    type=click.STRING,
-    help="Name of the test generator tool",
-)
+@click.option("-t", "--tool", default="frenetic", type=click.STRING, help="Name of the test generator tool")
 def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
@@ -124,9 +93,7 @@ def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None
     if not destination.exists():
         destination.mkdir(parents=True)
 
-    test_keeping_behavior = (
-        KeepAllTestsBehavior() if keep else KeepValidTestsOnlyBehavior()
-    )
+    test_keeping_behavior = KeepAllTestsBehavior() if keep else KeepValidTestsOnlyBehavior()
     test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_generator = TestGenerator(
         count=count,
@@ -141,19 +108,9 @@ def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None
 
 @cli.command()
 @click.option(
-    "-t",
-    "--tests",
-    default=_DESTINATION,
-    type=click.Path(exists=True),
-    help="Path to directory containing the tests",
+    "-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help="Path to directory containing the tests"
 )
-@click.option(
-    "-s",
-    "--segmentation",
-    default="angle-based",
-    type=click.STRING,
-    help="Road segmentation strategy",
-)
+@click.option("-s", "--segmentation", default="angle-based", type=click.STRING, help="Road segmentation strategy")
 def extract_features(tests: Path, segmentation: str) -> None:
     """
     Extract road features from given test scenarios.
@@ -217,21 +174,14 @@ def feature_statistics(csv) -> None:
     type=click.Path(exists=True),
     help="The user directory of BeamNG.tech containing the tech.key file and levels files",
 )
-@click.option(
-    "--rf", default=1.5, type=float, help="Risk factor of the AI driving the car"
-)
+@click.option("--rf", default=1.5, type=float, help="Risk factor of the AI driving the car")
 @click.option(
     "--oob",
     default=0.3,
     type=float,
     help="The out-of-bound parameter specifying how much a car is allowed to drive off the lane",
 )
-@click.option(
-    "--max-speed",
-    default=50,
-    type=float,
-    help="The maximum speed the AI is allowed to drive",
-)
+@click.option("--max-speed", default=50, type=float, help="The maximum speed the AI is allowed to drive")
 @click.option(
     "--interrupt/--no-interrupt",
     default=True,
@@ -257,44 +207,15 @@ def feature_statistics(csv) -> None:
     help="The distance between the delineators ('obstacles' needs to be true)",
 )
 @click.option(
-    "--tree-dist",
-    default=5,
-    type=click.INT,
-    help="The distance between the trees ('obstacles' needs to be true)",
+    "--tree-dist", default=5, type=click.INT, help="The distance between the trees ('obstacles' needs to be true)"
 )
-@click.option(
-    "-fov",
-    "--field-of-view",
-    default=120,
-    type=click.INT,
-    help="The field of view angle",
-)
-@click.option(
-    "--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages"
-)
-@click.option(
-    "--can-dbc", type=click.Path(exists=True), help="Path to CAN database file"
-)
-@click.option(
-    "--can-dbc-map",
-    type=click.Path(exists=True),
-    help="Path to CAN database map json file",
-)
-@click.option(
-    "--can-interface",
-    type=click.STRING,
-    help="CAN interface",
-)
-@click.option(
-    "--can-channel",
-    type=click.STRING,
-    help="CAN channel",
-)
-@click.option(
-    "--can-bitrate",
-    type=click.Path(exists=True),
-    help="CAN bitrate",
-)
+@click.option("-fov", "--field-of-view", default=120, type=click.INT, help="The field of view angle")
+@click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
+@click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
+@click.option("--can-dbc-map", type=click.Path(exists=True), help="Path to CAN database map json file")
+@click.option("--can-interface", type=click.STRING, help="CAN interface")
+@click.option("--can-channel", type=click.STRING, help="CAN channel")
+@click.option("--can-bitrate", type=click.Path(exists=True), help="CAN bitrate")
 def label_tests(
     tests,
     home,
@@ -360,12 +281,7 @@ def label_tests(
     type=click.Path(exists=True),
     help="Path to CSV file with extracted road features",
 )
-@click.option(
-    "--models-dir",
-    default=_TRAINED_MODELS,
-    type=click.Path(),
-    help="Directory to store the trained models",
-)
+@click.option("--models-dir", default=_TRAINED_MODELS, type=click.Path(), help="Directory to store the trained models")
 def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
     Evaluate different machine learning models with a stratified cross validation approach.
@@ -393,9 +309,7 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
     type=click.Path(exists=True),
     help="Path to CSV file with extracted road features",
 )
-@click.option(
-    "--clf", type=click.STRING, help="Classifier name to perform GridSearch on"
-)
+@click.option("--clf", type=click.STRING, help="Classifier name to perform GridSearch on")
 def grid_search(csv: Path, clf: str) -> None:
     """
     Perform GridSearch on a selected classifier to optimize the hyperparameters
@@ -473,26 +387,15 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
     print("------------------")
     for model_name, estimator in classifiers_dict.items():
         cost_effectiveness_evaluator = CostEffectivenessEvaluator(
-            classifier=estimator,
-            data_frame=df,
-            label="safety",
-            time_attribute="test_duration",
+            classifier=estimator, data_frame=df, label="safety", time_attribute="test_duration"
         )
         if random:
-            (
-                ce_sdc_scissor,
-                ce_baseline,
-            ) = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
+            (ce_sdc_scissor, ce_baseline) = cost_effectiveness_evaluator.evaluate_with_random_baseline(top_k=top_k)
         else:
-            (
-                ce_sdc_scissor,
-                ce_baseline,
-            ) = cost_effectiveness_evaluator.evaluate_with_longest_roads(top_k=top_k)
+            (ce_sdc_scissor, ce_baseline) = cost_effectiveness_evaluator.evaluate_with_longest_roads(top_k=top_k)
 
         print(
-            "{:>20}: ce_sdc_scissor={:.4f}, ce_random_baseline={:.4f}".format(
-                model_name, ce_sdc_scissor, ce_baseline
-            )
+            "{:>20}: ce_sdc_scissor={:.4f}, ce_random_baseline={:.4f}".format(model_name, ce_sdc_scissor, ce_baseline)
         )
 
 

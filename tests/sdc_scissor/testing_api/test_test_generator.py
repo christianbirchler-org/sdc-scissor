@@ -1,11 +1,8 @@
 import random
 from pathlib import Path
 
-from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior
-from sdc_scissor.testing_api.test_generator import KeepValidTestsOnlyBehavior
-from sdc_scissor.testing_api.test_generator import TestGenerator
-from sdc_scissor.testing_api.test_validator import MakeTestInvalidValidator
-from sdc_scissor.testing_api.test_validator import SimpleTestValidator
+from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior, KeepValidTestsOnlyBehavior, TestGenerator
+from sdc_scissor.testing_api.test_validator import MakeTestInvalidValidator, SimpleTestValidator
 
 
 class TestTestGenerator:
@@ -37,9 +34,7 @@ class TestTestGenerator:
             assert expected == actual
 
     def test_id_generation_of_generate_tests_on_keeping_valid_tests_only(self, fs):
-        random.seed(
-            9
-        )  # With this seed (seed=9 ==> 3 invalid tests) we get three invalid test generated.
+        random.seed(9)  # With this seed (seed=9 ==> 3 invalid tests) we get three invalid test generated.
         destination = "./destination"
         number_of_tests_to_generate = 100
         tool = "frenetic"

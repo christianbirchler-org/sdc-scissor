@@ -4,9 +4,7 @@ import os
 selected_rows = []
 remove = False
 
-final_csv_dir = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "BeamNG_RF_1_5_selected.csv"
-)
+final_csv_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "BeamNG_RF_1_5_selected.csv")
 with open(final_csv_dir, "r") as file:
     reader = csv.reader(file)
     for row in reader:

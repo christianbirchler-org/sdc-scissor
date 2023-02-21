@@ -1,8 +1,6 @@
 import pytest
 
-from sdc_scissor.feature_extraction_api.parameterized_uniform_strategy import (
-    ParameterizedUniformStrategy,
-)
+from sdc_scissor.feature_extraction_api.parameterized_uniform_strategy import ParameterizedUniformStrategy
 
 
 class TestParameterizedUniformStrategyTest:

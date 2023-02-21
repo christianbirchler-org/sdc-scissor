@@ -36,9 +36,7 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
         """
         road_length = self.__road_geometry_calculator.get_road_length(road_points)
 
-        self.__max_seg_length_in_meters = (
-            road_length * self.__max_seg_length_to_full_road
-        )
+        self.__max_seg_length_in_meters = road_length * self.__max_seg_length_to_full_road
 
         if self.__seg_length_in_meters > self.__max_seg_length_in_meters:
             raise Exception("Road is too short for the required segment length.")
@@ -50,17 +48,13 @@ class ParameterizedUniformStrategy(SegmentationStrategy):
         segment_indexes = []
         for i in range(1, len(road_points)):
             current_elementary_segment = road_points[i - 1 : i + 1]
-            current_segment_length += self.__road_geometry_calculator.get_road_length(
-                current_elementary_segment
-            )
+            current_segment_length += self.__road_geometry_calculator.get_road_length(current_elementary_segment)
 
             if current_segment_length > self.__max_seg_length_in_meters:
                 raise Exception("Max segment reached.")
 
             # segment reached its required length
-            if (current_segment_length >= self.__seg_length_in_meters) or (
-                i == len(road_points) - 1
-            ):
+            if (current_segment_length >= self.__seg_length_in_meters) or (i == len(road_points) - 1):
                 current_segment_length = 0
                 end = i
                 segment_indexes.append((start, end))

@@ -5,17 +5,11 @@ import joblib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn import metrics
-from sklearn import preprocessing
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics, preprocessing
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import ConfusionMatrixDisplay
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import StratifiedKFold
-from sklearn.model_selection import cross_validate
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report, confusion_matrix
+from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_validate
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import LinearSVC
 from sklearn.tree import DecisionTreeClassifier
@@ -101,9 +95,7 @@ class ModelEvaluator:
         cv_results = {}
         for key, clf in self.__classifiers.items():
             cv = StratifiedKFold(shuffle=True, n_splits=10)
-            cv_results[key] = cross_validate(
-                clf, X, y, cv=cv, scoring=("accuracy", "f1", "recall", "precision")
-            )
+            cv_results[key] = cross_validate(clf, X, y, cv=cv, scoring=("accuracy", "f1", "recall", "precision"))
             clf.fit(X, y)
 
         mean_cv_results = {}
@@ -203,14 +195,10 @@ class ModelEvaluator:
 
         if nr_passes > nr_fails:
             n_diff = nr_passes - nr_fails
-            train_data_fails = np.concatenate(
-                (train_data_fails, train_data_fails[:n_diff, :]), axis=0
-            )
+            train_data_fails = np.concatenate((train_data_fails, train_data_fails[:n_diff, :]), axis=0)
         else:
             n_diff = nr_fails - nr_passes
-            train_data_passes = np.concatenate(
-                (train_data_passes, train_data_passes[:n_diff, :]), axis=0
-            )
+            train_data_passes = np.concatenate((train_data_passes, train_data_passes[:n_diff, :]), axis=0)
 
         train_data = np.concatenate((train_data_passes, train_data_fails), axis=0)
         np.random.shuffle(train_data)

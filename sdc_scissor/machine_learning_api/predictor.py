@@ -6,15 +6,12 @@ import numpy as np
 import pandas as pd
 
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
-from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
-from sdc_scissor.feature_extraction_api.feature_extraction import RoadFeatures
+from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor, RoadFeatures
 from sdc_scissor.testing_api.test_loader import TestLoader
 
 
 class Predictor:
-    def __init__(
-        self, test_loader: TestLoader, joblib_classifier: Path, label="safety"
-    ):
+    def __init__(self, test_loader: TestLoader, joblib_classifier: Path, label="safety"):
         """
 
         :param test_loader:
@@ -23,9 +20,7 @@ class Predictor:
         """
         self.test_loader = test_loader
         self.__classifier = joblib.load(joblib_classifier)
-        self.feature_extractor = FeatureExtractor(
-            segmentation_strategy=AngleBasedStrategy()
-        )
+        self.feature_extractor = FeatureExtractor(segmentation_strategy=AngleBasedStrategy())
         self.label = label
         self.X_model_attributes = [
             "direct_distance",

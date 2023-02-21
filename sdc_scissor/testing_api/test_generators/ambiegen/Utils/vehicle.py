@@ -2,10 +2,8 @@ import math as m
 
 import numpy as np
 from numpy.ma import arange
-from scipy.interpolate import splev
-from scipy.interpolate import splprep
-from shapely.geometry import LineString
-from shapely.geometry import Point
+from scipy.interpolate import splev, splprep
+from shapely.geometry import LineString, Point
 
 
 class Car:
@@ -21,7 +19,6 @@ class Car:
         self.str_ang_o = steer_ang
 
     def interpolate_road(self, road):
-
         test_road = LineString([(t[0], t[1]) for t in road])
 
         length = test_road.length
@@ -64,7 +61,6 @@ class Car:
         return
 
     def turn_right(self):
-
         self.str_ang = m.degrees(m.atan(1 / self.speed * 2 * self.distance))
         self.angle = -self.str_ang + self.angle
         self.x = self.speed * np.cos(m.radians(self.angle)) / 3 + self.x
@@ -96,7 +92,6 @@ class Car:
             return angle
 
     def execute_road(self, nodes):
-
         self.x = 0
         self.y = 0
 
@@ -137,10 +132,8 @@ class Car:
             i = 0
 
             for p, mini_road in enumerate(road_split):
-
                 current_length = 0
                 if p == 1:
-
                     self.x = mini_nodes2[0][0]
                     self.y = mini_nodes2[0][1]
                     self.angle = self.get_angle(mini_nodes1[-1], mini_nodes2[0])

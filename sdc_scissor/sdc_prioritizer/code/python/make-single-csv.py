@@ -13,9 +13,7 @@ number_of_runs = 30
 # Open the output csv
 out_csv_address = os.path.join(data_directory, "results.csv")
 out_csv = open(out_csv_address, "w")
-out_csv.write(
-    "benchmark,config,execution_id,best_fitness_value,APFD,elapsed_time,avg_rand_APFD,std_rand_APFD"
-)
+out_csv.write("benchmark,config,execution_id,best_fitness_value,APFD,elapsed_time,avg_rand_APFD,std_rand_APFD")
 out_csv.write("\n")
 out_csv.close()
 
@@ -23,9 +21,7 @@ out_csv = open(out_csv_address, "a")
 for benchmark in benchmarks:
     for config in configurations:
         for run in range(1, number_of_runs + 1):
-            current_data_directory = os.path.join(
-                data_directory, benchmark, config, str(run)
-            )
+            current_data_directory = os.path.join(data_directory, benchmark, config, str(run))
             current_results_csv = os.path.join(current_data_directory, "results.csv")
 
             f = open(current_results_csv)

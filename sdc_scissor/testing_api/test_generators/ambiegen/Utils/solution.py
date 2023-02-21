@@ -2,7 +2,6 @@ import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.car_road import Map
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.vehicle import Car
 
-
 # from code_pipeline.beamng_executor import BeamngExecutor
 # from code_pipeline.tests_generation import RoadTestFactory
 
@@ -14,7 +13,6 @@ class Solution:
     """
 
     def __init__(self):
-
         self.road_points = []
         self.states = {}
         self.car = Car(cf.model["speed"], cf.model["steer_ang"], cf.model["map_size"])
@@ -55,9 +53,7 @@ class Solution:
         self.road_points = self.road_builder.get_points_from_states(self.states)
 
     def remove_invalid_cases(self):
-        self.states, self.road_points = self.road_builder.remove_invalid_cases(
-            self.road_points, self.states
-        )
+        self.states, self.road_points = self.road_builder.remove_invalid_cases(self.road_points, self.states)
 
     def calc_novelty(self, old, new):
         novelty = 0

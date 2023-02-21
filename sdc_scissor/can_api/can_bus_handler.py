@@ -2,12 +2,12 @@ import abc
 import json
 import logging
 from pathlib import Path
-from sdc_scissor.config import CONFIG
 
 import can
 import cantools
 import click
-import yaml
+
+from sdc_scissor.config import CONFIG
 
 
 def get_can_frame_list(can_db):
@@ -30,11 +30,7 @@ def get_can_frame_list(can_db):
             signal_list.append(signal.name)
 
         # Store the information in the dictionary and add it to the frame_list
-        res = {
-            "example_message": can_msg,
-            "frame_id": frame_id,
-            "signal_list": signal_list,
-        }
+        res = {"example_message": can_msg, "frame_id": frame_id, "signal_list": signal_list}
         can_frame_list.append(res)
 
     return can_frame_list
@@ -55,9 +51,7 @@ class CANBusOutput(ICANBusOutput):
     def __init__(self):
         # Configuration is according to: https://python-can.readthedocs.io/en/stable/bus.html
         self.bus = can.interface.Bus(
-            interface=CONFIG.CAN_INTERFACE,
-            channel=CONFIG.CAN_CHANNEL,
-            bitrate=CONFIG.CAN_BITRATE,
+            interface=CONFIG.CAN_INTERFACE, channel=CONFIG.CAN_CHANNEL, bitrate=CONFIG.CAN_BITRATE
         )
 
     def output_can_msg(self, msg):

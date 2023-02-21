@@ -53,10 +53,7 @@ def test_case_1():
     assert beamng_bump_1.rot_quat == (0, 0, 0, 1)
     assert beamng_bump_1.obstacle_type == "procedural"
     var_0 = beamng_bump_0.get()
-    assert (
-        f"{type(var_0).__module__}.{type(var_0).__qualname__}"
-        == "beamngpy.scenario.ProceduralBump"
-    )
+    assert f"{type(var_0).__module__}.{type(var_0).__qualname__}" == "beamngpy.scenario.ProceduralBump"
     assert var_0.id == "pybump"
     assert var_0.name == "pybump"
     assert var_0.type == "ProceduralMesh"

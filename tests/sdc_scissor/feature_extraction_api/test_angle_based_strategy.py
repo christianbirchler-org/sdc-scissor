@@ -67,14 +67,11 @@ class TestAngleBasedSegmentation:
         start_index_of_second_segment = segment_indexes[1][0]
         expected_mid_point_index = len(road_points) // 2
 
-        assert end_index_of_first_segment == approx(
-            start_index_of_second_segment, abs=5
-        )
+        assert end_index_of_first_segment == approx(start_index_of_second_segment, abs=5)
         assert end_index_of_first_segment == approx(expected_mid_point_index, abs=5)
         assert start_index_of_second_segment == approx(expected_mid_point_index, abs=5)
 
     def test_straight_segment_only(self):
-
         road_points = [(x, 10) for x in range(10, 200, 5)]
 
         strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
@@ -86,7 +83,6 @@ class TestAngleBasedSegmentation:
         assert (len(road_points) - 1) == segment_indexes[0][1]
 
     def test_left_turn_then_straight(self):
-
         strategy = AngleBasedStrategy(angle_threshold=5, decision_distance=10)
 
         road_points = []
@@ -158,7 +154,6 @@ class TestAngleBasedSegmentation:
         logging.info(segment_indexes)
 
     def test_angle_based_segmentation(self):
-
         road_points = [
             (20, 20),
             (50, 30),
@@ -178,9 +173,7 @@ class TestAngleBasedSegmentation:
             (150, 20),
         ]
 
-        segmentation_strategy = AngleBasedStrategy(
-            angle_threshold=10, decision_distance=10
-        )
+        segmentation_strategy = AngleBasedStrategy(angle_threshold=10, decision_distance=10)
         segmentation_strategy.extract_segments(road_points)
 
         # TODO: Add assertions

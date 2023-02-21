@@ -6,17 +6,13 @@ class TestBeamNGSimulator:
         beamng_mock = mocker.patch("beamngpy.BeamNGpy")
         beamng_mock.open.return_value = None
 
-        beamng_simulator = BeamNGSimulator(
-            beamng=beamng_mock, rf=1.5, max_speed=120, fov=120
-        )
+        beamng_simulator = BeamNGSimulator(beamng=beamng_mock, rf=1.5, max_speed=120, fov=120)
         beamng_simulator.open()
 
     def test_close_beamng(self, mocker):
         beamng_mock = mocker.patch("beamngpy.BeamNGpy")
 
-        beamng_simulator = BeamNGSimulator(
-            beamng=beamng_mock, rf=1.5, max_speed=120, fov=120
-        )
+        beamng_simulator = BeamNGSimulator(beamng=beamng_mock, rf=1.5, max_speed=120, fov=120)
         beamng_simulator.close()
 
     def test_create_new_instance(self, mocker, fs):
@@ -28,9 +24,7 @@ class TestBeamNGSimulator:
         beamng_mock.home = "./home"
         beamng_mock.user = "./user"
 
-        beamng_simulator = BeamNGSimulator(
-            beamng=beamng_mock, rf=1.5, max_speed=120, fov=120
-        )
+        beamng_simulator = BeamNGSimulator(beamng=beamng_mock, rf=1.5, max_speed=120, fov=120)
         beamng_simulator.create_new_instance()
 
     def test_load_scenario(self, mocker, fs):
@@ -54,7 +48,5 @@ class TestBeamNGSimulator:
         beamng_mock.home = "./home"
         beamng_mock.user = "./user"
 
-        beamng_simulator = BeamNGSimulator(
-            beamng=beamng_mock, rf=1.5, max_speed=120, fov=120
-        )
+        beamng_simulator = BeamNGSimulator(beamng=beamng_mock, rf=1.5, max_speed=120, fov=120)
         beamng_simulator.load_scenario(test_mock, mock_scenario, mock_obstacles)

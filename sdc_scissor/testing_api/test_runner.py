@@ -3,8 +3,7 @@ import math
 import time
 
 import numpy as np
-from beamngpy import BNGError
-from beamngpy import Scenario
+from beamngpy import BNGError, Scenario
 from scipy.spatial.transform import Rotation
 
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
@@ -13,14 +12,11 @@ from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
-from sdc_scissor.testing_api.test_plotter import NullTestPlotter
-from sdc_scissor.testing_api.test_plotter import TestPlotter
+from sdc_scissor.testing_api.test_plotter import NullTestPlotter, TestPlotter
 from sdc_scissor.testing_api.test_validator import TestIsNotValidException
 
 
-def _define_obstacles(
-    road_model, obstacle_factory, bump_dist, delineator_dist, tree_dist
-) -> list:
+def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, tree_dist) -> list:
     logging.info("__define_obstacles")
     obstacles_lst = []
     if obstacle_factory is None:
@@ -141,11 +137,7 @@ class TestRunner:
         self.test_plotter.plot(road_model)
 
         obstacles = _define_obstacles(
-            road_model,
-            self.obstacle_factory,
-            self.bump_dist,
-            self.delineator_dist,
-            self.tree_dist,
+            road_model, self.obstacle_factory, self.bump_dist, self.delineator_dist, self.tree_dist
         )
         scenario = Scenario("tig", "example")
         self.simulator.load_scenario(test, scenario, obstacles=obstacles)
@@ -153,9 +145,7 @@ class TestRunner:
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(
-            self.simulator, test, oob=self.oob, road_model=road_model
-        )
+        test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
         test_monitor.start_timer()
         self.simulator.start_scenario()
 

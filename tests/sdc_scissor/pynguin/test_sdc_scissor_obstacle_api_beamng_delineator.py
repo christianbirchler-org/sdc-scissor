@@ -35,10 +35,7 @@ def test_case_1():
     assert beamng_delineator_0.rot_quat == (0, 0, 0, 1)
     assert beamng_delineator_0.obstacle_type == "procedural"
     var_0 = beamng_delineator_0.get()
-    assert (
-        f"{type(var_0).__module__}.{type(var_0).__qualname__}"
-        == "beamngpy.scenario.ProceduralCylinder"
-    )
+    assert f"{type(var_0).__module__}.{type(var_0).__qualname__}" == "beamngpy.scenario.ProceduralCylinder"
     assert var_0.id == "pyCylinder"
     assert var_0.name == "pyCylinder"
     assert var_0.type == "ProceduralMesh"

@@ -3,14 +3,11 @@ import logging
 from pathlib import Path
 
 import numpy as np
-from scipy.interpolate import splev
-from scipy.interpolate import splprep
+from scipy.interpolate import splev, splprep
 
 
 class Test:
-    def __init__(
-        self, test_id, road_points: list[list], test_outcome, test_duration=None
-    ):
+    def __init__(self, test_id, road_points: list[list], test_outcome, test_duration=None):
         """
         Class representing a test case.
 
