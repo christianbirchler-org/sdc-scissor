@@ -159,19 +159,21 @@ def feature_statistics(csv) -> None:
 
 
 @cli.command()
-@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True))
-@click.option("--home", type=click.Path(exists=True))
-@click.option("--user", type=click.Path(exists=True))
-@click.option("--rf", default=1.5, type=float)
-@click.option("--oob", default=0.3, type=float)
-@click.option("--max-speed", default=50, type=float)
-@click.option("--interrupt/--no-interrupt", default=True, type=click.BOOL)
-@click.option("--obstacles/--no-obstacles", default=False, type=click.BOOL)
-@click.option("--bump-dist", default=20, type=click.INT)
-@click.option("--delineator-dist", default=5, type=click.INT)
-@click.option("--tree-dist", default=5, type=click.INT)
-@click.option("-fov", "--field-of-view", default=120, type=click.INT)
-@click.option("--canbus/--no-canbus", default=False, type=click.BOOL)
+@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help='Path to the directory containing the test specifications')
+@click.option("--home", type=click.Path(exists=True), help="The home directory of the BeamNG.tech simulator containing the executable")
+@click.option("--user", type=click.Path(exists=True), help="The user directory of BeamNG.tech containing the tech.key file and levels files")
+@click.option("--rf", default=1.5, type=float, help="Risk factor of the AI driving the car")
+@click.option("--oob", default=0.3, type=float, help="The out-of-bound parameter specifying how much a car is allowed to drive off the lane")
+@click.option("--max-speed", default=50, type=float, help="The maximum speed the AI is allowed to drive")
+@click.option("--interrupt/--no-interrupt", default=True, type=click.BOOL, help="Indicator if the test executions should stop when the car violates the OOB criteria")
+@click.option("--obstacles/--no-obstacles", default=False, type=click.BOOL, help="Indicator if there should be obstacles in the virtual environment")
+@click.option("--bump-dist", default=20, type=click.INT, help="The distance between the speed bumps ('obstacles' needs to be true)")
+@click.option("--delineator-dist", default=5, type=click.INT, help="The distance between the delineators ('obstacles' needs to be true)")
+@click.option("--tree-dist", default=5, type=click.INT, help="The distance between the trees ('obstacles' needs to be true)")
+@click.option("-fov", "--field-of-view", default=120, type=click.INT, help="The field of view angle")
+@click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
+@click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
+@click.option("--can-dbc-map", type=click.Path(exists=True), help="Path to CAN database map json file")
 def label_tests(
     tests,
     home,
@@ -186,23 +188,11 @@ def label_tests(
     tree_dist,
     field_of_view,
     canbus,
+    can_dbc,
+    can_dbc_map
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
-
-    :param tests: Path to the directory containing the test specifications
-    :param home: The home directory of the BeamNG.tech simulator containing the executable
-    :param user: The user directory of BeamNG.tech containing the tech.key file and levels files
-    :param rf: Risk factor of the AI driving the car
-    :param oob: The out-of-bound parameter specifying how much a car is allowed to drive off the lane
-    :param max_speed: The maximum speed the AI is allowed to drive
-    :param interrupt: Indicator if the test executions should stop when the car violates the OOB criteria
-    :param obstacles: Indicator if there should be obstacles in the virtual environment
-    :param bump_dist: The distance between the speed bumps ('obstacles' needs to be true)
-    :param delineator_dist: The distance between the delineators ('obstacles' needs to be true)
-    :param tree_dist: The distance between the trees ('obstacles' needs to be true)
-    :param field_of_view: The field of view angle
-    :param canbus: Enable CAN messages
     """
     CONFIG.config = locals()
 
