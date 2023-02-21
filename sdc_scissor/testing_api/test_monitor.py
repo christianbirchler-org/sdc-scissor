@@ -53,10 +53,7 @@ class TestMonitor:
         self.oob = oob
         self.has_test_failed = None
         self.current_test_outcome = "UNDEFINED"
-        self.cbh = CanBusHandler(
-            WindowsPath("c:/Users/birc/sdc-scissor/sample_conf/conf_sdc.yml"),
-            output_handler=CANStdOut() if CONFIG.HAS_CAN_BUS else NoCANBusOutput(),
-        )
+        self.cbh = CanBusHandler(output_handler=CANStdOut() if CONFIG.HAS_CAN_BUS else NoCANBusOutput())
 
     def process_car_state(self, interrupt_on_failure):
         """

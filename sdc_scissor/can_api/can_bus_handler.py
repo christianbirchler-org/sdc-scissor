@@ -2,6 +2,7 @@ import abc
 import json
 import logging
 from pathlib import Path
+from sdc_scissor.config import CONFIG
 
 import can
 import cantools
@@ -76,15 +77,13 @@ class CanBusHandler:
     CanBusHandler Objects can be used to receive data from a simulation and generate CAN messages from it.
     """
 
-    def __init__(self, config: Path, output_handler: CANBusOutput):
+    def __init__(self, output_handler: CANBusOutput):
         logging.info("Init CanBusHandler")
         # Load the config file
-        with open(config) as fp:
-            config_dict: dict = yaml.safe_load(fp)
 
         # Load the CAN database
-        db_path = config_dict["dbc"]
-        dbc_map_path = config_dict["dbc_map"]
+        db_path = CONFIG.CAN_DBC_PATH
+        dbc_map_path = CONFIG.CAN_DBC_MAP_PATH
         db = cantools.db.load_file(Path(db_path))
 
         # Gather the sample frames from the dbc
@@ -92,8 +91,8 @@ class CanBusHandler:
         self.output_handler = output_handler
 
         # Load the dbc map used to map the simulation signals to the dbc signals
-        f = open(dbc_map_path)
-        self.dbc_map = json.load(f)
+        with open(dbc_map_path) as f:
+            self.dbc_map = json.load(f)
 
     def transmit_sensor_data_to_can_bus(self, data):
         """

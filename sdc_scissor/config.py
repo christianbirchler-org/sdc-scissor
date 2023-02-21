@@ -26,6 +26,14 @@ class _Config:
     def HAS_CAN_BUS(self):
         return self.config["canbus"]
 
+    @property
+    def CAN_DBC_PATH(self):
+        return self.config["can_dbc"]
+
+    @property
+    def CAN_DBC_MAP_PATH(self):
+        return self.config["can_dbc_map"]
+
 
 CONFIG = _Config()
 
