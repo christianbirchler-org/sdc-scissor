@@ -83,7 +83,7 @@ def cli(ctx: click.Context, config: Path, debug) -> None:
 @click.option(
     "-d", "--destination", default=_DESTINATION, type=click.Path(), help="Output directory to store the generated tests"
 )
-@click.option("-t", "--tool", default="frenetic", type=click.STRING)
+@click.option("-t", "--tool", default="frenetic", type=click.STRING, help="Name of the test generator tool")
 def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
@@ -115,7 +115,7 @@ def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None
 @click.option(
     "-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help="Path to directory containing the tests"
 )
-@click.option("-s", "--segmentation", default="angle-based", type=click.STRING)
+@click.option("-s", "--segmentation", default="angle-based", type=click.STRING, help="Road segmentation strategy")
 def extract_features(tests: Path, segmentation: str) -> None:
     """
     Extract road features from given test scenarios.
@@ -143,7 +143,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to road_features.csv"
+    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features"
 )
 def feature_statistics(csv) -> None:
     """
@@ -231,15 +231,12 @@ def label_tests(
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to road_features.csv"
+    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features"
 )
 @click.option("--models-dir", default=_TRAINED_MODELS, type=click.Path(), help="Directory to store the trained models")
 def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
     Evaluate different machine learning models with a stratified cross validation approach.
-
-    :param csv: Path to the CSV file containing the extracted road features of the tests
-    :param models_dir: Directory where the trained and evaluated classifier models should be stored
     """
     logging.debug("evaluate_models")
 
@@ -258,8 +255,8 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 
 
 @cli.command()
-@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
-@click.option("--clf", type=click.STRING)
+@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features")
+@click.option("--clf", type=click.STRING, help="Classifier name to perform GridSearch on")
 def grid_search(csv: Path, clf: str) -> None:
     dd = CSVLoader.load_dataframe_from_csv(csv)
 
@@ -307,17 +304,13 @@ def grid_search(csv: Path, clf: str) -> None:
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True)
+    "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True, help="Path to CSV file with extracted road features")
 )
-@click.option("--random", default=True)
-@click.option("-k", "--top-k", default=10)
+@click.option("--random", default=True, help="Use random baseline test selector")
+@click.option("-k", "--top-k", default=10, help="Number of tests to select")
 def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
-
-    :param csv:
-    :param random:
-    :param top_k:
     """
     logging.debug("evaluate_cost_effectiveness")
     df = CSVLoader.load_dataframe_from_csv(csv)
@@ -348,14 +341,11 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
 
 
 @cli.command()
-@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True))
-@click.option("-c", "--classifier", default=_TRAINED_MODELS / "decision_tree.joblib", type=click.Path(exists=True))
+@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help="Directory containing tests which were not executed yet")
+@click.option("-c", "--classifier", default=_TRAINED_MODELS / "decision_tree.joblib", type=click.Path(exists=True), help="Path to the trained classifier model")
 def predict_tests(tests: Path, classifier: Path) -> None:
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.
-
-    :param tests: Directory containing tests which were not executed yet
-    :param classifier: Path to the trained classifier model
     """
     test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_loader = TestLoader(tests_dir=tests, test_validator=test_validator)
