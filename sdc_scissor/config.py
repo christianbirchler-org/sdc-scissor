@@ -36,15 +36,3 @@ class _Config:
 
 
 CONFIG = _Config()
-
-# CAN_OUTPUT = None
-# TESTS_DIR = None
-# RF = None
-# OOB = None
-# MAX_SPEED = None
-# INTERRUPT = None
-# OBSTACLES = None
-# BUMP_DIST = None
-# DELINEATOR_DIST = None
-# TREE_DIST = None
-# FIELD_OF_VIEW = None
