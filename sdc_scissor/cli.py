@@ -143,7 +143,10 @@ def extract_features(tests: Path, segmentation: str) -> None:
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features"
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
 )
 def feature_statistics(csv) -> None:
     """
@@ -159,17 +162,58 @@ def feature_statistics(csv) -> None:
 
 
 @cli.command()
-@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help='Path to the directory containing the test specifications')
-@click.option("--home", type=click.Path(exists=True), help="The home directory of the BeamNG.tech simulator containing the executable")
-@click.option("--user", type=click.Path(exists=True), help="The user directory of BeamNG.tech containing the tech.key file and levels files")
+@click.option(
+    "-t",
+    "--tests",
+    default=_DESTINATION,
+    type=click.Path(exists=True),
+    help="Path to the directory containing the test specifications",
+)
+@click.option(
+    "--home",
+    type=click.Path(exists=True),
+    help="The home directory of the BeamNG.tech simulator containing the executable",
+)
+@click.option(
+    "--user",
+    type=click.Path(exists=True),
+    help="The user directory of BeamNG.tech containing the tech.key file and levels files",
+)
 @click.option("--rf", default=1.5, type=float, help="Risk factor of the AI driving the car")
-@click.option("--oob", default=0.3, type=float, help="The out-of-bound parameter specifying how much a car is allowed to drive off the lane")
+@click.option(
+    "--oob",
+    default=0.3,
+    type=float,
+    help="The out-of-bound parameter specifying how much a car is allowed to drive off the lane",
+)
 @click.option("--max-speed", default=50, type=float, help="The maximum speed the AI is allowed to drive")
-@click.option("--interrupt/--no-interrupt", default=True, type=click.BOOL, help="Indicator if the test executions should stop when the car violates the OOB criteria")
-@click.option("--obstacles/--no-obstacles", default=False, type=click.BOOL, help="Indicator if there should be obstacles in the virtual environment")
-@click.option("--bump-dist", default=20, type=click.INT, help="The distance between the speed bumps ('obstacles' needs to be true)")
-@click.option("--delineator-dist", default=5, type=click.INT, help="The distance between the delineators ('obstacles' needs to be true)")
-@click.option("--tree-dist", default=5, type=click.INT, help="The distance between the trees ('obstacles' needs to be true)")
+@click.option(
+    "--interrupt/--no-interrupt",
+    default=True,
+    type=click.BOOL,
+    help="Indicator if the test executions should stop when the car violates the OOB criteria",
+)
+@click.option(
+    "--obstacles/--no-obstacles",
+    default=False,
+    type=click.BOOL,
+    help="Indicator if there should be obstacles in the virtual environment",
+)
+@click.option(
+    "--bump-dist",
+    default=20,
+    type=click.INT,
+    help="The distance between the speed bumps ('obstacles' needs to be true)",
+)
+@click.option(
+    "--delineator-dist",
+    default=5,
+    type=click.INT,
+    help="The distance between the delineators ('obstacles' needs to be true)",
+)
+@click.option(
+    "--tree-dist", default=5, type=click.INT, help="The distance between the trees ('obstacles' needs to be true)"
+)
 @click.option("-fov", "--field-of-view", default=120, type=click.INT, help="The field of view angle")
 @click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
 @click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
@@ -189,7 +233,7 @@ def label_tests(
     field_of_view,
     canbus,
     can_dbc,
-    can_dbc_map
+    can_dbc_map,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
@@ -231,7 +275,10 @@ def label_tests(
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features"
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
 )
 @click.option("--models-dir", default=_TRAINED_MODELS, type=click.Path(), help="Directory to store the trained models")
 def evaluate_models(csv: Path, models_dir: Path) -> None:
@@ -255,7 +302,12 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 
 
 @cli.command()
-@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features")
+@click.option(
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
+)
 @click.option("--clf", type=click.STRING, help="Classifier name to perform GridSearch on")
 def grid_search(csv: Path, clf: str) -> None:
     """
@@ -306,7 +358,12 @@ def grid_search(csv: Path, clf: str) -> None:
 
 
 @cli.command()
-@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features")
+@click.option(
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
+)
 @click.option("--random", default=True, help="Use random baseline test selector")
 @click.option("-k", "--top-k", default=10, help="Number of tests to select")
 def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
@@ -342,8 +399,20 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
 
 
 @cli.command()
-@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help="Directory containing tests which were not executed yet")
-@click.option("-c", "--classifier", default=_TRAINED_MODELS / "decision_tree.joblib", type=click.Path(exists=True), help="Path to the trained classifier model")
+@click.option(
+    "-t",
+    "--tests",
+    default=_DESTINATION,
+    type=click.Path(exists=True),
+    help="Directory containing tests which were not executed yet",
+)
+@click.option(
+    "-c",
+    "--classifier",
+    default=_TRAINED_MODELS / "decision_tree.joblib",
+    type=click.Path(exists=True),
+    help="Path to the trained classifier model",
+)
 def predict_tests(tests: Path, classifier: Path) -> None:
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.

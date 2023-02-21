@@ -69,7 +69,7 @@ class CANStdOut(CANBusOutput):
         :return:
         """
         # self.output_logger.info(msg)
-        click.echo(click.style(msg, fg='green'))
+        click.echo(click.style(msg, fg="green"))
 
 
 class CanBusHandler:
