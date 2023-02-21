@@ -258,6 +258,9 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 @click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features")
 @click.option("--clf", type=click.STRING, help="Classifier name to perform GridSearch on")
 def grid_search(csv: Path, clf: str) -> None:
+    """
+    Perform GridSearch on a selected classifier to optimize the hyperparameters
+    """
     dd = CSVLoader.load_dataframe_from_csv(csv)
 
     model_evaluator = ModelEvaluator(data_frame=dd, label="safety")
@@ -303,9 +306,7 @@ def grid_search(csv: Path, clf: str) -> None:
 
 
 @cli.command()
-@click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True, help="Path to CSV file with extracted road features")
-)
+@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to CSV file with extracted road features")
 @click.option("--random", default=True, help="Use random baseline test selector")
 @click.option("-k", "--top-k", default=10, help="Number of tests to select")
 def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
