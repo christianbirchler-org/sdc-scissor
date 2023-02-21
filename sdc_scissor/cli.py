@@ -280,6 +280,21 @@ def feature_statistics(csv) -> None:
     type=click.Path(exists=True),
     help="Path to CAN database map json file",
 )
+@click.option(
+    "--can-interface",
+    type=click.STRING,
+    help="CAN interface",
+)
+@click.option(
+    "--can-channel",
+    type=click.STRING,
+    help="CAN channel",
+)
+@click.option(
+    "--can-bitrate",
+    type=click.Path(exists=True),
+    help="CAN bitrate",
+)
 def label_tests(
     tests,
     home,
@@ -296,6 +311,9 @@ def label_tests(
     canbus,
     can_dbc,
     can_dbc_map,
+    can_interface,
+    can_channel,
+    can_bitrate,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.

@@ -40,20 +40,36 @@ def get_can_frame_list(can_db):
     return can_frame_list
 
 
-class CANBusOutput(abc.ABC):
+class ICANBusOutput(abc.ABC):
     @abc.abstractmethod
     def output_can_msg(self, msg):
         pass
 
 
-class NoCANBusOutput(CANBusOutput):
+class NoCANBusOutput(ICANBusOutput):
     def output_can_msg(self, msg):
         pass
 
 
-class CANStdOut(CANBusOutput):
+class CANBusOutput(ICANBusOutput):
+    def __init__(self):
+        # Configuration is according to: https://python-can.readthedocs.io/en/stable/bus.html
+        self.bus = can.interface.Bus(
+            interface=CONFIG.CAN_INTERFACE,
+            channel=CONFIG.CAN_CHANNEL,
+            bitrate=CONFIG.CAN_BITRATE,
+        )
+
+    def output_can_msg(self, msg):
+        try:
+            self.bus.send(msg)
+        except can.CanError as err:
+            logging.error(err)
+
+
+class StdOut(ICANBusOutput):
     """
-    CANStdOut Objects are used to offer a flexible output_handler for th CAN messages.
+    StdOut Objects are used to offer a flexible output_handler for th CAN messages.
     """
 
     def __init__(self):
@@ -81,7 +97,7 @@ class CanBusHandler:
     CanBusHandler Objects can be used to receive data from a simulation and generate CAN messages from it.
     """
 
-    def __init__(self, output_handler: CANBusOutput):
+    def __init__(self, output_handler: ICANBusOutput):
         logging.info("Init CanBusHandler")
         # Load the config file
 
@@ -101,7 +117,7 @@ class CanBusHandler:
     def transmit_sensor_data_to_can_bus(self, data):
         """
         This method should be called by a TestRunner with the current data from the simulation.
-        It will then generate CAN messages from the data and send them to the CANStdOut.
+        It will then generate CAN messages from the data and send them to the StdOut.
 
         :param data: A dictionary containing the current data from the simulation.
         :return:
@@ -121,7 +137,7 @@ class CanBusHandler:
             frame_data = example_msg.encode(frame_values)
             msg = can.Message(arbitration_id=frame_id, data=frame_data)
 
-            # Send the message to the CANStdOut
+            # Send the message to the StdOut
             self.output_handler.output_can_msg(msg)
 
     def get_frame_values(self, frame_signal_list, data):

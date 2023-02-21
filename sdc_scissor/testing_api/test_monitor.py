@@ -8,7 +8,12 @@ from pathlib import WindowsPath
 
 from sdc_scissor.config import CONFIG
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
-from sdc_scissor.can_api.can_bus_handler import CanBusHandler, NoCANBusOutput, CANStdOut
+from sdc_scissor.can_api.can_bus_handler import (
+    CanBusHandler,
+    NoCANBusOutput,
+    StdOut,
+    CANBusOutput,
+)
 from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.testing_api.test import Test
 
@@ -59,8 +64,10 @@ class TestMonitor:
         self.oob = oob
         self.has_test_failed = None
         self.current_test_outcome = "UNDEFINED"
+
+        # Specify here the CAN interfaces to send the messages
         self.cbh = CanBusHandler(
-            output_handler=CANStdOut() if CONFIG.HAS_CAN_BUS else NoCANBusOutput()
+            output_handler=CANBusOutput() if CONFIG.HAS_CAN_BUS else StdOut()
         )
 
     def process_car_state(self, interrupt_on_failure):

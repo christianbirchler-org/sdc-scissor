@@ -34,5 +34,17 @@ class _Config:
     def CAN_DBC_MAP_PATH(self):
         return self.config["can_dbc_map"]
 
+    @property
+    def CAN_INTERFACE(self):
+        return self.config["can_interface"]
+
+    @property
+    def CAN_CHANNEL(self):
+        return self.config["can_channel"]
+
+    @property
+    def CAN_BITRATE(self):
+        return self.config["can_bitrate"]
+
 
 CONFIG = _Config()
