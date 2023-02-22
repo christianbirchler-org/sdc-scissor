@@ -211,6 +211,9 @@ def feature_statistics(csv) -> None:
 )
 @click.option("-fov", "--field-of-view", default=120, type=click.INT, help="The field of view angle")
 @click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
+@click.option(
+    "--can-stdout-only/--no-can-stdout-only", default=True, type=click.BOOL, help="Output CAN messages to stdout"
+)
 @click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
 @click.option("--can-dbc-map", type=click.Path(exists=True), help="Path to CAN database map json file")
 @click.option("--can-interface", type=click.STRING, help="CAN interface")
@@ -230,6 +233,7 @@ def label_tests(
     tree_dist,
     field_of_view,
     canbus,
+    can_stdout_only,
     can_dbc,
     can_dbc_map,
     can_interface,

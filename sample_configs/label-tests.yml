@@ -12,9 +12,10 @@ options:
   delineator_dist: null
   tree_dist: null
   field_of_view: 120
-  canbus: false
+  canbus: true
+  can_stdout_only: true
   can_dbc: 'C:\Users\birc\sdc-scissor\sample_candb\beamng_pipeline_sample.dbc'
   can_dbc_map: 'C:\Users\birc\sdc-scissor\dbc_maps\dbc_map_beamng.json'
-  can_interface: null
-  can_channel: null
-  can_bitrate: null
+  can_interface: 'socketcan'
+  can_channel: 'vcan0'
+  can_bitrate: 250000
