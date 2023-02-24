@@ -47,8 +47,18 @@ class NoCANBusOutput(ICANBusOutput):
         pass
 
 
-class CANBusOutput(ICANBusOutput):
-    def __init__(self):
+class AbstractOutputDecorator(ICANBusOutput, abc.ABC):
+    def __init__(self, wrappee: ICANBusOutput):
+        self.wrappee = wrappee
+
+    @abc.abstractmethod
+    def output_can_msg(self, msg):
+        pass
+
+
+class CANBusOutputDecorator(AbstractOutputDecorator):
+    def __init__(self, wrappee: ICANBusOutput):
+        super().__init__(wrappee)
         # Configuration is according to: https://python-can.readthedocs.io/en/stable/bus.html
         self.bus = can.interface.Bus(
             interface=CONFIG.CAN_INTERFACE, channel=CONFIG.CAN_CHANNEL, bitrate=CONFIG.CAN_BITRATE
@@ -59,30 +69,24 @@ class CANBusOutput(ICANBusOutput):
             self.bus.send(msg)
         except can.CanError as err:
             logging.error(err)
+        self.wrappee.output_can_msg(msg)
 
 
-class StdOut(ICANBusOutput):
+class StdOutDecorator(AbstractOutputDecorator):
     """
-    StdOut Objects are used to offer a flexible output_handler for th CAN messages.
+    StdOutDecorator Objects are used to offer a flexible output_handler for th CAN messages.
     """
 
-    def __init__(self):
-        print("Init Can Bus Output")
-
-        self.output_logger = logging.getLogger("CAN_OUT_LOG")
-        fh = logging.FileHandler("can_out.log")
-        fh.setLevel(logging.DEBUG)
-        self.output_logger.addHandler(fh)
+    def __init__(self, wrappee: ICANBusOutput):
+        super().__init__(wrappee)
 
     def output_can_msg(self, msg):
         """
-        This method is used to output_handler the can message. It is called by the CanBusHandler.
-        The current output_handler source is a python logger.
+        Decorator class to output CAN messages to the console
 
         :param msg: The CAN message that should be sent to the output_handler.
         :return:
         """
-        # self.output_logger.info(msg)
         click.echo(click.style(msg, fg="green"))
 
 
@@ -111,7 +115,7 @@ class CanBusHandler:
     def transmit_sensor_data_to_can_bus(self, data):
         """
         This method should be called by a TestRunner with the current data from the simulation.
-        It will then generate CAN messages from the data and send them to the StdOut.
+        It will then generate CAN messages from the data and send them to the StdOutDecorator.
 
         :param data: A dictionary containing the current data from the simulation.
         :return:
@@ -131,7 +135,7 @@ class CanBusHandler:
             frame_data = example_msg.encode(frame_values)
             msg = can.Message(arbitration_id=frame_id, data=frame_data)
 
-            # Send the message to the StdOut
+            # Send the message to the StdOutDecorator
             self.output_handler.output_can_msg(msg)
 
     def get_frame_values(self, frame_signal_list, data):

@@ -5,7 +5,7 @@ import time
 from scipy.spatial import distance
 from shapely.geometry import box
 
-from sdc_scissor.can_api.can_bus_handler import CanBusHandler, CANBusOutput, NoCANBusOutput, StdOut
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler, CANBusOutputDecorator, NoCANBusOutput, StdOutDecorator
 from sdc_scissor.config import CONFIG
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.road_model import RoadModel
@@ -53,11 +53,13 @@ class TestMonitor:
         self.has_test_failed = None
         self.current_test_outcome = "UNDEFINED"
 
-        # Specify here the CAN interfaces to send the messages
+        # Specify here the CAN interfaces to send the messages with output decorators
+        output_handler = NoCANBusOutput()
         if CONFIG.HAS_CAN_BUS:
-            output_handler = StdOut() if CONFIG.CAN_STDOUT_ONLY else CANBusOutput()
-        else:
-            output_handler = NoCANBusOutput()
+            if CONFIG.CAN_STDOUT_ONLY:
+                output_handler = StdOutDecorator(output_handler)
+            else:
+                output_handler = CANBusOutputDecorator(StdOutDecorator(output_handler))
         self.cbh = CanBusHandler(output_handler=output_handler)
 
     def process_car_state(self, interrupt_on_failure):
