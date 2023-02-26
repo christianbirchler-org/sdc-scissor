@@ -39,18 +39,12 @@ class TestMonitor:
         :param oob: Parameter to define how much percentage the car is allowed to be off the lane.
         """
         self.simulator = simulator
-        self.test = None
-        self.is_test_finished = False
-        self.is_car_out_of_lane = False
-        self.road = None
-        self.start_time = None
-        self.end_time = None
-        self.road_model = None
         self.oob = oob
-        self.has_test_failed = None
-        self.current_test_outcome = "UNDEFINED"
-
         self.cbh = can_bus_handler
+        self.reset()
+
+    def reset(self):
+        _reset_test_monitor(self)
 
     def process_car_state(self, interrupt_on_failure):
         """
@@ -186,3 +180,15 @@ class TestMonitor:
         logging.debug("* __are_points_close")
         dist = distance.euclidean(a, b)
         return dist < threshold
+
+
+def _reset_test_monitor(test_monitor: TestMonitor):
+    test_monitor.test = None
+    test_monitor.is_test_finished = False
+    test_monitor.is_car_out_of_lane = False
+    test_monitor.road = None
+    test_monitor.start_time = None
+    test_monitor.end_time = None
+    test_monitor.road_model = None
+    test_monitor.has_test_failed = None
+    test_monitor.current_test_outcome = "UNDEFINED"

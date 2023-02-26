@@ -282,6 +282,7 @@ def label_tests(
         delineator_dist=delineator_dist,
         tree_dist=tree_dist,
         can_output=can_output_behavior,
+        test_monitor=test_monitor,
     )
 
     test_runner.run_test_suite()

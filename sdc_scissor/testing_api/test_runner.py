@@ -100,6 +100,7 @@ class TestRunner:
             else:
                 test, test_filename = self.test_loader.next()
             try:
+                self.test_monitor.reset()
                 self.run(test)
                 test.save_as_json(file_path=test_filename)
                 has_execution_failed = False
@@ -150,7 +151,6 @@ class TestRunner:
 
         # test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model, can_bus_handler=CanBusHandler(self.can_output))
         self.test_monitor.test = test
-        self.test_monitor.oob = self.oob
         self.test_monitor.road_model = road_model
         self.test_monitor.start_timer()
         self.simulator.start_scenario()
