@@ -11,6 +11,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler, CANBusOutputDecorator, NoCANBusOutput, StdOutDecorator
 from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
@@ -22,6 +23,7 @@ from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFacto
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
 from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior, KeepValidTestsOnlyBehavior, TestGenerator
 from sdc_scissor.testing_api.test_loader import TestLoader
+from sdc_scissor.testing_api.test_monitor import TestMonitor
 from sdc_scissor.testing_api.test_runner import TestRunner
 from sdc_scissor.testing_api.test_validator import NoIntersectionValidator, SimpleTestValidator
 
@@ -211,9 +213,7 @@ def feature_statistics(csv) -> None:
 )
 @click.option("-fov", "--field-of-view", default=120, type=click.INT, help="The field of view angle")
 @click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
-@click.option(
-    "--can-stdout-only/--no-can-stdout-only", default=True, type=click.BOOL, help="Output CAN messages to stdout"
-)
+@click.option("--can-stdout/--no-can-stdout", default=True, type=click.BOOL, help="Output CAN messages to stdout")
 @click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
 @click.option("--can-dbc-map", type=click.Path(exists=True), help="Path to CAN database map json file")
 @click.option("--can-interface", type=click.STRING, help="CAN interface")
@@ -233,7 +233,7 @@ def label_tests(
     tree_dist,
     field_of_view,
     canbus,
-    can_stdout_only,
+    can_stdout,
     can_dbc,
     can_dbc_map,
     can_interface,
@@ -264,6 +264,14 @@ def label_tests(
     else:
         obstacle_factory = None
 
+    can_output_behavior = NoCANBusOutput()
+    if CONFIG.CAN_STDOUT:
+        can_output_behavior = StdOutDecorator(can_output_behavior)
+    if CONFIG.HAS_CAN_BUS:
+        can_output_behavior = CANBusOutputDecorator(can_output_behavior)
+
+    can_bus_handler = CanBusHandler(can_output_behavior)
+    test_monitor = TestMonitor(simulator=beamng_simulator, oob=oob, can_bus_handler=can_bus_handler)
     test_runner = TestRunner(
         simulator=beamng_simulator,
         test_loader=test_loader,
@@ -273,6 +281,7 @@ def label_tests(
         bump_dist=bump_dist,
         delineator_dist=delineator_dist,
         tree_dist=tree_dist,
+        can_output=can_output_behavior,
     )
 
     test_runner.run_test_suite()

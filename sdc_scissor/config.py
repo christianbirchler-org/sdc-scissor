@@ -27,8 +27,8 @@ class _Config:
         return self.config["canbus"]
 
     @property
-    def CAN_STDOUT_ONLY(self):
-        return self.config["can_stdout_only"]
+    def CAN_STDOUT(self):
+        return self.config["can_stdout"]
 
     @property
     def CAN_DBC_PATH(self):

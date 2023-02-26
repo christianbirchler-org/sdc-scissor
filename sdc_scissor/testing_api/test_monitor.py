@@ -5,11 +5,8 @@ import time
 from scipy.spatial import distance
 from shapely.geometry import box
 
-from sdc_scissor.can_api.can_bus_handler import CanBusHandler, CANBusOutputDecorator, NoCANBusOutput, StdOutDecorator
-from sdc_scissor.config import CONFIG
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
-from sdc_scissor.testing_api.road_model import RoadModel
-from sdc_scissor.testing_api.test import Test
 
 
 def _get_t_previous_data(data, time_delta) -> tuple:
@@ -33,7 +30,7 @@ class TestMonitor:
     The test monitor checks the execution states of the test and logs them.
     """
 
-    def __init__(self, simulator: AbstractSimulator, test: Test, oob: float, road_model: RoadModel):
+    def __init__(self, simulator: AbstractSimulator, oob: float, can_bus_handler: CanBusHandler):
         """
         The test monitor retrieves data from the simulator and tracks the trajectory of the car.
 
@@ -42,25 +39,18 @@ class TestMonitor:
         :param oob: Parameter to define how much percentage the car is allowed to be off the lane.
         """
         self.simulator = simulator
-        self.test = test
+        self.test = None
         self.is_test_finished = False
         self.is_car_out_of_lane = False
         self.road = None
         self.start_time = None
         self.end_time = None
-        self.road_model = road_model
+        self.road_model = None
         self.oob = oob
         self.has_test_failed = None
         self.current_test_outcome = "UNDEFINED"
 
-        # Specify here the CAN interfaces to send the messages with output decorators
-        output_handler = NoCANBusOutput()
-        if CONFIG.HAS_CAN_BUS:
-            if CONFIG.CAN_STDOUT_ONLY:
-                output_handler = StdOutDecorator(output_handler)
-            else:
-                output_handler = CANBusOutputDecorator(StdOutDecorator(output_handler))
-        self.cbh = CanBusHandler(output_handler=output_handler)
+        self.cbh = can_bus_handler
 
     def process_car_state(self, interrupt_on_failure):
         """
