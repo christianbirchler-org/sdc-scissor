@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "SDC-Scissor"
-copyright = "2022, Christian Birchler"
+copyright = "2022-2023, Christian Birchler"
 author = "Christian Birchler"
 
 # The full version, including alpha/beta/rc tags
