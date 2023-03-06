@@ -37,7 +37,7 @@ user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\l
 
 ## Run the tool
 
-A sample pipeline can be found withe following DOI: [10.24433/CO.1187310.v2](https://doi.org/10.24433/CO.1187310.v2)
+A sample pipeline can be found with the following DOI: [10.24433/CO.1187310.v2](https://doi.org/10.24433/CO.1187310.v2)
 
 ### Sequence Diagram
 ```{mermaid}
