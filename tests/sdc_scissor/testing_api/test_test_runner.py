@@ -1,4 +1,4 @@
-from sdc_scissor.can_api.can_bus_handler import NoCANBusOutput
+from sdc_scissor.can_api.can_output import NoCANBusOutput
 from sdc_scissor.config import CONFIG
 from sdc_scissor.testing_api.test_runner import TestRunner
 

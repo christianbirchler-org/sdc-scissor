@@ -6,7 +6,7 @@ import numpy as np
 from beamngpy import BNGError, Scenario
 from scipy.spatial.transform import Rotation
 
-from sdc_scissor.can_api.can_bus_handler import ICANBusOutput, NoCANBusOutput
+from sdc_scissor.can_api.can_output import ICANBusOutput, NoCANBusOutput
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.road_model import RoadModel

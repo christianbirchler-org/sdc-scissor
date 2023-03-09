@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from sdc_scissor.can_api.can_bus_handler import CanBusHandler, NoCANBusOutput
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler
+from sdc_scissor.can_api.can_output import NoCANBusOutput
 from sdc_scissor.config import CONFIG
 
 
