@@ -80,8 +80,10 @@ class CanBusHandler:
             frame_data = example_msg.encode(frame_values)
             msg = can.Message(arbitration_id=frame_id, data=frame_data)
 
-            # Send the message to the StdOutDecorator
-            self.output_handler.output_can_msg(msg)
+            self.send_can_msg(msg)
+
+    def send_can_msg(self, msg):
+        self.output_handler.output_can_msg(msg)
 
     def get_frame_values(self, frame_signal_list, data):
         """

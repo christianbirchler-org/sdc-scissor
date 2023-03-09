@@ -464,7 +464,7 @@ def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interfac
     can_msg_generator = CANMessageGenerator(strategy)
 
     msg = can_msg_generator.generate()
-    can_bus_handler.transmit_sensor_data_to_can_bus(msg)
+    can_bus_handler.send_can_msg(msg)
 
 
 if __name__ == "__main__":
