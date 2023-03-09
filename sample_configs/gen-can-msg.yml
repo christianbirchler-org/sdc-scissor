@@ -1,0 +1,10 @@
+command: 'gen-can-msg'
+options:
+  strategy: 'random'
+  canbus: false
+  can_stdout: true
+  can_dbc: 'C:\Users\birch\repositories\sdc-scissor\sample_candb\beamng_pipeline_sample.dbc'
+  can_dbc_map: 'C:\Users\birch\repositories\sdc-scissor\dbc_maps\dbc_map_beamng.json'
+  can_interface: 'socketcan'
+  can_channel: 'vcan0'
+  can_bitrate: 250000

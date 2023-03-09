@@ -12,6 +12,7 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
 from sdc_scissor.can_api.can_bus_handler import CanBusHandler
+from sdc_scissor.can_api.can_msg_generator import CANMessageGenerator, RandomCANGeneration
 from sdc_scissor.can_api.can_output import CANBusOutputDecorator, NoCANBusOutput, StdOutDecorator
 from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
@@ -438,6 +439,32 @@ def predict_tests(tests: Path, classifier: Path) -> None:
 
     predictor = Predictor(test_loader=test_loader, joblib_classifier=classifier)
     predictor.predict()
+
+
+@cli.command()
+@click.option("-s", "--strategy", default="random", type=click.STRING)
+@click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
+@click.option("--can-stdout/--no-can-stdout", default=True, type=click.BOOL, help="Output CAN messages to stdout")
+@click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
+@click.option("--can-dbc-map", type=click.Path(exists=True), help="Path to CAN database map json file")
+@click.option("--can-interface", type=click.STRING, help="CAN interface")
+@click.option("--can-channel", type=click.STRING, help="CAN channel")
+@click.option("--can-bitrate", type=click.Path(exists=True), help="CAN bitrate")
+def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interface, can_channel, can_bitrate):
+    CONFIG.config = locals()
+
+    std_output = StdOutDecorator(NoCANBusOutput())
+    can_bus_handler = CanBusHandler(std_output)
+
+    if strategy == "random":
+        strategy = RandomCANGeneration()
+    else:
+        raise Exception("invalid generation strategy")
+
+    can_msg_generator = CANMessageGenerator(strategy)
+
+    msg = can_msg_generator.generate()
+    can_bus_handler.transmit_sensor_data_to_can_bus(msg)
 
 
 if __name__ == "__main__":
