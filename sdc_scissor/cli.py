@@ -12,7 +12,7 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
 from sdc_scissor.can_api.can_bus_handler import CanBusHandler
-from sdc_scissor.can_api.can_output import NoCANBusOutput, CANBusOutputDecorator, StdOutDecorator
+from sdc_scissor.can_api.can_output import CANBusOutputDecorator, NoCANBusOutput, StdOutDecorator
 from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
