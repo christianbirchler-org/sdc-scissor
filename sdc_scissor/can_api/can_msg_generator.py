@@ -1,6 +1,8 @@
 import abc
+import random
 
 import can
+import cantools.database
 
 from sdc_scissor.config import CONFIG
 
@@ -22,13 +24,17 @@ class ICANGenerationStrategy(abc.ABC):
         pass
 
 
-def _get_random_can_data() -> list:
-    data = [1, 2, 5, 33, 244]
-    return data
+def _get_random_valid_can_message(dbc: cantools.database.Database) -> CANMessage:
+    random_msg_template: cantools.database.Message = random.choice(dbc.messages)
+    random_msg_signals_template = random_msg_template.signals
 
+    random_can_msg_data = {}
+    for signal_template in random_msg_signals_template:
+        random_can_msg_data[signal_template.name] = 0.5
 
-def _get_arbitration_id() -> int:
-    return 155
+    encoded_random_can_data = random_msg_template.encode(random_can_msg_data)
+    can_message = CANMessage(arbitration_id=random_msg_template.frame_id, data=encoded_random_can_data)
+    return can_message
 
 
 class RandomCANMessageGeneration(ICANGenerationStrategy):
@@ -37,9 +43,9 @@ class RandomCANMessageGeneration(ICANGenerationStrategy):
         self.__can_dbc = CONFIG.CAN_DBC_PATH
 
     def generate(self) -> CANMessage:
-        data = _get_random_can_data()
-        arbitration_id = _get_arbitration_id()
-        return CANMessage(arbitration_id=arbitration_id, data=data)
+        dbc = cantools.database.load_file(CONFIG.CAN_DBC_PATH)
+        can_message: CANMessage = _get_random_valid_can_message(dbc)
+        return can_message
 
 
 class CANMessageGenerator:
