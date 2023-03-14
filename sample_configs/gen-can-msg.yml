@@ -8,3 +8,4 @@ options:
   can_interface: 'socketcan'
   can_channel: 'vcan0'
   can_bitrate: 250000
+  timeout: 8

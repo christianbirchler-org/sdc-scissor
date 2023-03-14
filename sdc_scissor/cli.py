@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 from pathlib import Path
 
 import click
@@ -450,7 +451,8 @@ def predict_tests(tests: Path, classifier: Path) -> None:
 @click.option("--can-interface", type=click.STRING, help="CAN interface")
 @click.option("--can-channel", type=click.STRING, help="CAN channel")
 @click.option("--can-bitrate", type=click.Path(exists=True), help="CAN bitrate")
-def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interface, can_channel, can_bitrate):
+@click.option("--timeout", type=click.INT, help="Timeout for sending CAN messages")
+def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interface, can_channel, can_bitrate, timeout):
     CONFIG.config = locals()
 
     std_output = StdOutDecorator(NoCANBusOutput())
@@ -463,7 +465,8 @@ def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interfac
 
     can_msg_generator = CANMessageGenerator(strategy)
 
-    for _ in range(10):
+    start_time = time.time()
+    while time.time() - start_time < timeout:
         msg = can_msg_generator.generate()
         can_bus_handler.send_can_msg(msg)
 
