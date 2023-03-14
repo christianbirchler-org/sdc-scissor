@@ -1,4 +1,5 @@
 import abc
+import math
 import random
 
 import can
@@ -30,8 +31,9 @@ def _get_random_valid_can_message(dbc: cantools.database.Database) -> CANMessage
 
     random_can_msg_data = {}
     for signal_template in random_msg_signals_template:
-        random_can_msg_data[signal_template.name] = 0.5
-
+        random_can_msg_data[signal_template.name] = random.randrange(
+            math.ceil(signal_template.minimum), math.floor(signal_template.maximum)
+        )
     encoded_random_can_data = random_msg_template.encode(random_can_msg_data)
     can_message = CANMessage(arbitration_id=random_msg_template.frame_id, data=encoded_random_can_data)
     return can_message
