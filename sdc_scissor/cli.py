@@ -12,7 +12,7 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
 from sdc_scissor.can_api.can_bus_handler import CanBusHandler
-from sdc_scissor.can_api.can_msg_generator import CANMessageGenerator, RandomCANGeneration
+from sdc_scissor.can_api.can_msg_generator import CANMessageGenerator, RandomCANMessageGeneration
 from sdc_scissor.can_api.can_output import CANBusOutputDecorator, NoCANBusOutput, StdOutDecorator
 from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
@@ -457,14 +457,15 @@ def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interfac
     can_bus_handler = CanBusHandler(std_output)
 
     if strategy == "random":
-        strategy = RandomCANGeneration()
+        strategy = RandomCANMessageGeneration()
     else:
         raise Exception("invalid generation strategy")
 
     can_msg_generator = CANMessageGenerator(strategy)
 
-    msg = can_msg_generator.generate()
-    can_bus_handler.send_can_msg(msg)
+    for _ in range(10):
+        msg = can_msg_generator.generate()
+        can_bus_handler.send_can_msg(msg)
 
 
 if __name__ == "__main__":
