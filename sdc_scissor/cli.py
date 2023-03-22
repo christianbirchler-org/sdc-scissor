@@ -455,8 +455,13 @@ def predict_tests(tests: Path, classifier: Path) -> None:
 def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interface, can_channel, can_bitrate, timeout):
     CONFIG.config = locals()
 
-    std_output = StdOutDecorator(NoCANBusOutput())
-    can_bus_handler = CanBusHandler(std_output)
+    can_output = NoCANBusOutput()
+    if CONFIG.HAS_CAN_BUS:
+        can_output = CANBusOutputDecorator(can_output)
+    if CONFIG.CAN_STDOUT:
+        can_output = StdOutDecorator(can_output)
+
+    can_bus_handler = CanBusHandler(can_output)
 
     if strategy == "random":
         strategy = RandomCANMessageGeneration()
