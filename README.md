@@ -107,12 +107,12 @@ If you use this tool in your research, please cite the following papers:
   author    = {Christian Birchler and Nicolas Ganz and Sajad Khatiri and Alessio Gambi and Sebastiano Panichella},
   title     = {Cost-effective Simulation-based Test Selection in Self-driving Cars Software},
   journal   = {Science of Computer Programming (SCP)},
-  volume = {226},
+  volume    = {226},
   year      = {2023},
   doi       = {10.1016/j.scico.2023.102926},
-  pages = {102926},
-  year = {2023},
-  issn = {0167-6423},
+  pages     = {102926},
+  year      = {2023},
+  issn      = {0167-6423},
 }
 ````
 - **Christian Birchler**, Sajad Khatiri, Bill Bosshard, Alessio Gambi, and Sebastiano Panichella, "Machine Learning-based Test Selection for Simulation-based Testing of Self-driving Cars Software," *Empirical Software Engineering (EMSE)*, doi: to appear, 2022.
