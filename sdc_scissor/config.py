@@ -50,5 +50,21 @@ class _Config:
     def CAN_BITRATE(self):
         return self.config["can_bitrate"]
 
+    @property
+    def INFLUXDB_BUCKET(self):
+        return self.config["influxdb_bucket"]
+
+    @property
+    def INFLUXDB_ORG(self):
+        return self.config["influxdb_org"]
+
+    @property
+    def EXECUTION_START_TIME(self):
+        return self.config["execution_start_date_time"]
+
+    @property
+    def CURRENT_TEST_ID(self):
+        return self.config["current_test_id"]
+
 
 CONFIG = _Config()

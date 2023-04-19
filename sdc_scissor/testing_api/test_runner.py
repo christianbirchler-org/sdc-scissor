@@ -7,6 +7,7 @@ from beamngpy import BNGError, Scenario
 from scipy.spatial.transform import Rotation
 
 from sdc_scissor.can_api.can_output import ICANBusOutput, NoCANBusOutput
+from sdc_scissor.config import CONFIG
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.road_model import RoadModel
@@ -69,6 +70,7 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, 
 class TestRunner:
     def __init__(self, **kwargs) -> None:
         """
+        Managing the execution of test cases
 
         :param kwargs:
         """
@@ -87,7 +89,9 @@ class TestRunner:
         self.test_monitor: TestMonitor = kwargs.get("test_monitor", None)
 
     def run_test_suite(self):
-        """ """
+        """
+        Run multiple tests
+        """
         logging.info("* run_test_suite")
         self.simulator.open()
         has_execution_failed = False
@@ -132,6 +136,7 @@ class TestRunner:
         :param test: Test object that needs to be executed in simulation
         """
         logging.debug("* run")
+        CONFIG.config["current_test_id"] = test.test_id
         if not test.is_valid:
             raise TestIsNotValidException()
         time.sleep(5)

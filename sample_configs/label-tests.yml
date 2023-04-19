@@ -8,9 +8,9 @@ options:
   max_speed: 50
   interrupt: false
   obstacles: false
-  bump_dist: 20
-  delineator_dist: null
-  tree_dist: null
+  bump_dist: 10
+  delineator_dist: 3
+  tree_dist: 10
   field_of_view: 120
   canbus: false
   can_stdout: true
@@ -19,3 +19,5 @@ options:
   can_interface: 'socketcan'
   can_channel: 'vcan0'
   can_bitrate: 250000
+  influxdb_bucket: 'sdc-scissor'
+  influxdb_org: "christianbirchler.org"

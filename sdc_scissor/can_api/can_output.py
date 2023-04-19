@@ -1,15 +1,19 @@
 import abc
 import logging
+from pathlib import Path
 
 import can
+import cantools
 import click
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 
 from sdc_scissor.config import CONFIG
 
 
 class ICANBusOutput(abc.ABC):
     @abc.abstractmethod
-    def output_can_msg(self, msg):
+    def output_can_msg(self, msg: can.Message):
         pass
 
 
@@ -23,7 +27,7 @@ class AbstractOutputDecorator(ICANBusOutput, abc.ABC):
         self.wrappee = wrappee
 
     @abc.abstractmethod
-    def output_can_msg(self, msg):
+    def output_can_msg(self, msg: can.Message):
         pass
 
 
@@ -35,7 +39,7 @@ class CANBusOutputDecorator(AbstractOutputDecorator):
             interface=CONFIG.CAN_INTERFACE, channel=CONFIG.CAN_CHANNEL, bitrate=CONFIG.CAN_BITRATE
         )
 
-    def output_can_msg(self, msg):
+    def output_can_msg(self, msg: can.Message):
         try:
             self.bus.send(msg)
         except can.CanError as err:
@@ -51,7 +55,7 @@ class StdOutDecorator(AbstractOutputDecorator):
     def __init__(self, wrappee: ICANBusOutput):
         super().__init__(wrappee)
 
-    def output_can_msg(self, msg):
+    def output_can_msg(self, msg: can.Message):
         """
         Decorator class to output CAN messages to the console
 
@@ -59,3 +63,37 @@ class StdOutDecorator(AbstractOutputDecorator):
         :return:
         """
         click.echo(click.style(msg, fg="green"))
+        self.wrappee.output_can_msg(msg)
+
+
+def _write_influxdb_data_record(api, bucket: str, org: str, record: Point):
+    try:
+        api.write(bucket=bucket, org=org, record=record)
+    except Exception as ex:
+        logging.error(ex)
+
+
+class InfluxDBDecorator(AbstractOutputDecorator):
+    def __init__(self, wrappee: ICANBusOutput, write_client: InfluxDBClient, bucket: str, org: str):
+        super().__init__(wrappee)
+        self.write_client = write_client
+        self.write_api = write_client.write_api(write_options=SYNCHRONOUS)
+        self.bucket = bucket
+        self.org = org
+        self.can_db = cantools.db.load_file(Path(CONFIG.CAN_DBC_PATH))
+
+    def output_can_msg(self, msg: can.Message):
+        for msg_specs in self.can_db.messages:
+            try:
+                decoded_msg = self.can_db.decode_message(msg_specs.frame_id, msg.data)
+            except Exception as ex:
+                logging.warning(ex)
+                continue
+
+            point = Point(CONFIG.EXECUTION_START_TIME).tag("test_id", CONFIG.CURRENT_TEST_ID)
+            for signal_name, signal_value in decoded_msg.items():
+                point = point.field(field=signal_name, value=signal_value)
+            print(point)
+            _write_influxdb_data_record(self.write_api, CONFIG.INFLUXDB_BUCKET, CONFIG.INFLUXDB_ORG, point)
+
+        self.wrappee.output_can_msg(msg)

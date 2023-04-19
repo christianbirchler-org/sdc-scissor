@@ -1,11 +1,15 @@
+import datetime
 import logging
+import os
 import sys
 import time
 from pathlib import Path
 
 import click
+import influxdb_client
 import numpy as np
 import yaml
+from dotenv import load_dotenv
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
@@ -14,7 +18,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 from sdc_scissor.can_api.can_bus_handler import CanBusHandler
 from sdc_scissor.can_api.can_msg_generator import CANMessageGenerator, RandomCANMessageGeneration
-from sdc_scissor.can_api.can_output import CANBusOutputDecorator, NoCANBusOutput, StdOutDecorator
+from sdc_scissor.can_api.can_output import CANBusOutputDecorator, InfluxDBDecorator, NoCANBusOutput, StdOutDecorator
 from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
@@ -222,6 +226,8 @@ def feature_statistics(csv) -> None:
 @click.option("--can-interface", type=click.STRING, help="CAN interface")
 @click.option("--can-channel", type=click.STRING, help="CAN channel")
 @click.option("--can-bitrate", type=click.Path(exists=True), help="CAN bitrate")
+@click.option("--influxdb-bucket", type=click.STRING, default=None, help="InfluxDB bucket to write CAN message to")
+@click.option("--influxdb-org", type=click.STRING, default=None, help="InfluxDB organization")
 def label_tests(
     tests,
     home,
@@ -242,10 +248,13 @@ def label_tests(
     can_interface,
     can_channel,
     can_bitrate,
+    influxdb_bucket,
+    influxdb_org,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
     """
+    execution_start_date_time = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     CONFIG.config = locals()
 
     logging.debug("label_tests")
@@ -272,6 +281,14 @@ def label_tests(
         can_output_behavior = StdOutDecorator(can_output_behavior)
     if CONFIG.HAS_CAN_BUS:
         can_output_behavior = CANBusOutputDecorator(can_output_behavior)
+    if CONFIG.INFLUXDB_BUCKET and CONFIG.INFLUXDB_ORG:
+        load_dotenv()
+        write_client = influxdb_client.InfluxDBClient(
+            url=os.getenv("INFLUXDB_URL"), token=os.getenv("INFLUXDB_TOKEN"), org=CONFIG.INFLUXDB_ORG
+        )
+        can_output_behavior = InfluxDBDecorator(
+            can_output_behavior, write_client=write_client, bucket=CONFIG.INFLUXDB_BUCKET, org=CONFIG.INFLUXDB_ORG
+        )
 
     can_bus_handler = CanBusHandler(can_output_behavior)
     test_monitor = TestMonitor(simulator=beamng_simulator, oob=oob, can_bus_handler=can_bus_handler)
