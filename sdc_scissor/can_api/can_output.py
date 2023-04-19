@@ -1,4 +1,5 @@
 import abc
+import datetime
 import logging
 from pathlib import Path
 
@@ -73,9 +74,16 @@ def _write_influxdb_data_record(api, bucket: str, org: str, record: Point):
         logging.error(ex)
 
 
+def _influxdb_bucket_setup(write_client: InfluxDBClient, bucket, org):
+    bucket_api = write_client.buckets_api()
+    if bucket_api.find_bucket_by_name(bucket_name=bucket) is None:
+        bucket_api.create_bucket(bucket_name=bucket, org=org)
+
+
 class InfluxDBDecorator(AbstractOutputDecorator):
     def __init__(self, wrappee: ICANBusOutput, write_client: InfluxDBClient, bucket: str, org: str):
         super().__init__(wrappee)
+        _influxdb_bucket_setup(write_client, bucket, org)
         self.write_client = write_client
         self.write_api = write_client.write_api(write_options=SYNCHRONOUS)
         self.bucket = bucket
@@ -92,8 +100,9 @@ class InfluxDBDecorator(AbstractOutputDecorator):
 
             point = Point(CONFIG.EXECUTION_START_TIME).tag("test_id", CONFIG.CURRENT_TEST_ID)
             for signal_name, signal_value in decoded_msg.items():
-                point = point.field(field=signal_name, value=signal_value)
-            print(point)
+                msg_sample_time = datetime.datetime.utcfromtimestamp(msg.timestamp)
+                point = point.field(field=signal_name, value=signal_value).time(str(msg_sample_time))
+
             _write_influxdb_data_record(self.write_api, CONFIG.INFLUXDB_BUCKET, CONFIG.INFLUXDB_ORG, point)
 
         self.wrappee.output_can_msg(msg)

@@ -19,5 +19,5 @@ options:
   can_interface: 'socketcan'
   can_channel: 'vcan0'
   can_bitrate: 250000
-  influxdb_bucket: 'sdc-scissor'
+  influxdb_bucket: 'sdc-scissor-debug'
   influxdb_org: "christianbirchler.org"

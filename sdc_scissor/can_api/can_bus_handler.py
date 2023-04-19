@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 from pathlib import Path
 
 import can
@@ -79,6 +80,7 @@ class CanBusHandler:
             # Generate the CAN message
             frame_data = example_msg.encode(frame_values)
             msg = can.Message(arbitration_id=frame_id, data=frame_data)
+            msg.timestamp = time.time()
 
             self.send_can_msg(msg)
 
