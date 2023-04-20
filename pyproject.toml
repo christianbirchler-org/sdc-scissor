@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "SDC-Scissor"
-version = "0.0.1-alpha"
+version = "2.2.0-alpha"
 description = "A cost-effective test selection for self-driving cars in virtual environments"
 authors = ["Christian Birchler <birchler.chr@gmail.com>"]
 license = "GPL-3.0-or-later"
