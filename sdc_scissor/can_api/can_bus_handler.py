@@ -9,6 +9,8 @@ import cantools
 from sdc_scissor.can_api.can_output import ICANBusOutput
 from sdc_scissor.config import CONFIG
 
+_logger = logging.getLogger(__file__)
+
 
 def get_can_frame_list(can_db):
     """
@@ -76,9 +78,11 @@ class CanBusHandler:
 
             # Transform the simulation values to assure they are within the dbc range and named correctly
             frame_values = self.get_frame_values(frame_sig_list, data)
+            _logger.info("can frame data values: {}".format(frame_values))
 
             # Generate the CAN message
             frame_data = example_msg.encode(frame_values)
+            _logger.info("can frame data encoded: {}".format(frame_data))
             msg = can.Message(arbitration_id=frame_id, data=frame_data)
             msg.timestamp = time.time()
 

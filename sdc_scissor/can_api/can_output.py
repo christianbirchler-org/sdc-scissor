@@ -7,9 +7,11 @@ import can
 import cantools
 import click
 from influxdb_client import InfluxDBClient, Point
-from influxdb_client.client.write_api import SYNCHRONOUS
+from influxdb_client.client.write_api import ASYNCHRONOUS
 
 from sdc_scissor.config import CONFIG
+
+_logger = logging.getLogger(__file__)
 
 
 class ICANBusOutput(abc.ABC):
@@ -68,10 +70,11 @@ class StdOutDecorator(AbstractOutputDecorator):
 
 
 def _write_influxdb_data_record(api, bucket: str, org: str, record: Point):
+    _logger.info("write to influxdb")
     try:
         api.write(bucket=bucket, org=org, record=record)
     except Exception as ex:
-        logging.error(ex)
+        logging.error("cannot write record: {}\texception: {}".format(record, ex))
 
 
 def _influxdb_bucket_setup(write_client: InfluxDBClient, bucket, org):
@@ -85,24 +88,26 @@ class InfluxDBDecorator(AbstractOutputDecorator):
         super().__init__(wrappee)
         _influxdb_bucket_setup(write_client, bucket, org)
         self.write_client = write_client
-        self.write_api = write_client.write_api(write_options=SYNCHRONOUS)
+        self.write_api = write_client.write_api(write_options=ASYNCHRONOUS, batch_size=500)
         self.bucket = bucket
         self.org = org
         self.can_db = cantools.db.load_file(Path(CONFIG.CAN_DBC_PATH))
+        self.cache = []
 
     def output_can_msg(self, msg: can.Message):
         for msg_specs in self.can_db.messages:
+            decoded_msg = None
             try:
                 decoded_msg = self.can_db.decode_message(msg_specs.frame_id, msg.data)
             except Exception as ex:
-                logging.warning(ex)
+                _logger.info("can msg: {}\tdecoded msg: {}\texception: {}".format(msg, decoded_msg, ex))
                 continue
 
             point = Point(CONFIG.EXECUTION_START_TIME).tag("test_id", CONFIG.CURRENT_TEST_ID)
             for signal_name, signal_value in decoded_msg.items():
                 msg_sample_time = datetime.datetime.utcfromtimestamp(msg.timestamp)
+                print("utc: {}\traw: {}".format(msg_sample_time, msg.timestamp))
                 point = point.field(field=signal_name, value=signal_value).time(str(msg_sample_time))
-
-            _write_influxdb_data_record(self.write_api, CONFIG.INFLUXDB_BUCKET, CONFIG.INFLUXDB_ORG, point)
+                _write_influxdb_data_record(self.write_api, CONFIG.INFLUXDB_BUCKET, CONFIG.INFLUXDB_ORG, point)
 
         self.wrappee.output_can_msg(msg)
