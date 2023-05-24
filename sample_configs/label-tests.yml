@@ -2,7 +2,7 @@ command: 'label-tests'
 options:
   home: 'C:\BeamNG.tech.v0.24.0.2\BeamNG.drive-0.24.0.2.13392'
   user: 'C:\BeamNG.drive'
-  tests: 'C:\Users\birch\repositories\sdc-scissor\destination'
+  tests: 'C:\Users\birch\repositories\sdc-scissor\sample_tests'
   rf: 1.5
   oob: 0.3
   max_speed: 50
