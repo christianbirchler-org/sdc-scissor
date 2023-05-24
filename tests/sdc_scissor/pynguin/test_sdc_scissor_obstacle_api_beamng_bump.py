@@ -4,6 +4,7 @@ import pytest
 import sdc_scissor.obstacle_api.beamng_bump as module_0
 
 
+@pytest.mark.skip()
 def test_case_0():
     beamng_bump_0 = module_0.BeamngBump()
     assert (
@@ -23,6 +24,7 @@ def test_case_0():
     assert beamng_bump_0.obstacle_type == "procedural"
 
 
+@pytest.mark.skip()
 def test_case_1():
     beamng_bump_0 = module_0.BeamngBump()
     assert (

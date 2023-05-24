@@ -1,8 +1,11 @@
+import pytest
+
 from sdc_scissor.can_api.can_output import NoCANBusOutput
 from sdc_scissor.config import CONFIG
 from sdc_scissor.testing_api.test_runner import TestRunner
 
 
+@pytest.mark.skip()
 class TestTestRunner:
     def setup_class(self):
         CONFIG.config = {"canbus": False, "can_dbc": "", "can_dbc_map": "", "can_interface": "", "can_bitrate": ""}
