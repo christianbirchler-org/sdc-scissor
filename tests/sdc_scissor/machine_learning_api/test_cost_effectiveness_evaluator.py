@@ -4,8 +4,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 from numpy import nan
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
@@ -70,7 +69,6 @@ class TestCostEffectivenessEvaluator:
             _ = cev.evaluate_with_random_baseline()
 
     def test_evaluator_with_random_baseline_with_sample_data_if_no_exception_is_thrown(self, fs):
-
         for classifier_name, classifier in self.classifiers_dict.items():
             cev = CostEffectivenessEvaluator(
                 classifier=classifier,
@@ -83,7 +81,6 @@ class TestCostEffectivenessEvaluator:
             print("ce_baseline: {}".format(ce_baseline))
 
     def test_evaluator_with_longest_road_baseline_with_sample_data_if_no_exception_is_thrown(self, fs):
-
         for classifier_name, classifier in self.classifiers_dict.items():
             cev = CostEffectivenessEvaluator(
                 classifier=classifier,

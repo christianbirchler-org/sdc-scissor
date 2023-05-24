@@ -11,8 +11,8 @@ for i=1:n
     else
         distance = A(X(i-1), X(i));
     end
-    
-    AUC = AUC + distance / Cost(X(i)) / i ; 
+
+    AUC = AUC + distance / Cost(X(i)) / i ;
 end
 
 AUC = -AUC; %% we want to maximize

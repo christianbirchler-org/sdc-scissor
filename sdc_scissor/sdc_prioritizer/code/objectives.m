@@ -10,4 +10,3 @@ for i=1:n-1
 end
 objs = [obj1; -obj2]; %% we want to maximize
 end
-

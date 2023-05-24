@@ -21,7 +21,6 @@ class TestCaseMutation(Mutation):
             s = X[i, 0]
             # with a probabilty of 40% - change the order of characters
             if r < self.mut_rate:  # cf.ga["mut_rate"]:
-
                 sn = copy.deepcopy(s)
 
                 sn.get_points()
@@ -32,7 +31,6 @@ class TestCaseMutation(Mutation):
                 old_points = sn.road_points
                 old_states = child
                 if wr < 0.2:
-
                     candidates = list(np.random.randint(0, high=len(child), size=2))
                     temp = child["st" + str(candidates[0])]
                     child["st" + str(candidates[0])] = child["st" + str(candidates[1])]
@@ -50,7 +48,6 @@ class TestCaseMutation(Mutation):
                         child["st" + str(num)][value] = int(np.random.choice(duration_list))
 
                     elif value == "state":
-
                         if child["st" + str(num)][value] == "straight":
                             child["st" + str(num)][value] = np.random.choice(["left", "right"])
                             duration_list = np.arange(cf.model["min_angle"], cf.model["max_angle"], 5)

@@ -24,7 +24,7 @@ single_df <- fixBenchmarkNames(single_df)
 greedy_df <- fixBenchmarkNames(greedy_df)
 
 
-######## Merge dataframes to have oe dataframe with all of the configs ######## 
+######## Merge dataframes to have oe dataframe with all of the configs ########
 
 # Select the compromise solution
 knee_points <- df %>%
@@ -38,7 +38,7 @@ knee_points <- df %>%
 
 ready_df <- knee_points %>%
   select(benchmark,config,execution_id,APFD,elapsed_time) %>%
-  filter(config == "mo-10_feature_GA") 
+  filter(config == "mo-10_feature_GA")
 
 ready_df <- rbind(ready_df, single_df %>%
                     select(benchmark,config,execution_id,APFD,elapsed_time)%>%
@@ -64,7 +64,7 @@ for(row in 1:(nrow(greedy_df))){
   config = greedy_df[[row, 'config']]
   APFD = greedy_df[[row, 'APFD']]
   elapsed_time = greedy_df[[row, 'elapsed_time']]
-  
+
   for(index in 1:30){
     ready_df[nrow(ready_df) + 1,] = list(benchmark,config,index, APFD,elapsed_time)
   }
@@ -74,7 +74,7 @@ for(row in 1:(nrow(greedy_df))){
 ready_df$config <- ifelse(ready_df$config == "10_feature_GA", "SO-SDC-Prioritizer", ready_df$config)
 ready_df$config <- ifelse(ready_df$config == "mo-10_feature_GA", "MO-SDC-Prioritizer", ready_df$config)
 
-################################ 
+################################
 
 
 
@@ -90,7 +90,7 @@ ggsave(plot = p, filename = "../../data/figures/APFD.pdf", width=210, height=120
 summary_apfd <- ready_df %>%
   group_by(config,benchmark) %>%
   summarise(avgAPFD = mean(APFD), minAPFD = min(APFD), maxAPFD = max(APFD)) %>%
-  mutate(improvement = "1") 
+  mutate(improvement = "1")
 
 
 summary_apfd <- summary_apfd %>%
@@ -99,11 +99,11 @@ summary_apfd <- summary_apfd %>%
   mutate(improvement = avgAPFD.x - avgAPFD.y,
          min_max_improvement = minAPFD.x - maxAPFD.y)%>%
   filter(improvement >=0)
-  
+
 summary_apfd_configs <- ready_df %>%
   group_by(config) %>%
   summarise(avgAPFD = mean(APFD), minAPFD = min(APFD), maxAPFD = max(APFD)) %>%
-  mutate(improvement = "1") 
+  mutate(improvement = "1")
 
 
 summary_apfd <- summary_apfd %>%
@@ -153,7 +153,7 @@ statistics_df <- ready_df %>%
             wilcox.test.pvalue = wilcox.test(APFD.mo, APFD.so)$p.value,
             avg.mo = mean(APFD.mo),
             avg.bl = mean(APFD.so))
-  
+
 
 # save as csv file
 write_csv(statistics_df,"gavsga.csv")
@@ -164,10 +164,10 @@ write_csv(statistics_df,"gavsga.csv")
 
 mo_df <- knee_points %>%
   select(benchmark,config,execution_id,solution_id,APFD) %>%
-  filter(config == "mo-10_feature_GA") 
+  filter(config == "mo-10_feature_GA")
 
 mo_df$config <- "MO-SDC-Prioritizer"
-  
+
 
 so_df <- ready_df %>%
   filter(config == "SO-SDC-Prioritizer") %>%
@@ -199,7 +199,7 @@ median_df <- median_df %>%
 
 write_csv(median_df,"medians_APFDc.csv")
 
-################################ 
+################################
 
 
 ######## RQ3 ########
@@ -222,7 +222,7 @@ ggsave(plot = p, filename = "../../data/figures/consumed_time.pdf",  width=190, 
 
 
 
-################################ 
+################################
 
 
 ######## Pareto front ########
@@ -276,40 +276,40 @@ for (bench in benchmarks){
     group_by(config,benchmark, execution_id) %>%
     mutate(best = ifelse(APFD == max(APFD),TRUE,FALSE)) %>%
     filter(config == "mo-10_feature_GA" & benchmark == bench, execution_id == exec_id)
-  
+
   # test <- df2 %>%
   #   ungroup() %>%
   #   select(cost, diversity)
   # test$diversity <- -test$diversity
   # test_mat <- as.matrix(test)
-  # 
+  #
   # w <- c(3, 1)
   # i <- c("-", "+")
   # res <-topsis(test_mat, w, i) %>%
   #   filter(rank == min(rank))
   # row <- res[1,]$alt.row
-  # 
+  #
   # best_cost <- test_mat[row, 'cost']
   # best_diversity <- test_mat[row, 'diversity']
   # group_by(execution_id) %>% top_n(1, APFD)
-  # 
+  #
    max <- df2 %>% group_by(execution_id) %>% top_n(1, APFD)
   # max_score <- df2 %>% group_by(execution_id) %>% top_n(1, score)
-  
-  
+
+
   mid <- greedy_df %>% filter(benchmark == bench)
   mid <- mid$APFD
-  
+
   mid <- mean(df2$APFD)
-  
-  
-  
-  knee_p <- knee_points %>% 
+
+
+
+  knee_p <- knee_points %>%
     filter(benchmark == bench & config == "mo-10_feature_GA" & execution_id == exec_id)
-  #   scale_fill_gradient2(midpoint=mid, low="red", mid="white", 
+  #   scale_fill_gradient2(midpoint=mid, low="red", mid="white",
   p <- ggplot(df2, aes(x=cost, y=-diversity, fill=APFD))+
     geom_point(shape = 21, size=3, alpha=0.75) +
-    scale_fill_gradient( low="red", 
+    scale_fill_gradient( low="red",
                          high="blue", space = "Lab")+
    geom_point(data = max, aes(x=cost, y=-diversity), colour="orange",  size=5, shape = 18) +
     #    geom_point(data = max_score, aes(x=cost, y=-diversity), colour="green",  size=5, shape = 18)+
@@ -318,12 +318,7 @@ for (bench in benchmarks){
     ylab("Diversity") +
     xlab("Execution Cost") +
     theme(axis.text.x = element_text(angle = 0, size = 12, face = "bold", margin = margin(t = 10, r = 0, b = 0, l = 0)), axis.text.y = element_text(size = 10, face="bold"), strip.text.x = element_text(size = 10, face="bold"))
-  
+
   ggsave(plot = p, filename = paste0("../../data/figures/preto-front-",bench,".pdf"), width=250, height=100, units = "mm" )
-  
+
 }
-
-
-
-
- 

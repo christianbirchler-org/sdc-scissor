@@ -5,8 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from shapely.geometry import Point
-from shapely.geometry import Polygon
+from shapely.geometry import Point, Polygon
 
 from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 from sdc_scissor.testing_api.test import Test

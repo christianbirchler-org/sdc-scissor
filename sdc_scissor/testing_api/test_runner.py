@@ -3,18 +3,18 @@ import math
 import time
 
 import numpy as np
-from beamngpy import BNGError
-from beamngpy import Scenario
+from beamngpy import BNGError, Scenario
 from scipy.spatial.transform import Rotation
 
+from sdc_scissor.can_api.can_output import ICANBusOutput, NoCANBusOutput
+from sdc_scissor.config import CONFIG
 from sdc_scissor.obstacle_api.obstacle_factory import ObstacleFactory
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
 from sdc_scissor.testing_api.road_model import RoadModel
 from sdc_scissor.testing_api.test import Test
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
-from sdc_scissor.testing_api.test_plotter import NullTestPlotter
-from sdc_scissor.testing_api.test_plotter import TestPlotter
+from sdc_scissor.testing_api.test_plotter import NullTestPlotter, TestPlotter
 from sdc_scissor.testing_api.test_validator import TestIsNotValidException
 
 
@@ -70,6 +70,7 @@ def _define_obstacles(road_model, obstacle_factory, bump_dist, delineator_dist, 
 class TestRunner:
     def __init__(self, **kwargs) -> None:
         """
+        Managing the execution of test cases
 
         :param kwargs:
         """
@@ -84,9 +85,13 @@ class TestRunner:
         self.obstacle_factory: ObstacleFactory = kwargs.get("obstacle_factory", None)
         self.fov: list = kwargs.get("fov", None)
         self.test_plotter: TestPlotter = kwargs.get("test_plotter", NullTestPlotter())
+        self.can_output: ICANBusOutput = kwargs.get("can_output", NoCANBusOutput())
+        self.test_monitor: TestMonitor = kwargs.get("test_monitor", None)
 
     def run_test_suite(self):
-        """ """
+        """
+        Run multiple tests
+        """
         logging.info("* run_test_suite")
         self.simulator.open()
         has_execution_failed = False
@@ -99,6 +104,7 @@ class TestRunner:
             else:
                 test, test_filename = self.test_loader.next()
             try:
+                self.test_monitor.reset()
                 self.run(test)
                 test.save_as_json(file_path=test_filename)
                 has_execution_failed = False
@@ -130,6 +136,7 @@ class TestRunner:
         :param test: Test object that needs to be executed in simulation
         """
         logging.debug("* run")
+        CONFIG.config["current_test_id"] = test.test_id
         if not test.is_valid:
             raise TestIsNotValidException()
         time.sleep(5)
@@ -147,14 +154,16 @@ class TestRunner:
         # ensure connectivity by blocking the python process for some seconds
         time.sleep(5)
 
-        test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model)
-        test_monitor.start_timer()
+        # test_monitor = TestMonitor(self.simulator, test, oob=self.oob, road_model=road_model, can_bus_handler=CanBusHandler(self.can_output))
+        self.test_monitor.test = test
+        self.test_monitor.road_model = road_model
+        self.test_monitor.start_timer()
         self.simulator.start_scenario()
 
-        while not test_monitor.is_test_finished:
-            test_monitor.check(self.interrupt)
+        while not self.test_monitor.is_test_finished:
+            self.test_monitor.process_car_state(self.interrupt)
             time.sleep(0.1)
 
-        test_monitor.stop_timer()
-        test_monitor.dump_data()
+        self.test_monitor.stop_timer()
+        self.test_monitor.dump_data()
         self.simulator.stop_scenario()

@@ -1,8 +1,7 @@
 import logging as log
 
 import numpy as np
-from shapely import affinity
-from shapely import geometry
+from shapely import affinity, geometry
 
 from sdc_scissor.testing_api.test_generators.frenetic_v.src.generators.base_generator import BaseGenerator
 from sdc_scissor.testing_api.test_generators.frenetic_v.src.utils import frenet

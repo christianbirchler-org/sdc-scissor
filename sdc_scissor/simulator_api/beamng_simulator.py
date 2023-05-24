@@ -4,10 +4,7 @@ import time
 
 import icontract
 import numpy as np
-from beamngpy import BeamNGpy
-from beamngpy import Road
-from beamngpy import Scenario
-from beamngpy import Vehicle
+from beamngpy import BeamNGpy, Road, Scenario, Vehicle
 from beamngpy.sensors import Electrics
 from scipy.spatial.transform import Rotation
 from shapely.geometry import LineString

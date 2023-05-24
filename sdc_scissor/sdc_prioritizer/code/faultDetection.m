@@ -17,9 +17,8 @@ totlalCost = 0;
 for i=1:nPoints
     totlalCost = totlalCost + Cost(X(i));
     totalFaults = totalFaults + faults(X(i));
-    
+
     xValues(1,i) = totlalCost;
     yValues(1,i) = totalFaults;
 end
 end
-

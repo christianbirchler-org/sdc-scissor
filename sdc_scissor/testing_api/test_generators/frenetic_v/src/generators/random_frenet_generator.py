@@ -31,7 +31,6 @@ class CustomFrenetVGenerator(BaseFrenetVGenerator):
         store_additional_data=False,
         count=None,
     ):
-
         self.count = count
         # Time spent on initial random generation
         self.random_gen_budget = random_budget

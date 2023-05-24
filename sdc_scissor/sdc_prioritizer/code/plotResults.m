@@ -16,4 +16,3 @@ for i=2:n
 end
 plot(xValues, yValues, color);
 end
-

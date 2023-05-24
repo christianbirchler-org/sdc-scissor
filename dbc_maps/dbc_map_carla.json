@@ -1,0 +1,26 @@
+{
+  "wheelspeed": {
+    "sim_signal_name": "speed",
+    "min": 0,
+    "max": 13107,
+    "default": 0
+  },
+  "throttle": {
+    "sim_signal_name": "throttle",
+    "min": 0,
+    "max": 1,
+    "default": 0
+  },
+  "brake": {
+    "sim_signal_name": "brake",
+    "min": 0,
+    "max": 1,
+    "default": 0
+  },
+  "steering": {
+    "sim_signal_name": "steer",
+    "min": -655.36,
+    "max": 655.35,
+    "default": 0
+  }
+}

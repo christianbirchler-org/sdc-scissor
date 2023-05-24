@@ -4,7 +4,7 @@ mat = ["benchmark" "config" "APFD" "elapsed_time"];
 for benchmark_index = 1 : length(benchmarks)
     tic
     APFD = runGreedy("greedy",benchmarks(benchmark_index))
-    elapsed_time=toc    
+    elapsed_time=toc
     [filepath,name,ext] = fileparts(benchmarks(benchmark_index))
     mat = [mat; name "Greedy" APFD elapsed_time]
 end

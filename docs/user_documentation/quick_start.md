@@ -98,5 +98,3 @@ The data used for the demo and evaluation of SDC-Scissor v1.0 we made available 
 ````{note}
 The used simulator was BeamNG.research which is deprecated and not compatible anymore with SDC-Scissor.
 ````
-
-

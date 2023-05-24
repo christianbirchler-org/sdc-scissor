@@ -2,7 +2,7 @@ function [APFD_g] = runGreedy(configuration,csv_file)
 
 csv_file
 T = readtable(csv_file);
-Cost = table2array(T(:,19));  
+Cost = table2array(T(:,19));
 Features = table2array(T(:,1:16));
 Differences = pdist(Features,"seuclidean");
 Differences = squareform(Differences);
@@ -42,8 +42,5 @@ end
 
 
 
-[a,b] = faultDetection(permutation, T, Cost); 
+[a,b] = faultDetection(permutation, T, Cost);
 APFD_g = trapz(a, b) / max(a) / max(b);
-
-
-

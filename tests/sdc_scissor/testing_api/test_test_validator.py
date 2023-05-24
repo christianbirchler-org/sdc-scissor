@@ -1,7 +1,9 @@
-from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
-from sdc_scissor.testing_api.test_validator import NoTooSharpTurnsValidator
-from sdc_scissor.testing_api.test_validator import SimpleTestValidator
-from sdc_scissor.testing_api.test_validator import Test
+from sdc_scissor.testing_api.test_validator import (
+    NoIntersectionValidator,
+    NoTooSharpTurnsValidator,
+    SimpleTestValidator,
+    Test,
+)
 
 
 class TestTestValidator:

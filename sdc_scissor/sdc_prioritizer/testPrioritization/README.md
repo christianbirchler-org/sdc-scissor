@@ -7,7 +7,7 @@
 
 2- Build the docker image:
 ```bash
-. docker_scripts/build-test-prioritization-image.sh 
+. docker_scripts/build-test-prioritization-image.sh
 ```
 
 3- Run the docker container:
@@ -31,9 +31,9 @@ ARG3) __output directory:__ The prioritizer stores all of the outputs in this di
 ARG4) __population size__ (optional)__:__ This argument indicates the number of solutions that the genetic algorithm produces in each generation. This value is set to 100 by default.
 
 ARG5) __number of generations__ (optional)__:__ This argument indicates the search budget of the prioritizer. This value is set to 2000. It means that The search process stops after generating the 2000th generation of test orders by default.
-### Outputs 
+### Outputs
 The search process saves the Pareto front as `plot.png` in the output directory. It also saves the best-generated test order as `solution.txt` in the same directory.
-### Example 
+### Example
 For example, the following command will execute the test prioritization for `BeamNG_RF_1_Complete` dataset with a population size of 50 and a search budget of 1000 generations. The output of this process will be saved under `data/results/config1`:
 
 

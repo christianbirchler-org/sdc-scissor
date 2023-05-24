@@ -8,6 +8,7 @@ on:
 
 jobs:
   ci:
+    if: github.repository == 'ChristianBirchler/sdc-scissor'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

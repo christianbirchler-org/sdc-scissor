@@ -3,8 +3,7 @@ import logging
 from pathlib import Path
 
 import numpy as np
-from scipy.interpolate import splev
-from scipy.interpolate import splprep
+from scipy.interpolate import splev, splprep
 
 
 class Test:

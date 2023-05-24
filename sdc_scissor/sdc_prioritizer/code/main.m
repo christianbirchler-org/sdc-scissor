@@ -6,7 +6,7 @@ for h_status = 1 : length(is_hybrid)
     for benchmark_index = 1 : length(benchmarks)
         for config_index = 1 : length(configurations)
             parfor i = 1:30
-                runSearch(i,configurations(config_index),benchmarks(benchmark_index),h_status)   
+                runSearch(i,configurations(config_index),benchmarks(benchmark_index),h_status)
             end
         end
     end

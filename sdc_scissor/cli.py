@@ -1,18 +1,25 @@
+import datetime
 import logging
+import os
 import sys
+import time
 from pathlib import Path
 
 import click
+import influxdb_client
 import numpy as np
 import yaml
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import RandomForestClassifier
+from dotenv import load_dotenv
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler
+from sdc_scissor.can_api.can_msg_generator import CANMessageGenerator, RandomCANMessageGeneration
+from sdc_scissor.can_api.can_output import CANBusOutputDecorator, InfluxDBDecorator, NoCANBusOutput, StdOutDecorator
+from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
 from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
@@ -21,13 +28,11 @@ from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
 from sdc_scissor.machine_learning_api.predictor import Predictor
 from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFactory
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
-from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior
-from sdc_scissor.testing_api.test_generator import KeepValidTestsOnlyBehavior
-from sdc_scissor.testing_api.test_generator import TestGenerator
+from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior, KeepValidTestsOnlyBehavior, TestGenerator
 from sdc_scissor.testing_api.test_loader import TestLoader
+from sdc_scissor.testing_api.test_monitor import TestMonitor
 from sdc_scissor.testing_api.test_runner import TestRunner
-from sdc_scissor.testing_api.test_validator import NoIntersectionValidator
-from sdc_scissor.testing_api.test_validator import SimpleTestValidator
+from sdc_scissor.testing_api.test_validator import NoIntersectionValidator, SimpleTestValidator
 
 _ROOT_DIR = Path(__file__).parent.parent
 _DESTINATION = _ROOT_DIR / "destination"
@@ -82,7 +87,7 @@ def cli(ctx: click.Context, config: Path, debug) -> None:
 @click.option(
     "-d", "--destination", default=_DESTINATION, type=click.Path(), help="Output directory to store the generated tests"
 )
-@click.option("-t", "--tool", default="frenetic", type=click.STRING)
+@click.option("-t", "--tool", default="frenetic", type=click.STRING, help="Name of the test generator tool")
 def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None:
     """
     Generate tests (road specifications) for self-driving cars.
@@ -114,7 +119,7 @@ def generate_tests(count: int, keep: bool, destination: Path, tool: str) -> None
 @click.option(
     "-t", "--tests", default=_DESTINATION, type=click.Path(exists=True), help="Path to directory containing the tests"
 )
-@click.option("-s", "--segmentation", default="angle-based", type=click.STRING)
+@click.option("-s", "--segmentation", default="angle-based", type=click.STRING, help="Road segmentation strategy")
 def extract_features(tests: Path, segmentation: str) -> None:
     """
     Extract road features from given test scenarios.
@@ -124,6 +129,7 @@ def extract_features(tests: Path, segmentation: str) -> None:
     """
     logging.debug("extract_features")
     tests = Path(tests)
+
     test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_loader = TestLoader(tests, test_validator=test_validator)
     if segmentation == "angle-based":
@@ -141,7 +147,10 @@ def extract_features(tests: Path, segmentation: str) -> None:
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to road_features.csv"
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
 )
 def feature_statistics(csv) -> None:
     """
@@ -157,42 +166,106 @@ def feature_statistics(csv) -> None:
 
 
 @cli.command()
-@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True))
-@click.option("--home", type=click.Path(exists=True))
-@click.option("--user", type=click.Path(exists=True))
-@click.option("--rf", default=1.5, type=float)
-@click.option("--oob", default=0.3, type=float)
-@click.option("--max-speed", default=50, type=float)
-@click.option("--interrupt/--no-interrupt", default=True, type=click.BOOL)
-@click.option("--obstacles/--no-obstacles", default=False, type=click.BOOL)
-@click.option("--bump-dist", default=20, type=click.INT)
-@click.option("--delineator-dist", default=5, type=click.INT)
-@click.option("--tree-dist", default=5, type=click.INT)
-@click.option("-fov", "--field-of-view", default=120, type=click.INT)
+@click.option(
+    "-t",
+    "--tests",
+    default=_DESTINATION,
+    type=click.Path(exists=True),
+    help="Path to the directory containing the test specifications",
+)
+@click.option(
+    "--home",
+    type=click.Path(exists=True),
+    help="The home directory of the BeamNG.tech simulator containing the executable",
+)
+@click.option(
+    "--user",
+    type=click.Path(exists=True),
+    help="The user directory of BeamNG.tech containing the tech.key file and levels files",
+)
+@click.option("--rf", default=1.5, type=float, help="Risk factor of the AI driving the car")
+@click.option(
+    "--oob",
+    default=0.3,
+    type=float,
+    help="The out-of-bound parameter specifying how much a car is allowed to drive off the lane",
+)
+@click.option("--max-speed", default=50, type=float, help="The maximum speed the AI is allowed to drive")
+@click.option(
+    "--interrupt/--no-interrupt",
+    default=True,
+    type=click.BOOL,
+    help="Indicator if the test executions should stop when the car violates the OOB criteria",
+)
+@click.option(
+    "--obstacles/--no-obstacles",
+    default=False,
+    type=click.BOOL,
+    help="Indicator if there should be obstacles in the virtual environment",
+)
+@click.option(
+    "--bump-dist",
+    default=20,
+    type=click.INT,
+    help="The distance between the speed bumps ('obstacles' needs to be true)",
+)
+@click.option(
+    "--delineator-dist",
+    default=5,
+    type=click.INT,
+    help="The distance between the delineators ('obstacles' needs to be true)",
+)
+@click.option(
+    "--tree-dist", default=5, type=click.INT, help="The distance between the trees ('obstacles' needs to be true)"
+)
+@click.option("-fov", "--field-of-view", default=120, type=click.INT, help="The field of view angle")
+@click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
+@click.option("--can-stdout/--no-can-stdout", default=True, type=click.BOOL, help="Output CAN messages to stdout")
+@click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
+@click.option("--can-dbc-map", type=click.Path(exists=True), help="Path to CAN database map json file")
+@click.option("--can-interface", type=click.STRING, help="CAN interface")
+@click.option("--can-channel", type=click.STRING, help="CAN channel")
+@click.option("--can-bitrate", type=click.Path(exists=True), help="CAN bitrate")
+@click.option("--influxdb-bucket", type=click.STRING, default=None, help="InfluxDB bucket to write CAN message to")
+@click.option("--influxdb-org", type=click.STRING, default=None, help="InfluxDB organization")
 def label_tests(
-    tests, home, user, rf, oob, max_speed, interrupt, obstacles, bump_dist, delineator_dist, tree_dist, field_of_view
+    tests,
+    home,
+    user,
+    rf,
+    oob,
+    max_speed,
+    interrupt,
+    obstacles,
+    bump_dist,
+    delineator_dist,
+    tree_dist,
+    field_of_view,
+    canbus,
+    can_stdout,
+    can_dbc,
+    can_dbc_map,
+    can_interface,
+    can_channel,
+    can_bitrate,
+    influxdb_bucket,
+    influxdb_org,
 ) -> None:
     """
     Execute the tests in simulation to label them as safe or unsafe scenarios.
-
-    :param tests: Path to the directory containing the test specifications
-    :param home: The home directory of the BeamNG.tech simulator containing the executable
-    :param user: The user directory of BeamNG.tech containing the tech.key file and levels files
-    :param rf: Risk factor of the AI driving the car
-    :param oob: The out-of-bound parameter specifying how much a car is allowed to drive off the lane
-    :param max_speed: The maximum speed the AI is allowed to drive
-    :param interrupt: Indicator if the test executions should stop when the car violates the OOB criteria
-    :param obstacles: Indicator if there should be obstacles in the virtual environment
-    :param bump_dist: The distance between the speed bumps ('obstacles' needs to be true)
-    :param delineator_dist: The distance between the delineators ('obstacles' needs to be true)
-    :param tree_dist: The distance between the trees ('obstacles' needs to be true)
-    :param field_of_view: The field of view angle
     """
+    execution_start_date_time = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    CONFIG.config = locals()
+
     logging.debug("label_tests")
     tests = Path(tests)
     logging.debug("Test directory: {}".format(tests))
     beamng_simulator = SimulatorFactory.get_beamng_simulator(
-        home=home, user=user, rf=rf, max_speed=max_speed, fov=field_of_view
+        home=CONFIG.BEAMNG_HOME,
+        user=CONFIG.BEAMNG_USER,
+        rf=CONFIG.RISK_FACTOR,
+        max_speed=CONFIG.MAX_SPEED,
+        fov=CONFIG.FIELD_OF_VIEW,
     )
 
     test_validator = NoIntersectionValidator(SimpleTestValidator())
@@ -203,6 +276,22 @@ def label_tests(
     else:
         obstacle_factory = None
 
+    can_output_behavior = NoCANBusOutput()
+    if CONFIG.CAN_STDOUT:
+        can_output_behavior = StdOutDecorator(can_output_behavior)
+    if CONFIG.HAS_CAN_BUS:
+        can_output_behavior = CANBusOutputDecorator(can_output_behavior)
+    if CONFIG.INFLUXDB_BUCKET and CONFIG.INFLUXDB_ORG:
+        load_dotenv()
+        write_client = influxdb_client.InfluxDBClient(
+            url=os.getenv("INFLUXDB_URL"), token=os.getenv("INFLUXDB_TOKEN"), org=CONFIG.INFLUXDB_ORG
+        )
+        can_output_behavior = InfluxDBDecorator(
+            can_output_behavior, write_client=write_client, bucket=CONFIG.INFLUXDB_BUCKET, org=CONFIG.INFLUXDB_ORG
+        )
+
+    can_bus_handler = CanBusHandler(can_output_behavior)
+    test_monitor = TestMonitor(simulator=beamng_simulator, oob=oob, can_bus_handler=can_bus_handler)
     test_runner = TestRunner(
         simulator=beamng_simulator,
         test_loader=test_loader,
@@ -212,6 +301,8 @@ def label_tests(
         bump_dist=bump_dist,
         delineator_dist=delineator_dist,
         tree_dist=tree_dist,
+        can_output=can_output_behavior,
+        test_monitor=test_monitor,
     )
 
     test_runner.run_test_suite()
@@ -219,15 +310,15 @@ def label_tests(
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True), help="Path to road_features.csv"
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
 )
 @click.option("--models-dir", default=_TRAINED_MODELS, type=click.Path(), help="Directory to store the trained models")
 def evaluate_models(csv: Path, models_dir: Path) -> None:
     """
     Evaluate different machine learning models with a stratified cross validation approach.
-
-    :param csv: Path to the CSV file containing the extracted road features of the tests
-    :param models_dir: Directory where the trained and evaluated classifier models should be stored
     """
     logging.debug("evaluate_models")
 
@@ -246,9 +337,17 @@ def evaluate_models(csv: Path, models_dir: Path) -> None:
 
 
 @cli.command()
-@click.option("--csv", default=_DESTINATION / "road_features.csv", type=click.Path(exists=True))
-@click.option("--clf", type=click.STRING)
+@click.option(
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
+)
+@click.option("--clf", type=click.STRING, help="Classifier name to perform GridSearch on")
 def grid_search(csv: Path, clf: str) -> None:
+    """
+    Perform GridSearch on a selected classifier to optimize the hyperparameters
+    """
     dd = CSVLoader.load_dataframe_from_csv(csv)
 
     model_evaluator = ModelEvaluator(data_frame=dd, label="safety")
@@ -295,17 +394,16 @@ def grid_search(csv: Path, clf: str) -> None:
 
 @cli.command()
 @click.option(
-    "--csv", default=_DESTINATION / "road_features.csv", help="Path to labeled tests", type=click.Path(exists=True)
+    "--csv",
+    default=_DESTINATION / "road_features.csv",
+    type=click.Path(exists=True),
+    help="Path to CSV file with extracted road features",
 )
-@click.option("--random", default=True)
-@click.option("-k", "--top-k", default=10)
+@click.option("--random", default=True, help="Use random baseline test selector")
+@click.option("-k", "--top-k", default=10, help="Number of tests to select")
 def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
     """
     Evaluate the speed-up SDC-Scissor achieves by only selecting test scenarios that likely fail.
-
-    :param csv:
-    :param random:
-    :param top_k:
     """
     logging.debug("evaluate_cost_effectiveness")
     df = CSVLoader.load_dataframe_from_csv(csv)
@@ -336,20 +434,63 @@ def evaluate_cost_effectiveness(csv: Path, random, top_k) -> None:
 
 
 @cli.command()
-@click.option("-t", "--tests", default=_DESTINATION, type=click.Path(exists=True))
-@click.option("-c", "--classifier", default=_TRAINED_MODELS / "decision_tree.joblib", type=click.Path(exists=True))
+@click.option(
+    "-t",
+    "--tests",
+    default=_DESTINATION,
+    type=click.Path(exists=True),
+    help="Directory containing tests which were not executed yet",
+)
+@click.option(
+    "-c",
+    "--classifier",
+    default=_TRAINED_MODELS / "decision_tree.joblib",
+    type=click.Path(exists=True),
+    help="Path to the trained classifier model",
+)
 def predict_tests(tests: Path, classifier: Path) -> None:
     """
     Predict the most likely outcome of a test scenario without executing them in simulation.
-
-    :param tests: Directory containing tests which were not executed yet
-    :param classifier: Path to the trained classifier model
     """
     test_validator = NoIntersectionValidator(SimpleTestValidator())
     test_loader = TestLoader(tests_dir=tests, test_validator=test_validator)
 
     predictor = Predictor(test_loader=test_loader, joblib_classifier=classifier)
     predictor.predict()
+
+
+@cli.command()
+@click.option("-s", "--strategy", default="random", type=click.STRING)
+@click.option("--canbus/--no-canbus", default=False, type=click.BOOL, help="Enable CAN messages")
+@click.option("--can-stdout/--no-can-stdout", default=True, type=click.BOOL, help="Output CAN messages to stdout")
+@click.option("--can-dbc", type=click.Path(exists=True), help="Path to CAN database file")
+@click.option("--can-dbc-map", type=click.Path(exists=True), help="Path to CAN database map json file")
+@click.option("--can-interface", type=click.STRING, help="CAN interface")
+@click.option("--can-channel", type=click.STRING, help="CAN channel")
+@click.option("--can-bitrate", type=click.Path(exists=True), help="CAN bitrate")
+@click.option("--timeout", type=click.INT, help="Timeout for sending CAN messages")
+def gen_can_msg(strategy, canbus, can_stdout, can_dbc, can_dbc_map, can_interface, can_channel, can_bitrate, timeout):
+    CONFIG.config = locals()
+
+    can_output = NoCANBusOutput()
+    if CONFIG.HAS_CAN_BUS:
+        can_output = CANBusOutputDecorator(can_output)
+    if CONFIG.CAN_STDOUT:
+        can_output = StdOutDecorator(can_output)
+
+    can_bus_handler = CanBusHandler(can_output)
+
+    if strategy == "random":
+        strategy = RandomCANMessageGeneration()
+    else:
+        raise Exception("invalid generation strategy")
+
+    can_msg_generator = CANMessageGenerator(strategy)
+
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        msg = can_msg_generator.generate()
+        can_bus_handler.send_can_msg(msg)
 
 
 if __name__ == "__main__":

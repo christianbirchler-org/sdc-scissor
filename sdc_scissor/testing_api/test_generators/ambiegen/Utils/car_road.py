@@ -346,7 +346,6 @@ class Map:
         return new_states, new_list
 
     def get_points_from_states(self, states):
-
         self.init_pos, self.init_end = self.init_position()
         self.current_pos = [self.init_pos, self.init_end]
         self.all_position_list = [[self.init_pos, self.init_end]]
@@ -376,7 +375,6 @@ class Map:
         return points
 
     def build_tc(self, points):
-
         time_ = str(int(time.time()))
 
         fig, ax = plt.subplots(figsize=(12, 12))

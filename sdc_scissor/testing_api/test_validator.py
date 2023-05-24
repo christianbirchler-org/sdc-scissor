@@ -1,7 +1,6 @@
 import abc
 
-from shapely.geometry import LineString
-from shapely.geometry import MultiLineString
+from shapely.geometry import LineString, MultiLineString
 
 from sdc_scissor.feature_extraction_api.road_geometry_calculator import RoadGeometryCalculator
 from sdc_scissor.testing_api.test import Test

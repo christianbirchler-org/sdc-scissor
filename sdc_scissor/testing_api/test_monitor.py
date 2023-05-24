@@ -5,16 +5,15 @@ import time
 from scipy.spatial import distance
 from shapely.geometry import box
 
+from sdc_scissor.can_api.can_bus_handler import CanBusHandler
 from sdc_scissor.simulator_api.abstract_simulator import AbstractSimulator
-from sdc_scissor.testing_api.road_model import RoadModel
-from sdc_scissor.testing_api.test import Test
 
 
 def _get_t_previous_data(data, time_delta) -> tuple:
     """
     Return data of t-delta
     """
-    logging.info("_get_t_previous_data")
+    logging.debug("_get_t_previous_data")
     t1 = data[-1]["time"]
     reversed_data_iterator = reversed(data)
     for data_entry in reversed_data_iterator:
@@ -31,7 +30,7 @@ class TestMonitor:
     The test monitor checks the execution states of the test and logs them.
     """
 
-    def __init__(self, simulator: AbstractSimulator, test: Test, oob: float, road_model: RoadModel):
+    def __init__(self, simulator: AbstractSimulator, oob: float, can_bus_handler: CanBusHandler):
         """
         The test monitor retrieves data from the simulator and tracks the trajectory of the car.
 
@@ -40,18 +39,14 @@ class TestMonitor:
         :param oob: Parameter to define how much percentage the car is allowed to be off the lane.
         """
         self.simulator = simulator
-        self.test = test
-        self.is_test_finished = False
-        self.is_car_out_of_lane = False
-        self.road = None
-        self.start_time = None
-        self.end_time = None
-        self.road_model = road_model
         self.oob = oob
-        self.has_test_failed = None
-        self.current_test_outcome = "UNDEFINED"
+        self.cbh = can_bus_handler
+        self.reset()
 
-    def check(self, interrupt_on_failure):
+    def reset(self):
+        _reset_test_monitor(self)
+
+    def process_car_state(self, interrupt_on_failure):
         """
         Checks the current state of the vehicle and test execution.
 
@@ -71,6 +66,8 @@ class TestMonitor:
             "sensors": sensor_data,
         }
         self.test.simulation_data.append(copy.deepcopy(current_simulation_data))
+
+        self.cbh.transmit_sensor_data_to_can_bus(sensor_data["_data"])
 
         if (
             self.__is_car_at_end_of_road(x_pos, y_pos)
@@ -183,3 +180,15 @@ class TestMonitor:
         logging.debug("* __are_points_close")
         dist = distance.euclidean(a, b)
         return dist < threshold
+
+
+def _reset_test_monitor(test_monitor: TestMonitor):
+    test_monitor.test = None
+    test_monitor.is_test_finished = False
+    test_monitor.is_car_out_of_lane = False
+    test_monitor.road = None
+    test_monitor.start_time = None
+    test_monitor.end_time = None
+    test_monitor.road_model = None
+    test_monitor.has_test_failed = None
+    test_monitor.current_test_outcome = "UNDEFINED"

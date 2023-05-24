@@ -1,10 +1,8 @@
 import logging as log
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from datetime import datetime
 
 import pandas as pd
-
 
 # from code_pipeline.tests_generation import RoadTestFactory
 

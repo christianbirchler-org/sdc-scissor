@@ -8,8 +8,7 @@ from pytest import approx
 
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.equi_distance_strategy import EquiDistanceStrategy
-from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
-from sdc_scissor.feature_extraction_api.feature_extraction import RoadFeatures
+from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor, RoadFeatures
 from sdc_scissor.testing_api.test import Test
 
 

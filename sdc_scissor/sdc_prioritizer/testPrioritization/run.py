@@ -11,6 +11,9 @@ import os.path as path
 import sys
 
 import numpy as np
+from crossover.PMX import PMXCrossover
+from mutation.HybridMut import HybridMut
+from problem.TestPrioritizationMultiObjectiveProblem import TestPrioritizationMultiObjectiveProblem
 
 # pymoo libs
 from pymoo.algorithms.moo.nsga2 import NSGA2
@@ -22,10 +25,6 @@ from pymoo.visualization.scatter import Scatter
 # sklearn
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
-
-from crossover.PMX import PMXCrossover
-from mutation.HybridMut import HybridMut
-from problem.TestPrioritizationMultiObjectiveProblem import TestPrioritizationMultiObjectiveProblem
 
 # video recorder
 
