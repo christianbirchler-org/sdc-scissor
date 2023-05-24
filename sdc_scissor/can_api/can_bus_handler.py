@@ -44,7 +44,7 @@ class CanBusHandler:
     """
 
     def __init__(self, output_handler: ICANBusOutput):
-        logging.info("Init CanBusHandler")
+        logging.debug("Init CanBusHandler")
         # Load the config file
 
         # Load the CAN database
@@ -78,11 +78,11 @@ class CanBusHandler:
 
             # Transform the simulation values to assure they are within the dbc range and named correctly
             frame_values = self.get_frame_values(frame_sig_list, data)
-            _logger.info("can frame data values: {}".format(frame_values))
+            _logger.debug("can frame data values: {}".format(frame_values))
 
             # Generate the CAN message
             frame_data = example_msg.encode(frame_values)
-            _logger.info("can frame data encoded: {}".format(frame_data))
+            _logger.debug("can frame data encoded: {}".format(frame_data))
             msg = can.Message(arbitration_id=frame_id, data=frame_data)
             msg.timestamp = time.time()
 
