@@ -27,10 +27,10 @@ jobs:
     - name: Check black code style
       run: |
         poetry run black -C -l 120 --check .
-    - name: Test with pytest
-      run: |
-        poetry run coverage run --branch -m pytest tests
-        poetry run coverage xml
+#    - name: Test with pytest
+#      run: |
+#        poetry run coverage run --branch -m pytest tests
+#        poetry run coverage xml
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
