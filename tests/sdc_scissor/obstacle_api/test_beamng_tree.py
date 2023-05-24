@@ -1,10 +1,13 @@
 import logging
+import sys
 
+import pytest
 from beamngpy import StaticObject
 
 from sdc_scissor.obstacle_api.beamng_tree import BeamngTree
 
 
+@pytest.mark.skipif(sys.platform == "linux", reason="does not run on linux")
 class TestBeamngTree:
     def setup_class(self):
         pass
