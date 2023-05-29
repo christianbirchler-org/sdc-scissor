@@ -85,9 +85,12 @@ SDC-Scissor.
 ````{note}
 The following demo was made for SDC-Scissor v1.0. A demo video for the recent version is coming soon.
 ````
-[![](https://img.youtube.com/vi/Cn8p648KnfQ/maxresdefault.jpg)](https://youtu.be/Cn8p648KnfQ)
 
-[YouTube Link](https://youtu.be/Cn8p648KnfQ)
+```{eval-rst}
+..  youtube:: Cn8p648KnfQ
+   :width: 695
+   :height: 480
+```
 
 ## Data
 In the repository is a directory `sample_tests` with some simple sample test cases. These tests are mainly used for
