@@ -77,12 +77,19 @@ BO_ 161 sampleFrame1: 7 Vector__XXX
  ...
 ````
 
+### TEASER Setup
 ```{eval-rst}
 ..  youtube:: bUIwvXYC57M
    :width: 695
    :height: 480
 ```
 
+### TEASER with Jenkins showcase
+```{eval-rst}
+..  youtube:: mskJegL4guY
+   :width: 695
+   :height: 480
+```
 ## Options
 The command `label-tests` comes with several options.
 Those options are mainly about to configure the virtual environment and not the actual road specifications since these are set in the JSON files.
