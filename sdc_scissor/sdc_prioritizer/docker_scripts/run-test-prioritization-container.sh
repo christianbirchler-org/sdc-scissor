@@ -11,8 +11,8 @@ fi
 docker run -dit --name test-prioritization-container \
 --mount type=bind,source="$(pwd)/data",target=/home/user/experiment/data \
 --mount type=bind,source="$(pwd)/testPrioritization",target=/home/user/experiment/testPrioritization \
-test-prioritization-image
+test-prioritization-image bash
 
 
 
- docker exec -it test-prioritization-container bash -c "pip install --editable /home/user/experiment"
+docker exec -it test-prioritization-container bash -c "pip install --editable /home/user/experiment"
