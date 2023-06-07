@@ -23,7 +23,9 @@ jobs:
         python-version: '3.10'
         #cache: 'poetry'
     - name: Install dependencies
-      run: poetry install
+      run: |
+        apt-get install python3-opengl
+        poetry install
     - name: Check black code style
       run: |
         poetry run black -C -l 120 --check .
