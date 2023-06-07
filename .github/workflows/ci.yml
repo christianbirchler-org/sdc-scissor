@@ -24,7 +24,7 @@ jobs:
         #cache: 'poetry'
     - name: Install dependencies
       run: |
-        apt-get install python3-opengl
+        sudo apt-get install python3-opengl
         poetry install
     - name: Check black code style
       run: |
