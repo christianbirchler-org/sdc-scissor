@@ -4,7 +4,7 @@ import pytest
 import sdc_scissor.obstacle_api.beamng_delineator as module_0
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_case_0():
     beamng_delineator_0 = module_0.BeamngDelineator()
     assert (
@@ -21,7 +21,7 @@ def test_case_0():
     assert beamng_delineator_0.obstacle_type == "procedural"
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 def test_case_1():
     beamng_delineator_0 = module_0.BeamngDelineator()
     assert (

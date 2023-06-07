@@ -26,9 +26,9 @@ jobs:
       - name: Check black code style
         run: |
           poetry run black -C -l 120 --check .
-#      - name: Test with pytest
-#        run: |
-#          poetry run pytest tests
+      - name: Test with pytest
+        run: |
+          poetry run pytest tests
       - name: Build package
         run: |
           poetry build

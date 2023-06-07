@@ -1,7 +1,7 @@
 from sdc_scissor.simulator_api.beamng_simulator import BeamNGSimulator
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 class TestBeamNGSimulator:
     def test_open_beamng(self, mocker):
         beamng_mock = mocker.patch("beamngpy.BeamNGpy")
