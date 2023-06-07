@@ -1,12 +1,11 @@
 import logging
 
-import pytest
 from beamngpy import StaticObject
 
 from sdc_scissor.obstacle_api.beamng_tree import BeamngTree
 
 
-@pytest.mark.skip()
+# @pytest.mark.skip()
 class TestBeamngTree:
     def setup_class(self):
         pass
