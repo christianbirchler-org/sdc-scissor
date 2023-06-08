@@ -33,10 +33,10 @@
 [![](https://sonarcloud.io/api/project_badges/measure?project=christianbirchler-org_sdc-scissor&metric=code_smells)](https://sonarcloud.io/summary/overall?id=christianbirchler-org_sdc-scissor)
 [![DOI](https://zenodo.org/badge/363107094.svg)](https://zenodo.org/badge/latestdoi/363107094)
 <div style="text-align: center;">
-<a href="https://github.com/ChristianBirchler/sdc-scissor">
-<img src="https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/images/github_logo_icon.png">
+<a href="https://github.com/christianbirchler-org/sdc-scissor">
+<img src="https://raw.githubusercontent.com/christianbirchler-org/sdc-scissor/main/docs/images/github_logo_icon.png">
 </a>
-<a href="https://sonarcloud.io/summary/overall?id=ChristianBirchler_sdc-scissor">
+<a href="https://sonarcloud.io/summary/overall?id=christianbirchler-org_sdc-scissor">
 <img src="https://sonarcloud.io/images/project_badges/sonarcloud-black.svg">
 </a>
 </div>
@@ -48,18 +48,18 @@ are diverse and try to challenge the car with corner cases.
 
 Furthermore, this repository contains also code for test multi-objective test case prioritization with an evolutionary
 genetic search algorithm. If you are interested in prioritizing test cases, then you should read the dedicated
-[README.md](https://github.com/ChristianBirchler/sdc-scissor/blob/main/sdc_scissor/sdc_prioritizer/testPrioritization/README.md)
+[README.md](https://github.com/christianbirchler-org/sdc-scissor/blob/main/sdc_scissor/sdc_prioritizer/testPrioritization/README.md)
 for this. If you use the prioritization technique then also cite the papers from the reference section!
 
 ## Support
-We use [GitHub Discussions](https://github.com/ChristianBirchler/sdc-scissor/discussions) as a community platform. You
+We use [GitHub Discussions](https://github.com/christianbirchler-org/sdc-scissor/discussions) as a community platform. You
 can ask questions and get support there from the community. Furthermore, new features and releases will be discussed and
 announced there.
 
 ## Documentation
 For the documentation follow the link: [sdc-scissor.readthedocs.io](https://sdc-scissor.readthedocs.io/en/latest/)
 
-[![](https://raw.githubusercontent.com/ChristianBirchler/sdc-scissor/main/docs/images/readthedocs.png)](https://sdc-scissor.readthedocs.io/en/latest/)
+[![](https://raw.githubusercontent.com/christianbirchler-org/sdc-scissor/main/docs/images/readthedocs.png)](https://sdc-scissor.readthedocs.io/en/latest/)
 
 ## License
 ```{code-block} text
