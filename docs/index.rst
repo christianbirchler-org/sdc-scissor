@@ -12,6 +12,7 @@ Content
     user_documentation/test_execution
     user_documentation/feature_extraction
     user_documentation/machine_learning
+    user_documentation/test_prioritization
     api/index
 
 .. toctree::
