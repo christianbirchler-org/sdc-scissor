@@ -82,10 +82,15 @@ The [Software Guidebook](../software_guidebook/introduction.md) provides more ex
 SDC-Scissor.
 
 ## Demo
+```{eval-rst}
+..  youtube:: -PYwf4b_Oi4
+   :width: 695
+   :height: 480
+```
+
 ````{note}
 The following demo was made for SDC-Scissor v1.0. A demo video for the recent version is coming soon.
 ````
-
 ```{eval-rst}
 ..  youtube:: Cn8p648KnfQ
    :width: 695
