@@ -10,11 +10,22 @@ jobs:
   ci:
     if: github.repository == 'christianbirchler-org/sdc-scissor'
     runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
     steps:
     - name: Copy repository
       uses: actions/checkout@v3
+    - name: Push to COSMOS repository
+      env:
+        gitlab_url: ${{ secrets.GITLAB_URL }}
+        gitlab_token: ${{ secrets.GITLAB_TOKEN }}
+      run: |
+        echo Starting to push repo to gitlab
+        git config user.name "Christian Birchler"
+        git config user.email "birchler.chr@gmail.com"
+        git fetch --unshallow
+        git pull
+        git remote set-url origin https://access-token:${gitlab_token}@${gitlab_url}
+        git push origin main --force
+        git push origin main --tag
     - name: Install Poetry
       run: pipx install poetry
     - name: Set up Python with caching
