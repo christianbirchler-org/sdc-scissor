@@ -16,7 +16,6 @@
 [![GitHub forks](https://img.shields.io/github/forks/christianbirchler-org/sdc-scissor)](https://github.com/christianbirchler-org/sdc-scissor/network)
 [![GitHub stars](https://img.shields.io/github/stars/christianbirchler-org/sdc-scissor)](https://github.com/christianbirchler-org/sdc-scissor/stargazers)
 [![](https://github.com/christianbirchler-org/sdc-scissor/actions/workflows/ci.yml/badge.svg)](https://github.com/christianbirchler-org/sdc-scissor/actions/workflows/ci.yml)
-[![CD](https://github.com/christianbirchler-org/sdc-scissor/actions/workflows/cd.yml/badge.svg)](https://github.com/christianbirchler-org/sdc-scissor/actions/workflows/cd.yml)
 [![PyPI](https://img.shields.io/pypi/v/sdc-scissor)](https://pypi.org/project/sdc-scissor/)
 [![](https://readthedocs.org/projects/sdc-scissor/badge)](https://sdc-scissor.readthedocs.io)
 [![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://black.readthedocs.io/)
