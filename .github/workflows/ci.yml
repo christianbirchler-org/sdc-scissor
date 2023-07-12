@@ -28,6 +28,8 @@ jobs:
         git push origin main --tag
     - name: Install Poetry
       run: pipx install poetry
+    - name: Install tox
+      run: pipx install tox
     - name: Set up Python with caching
       uses: actions/setup-python@v4
       with:
@@ -42,8 +44,7 @@ jobs:
         poetry run black -C -l 120 --check .
     - name: Test with pytest
       run: |
-        poetry run coverage run --branch -m pytest tests
-        poetry run coverage xml
+        tox
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
