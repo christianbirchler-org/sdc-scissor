@@ -93,7 +93,8 @@ If you use this tool in your research, please cite the following papers:
 ````{code-block} bibtex
 @article{Birchler2023Teaser,
 author = {Christian Birchler and Cyrill Rohrbach and Hyeongkyun Kim and Alessio Gambi and Tianhai Liu and Jens Horneber and Timo Kehrer and Sebastiano Panichella},
-title = {TEASER: Simulation-based CAN Bus Regression Testing for Self-driving Cars Software},
+title = {{TEASER}: Simulation-based CAN Bus Regression Testing for Self-driving Cars Software},
+booktitle = {{IEEE/ACM} International Conference on Automated Software Engineering},
 year = {2023},
 eprint = {2307.03279},
 doi = {10.48550/arXiv.2307.03279},
