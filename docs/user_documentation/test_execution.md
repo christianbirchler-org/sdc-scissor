@@ -79,14 +79,14 @@ BO_ 161 sampleFrame1: 7 Vector__XXX
 
 ### TEASER Setup
 ```{eval-rst}
-..  youtube:: bUIwvXYC57M
+..  youtube:: IovDDlu2k84
    :width: 695
    :height: 480
 ```
 
 ### TEASER with Jenkins showcase
 ```{eval-rst}
-..  youtube:: mskJegL4guY
+..  youtube:: KOa-lKbwqKo
    :width: 695
    :height: 480
 ```

@@ -34,6 +34,8 @@ For using SDC-Scissor with the BeamNG.tech simulator you can obtain an academic 
 user directory of BeamNG.tech (`C:\Users\myaccount\Documents\BeamNG.drive\0.24\levels`) wth the one from this repository
 (`levels_template/tig`).
 
+## TEASER
+You can run SDC-Scissor with a CAN bus feature called TEASER. Look [here](test_execution.md) for more details.
 
 ## Run the tool
 
