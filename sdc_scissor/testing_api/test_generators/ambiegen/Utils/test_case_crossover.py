@@ -21,7 +21,7 @@ class TestCaseCrossover(Crossover):
 
         # The output owith the shape (n_offsprings, n_matings, n_var)
         # Because there the number of parents and offsprings are equal it keeps the shape of X
-        Y = np.full_like(X, None, dtype=np.object)
+        Y = np.full_like(X, None, dtype=object)
 
         # for each mating provided
 
