@@ -51,6 +51,7 @@ class CustomAmbieGenGenerator:
         generated_tests_count = 0
         test_suite = []
         start = time.time()
+        tests_per_run = 10
         while generated_tests_count < self.count:
             res = minimize(
                 TestCaseProblem(),
@@ -67,7 +68,8 @@ class CustomAmbieGenGenerator:
             test_cases = []
             i = 0
 
-            while i < len(res.F) and generated_tests_count + i < self.count:
+
+            while i < tests_per_run and generated_tests_count + i < self.count:
                 result = res.history[gen].pop.get("X")[i]
 
                 road_points = result[0].intp_points
