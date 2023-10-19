@@ -5,6 +5,7 @@ import time
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.optimize import minimize
 from pymoo.configuration import Configuration
+
 Configuration.show_compile_hint = False
 
 import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
@@ -28,7 +29,7 @@ class CustomAmbieGenGenerator:
     sdc-scissor generate-tests -c 30 -k -t "ambiegen" -d "results"
     """
 
-    def __init__(self, time_budget=None, executor=None, map_size=200,  **kwargs):
+    def __init__(self, time_budget=None, executor=None, map_size=200, **kwargs):
         self.map_size = kwargs.get("map_size", map_size)
         self.executor = executor
         self.count = kwargs.get("count", None)
@@ -71,7 +72,6 @@ class CustomAmbieGenGenerator:
             test_cases = []
             i = 0
 
-
             while i < tests_per_run and generated_tests_count + i < self.count:
                 result = res.history[gen].pop.get("X")[i]
 
@@ -82,5 +82,5 @@ class CustomAmbieGenGenerator:
             generated_tests_count += len(test_cases)
             test_suite.extend(test_cases)
 
-        #log.info(f"Generated {len(test_suite)} tests in {time.time() - start} seconds.")
+        # log.info(f"Generated {len(test_suite)} tests in {time.time() - start} seconds.")
         return test_suite

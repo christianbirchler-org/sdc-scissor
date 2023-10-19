@@ -57,7 +57,6 @@ class TestTestGenerator:
             actual = test.test_id
             assert expected == actual
 
-
     def test_id_generation_of_generate_tests_on_keeping_all_tests_ambiegen(self):
         destination = "./destination"
         number_of_tests_to_generate = 10
@@ -109,5 +108,3 @@ class TestTestGenerator:
             expected = index
             actual = test.test_id
             assert expected == actual
-
-
