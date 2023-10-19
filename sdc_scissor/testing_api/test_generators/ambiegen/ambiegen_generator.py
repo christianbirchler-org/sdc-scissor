@@ -50,13 +50,14 @@ class CustomAmbieGenGenerator:
             eliminate_duplicates=DuplicateElimination(),
         )
 
-        t = int(time.time() * 1000)
-        seed = ((t & 0xFF000000) >> 24) + ((t & 0x00FF0000) >> 8) + ((t & 0x0000FF00) << 8) + ((t & 0x000000FF) << 24)
+       
         generated_tests_count = 0
         test_suite = []
         start = time.time()
         tests_per_run = 10
         while generated_tests_count < self.count:
+            t = int(time.time() * 1000)
+            seed = ((t & 0xFF000000) >> 24) + ((t & 0x00FF0000) >> 8) + ((t & 0x0000FF00) << 8) + ((t & 0x000000FF) << 24)
             res = minimize(
                 TestCaseProblem(),
                 algorithm,
@@ -67,7 +68,7 @@ class CustomAmbieGenGenerator:
                 eliminate_duplicates=True,
             )
 
-            # print("Best solution found: \nF = %s" % (res.F))
+            #print("Best solution found: \nF = %s" % (res.F))
             gen = len(res.history) - 1
             test_cases = []
             i = 0
@@ -82,5 +83,5 @@ class CustomAmbieGenGenerator:
             generated_tests_count += len(test_cases)
             test_suite.extend(test_cases)
 
-        # log.info(f"Generated {len(test_suite)} tests in {time.time() - start} seconds.")
+            #log.info(f"Generated {len(test_suite)} tests in {time.time() - start} seconds.")
         return test_suite
