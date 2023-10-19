@@ -76,5 +76,6 @@ class CustomAmbieGenGenerator:
 
             generated_tests_count += len(test_cases)
             test_suite.extend(test_cases)
+
         #log.info(f"Generated {len(test_suite)} tests in {time.time() - start} seconds.")
         return test_suite
