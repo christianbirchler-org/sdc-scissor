@@ -1,4 +1,4 @@
-ga = {"population": 100, "n_gen": 75, "mut_rate": 0.4, "cross_rate": 1}
+ga = {"population": 100, "n_gen": 50, "mut_rate": 0.4, "cross_rate": 1}
 
 model = {
     "speed": 9,  # parameter for the simplified car model

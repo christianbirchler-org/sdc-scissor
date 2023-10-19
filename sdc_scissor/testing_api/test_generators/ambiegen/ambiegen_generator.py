@@ -4,6 +4,8 @@ import time
 
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.optimize import minimize
+from pymoo.configuration import Configuration
+Configuration.show_compile_hint = False
 
 import sdc_scissor.testing_api.test_generators.ambiegen.config as cf
 from sdc_scissor.testing_api.test_generators.ambiegen.Utils.duplicate_elimination import DuplicateElimination
@@ -23,10 +25,10 @@ class CustomAmbieGenGenerator:
     the Pareto optimal solutions are provided and executed. Then the algorithm is launched again.
     """
 
-    def __init__(self, time_budget=None, executor=None, map_size=200):
-        self.map_size = map_size
-        self.time_budget = time_budget
+    def __init__(self, time_budget=None, executor=None, map_size=200,  **kwargs):
+        self.map_size = kwargs.get("map_size", map_size)
         self.executor = executor
+        self.count = kwargs.get("count", None)
 
     def start(self):
         """
@@ -46,26 +48,33 @@ class CustomAmbieGenGenerator:
 
         t = int(time.time() * 1000)
         seed = ((t & 0xFF000000) >> 24) + ((t & 0x00FF0000) >> 8) + ((t & 0x0000FF00) << 8) + ((t & 0x000000FF) << 24)
+        generated_tests_count = 0
+        test_suite = []
+        start = time.time()
+        while generated_tests_count < self.count:
+            res = minimize(
+                TestCaseProblem(),
+                algorithm,
+                ("n_gen", cf.ga["n_gen"]),
+                seed=seed,
+                verbose=False,
+                save_history=True,
+                eliminate_duplicates=True,
+            )
 
-        res = minimize(
-            TestCaseProblem(),
-            algorithm,
-            ("n_gen", cf.ga["n_gen"]),
-            seed=seed,
-            verbose=False,
-            save_history=True,
-            eliminate_duplicates=True,
-        )
+            # print("Best solution found: \nF = %s" % (res.F))
+            gen = len(res.history) - 1
+            test_cases = []
+            i = 0
 
-        # print("Best solution found: \nF = %s" % (res.F))
-        gen = len(res.history) - 1
-        test_cases = []
-        i = 0
+            while i < len(res.F) and generated_tests_count + i < self.count:
+                result = res.history[gen].pop.get("X")[i]
 
-        while i < len(res.F):
-            result = res.history[gen].pop.get("X")[i]
+                road_points = result[0].intp_points
+                test_cases.append(road_points)
+                i += 1
 
-            road_points = result[0].intp_points
-            test_cases.append(road_points)
-            i += 1
-        return test_cases
+            generated_tests_count += len(test_cases)
+            test_suite.extend(test_cases)
+        #log.info(f"Generated {len(test_suite)} tests in {time.time() - start} seconds.")
+        return test_suite

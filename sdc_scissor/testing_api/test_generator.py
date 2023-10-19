@@ -77,7 +77,7 @@ class TestGenerator:
         elif self.tool.lower() == "freneticv":
             self.random_generator = CustomFrenetVGenerator(**kwargs)
         elif self.tool.lower() == "ambiegen":
-            self.random_generator = CustomAmbieGenGenerator()
+            self.random_generator = CustomAmbieGenGenerator(**kwargs)
         else:
             raise Exception(" Invalid tool name. Supported tools [frenetic, freneticv, ambiegen]")
 
