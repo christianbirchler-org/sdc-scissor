@@ -23,6 +23,9 @@ class CustomAmbieGenGenerator:
     estimate the fault revealing power (as the maximum deviation from the road center).
     We use 100 generations and 100 population size. In each iteration of the generator
     the Pareto optimal solutions are provided and executed. Then the algorithm is launched again.
+
+    Sample usage:
+    sdc-scissor generate-tests -c 30 -k -t "ambiegen" -d "results"
     """
 
     def __init__(self, time_budget=None, executor=None, map_size=200,  **kwargs):
