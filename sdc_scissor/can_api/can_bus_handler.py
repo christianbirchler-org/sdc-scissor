@@ -50,10 +50,10 @@ class CanBusHandler:
         # Load the CAN database
         db_path = CONFIG.CAN_DBC_PATH
         dbc_map_path = CONFIG.CAN_DBC_MAP_PATH
-        db = cantools.db.load_file(Path(db_path))
+        self.db = cantools.db.load_file(Path(db_path))
 
         # Gather the sample frames from the dbc
-        self.frame_list = get_can_frame_list(db)
+        self.frame_list = get_can_frame_list(self.db)
         self.output_handler = output_handler
 
         # Load the dbc map used to map the simulation signals to the dbc signals

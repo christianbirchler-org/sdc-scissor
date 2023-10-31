@@ -97,16 +97,20 @@ class InfluxDBDecorator(AbstractOutputDecorator):
     def output_can_msg(self, msg: can.Message):
         for msg_specs in self.can_db.messages:
             decoded_msg = None
+            if msg.arbitration_id != msg_specs.frame_id:
+                continue
             try:
+                _logger.debug("Encoded CAN msg: {}".format(str(msg)))
                 decoded_msg = self.can_db.decode_message(msg_specs.frame_id, msg.data)
+                _logger.debug("Decoded CAN msg: {}".format(str(msg)))
             except Exception as ex:
-                _logger.info("can msg: {}\tdecoded msg: {}\texception: {}".format(msg, decoded_msg, ex))
+                _logger.debug("can msg: {}\tdecoded msg: {}\texception: {}".format(msg, decoded_msg, ex))
                 continue
 
             point = Point(CONFIG.EXECUTION_START_TIME).tag("test_id", CONFIG.CURRENT_TEST_ID)
             for signal_name, signal_value in decoded_msg.items():
                 msg_sample_time = datetime.datetime.utcfromtimestamp(msg.timestamp)
-                print("utc: {}\traw: {}".format(msg_sample_time, msg.timestamp))
+                _logger.debug("utc: {}\traw: {}".format(msg_sample_time, msg.timestamp))
                 point = point.field(field=signal_name, value=signal_value).time(str(msg_sample_time))
                 _write_influxdb_data_record(self.write_api, CONFIG.INFLUXDB_BUCKET, CONFIG.INFLUXDB_ORG, point)
 

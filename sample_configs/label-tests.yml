@@ -1,8 +1,8 @@
 command: 'label-tests'
 options:
-  home: 'C:\Users\birc\Documents\BeamNG.tech.v0.24.0.2\BeamNG.drive-0.24.0.2.13392'
-  user: 'C:\Users\birc\Documents\BeamNG.drive'
-  tests: 'C:\Users\birc\sdc-scissor\sample_tests'
+  home: 'C:\Users\birch\Documents\BeamNG.tech.v0.24.0.2\BeamNG.drive-0.24.0.2.13392'
+  user: 'C:\Users\birch\Documents\BeamNG.drive'
+  tests: 'C:\Users\birch\repositories\sdc-scissor\sample_tests'
   rf: 1.5
   oob: 0.3
   max_speed: 50
@@ -14,8 +14,8 @@ options:
   field_of_view: 120
   canbus: false
   can_stdout: true
-  can_dbc: 'C:\Users\birc\sdc-scissor\sample_candb\beamng_pipeline_sample.dbc'
-  can_dbc_map: 'C:\Users\birc\sdc-scissor\dbc_maps\dbc_map_beamng.json'
+  can_dbc: 'C:\Users\birch\repositories\sdc-scissor\sample_candb\beamng_pipeline_sample.dbc'
+  can_dbc_map: 'C:\Users\birch\repositories\sdc-scissor\dbc_maps\dbc_map_beamng.json'
   can_interface: 'socketcan'
   can_channel: 'vcan0'
   can_bitrate: 250000
