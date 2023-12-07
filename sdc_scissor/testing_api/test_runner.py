@@ -97,7 +97,9 @@ class TestRunner:
         has_execution_failed = False
         test = None
         test_filename = None
+        total_test_runs = 0
         while self.test_loader.has_next() or has_execution_failed:
+            logging.info("Total started test runs: {}".format(total_test_runs))
             if has_execution_failed:
                 self.simulator.create_new_instance()
                 self.simulator.open()
@@ -105,6 +107,7 @@ class TestRunner:
                 test, test_filename = self.test_loader.next()
             try:
                 self.test_monitor.reset()
+                total_test_runs += 1
                 self.run(test)
                 test.save_as_json(file_path=test_filename)
                 has_execution_failed = False
@@ -135,6 +138,7 @@ class TestRunner:
 
         :param test: Test object that needs to be executed in simulation
         """
+        logging.info("Run test: {}".format(test.test_id))
         logging.debug("* run")
         CONFIG.config["current_test_id"] = test.test_id
         if not test.is_valid:
