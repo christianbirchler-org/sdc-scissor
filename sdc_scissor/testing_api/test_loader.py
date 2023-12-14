@@ -71,6 +71,10 @@ class TestLoader:
         road_points = test_json.get("interpolated_road_points", None)
         if not road_points:
             road_points = test_json.get("interpolated_points", None)
+        if not road_points:
+            road_points = test_json.get("road_points", None)
+        if road_points is None:
+            raise Exception("No road points")
         test_outcome = test_json.get("test_outcome", None)
         sim_time = test_json.get("test_duration", None)
         if not sim_time:
@@ -81,6 +85,7 @@ class TestLoader:
         match_obj = re.match(pattern=id_pattern, string=str(test_path))
         test_id = match_obj.group(1)
         logging.debug("test_id: {}".format(test_id))
+        logging.debug("road_points: {}".format(road_points))
 
         test = Test(test_id=test_id, road_points=road_points, test_outcome=test_outcome, test_duration=sim_time)
         self.test_validator.validate(test)
