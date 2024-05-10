@@ -64,7 +64,7 @@ For the documentation follow the link: [sdc-scissor.readthedocs.io](https://sdc-
 ```{code-block} text
 SDC-Scissor tool for cost-effective simulation-based test selection
 in self-driving cars software.
-Copyright (C) 2022  Christian Birchler
+Copyright (C) 2024  Christian Birchler
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
