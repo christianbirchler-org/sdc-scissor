@@ -1,38 +1,55 @@
 import datetime
 import logging
 import os
+from pathlib import Path
 import sys
 import time
-from pathlib import Path
+
+import yaml
 
 import click
+from dotenv import load_dotenv
 import influxdb_client
 import numpy as np
-import yaml
-from dotenv import load_dotenv
-from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC, LinearSVC
-from sklearn.tree import DecisionTreeClassifier
-
 from sdc_scissor.can_api.can_bus_handler import CanBusHandler
-from sdc_scissor.can_api.can_msg_generator import CANMessageGenerator, RandomCANMessageGeneration
-from sdc_scissor.can_api.can_output import CANBusOutputDecorator, InfluxDBDecorator, NoCANBusOutput, StdOutDecorator
+from sdc_scissor.can_api.can_msg_generator import (
+    CANMessageGenerator,
+    RandomCANMessageGeneration,
+)
+from sdc_scissor.can_api.can_output import (
+    CANBusOutputDecorator,
+    InfluxDBDecorator,
+    NoCANBusOutput,
+    StdOutDecorator,
+)
 from sdc_scissor.config import CONFIG
 from sdc_scissor.feature_extraction_api.angle_based_strategy import AngleBasedStrategy
 from sdc_scissor.feature_extraction_api.feature_extraction import FeatureExtractor
-from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import CostEffectivenessEvaluator
+from sdc_scissor.machine_learning_api.cost_effectiveness_evaluator import (
+    CostEffectivenessEvaluator,
+)
 from sdc_scissor.machine_learning_api.csv_loader import CSVLoader
 from sdc_scissor.machine_learning_api.model_evaluator import ModelEvaluator
 from sdc_scissor.machine_learning_api.predictor import Predictor
 from sdc_scissor.obstacle_api.beamng_obstacle_factory import BeamngObstacleFactory
 from sdc_scissor.simulator_api.simulator_factory import SimulatorFactory
-from sdc_scissor.testing_api.test_generator import KeepAllTestsBehavior, KeepValidTestsOnlyBehavior, TestGenerator
+from sdc_scissor.testing_api.test_generator import (
+    KeepAllTestsBehavior,
+    KeepValidTestsOnlyBehavior,
+    TestGenerator,
+)
 from sdc_scissor.testing_api.test_loader import TestLoader
 from sdc_scissor.testing_api.test_monitor import TestMonitor
 from sdc_scissor.testing_api.test_runner import TestRunner
-from sdc_scissor.testing_api.test_validator import NoIntersectionValidator, SimpleTestValidator
+from sdc_scissor.testing_api.test_validator import (
+    NoIntersectionValidator,
+    SimpleTestValidator,
+)
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import LinearSVC, SVC
+from sklearn.tree import DecisionTreeClassifier
 
 _ROOT_DIR = Path(__file__).parent.parent
 _DESTINATION = _ROOT_DIR / "destination"
